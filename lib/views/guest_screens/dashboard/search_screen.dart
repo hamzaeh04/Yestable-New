@@ -1,0 +1,520 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
+
+import '../../../constants/color_constants.dart';
+import '../../../constants/constants_widgets.dart';
+import '../../../controllers/navigation_controller.dart';
+import '../../../widget/home_screen_widget.dart';
+class SearchScreen extends StatelessWidget {
+  SearchScreen({super.key});
+
+  final NavigationController controller = Get.put(NavigationController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: greenColor,
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        top: true,
+        bottom: false,
+        child: Column(
+          children: [
+            SizedBox(height: 2.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
+              child: Row(
+                children: [
+                  homeIconWidget(
+                    icon: Icons.arrow_back_ios_new,
+                    color: lightgreenColor,
+                    iconsize: 16.sp,
+                    onTap: () {
+                      controller.goToHome();
+                    },
+                  ),
+                  SizedBox(width: 2.w),
+                  customText(
+                    text: "Search",
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: whiteColor,
+                    fontFamily: "CormorantGaramond",
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 2.h),
+
+            /// Expanded Scrollable Section
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.sp),
+                  topRight: Radius.circular(30.sp),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 4.h),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 6.w),
+                            child: TextField(
+                              style: TextStyle(
+                                  fontSize: 13.sp, fontFamily: "WorkSans"),
+                              // Optional: shrink text size
+                              decoration: InputDecoration(
+                                isDense: true,
+                                // Shrinks the vertical height
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 1.2.h, horizontal: 4.w),
+                                // Reduce vertical padding
+                                hintText: 'Search Here',
+                                hintStyle: TextStyle(
+                                    fontSize: 15.sp, fontFamily: "WorkSans"),
+                                filled: true,
+                                fillColor: backgroundColor,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.sp),
+                                  borderSide: BorderSide(
+                                      color: lightgreenColor, width: 0.2.w),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.sp),
+                                  borderSide: BorderSide(
+                                      color: lightgreenColor, width: 0.2.w),
+                                ),
+                                suffixIcon: Padding(
+                                  padding: EdgeInsets.only(right: 4.w),
+                                  child: Image.asset(
+                                    "assets/png/icons/search_icon.png",
+                                    height: 2.h,
+                                    width: 2.h,
+                                  ),
+                                ),
+                                suffixIconConstraints: BoxConstraints(
+                                  minHeight: 2.h,
+                                  minWidth: 2.h,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Obx(
+                                () => SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                                vertical: 3.h,
+                              ),
+                              child: Row(
+                                children: List.generate(controller.searchScreenTabs.length, (index) {
+                                  bool isSelected = controller.selectedIndexTab.value == index;
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 2.w),
+                                    child: GestureDetector(
+                                      onTap: () => controller.selectTabSearch(index),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 6.w,
+                                          vertical: 1.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? greenColor
+                                              : greenColor.withAlpha(40),
+                                          borderRadius: BorderRadius.circular(30.sp),
+                                        ),
+                                        child: customText(
+                                          text: controller.searchScreenTabs[index],
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: isSelected ? whiteColor : greenColor,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    customText(
+                                      text: "Recipes to suit your taste",
+                                      fontSize: 19.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: blackColor,
+                                      fontFamily: "CormorantGaramond",
+                                    ),
+                                    customText(
+                                      text: "View All",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: blueColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                  child: Row(
+                                    children: List.generate(4, (index) {
+                                      return buildPostCard(
+                                        profileImage: "assets/png/chat_images/user5.png",
+                                        userName: "Sarah Scarnio",
+                                        postTime: "2hrs ago",
+                                        postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                        postImage: "assets/png/chat_images/group_profile_pic.png",
+                                        color: whiteColor,
+                                        userNameFontSize: 15.sp,
+                                        postTextFontSize: 12.sp,
+                                        postTimeFontSize: 12.sp,
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    customText(
+                                      text: "Your Event",
+                                      fontSize: 19.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: blackColor,
+                                      fontFamily: "CormorantGaramond",
+                                    ),
+                                    customText(
+                                      text: "View All",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: blueColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              SizedBox(
+                                height: 38.h,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                  itemCount: 4,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 3.w),
+                                      child: yourEventWidget(width: 55.w),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+Widget buildPostCard({
+  required String profileImage,
+  required String userName,
+  required String postTime,
+  required String postText,
+  double? userNameFontSize,
+  double? postTimeFontSize,
+  double? postTextFontSize,
+  Color? color,
+  String? postImage, // Optional image
+  String repliesCount = "8 replies",
+  String likesCount = "12k Likes",
+  bool showReadMore = true,
+  bool showRepliesAndAvatar = true, // 👈 New flag
+}) {
+  return Padding(
+    padding: EdgeInsets.only(right: 2.w),
+    child: Container(
+      width: 65.w,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(15.sp),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(14.sp),
+        child: Column(
+          children: [
+            // Post Header
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Picture
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      height: 3.5.h,
+                      width: 3.5.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(12.sp),
+                      ),
+                      clipBehavior: Clip.antiAlias, // Optional: this clips the image only
+                      child: Image.asset(
+                        profileImage,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Icons.person,
+                          size: 4.h,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -0.5.h,
+                      right: -0.5.h,
+                      child: Container(
+                        height: 1.8.h,
+                        width: 1.8.h,
+                        decoration: BoxDecoration(
+                          color: blueColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1), // Optional border
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 1.2.h,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 2.w),
+
+                // Username, Time, Text, Image, Footer
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          customText(
+                            text: userName,
+                            fontSize: userNameFontSize != null ? userNameFontSize : 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: blackColor,
+                            fontFamily: "CormorantGaramond",
+                          ),
+                          Icon(
+                            Icons.more_horiz,
+                            size: 16.sp,
+                            color: blackColor,
+                          ),
+                        ],
+                      ),
+                      customText(
+                        text: postTime,
+                        fontSize: postTimeFontSize != null ? postTimeFontSize : 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: darkGreyColor,
+                      ),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 0.5.h),
+            customText(
+              text: postText,
+              fontSize: postTextFontSize!= null ? postTextFontSize : 14.sp,
+              fontWeight: FontWeight.w400,
+              color: darkGreyColor,
+              maxLines: showReadMore ? 4 : null,
+            ),
+            SizedBox(height: 0.5.h),
+
+            // Post Image
+            if (postImage != null && postImage.isNotEmpty)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15.sp),
+                child: Image.asset(
+                  postImage,
+                  width: double.infinity,
+                  height: 15.h,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+            SizedBox(height: 0.5.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Replies + Likes
+                Row(
+                  children: [
+                    if (showRepliesAndAvatar) ...[
+                      CircleAvatar(
+                        radius: 12.sp,
+                        backgroundImage:
+                        AssetImage('assets/png/chat_images/user5.png'),
+                      ),
+                      SizedBox(width: 2.w),
+                      customText(
+                        text: repliesCount,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: darkGreyColor,
+                        txtDecoration: TextDecoration.underline,
+                      ),
+                      SizedBox(width: 4.w),
+                    ],
+                    // Likes (always shown)
+                    customText(
+                      text: likesCount,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: darkGreyColor,
+                    ),
+                  ],
+                ),
+
+                // Action Icons
+                Row(
+                  children: [
+                    Icon(Icons.favorite_border, size: 16.sp),
+                    SizedBox(width: 3.w),
+                    Icon(Icons.chat_bubble_outline, size: 16.sp),
+                    // Updated icon
+                    SizedBox(width: 3.w),
+                    Icon(Icons.repeat_sharp, size: 16.sp),
+                  ],
+                ),
+              ],
+            ),
+            if (postImage != null && postImage.isNotEmpty) SizedBox(height: 1.5.h),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+Widget yourEventWidget({double? width,double? height}) {
+  return Container(
+    height: height!=null ? height : 41.h,
+    width: width!=null ? width : 65.w,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(15.sp),
+      color: whiteColor.withOpacity(0.8),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
+            bottomLeft: Radius.circular(18.sp), // More rounded bottom
+            bottomRight: Radius.circular(18.sp), // More rounded bottom
+          ),
+          child: Container(
+            width: double.infinity,
+            height: 14.h,
+            child: Image.asset(
+              "assets/png/upcoming_event_banner.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              customText(
+                text: "Sophia Dinner Event",
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                fontFamily: "CormorantGaramond",
+                color: blackColor,
+              ),
+              customText(
+                text: "132 My Street, Kingston, New York124",
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey[800],
+              ),
+              Divider(),
+              buildEventRow("Name:", "April 30, 2025",textSize: 12.sp),
+              Divider(),
+              buildEventRow("Time:", "7:30pm",textSize: 12.sp),
+              Divider(),
+              buildEventRow("Host Name:", "Sophia Andreas",textSize: 12.sp),
+              Divider(),
+              SizedBox(height: 1.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  customText(
+                    text: "Dietary Compatibility Score",
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: blackColor,
+                  ),
+                  customText(
+                    text: "95%",
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: greenColor,
+                  ),
+                ],
+              ),
+              SizedBox(height: 1.h),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.sp),
+                child: LinearProgressIndicator(
+                  minHeight: 0.7.h,
+                  value: 0.95,
+                  valueColor: AlwaysStoppedAnimation<Color>(greenColor),
+                  backgroundColor: Colors.grey[300],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
