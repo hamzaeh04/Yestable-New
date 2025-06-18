@@ -17,9 +17,10 @@ class HostEditProfileScreen extends StatelessWidget {
       backgroundColor: greenColor,
       body: Column(
         children: [
+          SizedBox(height: 1.h),
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.only(left: 5.w,right: 5.w),
+              padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: 1.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -58,6 +59,7 @@ class HostEditProfileScreen extends StatelessWidget {
               ),
             ),
           ),
+
           Expanded(
             child: Container(
               width: double.infinity,
@@ -289,6 +291,7 @@ class HostEditProfileScreen extends StatelessWidget {
                         Divider(),
                       ],
                     ),
+                    SizedBox(height: 5.h),
                   ],
                 ),
               ),

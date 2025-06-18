@@ -43,7 +43,7 @@ Widget allergenWidget(int index, String title, {Widget? icon}) {
               text: title,
               fontSize: 15.sp,
               fontWeight: FontWeight.w500,
-              color: isSelected ? whiteColor : blackColor,
+              color: isSelected ? whiteColor : blueColor,
             ),
           ],
         ),
@@ -54,7 +54,7 @@ Widget allergenWidget(int index, String title, {Widget? icon}) {
 
 Widget others({
   required String title,
-  Widget? icon,
+  String? path,
 }) {
   final ProfileController controller = Get.find<ProfileController>();
   final TextEditingController textFieldController = TextEditingController();
@@ -186,15 +186,15 @@ Widget others({
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon != null) ...[
-              icon,
+            if (path != null) ...[
+              Image.asset(path,height: 16.sp,color: blueColor),
               SizedBox(width: 2.w),
             ],
             customText(
               text: title,
               fontSize: 15.sp,
               fontWeight: FontWeight.w500,
-              color: isSelected ? whiteColor : blackColor,
+              color: blueColor,
             ),
           ],
         ),

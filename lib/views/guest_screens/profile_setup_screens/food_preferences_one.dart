@@ -50,7 +50,7 @@ class FoodPreferencesOne extends StatelessWidget {
                 bottomRight: Radius.circular(25.sp),
               ),
               child: Image.asset(
-                "assets/png/food_preferences_banner.png",
+                "assets/png/food_preference_one.png",
                 width: 100.w,
                 fit: BoxFit.cover,
               ),
@@ -108,7 +108,7 @@ class FoodPreferencesOne extends StatelessWidget {
                     runSpacing: 8.0,  // vertical space between rows
                     children: List.generate(
                       yuckList.length,
-                          (index) => foodPreferencesOne(index + 8, yuckList[index]['name']!,imgpath: yuckList[index]['imgPath']),
+                          (index) => foodPreferencesOne(index + 9, yuckList[index]['name']!,imgpath: yuckList[index]['imgPath']),
                     ),
                   ),
                   SizedBox(height: 2.h),

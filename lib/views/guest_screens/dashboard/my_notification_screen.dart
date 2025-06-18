@@ -130,7 +130,7 @@ class MyNotificationScreen extends StatelessWidget {
 
                                 // 1. cheque = true
                                 myNotificayionWidget(
-                                  url: "assets/png/chat_images/user1.png",
+                                  url: "assets/png/notification_img/notification1.png",
                                   msgtitle: "Vegan Brunch starts in 2 hours!",
                                   msgText: "123 Main St | Menu safe for you",
                                   cheque: false,
@@ -138,7 +138,7 @@ class MyNotificationScreen extends StatelessWidget {
 
                                 // 2. cheque = true
                                 myNotificayionWidget(
-                                  url: "assets/png/chat_images/user2.png",
+                                  url: "assets/png/notification_img/notification2.png",
                                   msgtitle: "Yacht trip reminder",
                                   msgText: "Harbor 14B | Bring sunscreen!",
                                   cheque: true,
@@ -146,7 +146,7 @@ class MyNotificationScreen extends StatelessWidget {
 
                                 // 3. cheque = false
                                 myNotificayionWidget(
-                                  url: "assets/png/chat_images/user3.png",
+                                  url: "assets/png/notification_img/notification3.png",
                                   msgtitle: "Event Cancelled",
                                   msgText: "Rain forecasted | See details",
                                   cheque: true,
@@ -154,7 +154,7 @@ class MyNotificationScreen extends StatelessWidget {
 
                                 // 4. cheque = false
                                 myNotificayionWidget(
-                                  url: "assets/png/chat_images/user4.png",
+                                  url: "assets/png/notification_img/notification4.png",
                                   msgtitle: "Discount unlocked!",
                                   msgText: "15% off your next booking",
                                   cheque: false,
@@ -162,7 +162,7 @@ class MyNotificationScreen extends StatelessWidget {
 
                                 // 5. cheque = false
                                 myNotificayionWidget(
-                                  url: "assets/png/chat_images/user5.png",
+                                  url: "assets/png/notification_img/notification5.png",
                                   msgtitle: "Profile viewed 10 times today",
                                   msgText: "Check who's interested",
                                   cheque: false,
@@ -205,38 +205,38 @@ class MyNotificationScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 2.h),
                                 suggestedForYou(
-                                  url: "assets/png/chat_images/user1.png",
+                                  url: "assets/png/chat_images/guest4.png",
                                   msgtitle: "Samuel Kendrio",
                                   msgText: "20+ Mutual Friends",
                                   cheque: true,
                                 ),
                                 suggestedForYou(
                                   url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Samuel Kendrio",
+                                  msgtitle: "Floyed Gerhold",
                                   msgText: "20+ Mutual Friends",
                                   cheque: true,
                                 ),
                                 suggestedForYou(
                                   url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Samuel Kendrio",
+                                  msgtitle: "Kimberly Mayert",
                                   msgText: "20+ Mutual Friends",
                                   cheque: true,
                                 ),
                                 suggestedForYou(
                                   url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Samuel Kendrio",
+                                  msgtitle: "Carol Brakus",
                                   msgText: "20+ Mutual Friends",
                                   cheque: true,
                                 ),
                                 suggestedForYou(
                                   url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Samuel Kendrio",
+                                  msgtitle: "Natasha Adams",
                                   msgText: "20+ Mutual Friends",
                                   cheque: true,
                                 ),
                                 suggestedForYou(
                                   url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Samuel Kendrio",
+                                  msgtitle: "Nelson Dickinson",
                                   msgText: "20+ Mutual Friends",
                                   cheque: true,
                                 ),
@@ -284,9 +284,7 @@ class MyNotificationScreen extends StatelessWidget {
                           /// Title Row
                           Row(
                             mainAxisAlignment:
-                                cheque
-                                    ? MainAxisAlignment.spaceBetween
-                                    : MainAxisAlignment.start,
+                            cheque ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
                                 child: customText(
@@ -297,21 +295,25 @@ class MyNotificationScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              cheque
-                                  ? SizedBox(width: 4.w)
-                                  : Padding(
-                                    padding: EdgeInsets.only(right: 2.w),
-                                    child: SizedBox(), // or just leave it empty
-                                  ),
+                              SizedBox(width: cheque ? 2.w : 0), // only add spacing if cheque is true
 
-                              customText(
-                                text: "1 h",
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w500,
-                                color: darkGreyColor,
-                              ),
+                              if (!cheque) // if false, push time to end
+                                customText(
+                                  text: "1 h",
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: darkGreyColor,
+                                )
+                              else
+                                customText(
+                                  text: "1 h",
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: darkGreyColor,
+                                ),
                             ],
                           ),
+
 
                           SizedBox(height: 0.5.h),
 

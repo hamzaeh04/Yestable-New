@@ -52,7 +52,7 @@ class FoodPreferencesTwo extends StatelessWidget {
                 bottomRight: Radius.circular(25.sp),
               ),
               child: Image.asset(
-                "assets/png/food_preferences_banner.png",
+                "assets/png/food_preferences_two.png",
                 width: 100.w,
                 fit: BoxFit.cover,
               ),

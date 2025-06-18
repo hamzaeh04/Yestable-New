@@ -130,8 +130,8 @@ Widget foodPreferencesOne(int index, String title, {String? imgpath,double? font
               if (imgpath != null) ...[
                 Image.asset(
                   imgpath,
-                  height: 20,
-                  width: 20,
+                  height: 16.sp,
+
                 ),
                 SizedBox(width: 2.w),
               ],

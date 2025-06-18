@@ -45,13 +45,13 @@ void showShareProfileDialog(BuildContext context) {
               height: 5.h,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: 5,
+                itemCount: 6,
                 separatorBuilder: (_, __) => SizedBox(width: 2.w),
                 itemBuilder: (_, index) {
                   final image = Image.asset(
-                    'assets/png/chat_images/user${index + 1}.png',
-                    width: 5.h,
-                    height: 5.h,
+                    'assets/png/chat_images/user${index % 5 + 1}.png',
+                    width: 5.2.h,
+                    height: 5.2.h,
                     fit: BoxFit.cover,
                   );
 
@@ -60,7 +60,7 @@ void showShareProfileDialog(BuildContext context) {
                     child: Stack(
                       children: [
                         image,
-                        if (index == 4)
+                        if (index == 5)
                           Positioned.fill(
                             child: Container(
                               decoration: BoxDecoration(

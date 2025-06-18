@@ -168,7 +168,7 @@ class AddFreindScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(url, width: 18.w, height: 18.w, fit: BoxFit.cover),
+          Image.asset(url, width: 16.w, height: 16.w, fit: BoxFit.cover),
           SizedBox(width: 3.w), // spacing between image and text
           Expanded(
             child: Stack(

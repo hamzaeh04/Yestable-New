@@ -47,13 +47,15 @@ class AllergiesHostScreen extends StatelessWidget {
                   children: [
                     SizedBox(height: 2.h),
                     backButton(),
-                    SizedBox(height: 1.h),
+                    SizedBox(height: 2.h),
                     customText(
                       text: "Food Boundaries & Beliefs",
                       fontSize: 24.sp,
                       fontFamily: "CormorantGaramond",
                       fontWeight: FontWeight.w600,
+                      height: 0.11.h
                     ),
+                    SizedBox(height: 0.5.h),
                     customText(
                         text: "Sharing this helps others plan with care",
                         fontSize: 15.sp,
@@ -138,7 +140,7 @@ class AllergiesHostScreen extends StatelessWidget {
                         ),
                       ],
                     )
-                        : others(title: "others")),
+                        : others(title: "others",path: "assets/png/icons/others_icon.png")),
                     SizedBox(height: 3.h),
                     customText(
                       text: "Severity Level",
@@ -239,7 +241,7 @@ class AllergiesHostScreen extends StatelessWidget {
                         ),
                       ],
                     )
-                        : others(title: "others")),
+                        : others(title: "others",path: "assets/png/icons/others_icon.png")),
                     SizedBox(height: 2.h),
                     buttonWidget(
                       "Continue",

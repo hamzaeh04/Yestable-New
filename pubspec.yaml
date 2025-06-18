@@ -82,6 +82,7 @@ flutter:
      - assets/png/updated_banner/
      - assets/png/event_detail_img/
      - assets/png/event_food_image/
+     - assets/png/notification_img/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

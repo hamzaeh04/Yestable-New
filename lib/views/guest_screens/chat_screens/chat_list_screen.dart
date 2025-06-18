@@ -44,9 +44,9 @@ class ChatListScreen extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                       onTap: (){
-                        controller.goTSearchScreen();
+                        controller.addtoFriendScreen();
                       },
-                      child: homeIconWidget(icon: Icons.search)
+                      child: homeIconWidget(imagePath: "assets/png/icons/add_friend_icon.png")
                   ),
                   SizedBox(width: 2.w),
                   InkWell(

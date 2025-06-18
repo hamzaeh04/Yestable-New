@@ -88,7 +88,7 @@ class NewMessageScreen extends StatelessWidget {
                       color: whiteColor,
                     ),
                   ),
-                  SizedBox(width: 19.w),
+                  SizedBox(width: 15.w),
                   customText(
                     text: "New Messages",
                     fontSize: 20.sp,
@@ -119,7 +119,7 @@ class NewMessageScreen extends StatelessWidget {
                         Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
                               child: TextField(
                                 decoration: InputDecoration(
                                   hintText: 'Search Name Here',
@@ -145,11 +145,11 @@ class NewMessageScreen extends StatelessWidget {
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20.sp),
-                                    borderSide: BorderSide(color: lightgreenColor, width: 0.5.w),
+                                    borderSide: BorderSide(color: lightgreenColor, width: 0.2.w),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20.sp),
-                                    borderSide: BorderSide(color: lightgreenColor, width: 0.5.w),
+                                    borderSide: BorderSide(color: lightgreenColor, width: 0.2.w),
                                   ),
                                 ),
                                 style: TextStyle(

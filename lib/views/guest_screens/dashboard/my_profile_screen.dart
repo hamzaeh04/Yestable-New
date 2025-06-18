@@ -588,14 +588,14 @@ Widget buildPostCard({
                         children: [
                           if (showRepliesAndAvatar) ...[
                             CircleAvatar(
-                              radius: 12.sp,
+                              radius: 14.sp,
                               backgroundImage:
                               AssetImage('assets/png/chat_images/user5.png'),
                             ),
                             SizedBox(width: 2.w),
                             customText(
                               text: repliesCount,
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
                               color: darkGreyColor,
                               txtDecoration: TextDecoration.underline,
@@ -605,7 +605,7 @@ Widget buildPostCard({
                           // Likes (always shown)
                           customText(
                             text: likesCount,
-                            fontSize: 12.sp,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: darkGreyColor,
                           ),
@@ -615,14 +615,14 @@ Widget buildPostCard({
                       // Action Icons
                       Row(
                         children: [
-                          Icon(Icons.favorite_border, size: 20.sp),
+                          Icon(Icons.favorite_border,size: 18.sp,),
+                          SizedBox(width: 2.5.w),
+                          Image.asset("assets/png/icons/comment_icon.png", height: 16.sp),
                           SizedBox(width: 3.w),
-                          Icon(Icons.chat_bubble_outline, size: 20.sp),
-                          // Updated icon
-                          SizedBox(width: 3.w),
-                          Icon(Icons.repeat_sharp, size: 20.sp),
+                          Image.asset("assets/png/icons/repost_icon.png", height: 16.sp),
                         ],
-                      ),
+                      )
+
                     ],
                   ),
                 ],

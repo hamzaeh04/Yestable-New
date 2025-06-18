@@ -272,7 +272,8 @@ Widget buildEventRow(String title, String text,{double? textSize}) {
 }
 
 Widget homeIconWidget({
-  required IconData icon,
+  IconData? icon,
+  String? imagePath,
   VoidCallback? onTap,
   double? iconsize,
   Color? color,
@@ -282,17 +283,26 @@ Widget homeIconWidget({
     width: 9.w,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(25),
-      color: color != null ? color : whiteColor.withAlpha(40),
+      color: color ?? whiteColor.withAlpha(40),
     ),
     child: Center(
       child: GestureDetector(
         onTap: onTap,
-        child: Icon(
+        child: icon != null
+            ? Icon(
           icon,
           color: whiteColor,
-          size: iconsize != null ? iconsize : 20.sp,
-        ),
+          size: iconsize ?? 20.sp,
+        )
+            : imagePath != null
+            ? Image.asset(
+          imagePath,
+          width: iconsize ?? 18.sp,
+          color: whiteColor, // optional: color tint
+        )
+            : const SizedBox.shrink(), // fallback if both null
       ),
     ),
   );
 }
+

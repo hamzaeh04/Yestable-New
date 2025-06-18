@@ -28,8 +28,8 @@ class AllergiesDietryScreen extends StatelessWidget {
     "🚨 Vegan",
     "🤧 Vegetarian",
     "🙏🏼 Halal",
-    "👋 Kosher",
-    "👋 keto",
+    "Kosher",
+    "Keto",
   ];
 
   @override
@@ -46,13 +46,15 @@ class AllergiesDietryScreen extends StatelessWidget {
                   children: [
                     loadingStepIndicator("3/6", 0.5),
                     backButton(),
-                    SizedBox(height: 1.h),
+                    SizedBox(height: 2.h),
                     customText(
                       text: "Food Boundaries & Beliefs",
                       fontSize: 24.sp,
                       fontFamily: "CormorantGaramond",
                       fontWeight: FontWeight.w600,
+                      height: 0.11.h
                     ),
+                    SizedBox(height: 0.5.h),
                     customText(
                       text: "Sharing this helps others plan with care",
                       fontSize: 15.sp,
@@ -137,7 +139,7 @@ class AllergiesDietryScreen extends StatelessWidget {
                         ),
                       ],
                     )
-                        : others(title: "others")),
+                        : others(title: "others",path: "assets/png/icons/others_icon.png")),
                     SizedBox(height: 3.h),
                     customText(
                       text: "Severity Level",
@@ -169,13 +171,27 @@ class AllergiesDietryScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 1.h),
                     ListView.builder(
-                        itemCount: more.length,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context,index){
-                          return allergenWidget(index + 10, more[index]);
+                      itemCount: more.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index) {
+                        String text = more[index];
+                        Widget? leadingWidget;
+
+                        if (text.contains("Kosher")) {
+                          leadingWidget = Image.asset(
+                            "assets/png/profile_food_images/kosher_icon.png",
+                            height: 16.sp,
+                          );
+                        } else if (text.contains("Keto")) {
+                          leadingWidget = Image.asset(
+                            "assets/png/profile_food_images/keto_icon.png",
+                            height: 16.sp,
+                          );
                         }
+                        return allergenWidget(index + 12, text, icon: leadingWidget);
+                      },
                     ),
                     Obx(() => controller.other.value
                         ? Column(
@@ -238,7 +254,7 @@ class AllergiesDietryScreen extends StatelessWidget {
                         ),
                       ],
                     )
-                        : others(title: "others")),
+                        : others(title: "others",path: "assets/png/icons/others_icon.png")),
                     SizedBox(height: 2.h),
                     buttonWidget(
                       "Continue",

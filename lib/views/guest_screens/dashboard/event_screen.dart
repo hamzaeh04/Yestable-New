@@ -71,30 +71,32 @@ class EventScreen extends StatelessWidget {
                   width: double.infinity,
                   color: backgroundColor,
                   child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          customText(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
+                          child: customText(
                             text: "Upcoming Events",
                             fontSize: 19.sp,
                             fontFamily: "CormorantGaramond",
                             fontWeight: FontWeight.w600,
                             color: blackColor,
                           ),
-                          SizedBox(height: 2.h),
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: 3,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: 2.h),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
+                        ),
+                        ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 2.h),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                    child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(25.sp),
                                         color: blueColor,
@@ -109,20 +111,20 @@ class EventScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 4.w),
-                                    InkWell(
-                                      onTap: (){
-                                        Get.toNamed("eventdetailsscreen");
-                                      },
-                                        child: eventScreenWidget()
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  InkWell(
+                                    onTap: (){
+                                      Get.toNamed("eventdetailsscreen");
+                                    },
+                                      child: eventScreenWidget(bgcolor: backgroundColor)
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),

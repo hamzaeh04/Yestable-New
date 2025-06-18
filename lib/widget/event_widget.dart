@@ -1,17 +1,20 @@
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/navigation_controller.dart';
 
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 import 'home_screen_widget.dart';
 
-Widget eventScreenWidget() {
+Widget eventScreenWidget({Color? bgcolor}) {
+  final NavigationController controller = Get.find<NavigationController>();
   return Container(
-    height: 37.h,
     width: 65.w,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(15.sp),
-      color: whiteColor.withOpacity(0.8),
+      color: bgcolor != null ? bgcolor : whiteColor.withOpacity(0.8),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,60 +35,101 @@ Widget eventScreenWidget() {
             ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              customText(
-                text: "Sophia Dinner Event",
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                fontFamily: "CormorantGaramond",
-                color: blackColor,
-              ),
-              customText(
-                text: "132 My Street, Kingston, New York124",
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey[800],
-              ),
-              SizedBox(height: 1.h),
-              buildEventRow("Name:", "April 30, 2025"),
-              SizedBox(height: 1.h),
-              buildEventRow("Time:", "7:30pm"),
-              SizedBox(height: 1.h),
-              buildEventRow("Host Name:", "Sophia Andreas"),
-              SizedBox(height: 1.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   customText(
-                    text: "Dietary Compatibility Score",
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
+                    text: "Sophia Dinner Event",
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "CormorantGaramond",
                     color: blackColor,
                   ),
                   customText(
-                    text: "95%",
+                    text: "132 My Street, Kingston, New York124",
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
-                    color: greenColor,
+                    color: Colors.grey[800],
                   ),
+                  SizedBox(height: 1.h),
+                  buildEventRow("Name:", "April 30, 2025"),
+                  SizedBox(height: 1.h),
+                  buildEventRow("Time:", "7:30pm"),
+                  SizedBox(height: 1.h),
+                  buildEventRow("Host Name:", "Sophia Andreas"),
+                  SizedBox(height: 1.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      customText(
+                        text: "Dietary Compatibility Score",
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        color: blackColor,
+                      ),
+                      customText(
+                        text: "95%",
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        color: greenColor,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 1.h),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.sp),
+                    child: LinearProgressIndicator(
+                      minHeight: 0.7.h,
+                      value: 0.95,
+                      valueColor: AlwaysStoppedAnimation<Color>(greenColor),
+                      backgroundColor: Colors.grey[300],
+                    ),
+                  ),
+
+                  if (controller.isUser.value == false)
+                    Column(
+                    children: [
+                      SizedBox(height: 1.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          customText(
+                            text: "RSVP",
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            color: blackColor,
+                          ),
+                          customText(
+                            text: "(30/25)",
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            color: greenColor,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 1.h),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.sp),
+                        child: LinearProgressIndicator(
+                          minHeight: 0.7.h,
+                          value: 0.95,
+                          valueColor: AlwaysStoppedAnimation<Color>(blueColor),
+                          backgroundColor: Colors.grey[300],
+                        ),
+                      ),
+                    ],
+                  ) else SizedBox.shrink(),
+
                 ],
               ),
-              SizedBox(height: 1.h),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10.sp),
-                child: LinearProgressIndicator(
-                  minHeight: 0.7.h,
-                  value: 0.95,
-                  valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                  backgroundColor: Colors.grey[300],
-                ),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(height: 1.h),
+            Divider(),
+          ],
         ),
       ],
     ),

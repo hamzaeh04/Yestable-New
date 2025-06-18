@@ -42,11 +42,11 @@ class AllowHostNotificationScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 7.h),
+            SizedBox(height: 5.h),
             Container(
-              height: 32.h,
+              height: 39.h,
               width: double.infinity,
-              child: Image.asset("assets/png/get_started_banner.png",
+              child: Image.asset("assets/png/notification_banner_new.png",
                 fit: BoxFit.cover,
               ),
             ),
@@ -55,7 +55,7 @@ class AllowHostNotificationScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,  // <-- add this
                 children: [
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 5.h),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 1.h), // Adjust as needed
                     child: buttonWidget(

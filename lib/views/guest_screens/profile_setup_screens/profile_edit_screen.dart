@@ -40,7 +40,7 @@ class ProfileEditScreen extends StatelessWidget {
         children: [
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.only(left: 2.w,right: 2.w),
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.2.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

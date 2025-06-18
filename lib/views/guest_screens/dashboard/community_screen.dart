@@ -12,6 +12,7 @@ import 'my_profile_screen.dart';
 class CommunityScreen extends StatelessWidget {
   CommunityScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,48 +77,81 @@ class CommunityScreen extends StatelessWidget {
                                   fontFamily: "CormorantGaramond",
                                   fontWeight: FontWeight.w600,
                                 ),
-                                GestureDetector(
-                                  onTap: (){
-                                    controller.addtoCommunityProfile();
-                                  },
-                                  child: buildPostCard(
-                                    profileImage: "assets/png/chat_images/user5.png",
-                                    userName: "Sarah Scarnio",
-                                    postTime: "2hrs ago",
-                                    postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                    postImage: "assets/png/chat_images/group_profile_pic.png",
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){
-                                    controller.addtoCommunityProfile();
-                                  },
-                                  child: buildPostCard(
-                                    profileImage: 'assets/png/chat_images/user5.png',
-                                    userName: 'Sarah Scarnio',
-                                    postTime: '3h ago',
-                                    postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                    likesCount: '1.4k Likes',
-                                    showRepliesAndAvatar: false, // 👈 Only likes shown
-                                  ),
+                                SizedBox(height: 2.h),
+
+                                /// 👇 Stack with 2 Posts + Line Image Between
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            controller.addtoCommunityProfile();
+                                          },
+                                          child: buildPostCard(
+                                            profileImage: "assets/png/chat_images/user5.png",
+                                            userName: "Sarah Scarnio",
+                                            postTime: "2hrs ago",
+                                            postText:
+                                            "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                            postImage: "assets/png/chat_images/group_profile_pic.png",
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.h), // space for line image
+                                        GestureDetector(
+                                          onTap: () {
+                                            controller.addtoCommunityProfile();
+                                          },
+                                          child: buildPostCard(
+                                            profileImage: 'assets/png/chat_images/user5.png',
+                                            userName: 'Sarah Scarnio',
+                                            postTime: '3h ago',
+                                            postText:
+                                            "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                            likesCount: '1.4k Likes',
+                                            showRepliesAndAvatar: false,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    /// Line image positioned between cards
+                                    Positioned(
+                                      top: 8.5.h, // adjust this if needed
+                                      left: -83.w,
+                                      right: 0,
+                                      child: Center(
+                                        child: Image.asset(
+                                          'assets/png/line.png', // your line image
+                                          width: 60.w,
+                                          height: 38.h,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
+                          SizedBox(height: 3.h),
                           Divider(),
+
                           Padding(
-                            padding:  EdgeInsets.symmetric(horizontal: 5.w),
+                            padding: EdgeInsets.symmetric(horizontal: 5.w),
                             child: GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 controller.addtoCommunityProfile();
                               },
                               child: buildPostCard(
                                 profileImage: 'assets/png/chat_images/user5.png',
                                 userName: 'Sarah Scarnio',
                                 postTime: '3h ago',
-                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                postText:
+                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
                                 likesCount: '1.4k Likes',
-                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                showRepliesAndAvatar: false,
                               ),
                             ),
                           ),
@@ -138,9 +172,8 @@ class CommunityScreen extends StatelessWidget {
         onPressed: () {
           showNewPostBottomSheet(context);
         },
-        child: Icon(Icons.add,size: 20.sp,color: whiteColor,)
+        child: Icon(Icons.add, size: 20.sp, color: whiteColor),
       ),
     );
-    
   }
 }
