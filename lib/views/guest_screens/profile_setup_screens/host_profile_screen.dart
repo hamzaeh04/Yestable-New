@@ -35,7 +35,6 @@ class HostProfileScreen extends StatelessWidget {
     {"name": "Cilantro", "imgPath": "assets/png/profile_food_images/cilantro.png"},
     {"name": "Mushrooms", "imgPath": "assets/png/profile_food_images/mushroom.png"},
     {"name": "Spicy Foods", "imgPath": "assets/png/profile_food_images/spicyfood.png"},
-    {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
   ];
 
   final List<Map<String, String>> likedCuisine = [
@@ -45,11 +44,11 @@ class HostProfileScreen extends StatelessWidget {
   ];
 
   final List<String> eventAccesibilityList = [
-    "Quiet Space", "Larger Seating", "Gluten-Free", "Wheelchair Accessible",
-    "ASL Interpreter", "Vegan Option", "Halal", "Kosher", "Keto",
+    "Quiet Space", "Larger Seating", "Wheelchair Accessible",
+    "ASL Interpreter",
     "Family Restroom", "Pets Allowed", "Childrens Area", "Smoke Present",
     "There Are Steps To Climb", "Non Swimming Event", "Firearms Are Present",
-    "Shellfish Will Be Served", "Peanuts Free", "Event Ends At A Time"
+    "Event Ends At A Time"
   ];
 
   @override
@@ -64,7 +63,7 @@ class HostProfileScreen extends StatelessWidget {
           children: [
             // Top Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
               child: Row(
                 children: [
                   homeIconWidget(
@@ -259,8 +258,8 @@ class HostProfileScreen extends StatelessWidget {
                                         color: blackColor,
                                       ),
                                       Wrap(
-                                        spacing: 2.0,
-                                        runSpacing: 2.0,
+                                        spacing: 5,
+                                        runSpacing: 1,
                                         children: List.generate(
                                           allergies.length,
                                               (index) => foodPreferencesOne(
@@ -277,8 +276,8 @@ class HostProfileScreen extends StatelessWidget {
                                         color: blackColor,
                                       ),
                                       Wrap(
-                                        spacing: 2.0,
-                                        runSpacing: 2.0,
+                                        spacing: 5,
+                                        runSpacing: 1,
                                         children: List.generate(
                                           diet.length,
                                               (index) => foodPreferencesOne(
@@ -302,8 +301,8 @@ class HostProfileScreen extends StatelessWidget {
                                         color: blackColor,
                                       ),
                                       Wrap(
-                                        spacing: 2.0,
-                                        runSpacing: 2.0,
+                                        spacing: 5,
+                                        runSpacing: 1,
                                         children: List.generate(
                                           likedCuisine.length,
                                               (index) => foodPreferencesOne(

@@ -54,6 +54,7 @@ class HostFoodPreferenceTwo extends StatelessWidget {
               ),
               child: Image.asset(
                 "assets/png/food_preferences_two.png",
+                height: 30.h,
                 width: 100.w,
                 fit: BoxFit.cover,
               ),

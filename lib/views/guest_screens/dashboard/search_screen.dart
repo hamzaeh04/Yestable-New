@@ -413,12 +413,11 @@ Widget buildPostCard({
                 // Action Icons
                 Row(
                   children: [
-                    Icon(Icons.favorite_border, size: 16.sp),
+                    Icon(Icons.favorite_border,size: 18.sp,),
+                    SizedBox(width: 2.5.w),
+                    Image.asset("assets/png/icons/comment_icon.png", height: 16.sp),
                     SizedBox(width: 3.w),
-                    Icon(Icons.chat_bubble_outline, size: 16.sp),
-                    // Updated icon
-                    SizedBox(width: 3.w),
-                    Icon(Icons.repeat_sharp, size: 16.sp),
+                    Image.asset("assets/png/icons/repost_icon.png", height: 16.sp),
                   ],
                 ),
               ],

@@ -51,6 +51,7 @@ class FoodPreferencesOne extends StatelessWidget {
               ),
               child: Image.asset(
                 "assets/png/food_preference_one.png",
+                height: 30.h,
                 width: 100.w,
                 fit: BoxFit.cover,
               ),
