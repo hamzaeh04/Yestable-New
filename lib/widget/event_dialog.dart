@@ -13,7 +13,6 @@ void showEventDialog(BuildContext context) {
     barrierDismissible: true,
     builder: (context) {
       return Dialog(
-        backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Container(
           width: 95.w,
@@ -23,7 +22,7 @@ void showEventDialog(BuildContext context) {
           padding: EdgeInsets.all(3.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.sp),
-            color: whiteColor.withOpacity(0.95),
+            color: backgroundColor
           ),
           child: SingleChildScrollView(
             child: Column(
@@ -74,7 +73,7 @@ void showEventDialog(BuildContext context) {
                         onTap: () {
                           Get.toNamed("eventdetailsscreen");
                         },
-                        child: eventScreenWidget(),
+                        child: eventScreenWidget(bgcolor: backgroundColor),
                       ),
                     ),
                   ],
@@ -104,7 +103,7 @@ void showEventDialog(BuildContext context) {
                         onTap: () {
                           Get.toNamed("eventdetailsscreen");
                         },
-                        child: eventScreenWidget(),
+                        child: eventScreenWidget(bgcolor: backgroundColor),
                       ),
                     ),
                   ],
