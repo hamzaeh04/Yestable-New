@@ -46,7 +46,7 @@ class HostEditProfileScreen extends StatelessWidget {
                   SizedBox(width: 1.w),
                   InkWell(
                     onTap: (){
-                      Get.toNamed('allowhostnotificationscreen');
+                      Get.toNamed('disclaimerscreen');
                     },
                     child: customText(
                         text: "Continue",
@@ -182,7 +182,7 @@ class HostEditProfileScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   customText(
-                                    text: "He, She, It, They, Them, Him, Her",
+                                    text: "He, She, They, Them, Him, Her",
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15.sp,
                                     color: Colors.grey,

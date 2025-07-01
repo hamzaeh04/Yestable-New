@@ -97,44 +97,38 @@ class FoodMenuScreen extends StatelessWidget {
                               SizedBox(height: 2.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showEventDialog(context);
-                                  },
-                                  child: Container(
-                                    height: 25.h,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20.sp),
-                                      color: whiteColor,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              customText(
-                                                text: "Allergens List",
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w600,
-                                                fontFamily: "CormorantGaramond",
-                                                color: blackColor,
-                                              ),
-                                              customText(
-                                                text: "32 Allergens Found",
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: darkGreyColor,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.h),
-                                          Image.asset("assets/png/allergen_graph.png", fit: BoxFit.contain),
-                                        ],
-                                      ),
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.sp),
+                                    color: whiteColor,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            customText(
+                                              text: "Guest Taste preferences",
+                                              fontSize: 17.sp,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: "CormorantGaramond",
+                                              color: blackColor,
+                                            ),
+                                            customText(
+                                              text: "18 Guest",
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400,
+                                              color: darkGreyColor,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 2.h),
+                                        Image.asset("assets/png/pie_chart.png", fit: BoxFit.contain),
+                                      ],
                                     ),
                                   ),
                                 ),

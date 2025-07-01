@@ -19,6 +19,7 @@ import '../views/guest_screens/auth_screens/signup_screen.dart';
 import '../views/guest_screens/profile_setup_screens/allergies_dietry_screen.dart';
 import '../views/guest_screens/profile_setup_screens/allow_notification_screen.dart';
 import '../views/guest_screens/profile_setup_screens/community_profile.dart';
+import '../views/guest_screens/profile_setup_screens/disclamer_screen.dart';
 import '../views/guest_screens/profile_setup_screens/food_preferences_one.dart';
 import '../views/guest_screens/profile_setup_screens/food_preferences_two.dart';
 import '../views/guest_screens/profile_setup_screens/host_profile_screen.dart';
@@ -73,5 +74,6 @@ class AppRoutes {
     GetPage(name: '/hosteditprofilescreen', page: () => HostEditProfileScreen()),
     GetPage(name: '/allowhostnotificationscreen', page: () => AllowHostNotificationScreen()),
     GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
+    GetPage(name: '/disclaimerscreen', page: () => DisclaimerScreen()),
   ];
 }

@@ -8,6 +8,8 @@ class ProfileController extends GetxController {
   var selectedAllergens = <int>{}.obs;
   var foodNationality = <int>{}.obs;
   var other = false.obs;
+  var isChecked = false.obs;
+
 
   void toggleSwitch(bool value) {
     switchValue.value = value;
@@ -19,6 +21,10 @@ class ProfileController extends GetxController {
 
   void otherToggleSwitch() {
     other.value = !other.value;
+  }
+
+  void toggleCheckbox(bool? value) {
+    isChecked.value = value ?? false;
   }
 
 }

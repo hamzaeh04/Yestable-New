@@ -108,45 +108,61 @@ class SearchScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Obx(
-                                () => SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                                vertical: 3.h,
-                              ),
-                              child: Row(
-                                children: List.generate(controller.searchScreenTabs.length, (index) {
-                                  bool isSelected = controller.selectedIndexTab.value == index;
-                                  return Padding(
-                                    padding: EdgeInsets.only(right: 2.w),
-                                    child: GestureDetector(
-                                      onTap: () => controller.selectTabSearch(index),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 6.w,
-                                          vertical: 1.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: isSelected
-                                              ? greenColor
-                                              : greenColor.withAlpha(40),
-                                          borderRadius: BorderRadius.circular(30.sp),
-                                        ),
-                                        child: customText(
-                                          text: controller.searchScreenTabs[index],
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w500,
+                    Obx(
+                          () => SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4.w,
+                          vertical: 3.h,
+                        ),
+                        child: Row(
+                          children: List.generate(controller.searchScreenTabs.length, (index) {
+                            bool isSelected = controller.selectedIndexTab.value == index;
+                            bool isLastIndex = index == controller.searchScreenTabs.length - 1;
+
+                            return Padding(
+                              padding: EdgeInsets.only(right: 2.w),
+                              child: GestureDetector(
+                                onTap: () => controller.selectTabSearch(index),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 6.w,
+                                    vertical: 1.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? greenColor
+                                        : greenColor.withAlpha(40),
+                                    borderRadius: BorderRadius.circular(30.sp),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      if (isLastIndex) ...[
+                                        Image.asset(
+                                          'assets/png/icons/filter_icon.png',
+                                          height: 16.sp,
+                                          width: 16.sp,
                                           color: isSelected ? whiteColor : greenColor,
                                         ),
+                                        SizedBox(width: 2.w),
+                                      ],
+                                      customText(
+                                        text: controller.searchScreenTabs[index],
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: isSelected ? whiteColor : greenColor,
                                       ),
-                                    ),
-                                  );
-                                }),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          Column(
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+
+                    Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(

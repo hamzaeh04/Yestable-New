@@ -205,14 +205,35 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 1.h),
-                          Padding(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: invitationWidget(
-                              "Jenera Dinner Event",
-                              "20+ Attendees",
-                              "In New York",
-                              "May 12, 2025",
-                              "assets/png/dinner_event.png",
+                            child: Row(
+                              children: [
+                                invitationWidget(
+                                  "Jenera Dinner Event",
+                                  "20+ Attendees",
+                                  "In New York",
+                                  "May 12, 2025",
+                                  "assets/png/dinner_event.png",
+                                ),
+                                SizedBox(width: 4.w),
+                                invitationWidget(
+                                  "Parkinson Dinner Event",
+                                  "35+ Attendees",
+                                  "Los Angeles",
+                                  "May 18, 2025",
+                                  "assets/png/dinner_event.png",
+                                ),
+                                SizedBox(width: 4.w),
+                                invitationWidget(
+                                  "Scorpio Dinner Event",
+                                  "50+ Attendees",
+                                  "Miami Beach",
+                                  "May 25, 2025",
+                                  "assets/png/dinner_event.png",
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(height: 3.h),

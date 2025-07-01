@@ -94,41 +94,57 @@ void hostReviewsBottomSheet(BuildContext context) {
                     SizedBox(height: 1.h),
 
                     // Sort Options
-                    Obx(
-                          () => SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+        Obx(
+              () => SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                controller.sortBy.length,
+                    (index) {
+                  bool isSelected = controller.sortBySelectedIndex.value == index;
+                  bool isLastIndex = index == controller.sortBy.length - 1; // ✅ define this
+
+                  return Padding(
+                    padding: EdgeInsets.only(right: 2.w),
+                    child: GestureDetector(
+                      onTap: () => controller.sortBySelectedIndex(index),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? greenColor
+                              : greenColor.withAlpha(40),
+                          borderRadius: BorderRadius.circular(30.sp),
+                        ),
                         child: Row(
-                          children: List.generate(
-                            controller.sortBy.length,
-                                (index) {
-                              bool isSelected = controller.sortBySelectedIndex.value == index;
-                              return Padding(
-                                padding: EdgeInsets.only(right: 2.w),
-                                child: GestureDetector(
-                                  onTap: () => controller.sortBySelectedIndex(index),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? greenColor
-                                          : greenColor.withAlpha(40),
-                                      borderRadius: BorderRadius.circular(30.sp),
-                                    ),
-                                    child: customText(
-                                      text: controller.sortBy[index],
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: isSelected ? whiteColor : greenColor,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          children: [
+                            if (isLastIndex) ...[
+                              Image.asset(
+                                'assets/png/icons/filter_icon.png',
+                                height: 16.sp,
+                                width: 16.sp,
+                                color: isSelected ? whiteColor : greenColor,
+                              ),
+                              SizedBox(width: 2.w),
+                            ],
+                            customText(
+                              text: controller.sortBy[index],
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected ? whiteColor : greenColor,
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    // Reviews Section
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+
+        // Reviews Section
                      // Optional bottom padding
                   ],
                 ),

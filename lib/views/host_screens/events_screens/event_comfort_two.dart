@@ -14,20 +14,20 @@ class EventComfortTwo extends StatelessWidget {
   EventComfortTwo({super.key});
 
   final List<String> checkList = [
-    "Pet Will Present",
+    "Pets Will Present",
     "Children Will Be Present",
     "Event Is Adults-Only",
     "Event May Have Smoke Present",
     "Event Is Smoke-Free",
-    "Alchol Will Be Present",
-    "This Is An Alchol-Free Event",
-    "There Are Step To Climb",
+    "Alcohol Will Be Present",
+    "This Is An Alcohol-Free Event",
+    "There Are Steps To Climb",
     "Swimming Pool Is Present",
     "Firearms Are Present",
     "Shellfish Will Be Served",
     "Peanuts Will Be Served",
-    "The Event Ends At A Firetime",
-    "Please Dont Bring Item Containing(Eg: XYZ)"
+    "The Event Ends At A Firm time",
+    "Please Dont Bring Item Containing (Eg: XYZ)"
   ];
 
   @override

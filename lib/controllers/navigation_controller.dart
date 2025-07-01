@@ -13,8 +13,14 @@ class NavigationController extends GetxController {
   late BuildContext context;
   RxBool isProfileComplete = false.obs;
   RxBool hasCheckedProfile = false.obs;
+  var selectedEvent = ''.obs;
 
 
+
+  final List<String> events = ['Gizelle Lunch Event', 'Gizelle Dinner Event', 'Thanksgiving Dinner Event'];
+  void selectEvent(String value) {
+    selectedEvent.value = value;
+  }
   // Track "added" status for each user
   var isFriendAdded = <int, bool>{}.obs;
 
@@ -50,11 +56,11 @@ class NavigationController extends GetxController {
 
   final List<String> searchScreenTabs = [
     "All",
-    "Recipe",
+    "Recipes",
     "Events",
     "People",
-    "People",
-    "People",
+    "Filter",
+
   ];
 
   final List<String> sortBy = [
@@ -63,7 +69,8 @@ class NavigationController extends GetxController {
     "2.0+",
     "4.0+",
     "3.0+",
-    "5.0+",
+    "4.0+",
+    "Filter",
   ];
 
   // Call this from the widget to set the page controller
@@ -72,7 +79,7 @@ class NavigationController extends GetxController {
   }
 
   void switchUser() {
-    isUser.value = !isUser.value;
+    isUser.value = false;
   }
 
   void selectTabSearch(int index) {

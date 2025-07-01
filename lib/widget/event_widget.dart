@@ -38,29 +38,38 @@ Widget eventScreenWidget({Color? bgcolor}) {
         Column(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+              padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 0.5.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   customText(
                     text: "Sophia Dinner Event",
-                    fontSize: 18.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w600,
                     fontFamily: "CormorantGaramond",
                     color: blackColor,
                   ),
-                  customText(
-                    text: "132 My Street, Kingston, New York124",
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey[800],
+                  Row(
+                    children: [
+                      Image.asset(
+                          "assets/png/event_widget_icon/location_icon.png"
+                          ,height: 12.sp,fit: BoxFit.cover),
+                      SizedBox(width: 2.w),
+                      customText(
+                        text: "132 My Street, Kingston, New York 12486",
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[800],
+                      ),
+                    ],
                   ),
+
                   SizedBox(height: 1.h),
-                  buildEventRow("Name:", "April 30, 2025"),
+                  buildEventRow("Name:", "April 30, 2025",path: "assets/png/event_widget_icon/calender_icon.png",),
                   SizedBox(height: 1.h),
-                  buildEventRow("Time:", "7:30pm"),
+                  buildEventRow("Time:", "7:30pm",path: "assets/png/event_widget_icon/clock_icon.png",),
                   SizedBox(height: 1.h),
-                  buildEventRow("Host Name:", "Sophia Andreas"),
+                  buildEventRow("Host Name:", "Sophia Andreas",path: "assets/png/event_widget_icon/profile_icon.png",),
                   SizedBox(height: 1.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,10 +92,10 @@ Widget eventScreenWidget({Color? bgcolor}) {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.sp),
                     child: LinearProgressIndicator(
-                      minHeight: 0.7.h,
+                      minHeight: 0.6.h,
                       value: 0.95,
                       valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                      backgroundColor: Colors.grey[300],
+                      backgroundColor: whiteColor,
                     ),
                   ),
 
@@ -115,10 +124,10 @@ Widget eventScreenWidget({Color? bgcolor}) {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10.sp),
                         child: LinearProgressIndicator(
-                          minHeight: 0.7.h,
+                          minHeight: 0.6.h,
                           value: 0.95,
                           valueColor: AlwaysStoppedAnimation<Color>(blueColor),
-                          backgroundColor: Colors.grey[300],
+                          backgroundColor: whiteColor,
                         ),
                       ),
                     ],

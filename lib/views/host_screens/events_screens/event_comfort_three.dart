@@ -16,30 +16,6 @@ class EventComfortThree extends StatelessWidget {
   EventComfortThree({super.key});
   final NavigationController controller = Get.find<NavigationController>();
 
-  final List<String> titles = [
-    "Access To Quiet Space Away From Main Event",
-    "Can Accomodate Larger Seating",
-    "Space is Whealchair Accesible",
-    "ASL Interpreter Available Upon Request",
-    "Vegan Menu Option",
-  ];
-  final List<String> checkList = [
-    "Pet Will Present",
-    "Children Will Be Present",
-    "Event Is Adults-Only",
-    "Event May Have Smoke Present",
-    "Event Is Smoke-Free",
-    "Alchol Will Be Present",
-    "This Is An Alchol-Free Event",
-    "There Are Step To Climb",
-    "Swimming Pool Is Present",
-    "Firearms Are Present",
-    "Shellfish Will Be Served",
-    "Peanuts Will Be Served",
-    "The Event Ends At A Firetime",
-    "Please Dont Bring Item Containing(Eg: XYZ)"
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
