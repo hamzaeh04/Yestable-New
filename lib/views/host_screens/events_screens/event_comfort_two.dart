@@ -44,7 +44,7 @@ class EventComfortTwo extends StatelessWidget {
                 bottomRight: Radius.circular(25.sp),
               ),
               child: Image.asset(
-                "assets/png/event_confort_two.png",
+                "assets/png/new_guest_illustrations/event_comfort_two.png",
                 width: 100.w,
                 fit: BoxFit.cover,
               ),

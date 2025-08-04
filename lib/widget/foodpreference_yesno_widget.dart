@@ -5,7 +5,14 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
-Widget yesNoWidget(int index,{String? title,String? text1,String? text2}) {
+Widget yesNoWidget(
+    int index, {
+      String? title,
+      String? text1,
+      String? text2,
+      String? imgYes,  // show asset if provided
+      String? imgNo,   // show asset if provided
+    }) {
   final ProfileController controller = Get.find<ProfileController>();
 
   return Padding(
@@ -13,79 +20,75 @@ Widget yesNoWidget(int index,{String? title,String? text1,String? text2}) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        title != null
-            ? customText(
-          text: title,
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w400,
-        )
-            : SizedBox.shrink(),
-
+        if (title != null)
+          customText(
+            text: title,
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w400,
+          ),
         SizedBox(height: 2.h),
+
         Obx(() {
           final selected = controller.selectedOptions[index] ?? '';
-          return Row(
-            children: [
-              GestureDetector(
-                onTap: () => controller.selectedOptions[index] = 'yes',
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.5.w, vertical: 0.8.h),
-                  decoration: BoxDecoration(
-                    color: selected == "yes" ? greenColor : Colors.transparent,
-                    borderRadius: BorderRadius.circular(30.sp),
-                    border: Border.all(
-                      color: Colors.grey.shade400,
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.check,
-                        size: 17.sp,
-                        color: selected == "yes" ? whiteColor : blackColor,
-                      ),
+
+          // ----- helper to build each option -----
+          Widget option({
+            required bool isYes,
+            required String label,
+            required String? imgPath,
+            required VoidCallback onTap,
+          }) {
+            final bool chosen = selected == (isYes ? 'yes' : 'no');
+            final Color bg     = isYes ? greenColor : Colors.red;
+            final IconData icon = isYes ? Icons.check : Icons.close;
+
+            return GestureDetector(
+              onTap: onTap,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 3.5.w, vertical: 0.8.h),
+                decoration: BoxDecoration(
+                  color: chosen ? bg : Colors.transparent,
+                  borderRadius: BorderRadius.circular(30.sp),
+                  border: Border.all(color: Colors.grey.shade400, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    // asset image if provided, else fallback icon
+                    if (imgPath != null) ...[
+                      Image.asset(imgPath, height: 16.sp, color: Colors.black),
                       SizedBox(width: 2.w),
-                      customText(
-                        text: text1 != null ? text1 :"Yes",
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w500,
-                        color: selected == "yes" ? whiteColor : blackColor,
-                      ),
+                    ] else ...[
+                      Icon(icon, size: 17.sp, color: chosen ? whiteColor : blackColor),
+                      SizedBox(width: 2.w),
                     ],
-                  ),
+                    customText(
+                      text: label,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                      color: chosen ? whiteColor : blackColor,
+                    ),
+                  ],
                 ),
               ),
+            );
+          }
+
+          return Row(
+            children: [
+              // YES button
+              option(
+                isYes: true,
+                label: text1 ?? "Yes",
+                imgPath: imgYes,
+                onTap: () => controller.selectedOptions[index] = 'yes',
+              ),
               SizedBox(width: 5.w),
-              GestureDetector(
+              // NO button
+              option(
+                isYes: false,
+                label: text2 ?? "No",
+                imgPath: imgNo,
                 onTap: () => controller.selectedOptions[index] = 'no',
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.5.w, vertical: 0.8.h),
-                  decoration: BoxDecoration(
-                    color: selected == "no" ? Colors.red : Colors.transparent,
-                    borderRadius: BorderRadius.circular(30.sp),
-                    border: Border.all(
-                      color: Colors.grey.shade400,
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.close,
-                        size: 18.sp,
-                        color: selected == "no" ? whiteColor : blackColor,
-                      ),
-                      SizedBox(width: 2.w),
-                      customText(
-                        text: text2 != null ? text2 :"No",
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w500,
-                        color: selected == "no" ? whiteColor : blackColor,
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           );

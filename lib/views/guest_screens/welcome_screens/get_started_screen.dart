@@ -18,13 +18,13 @@ class GetStartedScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 4.h),
+              padding: EdgeInsets.only(top: 5.h),
               child: Image.asset("assets/png/yestable_logo.png",height: 22.h,width: 22.w),
             ),
             Container(
               height: 32.h,
                 width: double.infinity,
-                child: Image.asset("assets/png/updated_banner/get_started_banner.png",
+                child: Image.asset("assets/png/new_guest_illustrations/get_started_banner.png",
                   fit: BoxFit.cover,
                     ),
             ),

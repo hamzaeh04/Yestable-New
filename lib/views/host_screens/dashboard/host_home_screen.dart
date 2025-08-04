@@ -222,24 +222,33 @@ class AdminHomeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 2.h),
-
                           // Calendar Image
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.w),
-                            child: GestureDetector(
+                          Obx(() =>
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              child: GestureDetector(
                                 onTap: () {
                                   showEventDialog(context);
                                 },
-                                child: Container(
-                                  height: 30.h,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          20.sp),
-                                      color: whiteColor
-
+                                child: controller.selectedEvent.value == "Gizelle Dinner Event"
+                                  ?
+                                    ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.sp),
+                                  child: Image.asset(
+                                    "assets/png/bar_chart_siren.png",
+                                    width: double.infinity,
+                                    fit: BoxFit.fill, // or use BoxFit.cover if you prefer
+                                  ),
+                                ):
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.sp),
+                                  child: Image.asset(
+                                    "assets/png/select_event_banner.png",
+                                    width: double.infinity,
+                                    fit: BoxFit.fill, // or use BoxFit.cover if you prefer
                                   ),
                                 )
+                              ),
                             ),
                           ),
                           SizedBox(height: 3.h),

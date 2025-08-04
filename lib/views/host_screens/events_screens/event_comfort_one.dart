@@ -35,7 +35,7 @@ class EventComfortOne extends StatelessWidget {
                 bottomRight: Radius.circular(25.sp),
               ),
               child: Image.asset(
-                "assets/png/food_preferences_two.png",
+                "assets/png/new_guest_illustrations/event_comfort_one.png",
                 width: 100.w,
                 fit: BoxFit.cover,
               ),

@@ -25,12 +25,12 @@ class VerificationCodeScreen extends StatelessWidget {
             Stack(
               children: [
                 Image.asset(
-                  "assets/png/updated_banner/verification_banner.png",
+                  "assets/png/new_guest_illustrations/new_verification_banner.png",
                   width: 100.w,
                   fit: BoxFit.cover,
                 ),
                 Positioned(
-                  top: 5,
+                  top: 2,
                   left: 65,
                   child: Image.asset(
                     "assets/png/updated_banner/yes_logo.png",

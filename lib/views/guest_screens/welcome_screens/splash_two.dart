@@ -32,7 +32,7 @@ class SplashTwo extends StatelessWidget {
             left: 0,
             right: 0,
             child: Image.asset(
-              "assets/png/updated_banner/splash_banner.png",
+              "assets/png/new_guest_illustrations/yestable_splash_banner.png",
               fit: BoxFit.cover,
               width: 100.w,
             ),

@@ -21,13 +21,13 @@ class SignupScreen extends StatelessWidget {
           Stack(
             children: [
               Image.asset(
-                "assets/png/updated_banner/signup_banner.png",
+                "assets/png/new_guest_illustrations/signup_screen_banner.png",
                 width: 100.w,
                 fit: BoxFit.cover,
               ),
               Positioned(
-                top: 5,
-                left: 63,
+                top: 4.2.h,
+                left: 18.w,
                 child: Image.asset(
                   "assets/png/updated_banner/yes_logo.png",
                   height: 22.h,

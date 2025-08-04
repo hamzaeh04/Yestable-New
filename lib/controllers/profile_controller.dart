@@ -10,7 +10,32 @@ class ProfileController extends GetxController {
   var other = false.obs;
   var isChecked = false.obs;
 
+  RxBool isArrowRotated = false.obs;
+  RxBool isExpanded = false.obs;
+  RxString selectedOption = "Hearing Loss".obs;
 
+  List<String> options = [
+    "Help Carrying Plate",
+    "Assistance Walking In",
+    "Bringing A Care Aide",
+    "Hearing Loss",
+    "Seating Near A Restroom",
+    "Non Verbal",
+    "Other"
+  ];
+
+  void toggleDropdown() {
+    isExpanded.value = !isExpanded.value;
+  }
+
+  void selectOption(String value) {
+    selectedOption.value = value;
+    isExpanded.value = false;
+  }
+
+  void toggleArrow() {
+    isArrowRotated.value = !isArrowRotated.value;
+  }
   void toggleSwitch(bool value) {
     switchValue.value = value;
   }

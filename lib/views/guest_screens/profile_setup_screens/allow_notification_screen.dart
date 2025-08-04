@@ -46,7 +46,7 @@ class AllowNotificationScreen extends StatelessWidget {
             Container(
               height: 39.h,
               width: double.infinity,
-              child: Image.asset("assets/png/notification_banner_new.png",
+              child: Image.asset("assets/png/new_guest_illustrations/allow_notification_banner.png",
                 fit: BoxFit.cover,
               ),
             ),

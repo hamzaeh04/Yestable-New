@@ -14,7 +14,7 @@ class NavigationController extends GetxController {
   RxBool isProfileComplete = false.obs;
   RxBool hasCheckedProfile = false.obs;
   var selectedEvent = ''.obs;
-
+  PageController? _pageController;
 
 
   final List<String> events = ['Gizelle Lunch Event', 'Gizelle Dinner Event', 'Thanksgiving Dinner Event'];
@@ -45,7 +45,7 @@ class NavigationController extends GetxController {
     return isFriendAdded[index] ?? false;
   }
 
-  PageController? _pageController;
+
 
   final List<String> tabs = [
     "All",

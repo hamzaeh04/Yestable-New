@@ -33,7 +33,7 @@ class ProfileCompleteScreen extends StatelessWidget {
             Container(
               height: 45.h,
               width: double.infinity,
-              child: Image.asset("assets/png/getstarted_banner.png",
+              child: Image.asset("assets/png/new_guest_illustrations/yestable_notification_banner.png",
                 fit: BoxFit.cover,
               ),
             ),
