@@ -12,7 +12,8 @@ Widget buttonWidget(
       VoidCallback? onTap,
       IconData? icon,
       Color? borderColor,
-      double? fontsize// 👈 Optional border color
+      double? fontsize,
+      FontWeight? fontweight,
     }) {
   return InkWell(
     onTap: onTap,

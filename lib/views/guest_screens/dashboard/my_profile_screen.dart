@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/guest_update_received.dart';
 import 'package:yestable/widget/showShareDialogBox_widget.dart';
+import 'package:yestable/widget/you_are_invited_dialog.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -134,18 +136,23 @@ class MyProfileScreen extends StatelessWidget {
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(
                                                 21.sp),
-                                            child: Container(
-                                              height: 11.h,
-                                              width: 11.h,
-                                              color: Colors.grey.shade200,
-                                              child: Image.asset(
-                                                "assets/png/girl_profile.png",
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) =>
-                                                    Icon(
-                                                        Icons.person, size: 8.h,
-                                                        color: Colors.grey),
+                                            child: InkWell(
+                                              onTap: (){
+                                                guestUpdateReceived(context);
+                                              },
+                                              child: Container(
+                                                height: 11.h,
+                                                width: 11.h,
+                                                color: Colors.grey.shade200,
+                                                child: Image.asset(
+                                                  "assets/png/girl_profile.png",
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) =>
+                                                      Icon(
+                                                          Icons.person, size: 8.h,
+                                                          color: Colors.grey),
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -179,6 +186,7 @@ class MyProfileScreen extends StatelessWidget {
                                                       width: 27.w,
                                                       fontsize: 14.sp,
                                                       onTap: (){
+                                                        youAreInvitedDialog(context);
                                                       }
                                                     ),
                                                     SizedBox(width: 2.w),

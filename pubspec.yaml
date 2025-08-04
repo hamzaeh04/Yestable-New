@@ -106,6 +106,8 @@ flutter:
      - family: WorkSans
        fonts:
          - asset: assets/font/work_sans/static/WorkSans-Regular.ttf
+#         - asset: assets/font/work_sans/static/WorkSans-Medium.ttf
+#           weight: 500
 
   #
   # For details regarding fonts from package dependencies,

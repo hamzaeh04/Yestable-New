@@ -7,7 +7,6 @@ import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
-import 'package:yestable/widget/preferences_widget.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
