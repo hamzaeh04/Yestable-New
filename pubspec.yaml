@@ -87,6 +87,7 @@ flutter:
      - assets/png/notification_img/
      - assets/png/event_widget_icon/
      - assets/png/new_guest_illustrations/
+     - assets/png/guest_list_images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -26,10 +26,11 @@ import '../views/guest_screens/profile_setup_screens/host_profile_screen.dart';
 import '../views/guest_screens/profile_setup_screens/profile_complete_screen.dart';
 import '../views/guest_screens/profile_setup_screens/profile_edit_screen.dart';
 import '../views/guest_screens/welcome_screens/get_started_screen.dart';
+import '../views/host_screens/dashboard/guest_list_screen.dart';
 import '../views/host_screens/events_screens/event_comfort_one.dart';
 import '../views/host_screens/events_screens/event_comfort_three.dart';
 import '../views/host_screens/events_screens/event_comfort_two.dart';
-import '../views/host_screens/dashboard/guest_list_screen.dart';
+import '../views/host_screens/dashboard/new_guest_list_screen.dart';
 import '../views/host_screens/events_screens/event_publish_screen.dart';
 import '../views/host_screens/events_screens/food_menu_screen.dart';
 import '../views/host_screens/host_profile_setup_screens/add_host_profile_picture.dart';
@@ -65,6 +66,7 @@ class AppRoutes {
     GetPage(name: '/communityprofile', page: () => CommunityProfile()),
     GetPage(name: '/createneweventscreen', page: () => CreateNewEventScreen()),
     GetPage(name: '/eventpublishscreen', page: () => EventPublishScreen()),
+    GetPage(name: '/newguestlistscreen', page: () => NewGuestListScreen()),
     GetPage(name: '/guestlistscreen', page: () => GuestListScreen()),
     GetPage(name: '/eventcomfortone', page: () => EventComfortOne()),
     GetPage(name: '/eventcomforttwo', page: () => EventComfortTwo()),
@@ -75,5 +77,6 @@ class AppRoutes {
     GetPage(name: '/allowhostnotificationscreen', page: () => AllowHostNotificationScreen()),
     GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
     GetPage(name: '/disclaimerscreen', page: () => DisclaimerScreen()),
+
   ];
 }

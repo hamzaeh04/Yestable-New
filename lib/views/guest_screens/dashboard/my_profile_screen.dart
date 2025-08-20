@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/bar_chart.dart';
 import 'package:yestable/widget/guest_update_received.dart';
 import 'package:yestable/widget/showShareDialogBox_widget.dart';
 import 'package:yestable/widget/you_are_invited_dialog.dart';
@@ -27,7 +28,7 @@ class MyProfileScreen extends StatelessWidget {
 
   final List<Map<String, String>> diet = [
     {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
-    {"name": "Vegetarian", "imgPath": "assets/png/profile_food_images/vegetarian.png"},
+    {"name": " Vegetarian", "imgPath": "assets/png/profile_food_images/vegetarian.png"},
     {"name": "Kosher", "imgPath": "assets/png/profile_food_images/kosher.png"},
     {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
   ];
@@ -73,7 +74,8 @@ class MyProfileScreen extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: (){
-                            hostReviewsBottomSheet(context);
+                            // hostReviewsBottomSheet(context);
+                            AllergenBarChart();
                           },
                           child: customText(
                             text: "My Profile",
@@ -158,53 +160,59 @@ class MyProfileScreen extends StatelessWidget {
                                           ),
                                           SizedBox(width: 4.w),
                                           Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                customText(
-                                                  text: "Sarah Scarnio",
-                                                  fontSize: 20.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontFamily: "CormorantGaramond",
-                                                ),
-                                                customText(
-                                                  text: "256 Friends",
-                                                  fontSize: 14.sp,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: darkGreyColor,
-                                                ),
-                                                SizedBox(height: 0.8.h),
-                                                Row(
-                                                  children: [
-                                                    buttonWidget(
-                                                      "Edit Profile",
-                                                      whiteColor,
-                                                      colors: greenColor
-                                                          .withAlpha(140),
-                                                      height: 3.5.h,
-                                                      width: 27.w,
-                                                      fontsize: 14.sp,
-                                                      onTap: (){
-                                                        youAreInvitedDialog(context);
-                                                      }
-                                                    ),
-                                                    SizedBox(width: 2.w),
-                                                    buttonWidget(
-                                                      "Share Profile",
-                                                      whiteColor,
-                                                      colors: blueColor
-                                                          .withAlpha(140),
-                                                      height: 3.5.h,
-                                                      width: 27.w,
-                                                      fontsize: 14.sp,
-                                                      onTap: () {
-                                                        showShareProfileDialog(context);
-                                                      },
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
+                                            child: InkWell(
+                                              onTap: (){
+                                                AllergenBarChart();
+                                              },
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment
+                                                    .start,
+                                                children: [
+                                                  customText(
+                                                    text: "Sarah Scarnio",
+                                                    fontSize: 20.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontFamily: "CormorantGaramond",
+                                                  ),
+                                                  customText(
+                                                    text: "256 Friends",
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: darkGreyColor,
+                                                  ),
+                                                  SizedBox(height: 0.8.h),
+                                                  Row(
+
+                                                    children: [
+                                                      buttonWidget(
+                                                        "Edit Profile",
+                                                        whiteColor,
+                                                        colors: greenColor
+                                                            .withAlpha(140),
+                                                        height: 3.5.h,
+                                                        width: 27.w,
+                                                        fontsize: 14.sp,
+                                                        onTap: (){
+                                                          Get.toNamed("profileeditscreen");
+                                                        }
+                                                      ),
+                                                      SizedBox(width: 2.w),
+                                                      buttonWidget(
+                                                        "Share Profile",
+                                                        whiteColor,
+                                                        colors: blueColor
+                                                            .withAlpha(140),
+                                                        height: 3.5.h,
+                                                        width: 27.w,
+                                                        fontsize: 14.sp,
+                                                        onTap: () {
+                                                          showShareProfileDialog(context);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ],

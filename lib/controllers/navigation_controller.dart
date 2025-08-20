@@ -5,6 +5,8 @@ import '../widget/complete_guest_dialog.dart';
 
 class NavigationController extends GetxController {
   var currentIndex = 0.obs;
+  RxInt allergenSelectedIndex = 0.obs;
+  var showAllergicGuest = false.obs;
   var selectedIndex = 0.obs;
   var selectedIndexTab = 0.obs;
   var sortBySelectedIndex = 0.obs;
@@ -13,10 +15,12 @@ class NavigationController extends GetxController {
   late BuildContext context;
   RxBool isProfileComplete = false.obs;
   RxBool hasCheckedProfile = false.obs;
+  RxBool isInvited = false.obs;
+  RxBool isGuestUpdateReceived = true.obs;
   var selectedEvent = ''.obs;
   PageController? _pageController;
 
-
+  final List<String> allergenList = ["Allergens List", "Common Allergens", "Severity Level"];
   final List<String> events = ['Gizelle Lunch Event', 'Gizelle Dinner Event', 'Thanksgiving Dinner Event'];
   void selectEvent(String value) {
     selectedEvent.value = value;
@@ -28,6 +32,10 @@ class NavigationController extends GetxController {
 
   void toggleSelection() {
     isSelected.value = !isSelected.value;
+  }
+
+  void toggleShowAllergicGuest(){
+    showAllergicGuest.value = true;
   }
 
   void switchTab(int index) {

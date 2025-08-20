@@ -30,7 +30,7 @@ class GetStartedScreen extends StatelessWidget {
             ),
             SizedBox(height: 2.h),
             customText(
-              text: "Welcome To Yes Table",
+              text: "Welcome To YesTable",
               fontSize: 24.sp,
               fontFamily: "CormorantGaramond",
               fontWeight: FontWeight.w600

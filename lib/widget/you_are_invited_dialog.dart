@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/profile_update_dialog.dart';
 import 'package:yestable/widget/update_sent_sucessfull_dialog.dart';
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
@@ -51,7 +53,7 @@ void youAreInvitedDialog(BuildContext context) {
                     ),
                     SizedBox(height: 1.h),
                     customText(
-                        text: "Take a minute to share your food preferences, dietary needs, or any accessibility notes.",
+                        text: "Your host is planning something special and they want to make sure everyone feels welcome.",
                         fontWeight: FontWeight.w400,
                         fontSize: 15.sp,
                         fontFamily: "WorkSans",
@@ -75,8 +77,10 @@ void youAreInvitedDialog(BuildContext context) {
                     ),
                     SizedBox(height: 2.h),
                     buttonWidget("Setup Now", whiteColor,colors: greenColor,fontsize: 16.sp,height: 4.5.h,onTap: (){
-                      updateSentSuccessfull(context);
-                    }),
+                      Get.back();
+                      Future.delayed(Duration(milliseconds: 200), () {
+                      profileUpdateDialog(context); // 👈 Then open the next
+                    });}),
                     SizedBox(height: 1.5.h),
                   ],
                 )

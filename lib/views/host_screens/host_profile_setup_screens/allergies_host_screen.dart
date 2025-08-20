@@ -134,13 +134,14 @@ class AllergiesHostScreen extends StatelessWidget {
                           whiteColor,
                           colors: blueColor,
                           height: 4.h,
+                          fontsize: 15.sp,
                           onTap: () {
                             // your action here
                           },
                         ),
                       ],
                     )
-                        : others(title: "others",path: "assets/png/icons/others_icon.png")),
+                        : others(title: "Others",path: "assets/png/icons/others_icon.png")),
                     SizedBox(height: 3.h),
                     customText(
                       text: "Severity Level",
@@ -235,13 +236,14 @@ class AllergiesHostScreen extends StatelessWidget {
                           whiteColor,
                           colors: blueColor,
                           height: 4.h,
+                          fontsize: 15.sp,
                           onTap: () {
                             // your action here
                           },
                         ),
                       ],
                     )
-                        : others(title: "others",path: "assets/png/icons/others_icon.png")),
+                        : others(title: "Others",path: "assets/png/icons/others_icon.png")),
                     SizedBox(height: 2.h),
                     buttonWidget(
                       "Continue",

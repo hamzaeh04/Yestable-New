@@ -153,7 +153,7 @@ Widget invitationWidget(
             children: [
               buttonWidget(
                 height: 4.h,
-                width: 19.h,
+                width: 18.5.h,
                 "Accept",
                 whiteColor,
                 fontsize: 14.sp,
@@ -163,7 +163,7 @@ Widget invitationWidget(
               SizedBox(width: 1.h),
               buttonWidget(
                 height: 4.h,
-                width: 19.h,
+                width: 18.8.h,
                 "Not Now",
                 fontsize: 14.sp,
                 blueColor,

@@ -29,15 +29,15 @@ class VerificationCodeScreen extends StatelessWidget {
                   width: 100.w,
                   fit: BoxFit.cover,
                 ),
-                Positioned(
-                  top: 2,
-                  left: 65,
-                  child: Image.asset(
-                    "assets/png/updated_banner/yes_logo.png",
-                    height: 22.h,
-                    width: 22.w,
-                  ),
-                ),
+                // Positioned(
+                //   top: 2,
+                //   left: 65,
+                //   child: Image.asset(
+                //     "assets/png/updated_banner/yes_logo.png",
+                //     height: 22.h,
+                //     width: 22.w,
+                //   ),
+                // ),
               ],
             ),
             Padding(

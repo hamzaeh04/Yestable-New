@@ -83,6 +83,7 @@ Widget others({
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
                       fontFamily: "CormorantGaramond",
+                      height: 0.13.h,
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 8.w,bottom: 3.8.h),
@@ -120,17 +121,17 @@ Widget others({
                       borderSide: BorderSide(
                         color: Color(0xFF5D8783)
                         ,
-                        width: 1.5,
+                        width: 0.2.w,
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Color(0xFF5D8783)
-                        ,
-                        width: 2,
-                      ),
-                    ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(10),
+                    //   borderSide: BorderSide(
+                    //     color: Color(0xFF5D8783)
+                    //     ,
+                    //     width: 0.2.w,
+                    //   ),
+                    // ),
                     filled: true,
                     fillColor: backgroundColor,
                     contentPadding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
@@ -158,15 +159,14 @@ Widget others({
 
                   ],
                 ),
-                SizedBox(height: 1.h),
+                SizedBox(height: 0.5.h),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: buttonWidget("Done", whiteColor,colors: blueColor,height: 4.h,width: 24.w,onTap: (){
+                  child: buttonWidget("Done!", whiteColor,colors: blueColor,height: 4.h,width: 24.w,fontsize: 15.sp,onTap: (){
                     controller.otherToggleSwitch();
                     Get.back();
                   })
-        
-                )
+                ),
               ],
             )),
           ),

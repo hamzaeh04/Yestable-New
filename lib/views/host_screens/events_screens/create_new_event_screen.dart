@@ -7,13 +7,9 @@ import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
 
-import '../../../widget/loading_step_indicator.dart';
-
 class CreateNewEventScreen extends StatelessWidget {
   CreateNewEventScreen({super.key});
-
   final ProfileController controller = Get.find<ProfileController>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

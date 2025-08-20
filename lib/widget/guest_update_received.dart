@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/widget/button_widget.dart';
 import '../constants/color_constants.dart';
@@ -108,7 +109,10 @@ void guestUpdateReceived(BuildContext context) {
                     children: [
                       Expanded(child: buttonWidget("View Profile", whiteColor,colors: greenColor,fontsize: 15.sp,height: 4.5.h)),
                       SizedBox(width: 4.w),
-                      Expanded(child: buttonWidget("Dismiss", greenColor,colors: backgroundColor,borderColor: greenColor,fontsize: 15.sp,height: 4.5.h))
+                      Expanded(child: buttonWidget("Dismiss", greenColor,colors: backgroundColor,borderColor: greenColor,fontsize: 15.sp,height: 4.5.h,onTap: (){
+                        Get.back();
+                      }))
+
                     ],
                   )
                 ],

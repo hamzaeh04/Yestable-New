@@ -15,33 +15,63 @@ import '../../../widget/event_accesibility_widget.dart';
 class EventDetailsScreen extends StatelessWidget {
   EventDetailsScreen({super.key});
 final NavigationController controller = Get.find<NavigationController>();
-  final List<String> eventAccesibilityList = [
-    "Quiet Space",
-    "Larger Seating",
-    "Gluten-Free",
-    "Wheelchair Accessible",
-    "ASL Interpreter",
-    "Vegan Option",
-    "Halal",
-    "Kosher",
-    "Keto",
-    "Family Restroom",
-    "Pets Allowed",
-    "Childrens Area",
-    "Smoke Present",
-    "There Are Steps To Climb",
-    "Non Swimming Event",
-    "Firearms Are Present",
-    "Shellfish Will Be Served",
-    "Peanuts Free",
-    "Event Ends At A Time",
+
+
+  final List<Map<String, String>> eventMenu = [
+    {"name": "Vegetarian", "imgPath": "assets/png/event_food_image/brocolli.png"},
+    {"name": "Contain Dairy", "imgPath": "assets/png/event_food_image/milk.png"},
+    {"name": "Gluten-Free", "imgPath": "assets/png/event_food_image/glutenfree.png"},
+    {"name": "Shelfish", "imgPath": "assets/png/event_food_image/shell.png"},
+    {"name": "Vegan", "imgPath": "assets/png/event_food_image/shell.png"},
+    {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
   ];
 
   final List<String> notAllowedItem = ["Bubble gum", "Drug"];
   final List<String> eventMenuList = ["Vegetarian", "Contain Dairy","Gluten-Free","Shelfish","Vegan","Nut-Free"];
-
+  List<String> eventAccesibilityList = [];
   @override
   Widget build(BuildContext context) {
+    if (controller.isUser.value == false) {
+      eventAccesibilityList = [
+        "Quiet Space Available",
+        "Larger Seating",
+        "Wheelchair Accessible",
+        "ASL Interpreter",
+        "Vegan Option",
+        "Halal",
+        "Kosher",
+        "Keto",
+        "Family Restroom",
+        "Pets Allowed",
+        "Gluten-Free",
+        "Smoke Present",
+        "There Are Steps To Climb",
+        "Swimming Pool Is Present",
+        "Firearms Are Present",
+        "Shellfish Will Be Served",
+        "Peanuts Present",
+        "Event Ends At A Time",
+      ];
+    } else {
+      eventAccesibilityList = [
+        "Quiet Space Available",
+        "Larger Seating",
+        "Wheelchair Accessible",
+        "ASL Interpreter",
+        "Vegan Option",
+        "Halal",
+        "Kosher",
+        "Keto",
+        "Family Restroom",
+        "Pets Allowed",
+        "Gluten-Free",
+        "Smoke Present",
+        "There Are Steps To Climb",
+        "Swimming Pool Is Present",
+        "Firearms Are Present",
+        "Peanuts Present",
+      ];
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -260,7 +290,7 @@ final NavigationController controller = Get.find<NavigationController>();
                 SizedBox(height: 2.h),
                 Container(
                   width: double.infinity,
-                  color: Colors.grey.shade400,
+                  color: eventDinnerBrownColor,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: 4.w),
                     child: Column(
@@ -337,8 +367,9 @@ final NavigationController controller = Get.find<NavigationController>();
                         fontWeight: FontWeight.w400,
                         color: darkGreyColor,
                       ),
+                      SizedBox(height: 1.h),
                       Container(
-                        child: Image.asset("assets/png/map_image.png"),
+                        child: Image.asset("assets/png/event_detail_img/event_detial_map.png"),
                       )
                     ],
                   ),
@@ -396,9 +427,11 @@ final NavigationController controller = Get.find<NavigationController>();
                         spacing: 4,
                         runSpacing: 0,
                         children: List.generate(
-                          eventMenuList.length,
-                              (index) => eventAccesibillityWidget(
-                                eventMenuList[index],
+                          eventMenu.length,
+                              (index) => foodPreferencesOne(
+                            index + 1, // Serial number
+                            eventMenu[index]['name'] ?? '', // Name
+                            imgpath: eventMenu[index]['imgPath'] ?? '', // Optional image path
                           ),
                         ),
                       )
@@ -481,41 +514,6 @@ final NavigationController controller = Get.find<NavigationController>();
                     ],
                   ),
                 ),
-                SizedBox(height: 1.h),
-                Divider(),
-                SizedBox(height: 1.h),
-                Obx(() {
-                  // Add this debug print to verify the value
-                  debugPrint('isUser value: ${controller.isUser.value}');
-
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        customText(
-                          text: "Gizelle Jekronia Host Reviews",
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "CormorantGaramond",
-                          color: blackColor,
-                        ),
-                        SizedBox(height: 2.h),
-                        reveiwWidget(context),
-                        SizedBox(height: 2.h),
-                        buttonWidget(
-                          "See All 26 Reviews",
-                          greenColor,
-                          borderColor: greenColor,
-                          onTap: () {
-                            hostReviewsBottomSheet(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-
                 SizedBox(height: 5.h),
               ],
             ),

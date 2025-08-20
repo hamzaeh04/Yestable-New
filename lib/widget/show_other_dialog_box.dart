@@ -11,7 +11,6 @@ void showCustomOtherDialog({
   required TextEditingController controller,
   required RxBool shareWithHost,
   required VoidCallback onDone,
-  String title = "Not on the list? Tell us\nwhat to skip!",
   String description = "This info stays private unless you choose to share it with a host.",
   String hintText = "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
 }) {
@@ -33,10 +32,11 @@ void showCustomOtherDialog({
               children: [
                 Expanded(
                   child: customText(
-                    text: title,
+                    text: "Not on the list? Tell us\nwhat to skip!",
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     fontFamily: "CormorantGaramond",
+                    height: 0.13.h,
                   ),
                 ),
                 InkWell(
@@ -76,12 +76,12 @@ void showCustomOtherDialog({
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Color(0xFF5D8783), width: 1.5),
+                  borderSide: BorderSide(color: Color(0xFF5D8783), width: 0.2.w),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Color(0xFF5D8783), width: 2),
-                ),
+                // focusedBorder: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(10),
+                //   borderSide: BorderSide(color: Color(0xFF5D8783), width: 0.2.w),
+                // ),
               ),
             ),
 
@@ -113,10 +113,11 @@ void showCustomOtherDialog({
             Align(
               alignment: Alignment.centerLeft,
               child: buttonWidget(
-                "Done",
+                "Done!",
                 whiteColor,
                 height: 4.h,
                 width: 24.w,
+                fontsize: 15.sp,
                 colors: blueColor,
                 onTap: () {
                   onDone();

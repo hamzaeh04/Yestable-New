@@ -8,6 +8,7 @@ import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
 import '../../../widget/home_screen_widget.dart';
+import '../../../widget/you_are_invited_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -16,6 +17,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!controller.isInvited.value) {
+        controller.hasCheckedProfile.value = true;
+        youAreInvitedDialog(context);
+      }
+    });
     return Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(

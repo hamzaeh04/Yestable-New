@@ -17,12 +17,13 @@ Widget eventAccesibillityWidget(String title, {int? index}) {
           borderRadius: BorderRadius.circular(30.sp),
           border: Border.all(
             color: Colors.grey,
+            width: 0.1.w,
           ),
         ),
         child: customText(
           text: title,
           fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
           color: blackColor,
         ),
       ),

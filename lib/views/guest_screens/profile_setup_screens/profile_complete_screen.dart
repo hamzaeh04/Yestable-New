@@ -19,7 +19,7 @@ class ProfileCompleteScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             customText(
-              text: "Yess You did it!",
+              text: "Yes You did it!",
               fontSize: 28.sp,
               fontFamily: "CormorantGaramond",
               fontWeight: FontWeight.w600,

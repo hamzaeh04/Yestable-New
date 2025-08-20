@@ -133,7 +133,7 @@ class GuestListScreen extends StatelessWidget {
                               customText(
                                 text: "Invite People",
                                 fontSize: 15.sp,
-                                  fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w400,
                               ),
                             ],
                           ),

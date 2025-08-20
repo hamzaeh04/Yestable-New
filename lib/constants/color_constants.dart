@@ -15,6 +15,17 @@ const Color timeColor = Color(0x0D082CB2);
 const Color containerBg = Color(0x0D082CB2);
 const Color lightBlackColor = Color(0xFF3F4343);
 const Color containerBlueColor = Color(0xFF2C608F);
+final Color containerBorderColor = Colors.grey.shade300;
+const Color containerUnselectedColor = Color(0xFFD1D5DB);
+const Color lightGreenColor = Color(0xFFE0E6D5);
+const Color lightyellowColor = Color(0xFFF3E6B5);
+const Color lightredColor = Color(0xFFF3C3B5);
+const Color allergenredColor = Color(0xFFDE5959);
+const Color guestlistbackgroundColor = Color(0xFFD9D9D9);
+const Color yellowColor = Color(0xFFFFD600);
+const Color greyTextColor = Color(0xFF666666);
+const Color greyBorderColor = Color(0xFFCFCFCF);
+const Color eventDinnerBrownColor = Color(0xFFE4DAD6);
 
 
 

@@ -21,6 +21,7 @@ final ProfileController controller = Get.find<ProfileController>();
     "Space is Whealchair Accesible",
     "ASL Interpreter Available Upon Request",
     "Vegan Menu Option",
+    "Gluten-Free Menu Option",
   ];
   final List<String> checkList = [
     "Pets Will Present",
@@ -31,12 +32,12 @@ final ProfileController controller = Get.find<ProfileController>();
     "Alcohol Will Be Present",
     "This Is An Alcohol-Free Event",
     "There Are Steps To Climb",
-    "Swimming Pool Is Present",
+    "Swimming Pool",
     "Firearms Are Present",
     "Shellfish Will Be Served",
     "Peanuts Will Be Served",
     "The Event Ends At A Firm time",
-    "Please Dont Bring Item Containing (Eg: XYZ)"
+    "Please Do Not Bring Item Containing (Eg: XYZ)"
   ];
 
   @override
@@ -273,7 +274,7 @@ final ProfileController controller = Get.find<ProfileController>();
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
-                        yesNoWidget(title: titles[index], index + 1),
+                        yesNoWidget(title: titles[index], index + 1,),
                         Divider(
                           thickness: 1,
                           color: Colors.grey.shade400,
@@ -289,7 +290,7 @@ final ProfileController controller = Get.find<ProfileController>();
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: customText(
-                text: "Other Menu Option I.E Halal,Kosher",
+                text: "Other Menu Option I.E Halal, Kosher",
                 fontSize: 17.sp,
                 fontWeight: FontWeight.w400,
               ),
@@ -335,9 +336,11 @@ final ProfileController controller = Get.find<ProfileController>();
                   physics: NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero, // 🔥 This removes default padding
                   itemBuilder: (context, index) {
+                    final bool isSpecialIndex = index == 8;
+                    final bool isOkIndex = index == 13;
                     return Column(
                       children: [
-                        yesNoWidget(title: checkList[index], index + 1),
+                        yesNoWidget(title: checkList[index], index + 1,text1: isOkIndex ? "Ok":null ),
                         Divider(
                           thickness: 1,
                           color: Colors.grey.shade400,

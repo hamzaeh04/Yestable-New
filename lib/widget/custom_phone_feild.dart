@@ -38,7 +38,7 @@ class CustomPhoneInput extends StatelessWidget {
                     text: controller.selectedCountry.value.flagEmoji,
                     fontSize: 18.sp,
                   ),
-                  Icon(Icons.arrow_drop_down, size: 20.sp),
+                  Icon(Icons.keyboard_arrow_down_rounded, size: 16.sp),
                 ],
               ),
             ),
@@ -64,7 +64,7 @@ class CustomPhoneInput extends StatelessWidget {
                     child: TextField(
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
-                      style: TextStyle(fontSize: 15.sp),
+                      style: TextStyle(fontSize: 15.sp,),
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Enter Your Phone Number',

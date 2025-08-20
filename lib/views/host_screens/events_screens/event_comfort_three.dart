@@ -88,17 +88,6 @@ class EventComfortThree extends StatelessWidget {
                               controller.isSelected.value = value;
                             },
                           )),
-                          SizedBox(width: 2.w),
-                          Obx(() => controller.isSelected.value
-                              ? Text(
-                            "OK",
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )
-                              : SizedBox.shrink()),
                         ],
                       ),
                     ],

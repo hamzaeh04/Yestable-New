@@ -25,15 +25,15 @@ class SignupScreen extends StatelessWidget {
                 width: 100.w,
                 fit: BoxFit.cover,
               ),
-              Positioned(
-                top: 4.2.h,
-                left: 18.w,
-                child: Image.asset(
-                  "assets/png/updated_banner/yes_logo.png",
-                  height: 22.h,
-                  width: 22.w,
-                ),
-              ),
+              // Positioned(
+              //   top: 4.2.h,
+              //   left: 18.w,
+              //   child: Image.asset(
+              //     "assets/png/updated_banner/yes_logo.png",
+              //     height: 22.h,
+              //     width: 22.w,
+              //   ),
+              // ),
             ],
           ),
           Padding(
