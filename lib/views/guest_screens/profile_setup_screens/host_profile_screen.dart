@@ -138,7 +138,7 @@ class HostProfileScreen extends StatelessWidget {
                                                   fontFamily: "CormorantGaramond",
                                                 ),
                                                 customText(
-                                                  text: "256 Friends",
+                                                  text: "1500+ Friends",
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w400,
                                                   color: darkGreyColor,
@@ -346,27 +346,6 @@ class HostProfileScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      // === Reviews Section At Bottom ===
-                                      SizedBox(height: 3.h),
-                                      Divider(),
-                                      customText(
-                                        text: "Gizelle Jekronia Host Reviews",
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: "CormorantGaramond",
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      reveiwWidget(context),
-                                      SizedBox(height: 2.h),
-                                      buttonWidget(
-                                        "See All 26 Reviews",
-                                        greenColor,
-                                        borderColor: greenColor,
-                                        onTap: () {
-                                          hostReviewsBottomSheet(context);
-                                        },
-                                      ),
                                       SizedBox(height: 5.h),
                                     ],
                                   ),
@@ -386,27 +365,6 @@ class HostProfileScreen extends StatelessWidget {
                                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
                                         postImage: "assets/png/chat_images/group_profile_pic.png",
                                       ),
-                                      // === Reviews Section At Bottom ===
-                                      SizedBox(height: 3.h),
-                                      Divider(),
-                                      customText(
-                                        text: "Gizelle Jekronia Host Reviews",
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: "CormorantGaramond",
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      reveiwWidget(context),
-                                      SizedBox(height: 2.h),
-                                      buttonWidget(
-                                        "See All 26 Reviews",
-                                        greenColor,
-                                        borderColor: greenColor,
-                                        onTap: () {
-                                          hostReviewsBottomSheet(context);
-                                        },
-                                      ),
                                       SizedBox(height: 5.h),
                                     ],
                                   ),
@@ -468,28 +426,6 @@ class HostProfileScreen extends StatelessWidget {
                                           );
                                         }
                                         ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      // === Reviews Section At Bottom ===
-                                      SizedBox(height: 3.h),
-                                      Divider(),
-                                      customText(
-                                        text: "Gizelle Jekronia Host Reviews",
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: "CormorantGaramond",
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      reveiwWidget(context),
-                                      SizedBox(height: 2.h),
-                                      buttonWidget(
-                                        "See All 26 Reviews",
-                                        greenColor,
-                                        borderColor: greenColor,
-                                        onTap: () {
-                                          hostReviewsBottomSheet(context);
-                                        },
                                       ),
                                       SizedBox(height: 5.h),
                                     ],

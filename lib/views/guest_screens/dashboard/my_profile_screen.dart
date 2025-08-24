@@ -46,12 +46,29 @@ class MyProfileScreen extends StatelessWidget {
   ];
 
   final List<String> eventAccesibilityList = [
-    "Quiet Space", "Larger Seating", "Wheelchair Accessible",
+    "Quiet Space",
+    "Larger Seating",
+    "Gluten-Free",
+    "Wheelchair Accessible",
     "ASL Interpreter",
-    "Family Restroom", "Pets Allowed", "Childrens Area", "Smoke Present",
-    "There Are Steps To Climb", "Non Swimming Event", "Firearms Are Present",
-    "Event Ends At A Time"
+    "Vegan Option",
+    "Halal",
+    "Kosher",
+    "Keto",
+    "Accompanied By A Caregiver",
+    "Family Restroom",
+    "Childrens Area",
+    "Smoke Present",
+    "Pets Allowed",
+    "Peanuts Free",
+    "There Are Steps To Climb",
+    "Accompanied By Service Animal",
+    "Firearms Are Present",
+    "Shellfish Will Be Served",
+    "Need A Chair Without Arms",
+    "Event Ends At A Time",
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +133,7 @@ class MyProfileScreen extends StatelessWidget {
                 child: Container(
                   color: backgroundColor,
                   child: DefaultTabController(
-                    length: 2,
+                    length: controller.isUser.value ? 2 : 3,
                     child: Column(
                       children: [
                         // Profile Info
@@ -271,13 +288,22 @@ class MyProfileScreen extends StatelessWidget {
                                     indicatorColor: blackColor,
                                     labelColor: blackColor,
                                     unselectedLabelColor: Colors.grey,
-                                    labelStyle: TextStyle(fontSize: 15.sp,
-                                        fontWeight: FontWeight.w500),
-                                    tabs: const [
+                                    labelStyle: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    tabs: controller.isUser.value
+                                        ? [
                                       Tab(text: "Preference"),
                                       Tab(text: "Posts"),
+                                    ]
+                                        : [
+                                      Tab(text: "Preference"),
+                                      Tab(text: "Posts"),
+                                      Tab(text: "Highlights"),
                                     ],
                                   ),
+
                                 ),
                               ),
                             ],
@@ -366,29 +392,36 @@ class MyProfileScreen extends StatelessWidget {
                                               (index) => foodPreferencesOne(index + 35, dislikedIngredient[index]["name"]!,imgpath: dislikedIngredient[index]["imgPath"]),
                                         ),
                                       ),
-
-                                      SizedBox(height: 2.h),
-                                      customText(
-                                        text: "Accessibility Needs",
-                                        fontSize: 15.sp,
-                                        color: blackColor,
-                                      ),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          eventAccesibilityList.length,
-                                              (index) => eventAccesibillityWidget(
-                                            eventAccesibilityList[index],
+                                      controller.isUser.value ?
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 2.h),
+                                          customText(
+                                            text: "Accessibility Needs",
+                                            fontSize: 15.sp,
+                                            color: blackColor,
                                           ),
-                                        ),
-                                      ),
+                                          Wrap(
+                                            spacing: 5,
+                                            runSpacing: 1,
+                                            children: List.generate(
+                                              eventAccesibilityList.length,
+                                                  (index) => eventAccesibillityWidget(
+                                                eventAccesibilityList[index],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ):
+                                      SizedBox.shrink(),
+
                                     ],
                                   ),
                                 ),
                                 Center(
                                     child: SingleChildScrollView(
-                                      child: Column(
+                                      child: controller.isUser.value ? Column(
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.symmetric(
@@ -441,11 +474,87 @@ class MyProfileScreen extends StatelessWidget {
                                             ),
                                           ),
                                         ],
-                                      ),
+                                      ):Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5.w, vertical: 1.h),
+                                            child: buildPostCard(
+                                              profileImage: "assets/png/chat_images/user5.png",
+                                              userName: "Sarah Scarnio",
+                                              postTime: "2hrs ago",
+                                              postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                              postImage: "assets/png/chat_images/group_profile_pic.png",
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     )
                                 ),
+                                SingleChildScrollView(
+                                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: List.generate(3, (index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(right: index != 2 ? 2.w : 0.w),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.all(Radius.circular(18.sp)),
+                                              child: Image.asset(
+                                                'assets/png/reveiw_images/reveiw${index + 1}.png',
+                                                width: 28.w,
+                                                height: 12.h,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Row(
+                                        children: List.generate(3, (index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(right: index != 2 ? 2.w : 0.w),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.all(Radius.circular(18.sp)),
+                                              child: Image.asset(
+                                                'assets/png/reveiw_images/reveiw${index + 1}.png',
+                                                width: 28.w,
+                                                height: 12.h,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Row(
+                                        children: List.generate(3, (index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(right: index != 2 ? 2.w : 0.w),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.all(Radius.circular(18.sp)),
+                                              child: Image.asset(
+                                                'assets/png/reveiw_images/reveiw${index + 1}.png',
+                                                width: 28.w,
+                                                height: 12.h,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.h),
+                                    ],
+                                  ),
+                                )
                               ],
-                            ),
+                            )
                           ),
                         ),
                       ],

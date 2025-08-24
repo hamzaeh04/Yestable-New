@@ -26,11 +26,11 @@ class AllergiesHostScreen extends StatelessWidget {
     "🙏🏼 Avoid For Belief Or Culture",
     "👋 No Allergy Just A Pereference",
   ];final List<String> more = [
-    "🚨 Vegan",
-    "🤧 Vegetarian",
-    "🙏🏼 Halal",
-    "👋 Kosher",
-    "👋 keto",
+    "🍀 Vegan",
+    "🥬 Vegetarian",
+    "Halal",
+    "Kosher",
+    "Keto",
   ];
 
   @override
@@ -67,6 +67,13 @@ class AllergiesHostScreen extends StatelessWidget {
                       text: "Common Allergens",
                       fontSize: 15.sp,
                       fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 0.5.h),
+                    customText(
+                        text: "Please select your allergy triggers",
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[700]
                     ),
                     SizedBox(height: 1.h),
                     ListView.builder(
@@ -173,13 +180,33 @@ class AllergiesHostScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 1.h),
                     ListView.builder(
-                        itemCount: more.length,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context,index){
-                          return allergenWidget(index + 10, more[index]);
+                      itemCount: more.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index) {
+                        String text = more[index];
+                        Widget? leadingWidget;
+
+                        if (text.contains("Kosher")) {
+                          leadingWidget = Image.asset(
+                            "assets/png/profile_food_images/kosher_icon.png",
+                            height: 16.sp,
+                          );
+                        } else if (text.contains("Keto")) {
+                          leadingWidget = Image.asset(
+                            "assets/png/profile_food_images/keto_icon.png",
+                            height: 16.sp,
+                          );
                         }
+                        else if (text.contains("Halal")) {
+                          leadingWidget = Image.asset(
+                            "assets/png/Halal.png",
+                            height: 16.sp,
+                          );
+                        }
+                        return allergenWidget(index + 12, text, icon: leadingWidget);
+                      },
                     ),
                     Obx(() => controller.other.value
                         ? Column(

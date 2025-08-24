@@ -32,7 +32,7 @@ final ProfileController controller = Get.find<ProfileController>();
     "Alcohol Will Be Present",
     "This Is An Alcohol-Free Event",
     "There Are Steps To Climb",
-    "Swimming Pool",
+    "Swimming Pool Is Present",
     "Firearms Are Present",
     "Shellfish Will Be Served",
     "Peanuts Will Be Served",
@@ -315,7 +315,7 @@ final ProfileController controller = Get.find<ProfileController>();
               color: Colors.grey.shade400,
               height: 3.h,
             ),
-            yesNoWidget(title: "All Gender Or Faimly Restroom", 6, text1: "All Gender" ,text2: "Faimly Restroom",imgYes: "assets/png/icons/all_gender.png",imgNo: "assets/png/icons/faimly_restroom.png"),
+            yesNoWidget(title: "All Gender Or Faimly Restroom", 100, text1: "All Gender" ,text2: "Faimly Restroom",imgYes: "assets/png/icons/all_gender.png",imgNo: "assets/png/icons/faimly_restroom.png"),
             SizedBox(height: 1.h),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +340,7 @@ final ProfileController controller = Get.find<ProfileController>();
                     final bool isOkIndex = index == 13;
                     return Column(
                       children: [
-                        yesNoWidget(title: checkList[index], index + 1,text1: isOkIndex ? "Ok":null ),
+                        yesNoWidget(title: checkList[index], index + 1,text1: isOkIndex ? "Ok":null,text2: isSpecialIndex ? "Non Swimming Event": null,myBool: false),
                         Divider(
                           thickness: 1,
                           color: Colors.grey.shade400,

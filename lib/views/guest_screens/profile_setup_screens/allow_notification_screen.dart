@@ -36,10 +36,11 @@ class AllowNotificationScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: customText(
-                text: "We'll send you important reminders about your Food Events\nnot too many, and not too often.",
+                text: "We'll send you important reminders about your Food Events not too many, and not too often.",
                 fontSize: 16.sp,
                 fontFamily: "CormorantGaramond",
                 fontWeight: FontWeight.w600,
+                color: greyTextColor
               ),
             ),
             SizedBox(height: 7.h),

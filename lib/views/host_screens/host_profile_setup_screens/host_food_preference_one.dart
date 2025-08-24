@@ -24,15 +24,15 @@ class HostFoodPreferenceOne extends StatelessWidget {
     {"name": "Italian", "imgPath": "assets/png/profile_food_images/pizza.png"},
     {"name": "American Comfort", "imgPath": "assets/png/profile_food_images/burger.png"},
     {"name": "Mexican", "imgPath": "assets/png/profile_food_images/mexican.png"},
-    {"name": "Mediterranean", "imgPath": "assets/png/profile_food_images/mediterranean.png"},
-    {"name": "Japanese", "imgPath": "assets/png/profile_food_images/japnese.png"},
+    {"name": "Mediterranean", "imgPath": "assets/png/profile_food_images/meditrain.png"},
+    {"name": "Japanese", "imgPath": "assets/png/profile_food_images/sushi.png"},
     {"name": "Indian", "imgPath": "assets/png/profile_food_images/indian.png"},
     {"name": "Thai", "imgPath": "assets/png/profile_food_images/thai.png"},
   ];
 
   final List<Map<String, String>> yuckList = [
-    {"name": "Cilantro", "imgPath": "assets/png/profile_food_images/cilantro.png"},
-    {"name": "Mushrooms", "imgPath": "assets/png/profile_food_images/cilantro.png"},
+    {"name": "Cilantro", "imgPath": "assets/png/profile_food_images/dhaniya.png"},
+    {"name": "Mushrooms", "imgPath": "assets/png/profile_food_images/mushroom_new.png"},
     {"name": "Mayonnaise", "imgPath": "assets/png/profile_food_images/mayonise.png"},
     {"name": "Olives", "imgPath": "assets/png/profile_food_images/olive.png"},
     {"name": "Blue Cheese", "imgPath": "assets/png/profile_food_images/bluecheese.png"},
@@ -76,17 +76,25 @@ class HostFoodPreferenceOne extends StatelessWidget {
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
                   ),customText(
-                      text: "It's stronger than just a preference",
+                      text: "What makes you say Yes?",
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w400,
                       color: darkGreyColor
                   ),
                   SizedBox(height: 2.h),
                   customText(
-                    text: "What Makes You Say Yes?",
+                    text: "What Are You In The Mood For?",
                     fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
+                  SizedBox(height: 0.7.h),
+                  customText(
+                      text: "Click your faves",
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w400,
+                      color: darkGreyColor
+                  ),
+
                   SizedBox(height: 1.h),
                   Wrap(
                     spacing: 8.0,
@@ -155,9 +163,10 @@ class HostFoodPreferenceOne extends StatelessWidget {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
+                  SizedBox(height: 0.5.h),
                   customText(
                       text: "What should we keep off your plate?",
-                      fontSize: 16.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w500,
                       color: darkGreyColor
                   ),

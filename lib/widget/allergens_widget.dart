@@ -37,7 +37,7 @@ Widget allergenWidget(int index, String title, {Widget? icon}) {
           children: [
             if (icon != null) ...[
               icon,
-              SizedBox(width: 2.w),
+              SizedBox(width: 1.w),
             ],
             customText(
               text: title,

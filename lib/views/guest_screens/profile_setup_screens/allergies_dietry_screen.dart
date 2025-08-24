@@ -25,9 +25,9 @@ class AllergiesDietryScreen extends StatelessWidget {
     "🙏🏼 Avoid For Belief Or Culture",
     "👋 No Allergy Just A Pereference",
   ];final List<String> more = [
-    "🚨 Vegan",
-    "🤧 Vegetarian",
-    "🙏🏼 Halal",
+    "🍀 Vegan",
+    "🥬 Vegetarian",
+    "Halal",
     "Kosher",
     "Keto",
   ];
@@ -66,6 +66,13 @@ class AllergiesDietryScreen extends StatelessWidget {
                       text: "Common Allergens",
                       fontSize: 15.sp,
                       fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 0.5.h),
+                    customText(
+                        text: "Please select your allergy triggers",
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[700]
                     ),
                     SizedBox(height: 1.h),
           ListView.builder(
@@ -191,7 +198,13 @@ class AllergiesDietryScreen extends StatelessWidget {
                             height: 16.sp,
                           );
                         }
-                        return allergenWidget(index + 12, text, icon: leadingWidget);
+                        else if (text.contains("Halal")) {
+                          leadingWidget = Image.asset(
+                            "assets/png/Halal.png",
+                            height: 16.sp,
+                          );
+                        }
+                        return allergenWidget(index + 10, text, icon: leadingWidget);
                       },
                     ),
                     Obx(() => controller.other.value

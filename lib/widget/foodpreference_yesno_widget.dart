@@ -12,6 +12,7 @@ Widget yesNoWidget(
       String? text2,
       String? imgYes, // show asset if provided
       String? imgNo,
+      bool? myBool = false,
     }) {
   final ProfileController controller = Get.find<ProfileController>();
 
@@ -52,7 +53,7 @@ Widget yesNoWidget(
                 child: Row(
                   children: [
                     if (imgPath != null) ...[
-                      Image.asset(imgPath, height: 16.sp, color: Colors.black),
+                      Image.asset(imgPath, height: 16.sp, color: chosen ? Colors.white:Colors.black),
                       SizedBox(width: 2.w),
                     ] else ...[
                       Icon(
@@ -97,7 +98,7 @@ Widget yesNoWidget(
 
               // --- Custom UI if index == 8 ---
               // --- Custom UI if index == 8 ---
-              if (index == 9) ...[
+              if (index == 9 && myBool!) ...[
                 SizedBox(height: 2.h),
                 customText(
                   text: "Optional",
@@ -116,9 +117,8 @@ Widget yesNoWidget(
                           width: 0.3.w,
                         ),
                       ),
-
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 3.5.w,vertical: 0.5.h),
+                        padding: EdgeInsets.symmetric(horizontal: 3.5.w, vertical: 0.5.h),
                         child: Icon(Icons.check, color: blackColor, size: 18.sp),
                       ),
                     ),
@@ -130,7 +130,10 @@ Widget yesNoWidget(
                     ),
                   ],
                 ),
-              ],
+              ] else if (index == 9 && !myBool!) ...[
+                SizedBox.shrink(),
+              ]
+
 
             ],
           );
