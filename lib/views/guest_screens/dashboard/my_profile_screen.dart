@@ -307,7 +307,7 @@ class MyProfileScreen extends StatelessWidget {
                                 ),
                               ),
                             ],
-                            body: TabBarView(
+                            body: controller.isUser.value ? TabBarView(
                               children: [
                                 SingleChildScrollView(
                                   padding: EdgeInsets.all(5.w),
@@ -489,6 +489,191 @@ class MyProfileScreen extends StatelessWidget {
                                           ),
                                         ],
                                       )
+                                    )
+                                ),
+                              ],
+                            ):TabBarView(
+                              children: [
+                                SingleChildScrollView(
+                                  padding: EdgeInsets.all(5.w),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      customText(
+                                        text: "Dietary Priorities",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: blackColor,
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      customText(
+                                        text: "Allergies:",
+                                        fontSize: 14.sp,
+                                        color: blackColor,
+                                      ),
+                                      Wrap(
+                                        spacing: 5,
+                                        runSpacing: 1,
+                                        children: List.generate(
+                                          allergies.length,
+                                              (index) {
+                                            return foodPreferencesOne(
+                                              index+15,
+                                              allergies[index]['name']!,
+                                              imgpath: allergies[index]['imgPath'],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      customText(
+                                        text: "Diet:",
+                                        fontSize: 14.sp,
+                                        color: blackColor,
+                                      ),
+                                      Wrap(
+                                        spacing: 5,
+                                        runSpacing: 1,
+                                        children: List.generate(
+                                          diet.length,
+                                              (index) {
+                                            return foodPreferencesOne(index + 24, diet[index]['name']!,imgpath: diet[index]['imgPath']);
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.5.h),
+                                      customText(
+                                        text: "Food Preferences",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: blackColor,
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      customText(
+                                        text: "Liked Cuisines:",
+                                        fontSize: 14.sp,
+                                        color: blackColor,
+                                      ),
+                                      Wrap(
+                                        spacing: 5,
+                                        runSpacing: 1,
+                                        children: List.generate(
+                                          likedCuisine.length,
+                                              (index) => foodPreferencesOne(index + 28, likedCuisine[index]['name']!,imgpath: likedCuisine[index]['imgPath']),
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      customText(
+                                        text: "Disliked Ingredients",
+                                        fontSize: 14.sp,
+                                        color: blackColor,
+                                      ),
+                                      Wrap(
+                                        spacing: 5,
+                                        runSpacing: 1,
+                                        children: List.generate(
+                                          dislikedIngredient.length,
+                                              (index) => foodPreferencesOne(index + 35, dislikedIngredient[index]["name"]!,imgpath: dislikedIngredient[index]["imgPath"]),
+                                        ),
+                                      ),
+                                      controller.isUser.value ?
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 2.h),
+                                          customText(
+                                            text: "Accessibility Needs",
+                                            fontSize: 15.sp,
+                                            color: blackColor,
+                                          ),
+                                          Wrap(
+                                            spacing: 5,
+                                            runSpacing: 1,
+                                            children: List.generate(
+                                              eventAccesibilityList.length,
+                                                  (index) => eventAccesibillityWidget(
+                                                eventAccesibilityList[index],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ):
+                                      SizedBox.shrink(),
+
+                                    ],
+                                  ),
+                                ),
+                                Center(
+                                    child: SingleChildScrollView(
+                                        child: controller.isUser.value ? Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w, vertical: 1.h),
+                                              child: buildPostCard(
+                                                profileImage: "assets/png/chat_images/user5.png",
+                                                userName: "Sarah Scarnio",
+                                                postTime: "2hrs ago",
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                                postImage: "assets/png/chat_images/group_profile_pic.png",
+                                              ),
+                                            ),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1.4k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                              ),
+                                            ),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1.4k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                              ),
+                                            ),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1.4k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                              ),
+                                            ),
+                                          ],
+                                        ):Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w, vertical: 1.h),
+                                              child: buildPostCard(
+                                                profileImage: "assets/png/chat_images/user5.png",
+                                                userName: "Sarah Scarnio",
+                                                postTime: "2hrs ago",
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                                postImage: "assets/png/chat_images/group_profile_pic.png",
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                     )
                                 ),
                                 SingleChildScrollView(
