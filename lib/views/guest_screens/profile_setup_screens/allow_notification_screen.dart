@@ -60,7 +60,7 @@ class AllowNotificationScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 1.h), // Adjust as needed
                     child: buttonWidget(
-                      "Allow Notification",
+                      "Allow Notifications",
                       whiteColor,
                       colors: greenColor,
                       onTap: () {

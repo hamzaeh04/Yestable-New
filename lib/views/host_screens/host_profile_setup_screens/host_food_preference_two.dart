@@ -18,8 +18,8 @@ class HostFoodPreferenceTwo extends StatelessWidget {
 
   final List<String> titles = [
     "Access To Quiet Space Away From Main Event",
-    "Can Accomodate Larger Seating",
-    "Space is Whealchair Accesible",
+    "Can Accommodate Larger Seating",
+    "Space is Wheelchair Accessible",
     "ASL Interpreter Available Upon Request",
     "Vegan Menu Option",
   ];
@@ -70,7 +70,7 @@ class HostFoodPreferenceTwo extends StatelessWidget {
                   backButton(),
                   SizedBox(height: 1.h),
                   customText(
-                    text: "We're Here for You!",
+                    text: "We're Here For You!",
                     fontSize: 24.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,

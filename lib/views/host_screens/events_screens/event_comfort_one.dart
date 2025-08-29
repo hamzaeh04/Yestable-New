@@ -15,8 +15,8 @@ class EventComfortOne extends StatelessWidget {
 
   final List<String> titles = [
     "Access To Quiet Space Away From Main Event",
-    "Can Accomodate Larger Seating",
-    "Space is Whealchair Accesible",
+    "Can Accommodate Larger Seating",
+    "Space is Wheelchair Accessible",
     "ASL Interpreter Available Upon Request",
     "Vegan Menu Option",
   ];

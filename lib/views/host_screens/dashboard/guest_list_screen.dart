@@ -116,7 +116,7 @@ class GuestListScreen extends StatelessWidget {
                               Image.asset("assets/png/icons/group_list_icon.png",height: 18.sp,),
                               SizedBox(width: 3.w),
                               customText(
-                                text: "Create A group List (Eg: family, Friends )",
+                                text: "Create A group List (Eg: family, Friends)",
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w400,
                               ),

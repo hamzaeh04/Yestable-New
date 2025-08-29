@@ -66,7 +66,7 @@ class ProfileEditScreen extends StatelessWidget {
                           color: whiteColor
                       ),
                       customText(
-                        text: "Your seat at the table start here",
+                        text: "Your seat at the table starts here",
                         fontWeight: FontWeight.w400,
                         fontSize: 14.sp,
                           color: whiteColor

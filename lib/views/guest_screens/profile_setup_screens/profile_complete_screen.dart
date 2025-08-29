@@ -19,7 +19,7 @@ class ProfileCompleteScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             customText(
-              text: "Yes You did it!",
+              text: "Yes! You did it!",
               fontSize: 28.sp,
               fontFamily: "CormorantGaramond",
               fontWeight: FontWeight.w600,
@@ -41,7 +41,7 @@ class ProfileCompleteScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w), // Adjust as needed
               child: buttonWidget(
-                "Allow Notification",
+                "Get Started",
                 whiteColor,
                 colors: greenColor,
                 onTap: () {

@@ -17,8 +17,8 @@ class FoodPreferencesTwo extends StatelessWidget {
 final ProfileController controller = Get.find<ProfileController>();
   final List<String> titles = [
     "Access To Quiet Space Away From Main Event",
-    "Can Accomodate Larger Seating",
-    "Space is Whealchair Accesible",
+    "Can Accommodate Larger Seating",
+    "Space is Wheelchair Accessible",
     "ASL Interpreter Available Upon Request",
     "Vegan Menu Option",
     "Gluten-Free Menu Option",
@@ -71,7 +71,7 @@ final ProfileController controller = Get.find<ProfileController>();
                   backButton(),
                   SizedBox(height: 1.h),
                   customText(
-                    text: "We're Here for You!",
+                    text: "We're Here For You!",
                     fontSize: 24.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
@@ -259,7 +259,7 @@ final ProfileController controller = Get.find<ProfileController>();
                 Padding(
                   padding:EdgeInsets.symmetric(horizontal: 6.w),
                   child: customText(
-                    text: "Would You Like To Let Your Guest Know That You Will Be Offering: (Check All That Apply)",
+                    text: "Would You Like To Let Your Guests Know That You Will Be Offering: (Check All That Apply)",
                     fontSize: 20.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
@@ -323,7 +323,7 @@ final ProfileController controller = Get.find<ProfileController>();
                 Padding(
                   padding:EdgeInsets.symmetric(horizontal: 6.w),
                   child: customText(
-                    text: "Would You Like To Let Your Guest Know About: (Check All That Apply)",
+                    text: "Would You Like To Let Your Guests Know About: (Check All That Apply)",
                     fontSize: 20.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
@@ -388,7 +388,7 @@ final ProfileController controller = Get.find<ProfileController>();
                 Padding(
                   padding:EdgeInsets.symmetric(horizontal: 6.w),
                   child: customText(
-                    text: "May Guest Contact You About Dietry Or Access Concerns",
+                    text: "May Guests Contact You About Dietary Or Access Concerns",
                     fontSize: 20.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
