@@ -10,8 +10,9 @@ class SplashTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final WelcomeController controller = Get.find<WelcomeController>();
-    controller.startNavigationTimer("getstarted");
+    Get.put(WelcomeController("getstarted"), tag: "splash2");
+
+
 
     return Scaffold(
       body: Stack(

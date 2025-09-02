@@ -7,16 +7,18 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/utils/App_Routing.dart';
 import 'package:yestable/utils/init_binding.dart';
+import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
 
 void main() {
-  Get.put(AuthController());
-  Get.put(ProfileController());
-  Get.lazyPut(() => NavigationController());
-  runApp(const MyApp());
+  Get.put(AuthController(), permanent: true);
+  Get.put(ProfileController(), permanent: true);
+  Get.lazyPut(() => NavigationController(), fenix: true);
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

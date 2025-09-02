@@ -26,6 +26,7 @@ void showNewPostBottomSheet(BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       // Top Row: Title & Close
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
