@@ -7,6 +7,7 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/utils/App_Routing.dart';
 import 'package:yestable/utils/init_binding.dart';
+import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
 
 void main() {
   Get.put(AuthController());
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return GetMaterialApp(
           initialBinding: Binding(),
-          initialRoute: '/',
+          // initialRoute: '/',
+          home: SplashScreen(),
           getPages: AppRoutes.routes,
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,

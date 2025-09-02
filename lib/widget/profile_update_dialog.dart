@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/share_with_friends_bottomsheet.dart';
 import 'package:yestable/widget/update_sent_sucessfull_dialog.dart';
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
@@ -77,12 +78,17 @@ void profileUpdateDialog(BuildContext context) {
                     hostToNotifyWidget(isSelected: false,path: "assets/png/profile_update_image2.png",hostTitle: "Thanksgiving at David's",date: "Nov 28"),
                     SizedBox(height: 1.h),
                     Center(
-                      child: customText(
-                          text: "Share via Link another method",
-                          fontWeight: FontWeight.w400,
-                          fontSize: 15.sp,
-                          fontFamily: "WorkSans",
+                      child: InkWell(
+                        onTap: (){
+                          showShareWithFriendsBottomSheet(context);
+                        },
+                        child: customText(
+                            text: "Share via Link another method",
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15.sp,
+                            fontFamily: "WorkSans",
 
+                        ),
                       ),
                     ),
                     SizedBox(height: 2.h),

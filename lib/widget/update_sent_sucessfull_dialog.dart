@@ -42,14 +42,14 @@ void updateSentSuccessfull(BuildContext context) {
                   children: [
                     SizedBox(height: 1.h),
                     customText(
-                      text: "Update Sent Successfully",
+                      text: "Success!",
                       fontWeight: FontWeight.w600,
                       fontSize: 21.sp,
                       fontFamily: "CormorantGaramond",
                     ),
                     SizedBox(height: 1.h),
                     customText(
-                        text: "Your profile updates have been shared with the selected hosts.",
+                        text: "Your profile updates have been shared with the selected host(s)",
                         fontWeight: FontWeight.w400,
                         fontSize: 15.sp,
                         fontFamily: "WorkSans",
