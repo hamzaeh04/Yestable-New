@@ -27,6 +27,8 @@ class NavigationController extends GetxController {
   }
   // Track "added" status for each user
   var isFriendAdded = <int, bool>{}.obs;
+  var expandedNotes = <int, bool>{}.obs;
+  var isNotesClicked = <int, bool>{}.obs;
 
   RxBool isSelected = false.obs;
 
@@ -51,6 +53,21 @@ class NavigationController extends GetxController {
   // Check if added
   bool isAdded(int index) {
     return isFriendAdded[index] ?? false;
+  }
+
+  // Toggle notes
+  void toggleNotes(int index) {
+    expandedNotes[index] = !(expandedNotes[index] ?? false);
+  }
+
+
+  void isNotesToggle(int index){
+    isNotesClicked[index] = !(isNotesClicked[index] ?? true);
+  }
+
+  // Check if the notes expanded or not
+  bool isNotesExpanded(int index) {
+    return expandedNotes[index] ?? false;
   }
 
 
