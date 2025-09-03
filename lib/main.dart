@@ -10,9 +10,9 @@ import 'package:yestable/utils/init_binding.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
 
 void main() {
-  Get.put(AuthController(), permanent: true);
-  Get.put(ProfileController(), permanent: true);
-  Get.lazyPut(() => NavigationController(), fenix: true);
+  Get.put(AuthController());
+  Get.put(ProfileController());
+  Get.lazyPut(() => NavigationController());
 
   runApp(MyApp());
 }

@@ -7,6 +7,8 @@ class Binding implements Bindings {
     Get.putAsync<SharedPreferences>(() async {
       final prefs = await SharedPreferences.getInstance();
       return prefs;
-    }, permanent: true);
+    },
+        // permanent: true
+    );
   }
 }
