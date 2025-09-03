@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return GetMaterialApp(
           initialBinding: Binding(),
-          initialRoute: '/',
+          // initialRoute: '/',
+          home: SplashScreen(),
           getPages: AppRoutes.routes,
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,

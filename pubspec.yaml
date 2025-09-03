@@ -88,6 +88,7 @@ flutter:
      - assets/png/event_widget_icon/
      - assets/png/new_guest_illustrations/
      - assets/png/guest_list_images/
+     - assets/png/social_icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
