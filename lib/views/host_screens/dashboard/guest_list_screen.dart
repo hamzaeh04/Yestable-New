@@ -390,7 +390,7 @@ class GuestListScreen extends StatelessWidget {
           //       ),
           //     ),
           //   ],
-          // )
+          // ),
           SizedBox(height: 1.h,child:
           Padding(
             padding: EdgeInsets.only(left: 20.w),

@@ -9,6 +9,7 @@ class ProfileController extends GetxController {
   var foodNationality = <int>{}.obs;
   var other = false.obs;
   var isChecked = false.obs;
+  var isRadioChecked = false.obs;
 
   RxBool isArrowRotated = false.obs;
   RxBool isExpanded = false.obs;
@@ -26,6 +27,10 @@ class ProfileController extends GetxController {
 
   void toggleDropdown() {
     isExpanded.value = !isExpanded.value;
+  }
+
+  void toggleRadioButton(){
+    isRadioChecked.value = !isRadioChecked.value;
   }
 
   void selectOption(String value) {

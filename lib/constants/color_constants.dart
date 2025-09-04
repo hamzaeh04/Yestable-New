@@ -27,6 +27,7 @@ const Color greyTextColor = Color(0xFF666666);
 const Color greyBorderColor = Color(0xFFCFCFCF);
 const Color eventDinnerBrownColor = Color(0xFFE4DAD6);
 const Color friendTextfieldColor = Color(0xFFE8DAD5);
+const Color radioButtonBlueColor = Color(0xFF1677FF);
 
 
 

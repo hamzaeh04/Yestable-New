@@ -5,6 +5,8 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/back_button_widget.dart';
+import 'package:yestable/widget/custom_checkBox.dart';
+import 'package:yestable/widget/custom_radio_button.dart';
 
 import '../../../constants/constants_widgets.dart';
 import '../../../widget/button_widget.dart';
@@ -54,6 +56,8 @@ class VerificationCodeScreen extends StatelessWidget {
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
                   ),
+                  // customCheckBox(),
+                  // customRadioButton(),
                   SizedBox(height: 1.h),
                   Row(
                     children: [
