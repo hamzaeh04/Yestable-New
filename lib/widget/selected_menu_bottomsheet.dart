@@ -9,7 +9,7 @@ void selectedMenuBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: const Color(0xFFF6F0EC),
+    backgroundColor: whiteColor,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(25.sp)),
     ),

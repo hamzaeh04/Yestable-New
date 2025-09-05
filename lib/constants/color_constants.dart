@@ -28,6 +28,9 @@ const Color greyBorderColor = Color(0xFFCFCFCF);
 const Color eventDinnerBrownColor = Color(0xFFE4DAD6);
 const Color friendTextfieldColor = Color(0xFFE8DAD5);
 const Color radioButtonBlueColor = Color(0xFF1677FF);
+const Color yesGptBorderColor = Color(0xFFDFDADA);
+const Color yesGptMsgTextColor = Color(0xFF0D082C);
+const Color floatingActionTextColor = Color(0xFF2C608F);
 
 
 

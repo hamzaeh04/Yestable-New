@@ -628,7 +628,7 @@ Widget menuItem({
   bool? cheaque,
 }) {
   return Container(
-    margin: EdgeInsets.symmetric(vertical: 1.5.h),
+    margin: EdgeInsets.symmetric(vertical: 0.5.h),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -652,9 +652,9 @@ Widget menuItem({
               SizedBox(height: 1.h),
               Row(
                 children: [
-                  foodPreferenceBox(text: text1, imgPath: boximg1),
+                  foodPreferenceBox(text: text1, imgPath: boximg1,bgColor: whiteColor),
                   SizedBox(width: 3.w),
-                  foodPreferenceBox(text: text2, imgPath: boximg2),
+                  foodPreferenceBox(text: text2, imgPath: boximg2,bgColor: whiteColor),
                 ],
               )
             ],
@@ -668,7 +668,7 @@ Widget menuItem({
               borderRadius: BorderRadius.circular(2.w),
               child: Image.asset(
                 imagePath,
-                height: 15.h,
+                height: 13.h,
                 width: 12.h,
                 fit: BoxFit.cover,
               ),
@@ -706,11 +706,12 @@ Widget menuItem({
 Widget foodPreferenceBox({
   required String text,
   required String imgPath,
+  Color? bgColor,
 }) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
     decoration: BoxDecoration(
-      color: backgroundColor,
+      color: bgColor!=null ? bgColor : backgroundColor,
       borderRadius: BorderRadius.circular(30.w),
       border: Border.all(
         color: Colors.grey, // 👈 Grey border color

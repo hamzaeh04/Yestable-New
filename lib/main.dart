@@ -5,6 +5,7 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/controllers/yes_gpt_controller.dart';
 import 'package:yestable/utils/App_Routing.dart';
 import 'package:yestable/utils/init_binding.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
@@ -12,6 +13,7 @@ import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart'
 void main() {
   Get.put(AuthController());
   Get.put(ProfileController());
+  Get.put(YesGptController());
   Get.lazyPut(() => NavigationController());
 
   runApp(MyApp());

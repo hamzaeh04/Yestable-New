@@ -146,6 +146,9 @@ class FoodMenuScreen extends StatelessWidget {
                                       width: 43.w,
                                       height: 4.5.h,
                                       fontsize: 14.sp,
+                                      onTap: (){
+                                        Get.toNamed("yesgptscreen");
+                                      }
                                     ),
                                     buttonWidget(
                                       "Manually Picked",

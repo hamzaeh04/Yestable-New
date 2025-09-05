@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:yestable/views/guest_screens/auth_screens/verification_code_screen.dart';
 import 'package:yestable/views/guest_screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:yestable/views/guest_screens/chat_screens/chat_message_screen.dart';
+import 'package:yestable/views/guest_screens/chat_screens/yes_gpt_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/add_freind_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/event_details_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/my_profile_screen.dart';
@@ -77,6 +78,7 @@ class AppRoutes {
     GetPage(name: '/allowhostnotificationscreen', page: () => AllowHostNotificationScreen()),
     GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
     GetPage(name: '/disclaimerscreen', page: () => DisclaimerScreen()),
+    GetPage(name: '/yesgptscreen', page: () => YesGptScreen()),
 
   ];
 }
