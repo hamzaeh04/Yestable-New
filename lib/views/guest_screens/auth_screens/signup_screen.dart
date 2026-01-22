@@ -43,7 +43,7 @@ class SignupScreen extends StatelessWidget {
                 SizedBox(height: 4.h),
                 customText(
                   text: "Sign Up Now",
-                  fontSize: 24.sp,
+                  fontSize: 23.sp,
                   fontFamily: "CormorantGaramond",
                   fontWeight: FontWeight.w600,
                 ),
@@ -64,7 +64,7 @@ class SignupScreen extends StatelessWidget {
                     Expanded(
                         child: Divider(
                           thickness: 0.7,
-                          color: greenColor,
+                          color: blueColor,
                         ),
                     ),
                     Padding(
@@ -78,7 +78,7 @@ class SignupScreen extends StatelessWidget {
                     Expanded(
                       child: Divider(
                         thickness: 0.7,
-                        color: greenColor,
+                        color: blueColor,
                       ),
                     ),
                   ],
@@ -87,20 +87,20 @@ class SignupScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    socialIconWidget("Google", '$google',width: 40.w,borderColor: greenColor),
-                    socialIconWidget("Apple ID", '$apple',width: 40.w,borderColor: greenColor),
+                    socialIconWidget("Google", '$google',width: 40.w,borderColor: greenColor,borderWidth: 0.17.w),
+                    socialIconWidget("Apple ID", '$apple',width: 40.w,borderColor: greenColor,borderWidth: 0.17.w),
                   ],
                 ),
                 SizedBox(height: 12.h),
                 customText(
                     text: "By Continuing, You agree To Our",
-                    fontWeight: FontWeight.w400,
-                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15.4.sp,
                   color: greenColor,
                 ),
                 SizedBox(height: 1.h),
                 SizedBox(
-                  height: 1.1.h, // Make sure there's enough height for the divider
+                  height: 1.3.h, // Make sure there's enough height for the divider
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +108,7 @@ class SignupScreen extends StatelessWidget {
                       customText(
                         text: "TERMS OF SERVICE",
                         fontWeight: FontWeight.w400,
-                        fontSize: 12.sp,
+                        fontSize: 12.5.sp,
                         color: greenColor,
                       ),
                       VerticalDivider(
@@ -119,7 +119,7 @@ class SignupScreen extends StatelessWidget {
                       customText(
                         text: "PRIVACY POLICY",
                         fontWeight: FontWeight.w400,
-                        fontSize: 12.sp,
+                        fontSize: 12.5.sp,
                         color: greenColor,
                       ),
                       VerticalDivider(
@@ -130,7 +130,7 @@ class SignupScreen extends StatelessWidget {
                       customText(
                         text: "CONTENT POLICIES",
                         fontWeight: FontWeight.w400,
-                        fontSize: 12.sp,
+                        fontSize: 12.5.sp,
                         color: greenColor,
                       ),
                     ],

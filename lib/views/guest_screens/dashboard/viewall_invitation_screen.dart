@@ -33,7 +33,7 @@ class ViewallInvitationScreen extends StatelessWidget {
                   customText(
                     text: "Invitations",
                     fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: whiteColor,
                     fontFamily: "CormorantGaramond",
                   ),

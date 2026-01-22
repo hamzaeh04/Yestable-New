@@ -11,7 +11,7 @@ Widget eventAccesibillityWidget(String title, {int? index}) {
         // your onTap logic
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.7.h),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(30.sp),
@@ -23,7 +23,7 @@ Widget eventAccesibillityWidget(String title, {int? index}) {
         child: customText(
           text: title,
           fontSize: 14.sp,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           color: blackColor,
         ),
       ),

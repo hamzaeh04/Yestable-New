@@ -24,22 +24,38 @@ class CommunityScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Row(
                 children: [
-                  homeIconWidget(
-                    icon: Icons.arrow_back_ios_new,
-                    color: lightgreenColor,
-                    iconsize: 16.sp,
-                    onTap: () {
-                      controller.goToHome();
-                    },
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      customText(
+                          text: "Hi, Sarah Scarnio!",
+                          fontSize: 19.sp,
+                          fontFamily: "CormorantGaramond",
+                          fontWeight: FontWeight.w500,
+                          color: whiteColor,
+                          height: 0.1.h
+                      ),
+                      customText(
+                        text: "May 01, 2025",
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: whiteColor,
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  InkWell(
+                      onTap: (){
+                        controller.goTSearchScreen();
+                      },
+                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
                   ),
                   SizedBox(width: 2.w),
-                  customText(
-                    text: "Community Profile",
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                    color: whiteColor,
-                    fontFamily: "CormorantGaramond",
-                  ),
+                  InkWell(
+                      onTap: (){
+                        controller.goToNotificationPage();
+                      },
+                      child: homeIconWidget(icon: Icons.notifications)),
                 ],
               ),
             ),
@@ -77,8 +93,6 @@ class CommunityScreen extends StatelessWidget {
                                   fontFamily: "CormorantGaramond",
                                   fontWeight: FontWeight.w600,
                                 ),
-                                SizedBox(height: 2.h),
-
                                 /// 👇 Stack with 2 Posts + Line Image Between
                                 Stack(
                                   alignment: Alignment.center,
@@ -87,7 +101,6 @@ class CommunityScreen extends StatelessWidget {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            controller.addtoCommunityProfile();
                                           },
                                           child: buildPostCard(
                                             profileImage: "assets/png/chat_images/user5.png",
@@ -98,10 +111,8 @@ class CommunityScreen extends StatelessWidget {
                                             postImage: "assets/png/chat_images/group_profile_pic.png",
                                           ),
                                         ),
-                                        SizedBox(height: 5.h), // space for line image
                                         GestureDetector(
                                           onTap: () {
-                                            controller.addtoCommunityProfile();
                                           },
                                           child: buildPostCard(
                                             profileImage: 'assets/png/chat_images/user5.png',
@@ -118,7 +129,7 @@ class CommunityScreen extends StatelessWidget {
 
                                     /// Line image positioned between cards
                                     Positioned(
-                                      top: 8.5.h, // adjust this if needed
+                                      top: 4.h, // adjust this if needed
                                       left: -83.w,
                                       right: 0,
                                       child: Center(
@@ -142,7 +153,7 @@ class CommunityScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 5.w),
                             child: GestureDetector(
                               onTap: () {
-                                controller.addtoCommunityProfile();
+                                // controller.addtoCommunityProfile();
                               },
                               child: buildPostCard(
                                 profileImage: 'assets/png/chat_images/user5.png',
@@ -155,6 +166,7 @@ class CommunityScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                          SizedBox(height: 7.h)
                         ],
                       ),
                     ),

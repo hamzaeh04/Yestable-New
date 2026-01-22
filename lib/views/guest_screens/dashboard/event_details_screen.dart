@@ -4,9 +4,6 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
-import 'package:yestable/views/guest_screens/profile_setup_screens/host_profile_reviews.dart';
-import 'package:yestable/widget/button_widget.dart';
-import 'package:yestable/widget/event_posted_dialog.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
 import '../../../constants/constants_widgets.dart';
@@ -94,18 +91,19 @@ final NavigationController controller = Get.find<NavigationController>();
                     children: [
                       customText(
                         text: "Gizelle Dinner Event",
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: "CormorantGaramond",
                         color: blackColor,
                       ),
+
                       SizedBox(height: 0.5.h),
                       customText(
                         text:
                             "Lorem ipsum dolor sit amet consectetur. Viverra tellus\neget magna sapien. Faucibus nibh mauris mattis aliquam\nproin pellentesque sed done.",
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
-                        color: Colors.grey[700],
+                        color: darkGreyColor,
                       ),
                       SizedBox(height: 1.h),
                     ],
@@ -115,20 +113,57 @@ final NavigationController controller = Get.find<NavigationController>();
                 Divider(),
 
                 Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      customText(
+                        text: "Invitation Message",
+                        fontSize: 19.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "CormorantGaramond",
+                        color: blackColor,
+                      ),
+
+                      SizedBox(height: 0.5.h),
+                      customText(
+                        text:
+                        "With hearts full of joy, we invite you to join us in celebrating the first birthday of our beloved [Baby’s Name]. This special milestone means so much to us, and your presence will make the day even more memorable.",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: darkGreyColor,
+                      ),
+                      SizedBox(height: 1.h),
+                    ],
+                  ),
+                ),
+                Divider(),
+
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
                   child: Theme(
                     data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                     child: ExpansionTile(
                       tilePadding: EdgeInsets.zero,
                       childrenPadding: EdgeInsets.only(bottom: 1.h),
-                      title: customText(
-                        text: "Event Comfort & Accessibility",
-                        fontSize: 19.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "CormorantGaramond",
-                        color: blackColor,
+                      dense: true,
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: customText(
+                              text: "Event Comfort & Accessibility",
+                              fontSize: 18.5.sp,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "CormorantGaramond",
+                              color: blackColor,
+                              maxLines: 1,
+                              overFlow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                       children: [
+                        // Event Accessibility List
                         Wrap(
                           spacing: 5,
                           runSpacing: 1,
@@ -139,9 +174,10 @@ final NavigationController controller = Get.find<NavigationController>();
                             ),
                           ),
                         ),
+
                         Divider(),
 
-                        /// 👇 FIXED: Align "Items Are Not Allowed" section to start in cross-axis
+                        // Items Are Not Allowed Section
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -151,10 +187,12 @@ final NavigationController controller = Get.find<NavigationController>();
                                 children: [
                                   customText(
                                     text: "Items Are Not Allowed",
-                                    fontSize: 19.sp,
+                                    fontSize: 18.5.sp,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: "CormorantGaramond",
                                     color: blackColor,
+                                    maxLines: 1,
+                                    overFlow: TextOverflow.ellipsis,
                                   ),
                                   SizedBox(height: 1.h),
                                   Wrap(
@@ -178,37 +216,42 @@ final NavigationController controller = Get.find<NavigationController>();
                   ),
                 ),
 
+
                 Divider(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        "assets/png/chat_images/user1.png",
-                        height: 9.h,
-                        width: 14.w,
-                      ),
-                      SizedBox(width: 3.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          customText(
-                            text: "Gizelle Jekronia",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "CormorantGaramond",
-                            color: blackColor,
-                          ),
-                          SizedBox(height: 0.1.h),
-                          customText(
-                            text: "Event Host",
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: blackColor,
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: InkWell(
+                    onTap: (){
+                      Get.toNamed("hostprofilepcreen");
+                    },
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/png/chat_images/user1.png",
+                          height: 9.h,
+                          width: 14.w,
+                        ),
+                        SizedBox(width: 3.w),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            customText(
+                              text: "Gizelle Jekronia",
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: blackColor,
+                            ),
+                            SizedBox(height: 0.1.h),
+                            customText(
+                              text: "Event Host",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: blackColor,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
@@ -233,9 +276,9 @@ final NavigationController controller = Get.find<NavigationController>();
                         customText(
                           text: "May 02, 2025",
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "CormorantGaramond",
+                          fontWeight: FontWeight.w500,
                           color: blackColor,
+                          height: 0.1.h,
                         ),
                             SizedBox(height: 0.5.h),
                         customText(
@@ -248,7 +291,7 @@ final NavigationController controller = Get.find<NavigationController>();
                     ],
                   ),
                 ),
-                SizedBox(height: 1.h),
+                SizedBox(height: 1.5.h),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 5.w,
@@ -270,9 +313,9 @@ final NavigationController controller = Get.find<NavigationController>();
                             customText(
                               text: "IN HOUSES",
                               fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "CormorantGaramond",
+                              fontWeight: FontWeight.w500,
                               color: blackColor,
+                              height: 0.1.h,
                             ),
                             SizedBox(height: 0.5.h),
                             customText(
@@ -299,20 +342,21 @@ final NavigationController controller = Get.find<NavigationController>();
                         customText(
                           text: "25 People Are Coming",
                           fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                           color: blackColor,
+                          fontFamily: "CormorantGaramond",
                         ),
                         SizedBox(height: 1.h),
                         SizedBox(
                           height: 4.h,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            itemCount: 10,
+                            itemCount: 9,
                             separatorBuilder: (_, __) => SizedBox(width: 2.w),
                             itemBuilder: (_, index) {
                               final image = Image.asset(
                                 'assets/png/chat_images/user${(index%5) + 1}.png',
-                                width: 4.h,
+                                width: 3.8.h,
                                 height: 4.h,
                                 fit: BoxFit.cover,
                               );
@@ -322,7 +366,7 @@ final NavigationController controller = Get.find<NavigationController>();
                                 child: Stack(
                                   children: [
                                     image,
-                                    if (index == 9)
+                                    if (index == 8)
                                       Positioned.fill(
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -330,10 +374,11 @@ final NavigationController controller = Get.find<NavigationController>();
                                           ),
                                           child: Center(
                                             child: customText(
-                                              text: "10+",
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: whiteColor,
+                                                text: "10+",
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: whiteColor,
+                                                fontFamily: "WorkSans2"
                                             ),
                                           ),
                                         ),
@@ -356,7 +401,7 @@ final NavigationController controller = Get.find<NavigationController>();
                     children: [
                       customText(
                         text: "Where You’ll Be",
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: "CormorantGaramond",
                         color: blackColor,
@@ -370,7 +415,33 @@ final NavigationController controller = Get.find<NavigationController>();
                       SizedBox(height: 1.h),
                       Container(
                         child: Image.asset("assets/png/event_detail_img/event_detial_map.png"),
-                      )
+                      ),
+                      SizedBox(height: 1.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset("assets/png/icons/round_watch.png", width: 3.w,),
+                          SizedBox(width: 1.w,),
+                          Column(
+                            children: [
+                              customText(
+                                text: 'Parking Details',
+                                fontSize: 18.sp,
+                                fontFamily: 'CormorantGaramond'
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(width: 4.w,),
+                          customText(
+                            text: 'Street parking after 6pm; lot behind venue.',
+                            fontSize: 14.sp,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -384,7 +455,7 @@ final NavigationController controller = Get.find<NavigationController>();
                     children: [
                       customText(
                         text: "Event Menu",
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: "CormorantGaramond",
                         color: blackColor,
@@ -402,17 +473,18 @@ final NavigationController controller = Get.find<NavigationController>();
                           customText(
                             text: "Your Dietry Compactibility Score",
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: greenColor,
                           ),
                           customText(
                             text: "95%",
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             color: greenColor,
                           ),
                         ],
                       ),
+
                       SizedBox(height: 1.h),
                       LinearProgressIndicator(
                         backgroundColor: whiteColor, // Track color
@@ -462,7 +534,8 @@ final NavigationController controller = Get.find<NavigationController>();
                               text1: "Vegetarian",
                               text2: "Containt Dairy",
                                 boximg1: "assets/png/event_food_image/brocolli.png",
-                                boximg2: "assets/png/event_food_image/milk.png"
+                                boximg2: "assets/png/event_food_image/milk.png",
+                                containerColor: backgroundColor
                             ),
                                 Divider(),
                                 menuItem(
@@ -472,7 +545,8 @@ final NavigationController controller = Get.find<NavigationController>();
                                     text1: "Gluten Free",
                                     text2: "Shellfish",
                                   boximg1: "assets/png/event_food_image/glutenfree.png",
-                                  boximg2: "assets/png/event_food_image/shell.png"
+                                  boximg2: "assets/png/event_food_image/shell.png",
+                                  containerColor: backgroundColor
                                 ),
                                 Divider(),
                                 menuItem(
@@ -482,7 +556,8 @@ final NavigationController controller = Get.find<NavigationController>();
                                     text1: "Vegen",
                                     text2: "Nut Free",
                                     boximg1: "assets/png/event_food_image/vegan.png",
-                                    boximg2: "assets/png/event_food_image/nutfree.png"
+                                    boximg2: "assets/png/event_food_image/nutfree.png",
+                                    containerColor: backgroundColor
                                 ),
                                 Divider(),
                                 menuItem(
@@ -492,7 +567,8 @@ final NavigationController controller = Get.find<NavigationController>();
                                     text1: "Vegetarian",
                                     text2: "Containt Dairy",
                                     boximg1: "assets/png/event_food_image/glutenfree.png",
-                                    boximg2: "assets/png/event_food_image/milk.png"
+                                    boximg2: "assets/png/event_food_image/milk.png",
+                                    containerColor: backgroundColor
                                 ),
                                 Divider(),
                                 menuItem(
@@ -502,7 +578,8 @@ final NavigationController controller = Get.find<NavigationController>();
                                     text1: "Gluten Free",
                                     text2: "Shellfish",
                                     boximg1: "assets/png/event_food_image/vegan.png",
-                                    boximg2: "assets/png/event_food_image/milk.png"
+                                    boximg2: "assets/png/event_food_image/milk.png",
+                                    containerColor: backgroundColor
                                 ),
                                 Divider(),
                               ]
@@ -626,6 +703,8 @@ Widget menuItem({
   required String boximg1,
   required String boximg2,
   bool? cheaque,
+  Color? containerColor,
+  VoidCallback? ontap,
 }) {
   return Container(
     margin: EdgeInsets.symmetric(vertical: 0.5.h),
@@ -636,25 +715,26 @@ Widget menuItem({
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 0.8.h,),
               customText(
                 text: title,
-                fontSize: 19.sp,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 fontFamily: "CormorantGaramond",
                 color: blackColor,
               ),
-              SizedBox(height: 0.5.h),
+              SizedBox(height: 0.h),
               customText(
                 text: subtitle,
                 fontSize: 14.sp,
                 color: darkGreyColor,
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 1.5.h),
               Row(
                 children: [
-                  foodPreferenceBox(text: text1, imgPath: boximg1,bgColor: whiteColor),
+                  foodPreferenceBox(text: text1, imgPath: boximg1,bgColor: containerColor),
                   SizedBox(width: 3.w),
-                  foodPreferenceBox(text: text2, imgPath: boximg2,bgColor: whiteColor),
+                  foodPreferenceBox(text: text2, imgPath: boximg2,bgColor: containerColor),
                 ],
               )
             ],
@@ -708,38 +788,41 @@ Widget foodPreferenceBox({
   required String imgPath,
   Color? bgColor,
 }) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-    decoration: BoxDecoration(
-      color: bgColor!=null ? bgColor : backgroundColor,
-      borderRadius: BorderRadius.circular(30.w),
-      border: Border.all(
-        color: Colors.grey, // 👈 Grey border color
-        width: 0.1.w,
-      )
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          imgPath,
-          height: 16.sp,
-          width: 16.sp,
-          fit: BoxFit.contain,
-        ),
-        SizedBox(width: 2.w),
-        Flexible(
-          child: Text(
-            text,
-            style: TextStyle(
+  return InkWell(
+    onTap: (){
+      print(bgColor);
+    },
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.8.h),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(30.w),
+        border: Border.all(
+          color: Colors.grey, // 👈 Grey border color
+          width: 0.1.w,
+        )
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            imgPath,
+            height: 16.sp,
+            width: 16.sp,
+            fit: BoxFit.contain,
+          ),
+          SizedBox(width: 2.w),
+          Flexible(
+            child: customText(
+              text: text,
               fontSize: 13.sp,
               fontWeight: FontWeight.w500,
               color: Colors.black,
+              overFlow: TextOverflow.ellipsis,
             ),
-            overflow: TextOverflow.ellipsis,
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

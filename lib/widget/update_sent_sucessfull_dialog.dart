@@ -23,8 +23,8 @@ void updateSentSuccessfull(BuildContext context) {
               children: [
                 SizedBox(height: 2.h),
                 Container(
-                  height: 20.w,
-                  width: 20.w,
+                  height: 22.w,
+                  width: 22.w,
                   decoration: BoxDecoration(
                     color: containerBlueColor,
                     shape: BoxShape.circle,

@@ -33,7 +33,7 @@ void showCustomOtherDialog({
                 Expanded(
                   child: customText(
                     text: "Not on the list? Tell us\nwhat to skip!",
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     fontFamily: "CormorantGaramond",
                     height: 0.13.h,

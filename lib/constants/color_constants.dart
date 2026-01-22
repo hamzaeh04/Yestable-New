@@ -31,6 +31,8 @@ const Color radioButtonBlueColor = Color(0xFF1677FF);
 const Color yesGptBorderColor = Color(0xFFDFDADA);
 const Color yesGptMsgTextColor = Color(0xFF0D082C);
 const Color floatingActionTextColor = Color(0xFF2C608F);
+const Color splashTwoGreenColor = Color(0xFF79C2C5);
+const Color foodBoundariesBorderGreenColor = Color(0xFF5D8783);
 
 
 

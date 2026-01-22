@@ -12,29 +12,32 @@ Widget chatListWidget (String? imagePath,String? groupName, String? lastMsg, Str
           Get.toNamed("chatmessagescreen");
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset("$imagePath",height: 6.h,width: 15.w),
+            Image.asset("$imagePath",height: 7.h,width: 12.w),
+            SizedBox(width: 2.w,),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 customText(
                   text: groupName,
                   fontSize: 17.sp,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: blackColor,
-                  fontFamily: "CormorantGaramond"
+                  fontFamily: "CormorantGaramond",
+                  height: 1.1
                 ),
                 SizedBox(height: 0.5.h,),
                 customText(
                   text: lastMsg,
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   color: blackColor,
+                  height: 1.1
                 ),
 
               ],
             ),
+            Spacer(),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -60,6 +63,7 @@ Widget chatListWidget (String? imagePath,String? groupName, String? lastMsg, Str
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                       color: whiteColor,
+                      fontFamily: 'WorkSans2'
                     ),
                   ),
                 )

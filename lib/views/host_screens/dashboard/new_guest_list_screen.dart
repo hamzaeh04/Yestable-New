@@ -38,7 +38,7 @@ class NewGuestListScreen extends StatelessWidget {
                   customText(
                     text: "Guest List",
                     fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: whiteColor,
                     fontFamily: "CormorantGaramond",
                   ),
@@ -118,8 +118,7 @@ class NewGuestListScreen extends StatelessWidget {
                         child: ListView(
                           padding: EdgeInsets.symmetric(vertical: 1.h),
                           children: [
-                            Divider(),
-                            SizedBox(height: 2.h),
+
 
                             /// Manually called guestListWiget with index
                             guestListWiget(
@@ -248,9 +247,8 @@ class NewGuestListScreen extends StatelessWidget {
                       Expanded(
                         child: customText(
                           text: name,
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: "CormorantGaramond",
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       SizedBox(width: 2.w),
@@ -280,6 +278,7 @@ class NewGuestListScreen extends StatelessWidget {
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     fontFamily: "WorkSans",
+                    color: darkGreyColor
                   ),
                   SizedBox(height: 0.3.h),
 

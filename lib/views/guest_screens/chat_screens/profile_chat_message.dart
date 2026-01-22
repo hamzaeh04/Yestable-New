@@ -44,7 +44,7 @@ class ProfileChatMessage extends StatelessWidget {
                         SizedBox(width: 2.w),
                         customText(
                           text: "Sidney Swaniawski",
-                          fontSize: 20.sp,
+                          fontSize: 19.sp,
                           fontWeight: FontWeight.w600,
                           color: whiteColor,
                           fontFamily: "CormorantGaramond",
@@ -128,6 +128,10 @@ class ProfileChatMessage extends StatelessWidget {
                                         contentPadding: EdgeInsets.symmetric(vertical: 1.h).copyWith(left: 1.w),
                                         hintText: "Write Something Here!",
                                         border: InputBorder.none,
+                                        hintStyle: TextStyle(
+                                          fontFamily: "WorkSans",
+                                          fontWeight: FontWeight.w400
+                                        ),
                                         suffixIconConstraints: BoxConstraints(
                                           maxHeight: 6.h,
                                           maxWidth: 6.w,

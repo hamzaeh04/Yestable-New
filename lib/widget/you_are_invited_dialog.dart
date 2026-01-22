@@ -57,23 +57,33 @@ void youAreInvitedDialog(BuildContext context) {
                         fontWeight: FontWeight.w400,
                         fontSize: 15.sp,
                         fontFamily: "WorkSans",
-                        textAlign: TextAlign.center
+                        textAlign: TextAlign.center,
+                      color: Colors.black.withValues(alpha: 0.7)
                     ),
                     SizedBox(height: 2.h),
-                    customText(
-                        text: "Take a minute to share your food preferences, dietary needs, or any accessibility notes.",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15.sp,
-                        fontFamily: "WorkSans",
-                        textAlign: TextAlign.center
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2.w),
+                      child: customText(
+                          text: "Take a minute to share your food preferences, dietary needs, or any accessibility notes.",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15.sp,
+                          fontFamily: "WorkSans",
+                          textAlign: TextAlign.center,
+                          color: Colors.black.withValues(alpha: 0.7)
+                      ),
                     ),
                     SizedBox(height: 2.h),
-                    customText(
-                        text: "This helps your host set the table for a great time.",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15.sp,
-                        fontFamily: "WorkSans",
-                        textAlign: TextAlign.center
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.w),
+                      child: customText(
+                          text: "This helps your host set the table for a great time.",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15.sp,
+                          fontFamily: "WorkSans",
+                          textAlign: TextAlign.center,
+                          color: Colors.black.withValues(alpha: 0.7)
+
+                      ),
                     ),
                     SizedBox(height: 2.h),
                     buttonWidget("Setup Now", whiteColor,colors: greenColor,fontsize: 16.sp,height: 4.5.h,onTap: (){

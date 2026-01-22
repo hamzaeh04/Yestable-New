@@ -52,7 +52,7 @@ class VerificationCodeScreen extends StatelessWidget {
                   SizedBox(height: 1.h),
                   customText(
                     text: "Verification Code",
-                    fontSize: 24.sp,
+                    fontSize: 23.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
                   ),
@@ -86,16 +86,14 @@ class VerificationCodeScreen extends StatelessWidget {
                           color: darkGreyColor
                       ),
                       SizedBox(width: 3.w),
-                      Text(
-                        "Update",
-                        style: TextStyle(
+                      customText(
+                          text: "Update",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                           color: greenColor,
-                          decoration: TextDecoration.underline,
-                          decorationColor: greenColor,
-
-                        ),
+                        txtDecoration: TextDecoration.underline,
+                        height: 0.1.h,
+                        decorationColor: greenColor
                       ),
                     ],
                   ),
@@ -106,20 +104,30 @@ class VerificationCodeScreen extends StatelessWidget {
                     obscureText: false,
                     animationType: AnimationType.fade,
                     keyboardType: TextInputType.number,
-                    textStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                    textStyle: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "CormorantGaramond"
+                    ),
+                    cursorColor: greenColor, // cursor green
                     pinTheme: PinTheme(
                       shape: PinCodeFieldShape.box,
                       borderRadius: BorderRadius.circular(2.w),
                       fieldHeight: 6.h,
                       fieldWidth: 13.w,
-                      activeColor: greenColor,
-                      selectedColor: greenColor,
-                      inactiveColor: Colors.grey,
+                      activeColor: greenColor,    // typed value border
+                      selectedColor: greenColor,  // currently selected border
+                      inactiveColor: Colors.grey, // empty box border
+                      borderWidth: 0.2.w,         // all border same width
+                      activeBorderWidth: 0.2.w,   // 👈 ensure visible when filled
+                      selectedBorderWidth: 0.2.w,
+                      inactiveBorderWidth: 0.2.w,
                     ),
                     onChanged: (value) {
                       print("OTP: $value");
                     },
                   ),
+
 
                   SizedBox(height: 27.5.h),
                   buttonWidget(
@@ -127,13 +135,7 @@ class VerificationCodeScreen extends StatelessWidget {
                     whiteColor,
                     colors: greenColor,
                     onTap: () {
-                      if(controller.isUser.value == true){
                         Get.toNamed('addprofilepicture');
-                      }
-                      else{
-                        Get.toNamed("addhostprofilepicture");
-                      }
-
                     },
                   ),
                 ],

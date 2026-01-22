@@ -10,6 +10,7 @@ import 'package:yestable/views/guest_screens/dashboard/event_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/user_home_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/my_notification_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/search_screen.dart';
+import 'package:yestable/views/guest_screens/profile_setup_screens/host_profile_screen.dart';
 import 'package:yestable/views/host_screens/dashboard/host_home_screen.dart';
 
 import '../dashboard/my_profile_screen.dart';
@@ -23,7 +24,7 @@ class CustomBottomNavBar extends StatefulWidget {
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
 }
 
-class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+class _CustomBottomNavBarState extends State<CustomBottomNavBar>     {
   final NavigationController controller = Get.find<NavigationController>();
   late PageController _pageController;
 
@@ -55,7 +56,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     EventScreen(),
     CommunityScreen(),
     ChatListScreen(),
-    MyProfileScreen(),
+    Obx(() => Get.find<NavigationController>().isUser.value ? MyProfileScreen() : HostProfileScreen()),
     ViewallInvitationScreen(),
     MyNotificationScreen(),
     SearchScreen(),

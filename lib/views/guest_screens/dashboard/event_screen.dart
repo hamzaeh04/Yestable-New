@@ -5,6 +5,7 @@ import 'package:yestable/controllers/navigation_controller.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
+import '../../../widget/custom_app_bar.dart';
 import '../../../widget/event_widget.dart';
 import '../../../widget/home_screen_widget.dart';
 
@@ -27,11 +28,12 @@ class EventScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, Sarah Scarnio!",
-                        fontSize: 20.sp,
-                        fontFamily: "CormorantGaramond",
-                        fontWeight: FontWeight.w600,
-                        color: whiteColor,
+                          text: "Hi, Sarah Scarnio!",
+                          fontSize: 20.sp,
+                          fontFamily: "CormorantGaramond",
+                          fontWeight: FontWeight.w500,
+                          color: whiteColor,
+                          height: 0.1.h
                       ),
                       customText(
                         text: "May 01, 2025",
@@ -43,18 +45,17 @@ class EventScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   InkWell(
-                    onTap: (){
-                      controller.goTSearchScreen();
-                    },
-                      child: homeIconWidget(icon: Icons.search)
+                      onTap: (){
+                        controller.goTSearchScreen();
+                      },
+                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
-                    onTap: (){
-                      controller.goToNotificationPage();
-                    },
-                      child: homeIconWidget(icon: Icons.notifications)
-                  ),
+                      onTap: (){
+                        controller.goToNotificationPage();
+                      },
+                      child: homeIconWidget(icon: Icons.notifications)),
                 ],
               ),
             ),
@@ -108,6 +109,7 @@ class EventScreen extends StatelessWidget {
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                           color: whiteColor,
+                                          fontFamily: "CormorantGaramond",
                                         ),
                                       ),
                                     ),

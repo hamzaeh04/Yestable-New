@@ -38,7 +38,7 @@ import '../views/host_screens/host_profile_setup_screens/add_host_profile_pictur
 import '../views/host_screens/host_profile_setup_screens/allergies_host_screen.dart';
 import '../views/host_screens/host_profile_setup_screens/allow_host_notification_screen.dart';
 import '../views/host_screens/host_profile_setup_screens/host_edit_profile_screen.dart';
-import '../views/host_screens/host_profile_setup_screens/host_food_preference_one.dart';
+import '../views/guest_screens/profile_setup_screens/your_root_and_rules.dart';
 class AppRoutes {
   static List<GetPage<dynamic>> routes = [
     GetPage(name: '/', page: () => SplashScreen()),
@@ -79,6 +79,7 @@ class AppRoutes {
     GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
     GetPage(name: '/disclaimerscreen', page: () => DisclaimerScreen()),
     GetPage(name: '/yesgptscreen', page: () => YesGptScreen()),
+    GetPage(name: '/yourrootandrules', page: () => YourRootAndRules()),
 
   ];
 }

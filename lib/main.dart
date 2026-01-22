@@ -14,7 +14,7 @@ void main() {
   Get.put(AuthController());
   Get.put(ProfileController());
   Get.put(YesGptController());
-  Get.lazyPut(() => NavigationController());
+  Get.put(NavigationController());
 
   runApp(MyApp());
 }

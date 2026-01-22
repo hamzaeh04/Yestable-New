@@ -33,7 +33,7 @@ void showShareProfileDialog(BuildContext context) {
               alignment: Alignment.centerLeft,
               child: customText(
                 text: 'Share This Profile With',
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 fontSize: 18.sp,
                 fontFamily: "CormorantGaramond",
               ),
@@ -87,7 +87,7 @@ void showShareProfileDialog(BuildContext context) {
               alignment: Alignment.centerLeft,
               child: customText(
                 text: 'Copy Profile Link',
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 fontSize: 18.sp,
                 fontFamily: "CormorantGaramond",
               ),
@@ -97,19 +97,19 @@ void showShareProfileDialog(BuildContext context) {
             // Link and Copy button
             Container(
               padding: EdgeInsets.symmetric(horizontal: 2.w),
-              height: 6.5.h,
+              height: 5.5.h,
               decoration: BoxDecoration(
-                border: Border.all(color: greenColor),
+                border: Border.all(color: greenColor, width: 0.1.w),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  Image.asset("assets/png/icons/chain_icon.png",height: 5.h,width: 5.w),
+                  Image.asset("assets/png/icons/chain_icon.png",height: 4.5.h,width: 4.5.w),
                   SizedBox(width: 2.w),
                   Expanded(
                     child: customText(
                       text: 'Example.Com/Share-Link',
-                      fontSize: 14.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                   buttonWidget(

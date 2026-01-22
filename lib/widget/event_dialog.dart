@@ -18,7 +18,7 @@ void showEventDialog(BuildContext context) {
           child: Dialog(
             insetPadding: EdgeInsets.zero, // Disable default padding
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(25.sp),
             ),
             child: Container(
               width: double.infinity,
@@ -27,7 +27,7 @@ void showEventDialog(BuildContext context) {
               ),
               padding: EdgeInsets.all(3.w),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.sp),
+                borderRadius: BorderRadius.circular(20.sp),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(
@@ -73,6 +73,7 @@ void showEventDialog(BuildContext context) {
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w500,
                               color: whiteColor,
+                              fontFamily: "CormorantGaramond",
                             ),
                           ),
                         ),
@@ -104,6 +105,7 @@ void showEventDialog(BuildContext context) {
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w500,
                               color: whiteColor,
+                              fontFamily: "CormorantGaramond",
                             ),
                           ),
                         ),

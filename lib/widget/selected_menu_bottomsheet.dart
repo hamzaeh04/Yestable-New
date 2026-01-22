@@ -21,21 +21,26 @@ void selectedMenuBottomSheet(BuildContext context) {
           child: Column(
             children: [
               // Title Row
+              SizedBox(height: 1.h,),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h),
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     customText(
                       text: 'Your Selected Menu',
-                      fontSize: 18.sp,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.w600,
                       fontFamily: "CormorantGaramond",
                       color: blackColor,
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.keyboard_arrow_down, size: 18.sp),
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        size: 20.sp,
+                        color: blackColor,
+                      ),
                     ),
                   ],
                 ),
@@ -57,7 +62,7 @@ void selectedMenuBottomSheet(BuildContext context) {
                 ),
               ),
 
-              SizedBox(height: 1.h),
+              SizedBox(height: 0.h),
 
               // Scrollable Content
               Expanded(
@@ -76,6 +81,7 @@ void selectedMenuBottomSheet(BuildContext context) {
                           boximg1: "assets/png/event_food_image/brocolli.png",
                           boximg2: "assets/png/event_food_image/milk.png",
                           cheaque: true,
+                          containerColor: whiteColor
                         ),
                         Divider(),
                         menuItem(
@@ -87,6 +93,7 @@ void selectedMenuBottomSheet(BuildContext context) {
                           boximg1: "assets/png/event_food_image/glutenfree.png",
                           boximg2: "assets/png/event_food_image/shell.png",
                           cheaque: true,
+                            containerColor: whiteColor,
                         ),
                         Divider(),
                         menuItem(
@@ -98,6 +105,7 @@ void selectedMenuBottomSheet(BuildContext context) {
                           boximg1: "assets/png/event_food_image/vegan.png",
                           boximg2: "assets/png/event_food_image/nutfree.png",
                           cheaque: true,
+                            containerColor: whiteColor
                         ),
                         Divider(),
                         menuItem(
@@ -109,17 +117,21 @@ void selectedMenuBottomSheet(BuildContext context) {
                           boximg1: "assets/png/event_food_image/glutenfree.png",
                           boximg2: "assets/png/event_food_image/milk.png",
                           cheaque: true,
+                            containerColor: whiteColor
                         ),
                         Divider(),
-                        menuItem(
-                          title: "Mango Salsa & Chips",
-                          subtitle: "Mango, Red Bell Pepper, Jalapeño, Lime, Corn Tortilla Chips",
-                          imagePath: "assets/png/event_detail_img/event2.png",
-                          text1: "Gluten Free",
-                          text2: "Shellfish",
-                          boximg1: "assets/png/event_food_image/vegan.png",
-                          boximg2: "assets/png/event_food_image/milk.png",
-                          cheaque: true,
+                        InkWell(
+                          child: menuItem(
+                            title: "Mango Salsa & Chips",
+                            subtitle: "Mango, Red Bell Pepper, Jalapeño, Lime, Corn Tortilla Chips",
+                            imagePath: "assets/png/event_detail_img/event2.png",
+                            text1: "Gluten Free",
+                            text2: "Shellfish",
+                            boximg1: "assets/png/event_food_image/vegan.png",
+                            boximg2: "assets/png/event_food_image/milk.png",
+                            cheaque: true,
+                              containerColor: whiteColor,
+                          ),
                         ),
                         Divider(),
                       ],

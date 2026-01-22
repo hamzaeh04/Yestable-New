@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/png/yestable_logo.png",height: 28.h,width: 27.w),
+            Image.asset("assets/png/yestable_updated_logo.png",height: 28.h,width: 27.w),
           ],
         ),
       ),

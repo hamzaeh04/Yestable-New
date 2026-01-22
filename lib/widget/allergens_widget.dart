@@ -77,16 +77,17 @@ Widget others({
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     customText(
                       text: "Not on the list? Tell us\nwhat to skip!",
-                      fontSize: 20.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       fontFamily: "CormorantGaramond",
                       height: 0.13.h,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8.w,bottom: 3.8.h),
+                      padding: EdgeInsets.only(left: 0.w,bottom: 3.8.h),
                       child: InkWell(
                         onTap: (){
                           Get.back();
@@ -106,7 +107,7 @@ Widget others({
                   controller: textFieldController,
                   maxLines: 4,
                   decoration: InputDecoration(
-                    hintText: "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
+                    hintText: "Hold The Pickles! I'm Allergic to Cucumber",
                     hintStyle: TextStyle(fontSize: 14.sp,fontFamily: "WorkSans"),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),

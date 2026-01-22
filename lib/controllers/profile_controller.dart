@@ -1,16 +1,18 @@
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
+  // --- Existing Variables (No changes here) ---
   var switchValue = true.obs;
-
-  // List of selected options, each index represents one item (6 items for example)
+  RxString selectedValue = ''.obs;
+  RxBool isSelected = false.obs;
   RxMap<int, String> selectedOptions = <int, String>{}.obs;
   var selectedAllergens = <int>{}.obs;
   var foodNationality = <int>{}.obs;
   var other = false.obs;
   var isChecked = false.obs;
   var isRadioChecked = false.obs;
-
+  RxInt pronounIsSelected = 0.obs;
+  final RxBool isPlaceExpanded = false.obs;
   RxBool isArrowRotated = false.obs;
   RxBool isExpanded = false.obs;
   RxString selectedOption = "Hearing Loss".obs;
@@ -25,11 +27,59 @@ class ProfileController extends GetxController {
     "Other"
   ];
 
+  // --- Food Preferences (Cleaned up) ---
+  final List<String> yuckOrYumList = [
+    '☘️ Cilantro', '🍄 Mushrooms', '🧴 Mayonnaise', '🫒 Olives',
+    '🦈 Anchovies', '🦪 Oysters', '💙 Blue Cheese', '🪵 Licorice',
+    '🧅 Raw Onion', '🫑 Green Peppers', '🌿 Mint', '🟫‍ Dark Chocolate',
+    '☕‍ Coffee', '🌶 Spicy Food',
+  ];
+
+  // Initialize as an empty RxList
+  var foodSelections = <int>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Ensure list is populated immediately on controller creation
+    _initializeFoodSelections();
+  }
+
+  void _initializeFoodSelections() {
+    foodSelections.assignAll(List.generate(yuckOrYumList.length, (index) => 0));
+  }
+
+  // Updated Method to trigger UI update properly
+  void updateFoodSelection(int index, int value) {
+    if (index >= 0 && index < foodSelections.length) {
+      if (foodSelections[index] == value) {
+        foodSelections[index] = 0; // Toggle off
+      } else {
+        foodSelections[index] = value; // Set new value
+      }
+      // Manual refresh call to ensure Obx picks up index-based changes
+      foodSelections.refresh();
+    }
+  }
+
+  // --- Existing Methods (No changes here) ---
+  void checkBox() {
+    isSelected.value = !isSelected.value;
+  }
+
+  void select(String value) {
+    selectedValue.value = value;
+  }
+
+  void updatePronounIsSelected(int index) {
+    pronounIsSelected.value = index;
+  }
+
   void toggleDropdown() {
     isExpanded.value = !isExpanded.value;
   }
 
-  void toggleRadioButton(){
+  void toggleRadioButton() {
     isRadioChecked.value = !isRadioChecked.value;
   }
 
@@ -41,6 +91,7 @@ class ProfileController extends GetxController {
   void toggleArrow() {
     isArrowRotated.value = !isArrowRotated.value;
   }
+
   void toggleSwitch(bool value) {
     switchValue.value = value;
   }
@@ -56,5 +107,4 @@ class ProfileController extends GetxController {
   void toggleCheckbox(bool? value) {
     isChecked.value = value ?? false;
   }
-
 }

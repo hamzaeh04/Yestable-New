@@ -19,7 +19,7 @@ class GetStartedScreen extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(top: 5.h),
-              child: Image.asset("assets/png/yestable_logo.png",height: 22.h,width: 22.w),
+              child: Image.asset("assets/png/yestable_updated_logo.png",height: 22.h,width: 22.w),
             ),
             Container(
               height: 32.h,
@@ -31,33 +31,36 @@ class GetStartedScreen extends StatelessWidget {
             SizedBox(height: 2.h),
             customText(
               text: "Welcome To YesTable",
-              fontSize: 24.sp,
+              fontSize: 23.sp,
               fontFamily: "CormorantGaramond",
               fontWeight: FontWeight.w600
             ),
             customText(
-                text: "Got allergies? Picky eaters? Friends who go\ngluten-free for fun? ",
-                fontSize: 15.sp,
-                fontFamily: "WorkSans",
-                fontWeight: FontWeight.w400,
-              textAlign: TextAlign.center
+              text: "Got Allergies? Picky Eaters? Friends Who Go\nGluten-Free For Fun?",
+              fontSize: 15.sp,
+              fontFamily: "WorkSans",
+              fontWeight: FontWeight.w400,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 0.5.h),
             customText(
-                text: "We’ve got you. Join as a guest or host, and\nlet the planning feel joyful again.",
-                fontSize: 15.sp,
-                fontFamily: "WorkSans",
-                fontWeight: FontWeight.w400,
-                textAlign: TextAlign.center
+              text: "We’ve Got You. Join As A Guest Or Host, And Let The\nPlanning Feel Joyful Again.",
+              fontSize: 15.sp,
+              fontFamily: "WorkSans",
+              fontWeight: FontWeight.w400,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 1.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h), // Adjust as needed
               child: buttonWidget(
-                "I’m a Guest",
+                "I’m A Guest",
                 whiteColor,
                 colors: greenColor,
                 onTap: () {
+                  controller.isLoggedIn.value = true;
+                  controller.isUser.value = true;
+                  print(controller.currentIndex.value);
                   Get.toNamed('signupscreen');
 
                 },
@@ -66,7 +69,7 @@ class GetStartedScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w), // Adjust as needed
               child: buttonWidget(
-                "I’m a Host",
+                "I’m A Host",
                 greenColor,
                 borderColor: greenColor,
                 onTap: () {
@@ -75,6 +78,15 @@ class GetStartedScreen extends StatelessWidget {
                 },
               ),
             ),
+      SizedBox(height: 1.h),
+            customText(
+              text: "RSVPlease: Your New Magic Wand For\nGetting Together!",
+              fontSize: 14.5.sp,
+              fontFamily: "WorkSans2",
+              fontWeight: FontWeight.w500,
+              textAlign: TextAlign.center,
+            ),
+
           ],
         ),
       ),

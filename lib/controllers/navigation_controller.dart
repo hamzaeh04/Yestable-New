@@ -11,7 +11,10 @@ class NavigationController extends GetxController {
   var selectedIndexTab = 0.obs;
   var sortBySelectedIndex = 0.obs;
   var isUser = true.obs;
+  var isLoggedIn = false.obs;
   var selectedTabIndex = 0.obs;
+  // NavigationController ke andar
+  var hasShownInvitedDialog = false.obs;
   late BuildContext context;
   RxBool isProfileComplete = false.obs;
   RxBool hasCheckedProfile = false.obs;
@@ -31,6 +34,16 @@ class NavigationController extends GetxController {
   var isNotesClicked = <int, bool>{}.obs;
 
   RxBool isSelected = false.obs;
+
+  RxBool isYesTableSelected = true.obs;
+
+  void selectYesTable() {
+    isYesTableSelected.value = true;
+  }
+
+  void selectManual() {
+    isYesTableSelected.value = false;
+  }
 
   void toggleSelection() {
     isSelected.value = !isSelected.value;

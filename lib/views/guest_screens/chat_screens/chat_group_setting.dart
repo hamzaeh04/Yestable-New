@@ -37,7 +37,7 @@ class ChatGroupSetting extends StatelessWidget {
                   customText(
                     text: "Group Info",
                     fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: whiteColor,
                     fontFamily: "CormorantGaramond",
                   ),
@@ -92,8 +92,8 @@ class ChatGroupSetting extends StatelessWidget {
                       Center(
                         child: customText(
                             text: "Gizelle Dinner Event",
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 19.sp,
+                            fontWeight: FontWeight.w700,
                             fontFamily: "CormorantGaramond"
                         ),
                       ),
@@ -101,7 +101,7 @@ class ChatGroupSetting extends StatelessWidget {
                         child: customText(
                           text: "22 Group Members",
                           fontSize: 15.sp,
-                          color: Colors.grey.shade600,
+                          color: darkGreyColor,
                         ),
                       ),
                       SizedBox(height: 2.h),
@@ -155,8 +155,8 @@ class ChatGroupSetting extends StatelessWidget {
                           children: [
                             customText(
                               text: "22 Members",
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 19.sp,
+                              fontWeight: FontWeight.w500,
                               fontFamily: "CormorantGaramond"
                             ),
                             Image.asset("assets/png/icons/group_info_search_icon.png",height: 2.h,
@@ -210,9 +210,9 @@ class ChatGroupSetting extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.2.h),
                                 child: customText(
-                                  text: "Exit Group",
+                                  text: "Mute Group",
                                   fontSize: 15.sp,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: blueColor,
                                 ),
                               ),
@@ -220,17 +220,17 @@ class ChatGroupSetting extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.2.h),
                                 child: customText(
-                                  text: "Mute Group",
+                                  text: "Exit Group",
                                   fontSize: 15.sp,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: redColor,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      )
-
+                      ),
+                      SizedBox(height: 6.h)
                     ],
                   ),
                 ),
@@ -308,8 +308,8 @@ class ChatGroupSetting extends StatelessWidget {
               ],
               customText(
                 text: text,
-                fontSize: 14.5.sp,
-                fontWeight: FontWeight.w400,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
                 color: textColor ?? Colors.black87,
               ),
             ],

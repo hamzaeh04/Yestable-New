@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/views/guest_screens/dashboard/event_screen.dart';
 import 'package:yestable/widget/guest_update_received.dart';
 import '../../../widget/complete_guest_dialog.dart';
 import '../../../widget/home_screen_widget.dart';
@@ -71,14 +72,25 @@ class AdminHomeScreen extends StatelessWidget {
     //   }
     // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!controller.isProfileComplete.value &&
-          !controller.hasCheckedProfile.value) {
+      // SIRF EK LOCK: Kya humne check kar liya hai?
+      if (controller.hasCheckedProfile.value == false) {
+
+        // 1. Foran lock lagao taake ye block dobara execute na ho
         controller.hasCheckedProfile.value = true;
-        completeGuestProfileDialog(context);
-      } else if (controller.isGuestUpdateReceived.value) {
-        // Show dialog for guest update
-        controller.isGuestUpdateReceived.value = false;
-        guestUpdateReceived(context);
+
+        // 2. Ab priority wise check karo konsa dialog dikhana hai
+        if (controller.isInvited.value == false) {
+
+          if (!controller.isProfileComplete.value) {
+            // Agar profile incomplete hai to ye dikhao
+            completeGuestProfileDialog(context);
+          }
+          else if (controller.isGuestUpdateReceived.value) {
+            // Agar profile complete hai lekin koi update aayi hai to ye dikhao
+            controller.isGuestUpdateReceived.value = false;
+            guestUpdateReceived(context);
+          }
+        }
       }
     });
 
@@ -98,8 +110,9 @@ class AdminHomeScreen extends StatelessWidget {
                         text: "Hi, Gizelle Jekronia",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
-                        fontWeight: FontWeight.w600,
-                        color: whiteColor,
+                        fontWeight: FontWeight.w500,
+                        color: whiteColor,height: 0.1.h,
+
                       ),
                       customText(
                         text: "May 01, 2025",
@@ -111,18 +124,17 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   InkWell(
-                    onTap: () {
-                      controller.goTSearchScreen();
-                    },
-                    child: homeIconWidget(icon: Icons.search),
+                      onTap: (){
+                        controller.goTSearchScreen();
+                      },
+                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
-                    onTap: () {
-                      controller.goToNotificationPage();
-                    },
-                    child: homeIconWidget(icon: Icons.notifications),
-                  ),
+                      onTap: (){
+                        controller.goToNotificationPage();
+                      },
+                      child: homeIconWidget(icon: Icons.notifications)),
                 ],
               ),
             ),
@@ -213,9 +225,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                   customText(
                                                     text:
                                                         "Guests are allergic to dairy products.",
-                                                    fontSize: 17.sp,
-                                                    fontFamily:
-                                                        "CormorantGaramond",
+                                                    fontSize: 16.sp,
                                                     fontWeight: FontWeight.w600,
                                                     color: blackColor,
                                                   ),
@@ -256,8 +266,8 @@ class AdminHomeScreen extends StatelessWidget {
                                               ),
                                               child: customText(
                                                 text: "09 Allergens Found",
-                                                fontSize: 14.sp,
-                                                fontFamily: "WorkSans",
+                                                fontSize: 13.sp,
+                                                fontFamily: "WorkSans2",
                                                 fontWeight: FontWeight.w400,
                                                 height: 0.1.h,
                                               ),
@@ -535,7 +545,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                                                 text:
                                                                                     controller.allergenList[index],
                                                                                 fontSize:
-                                                                                    15.sp,
+                                                                                    14.sp,
                                                                                 fontFamily:
                                                                                     "CormorantGaramond",
                                                                                 fontWeight:
@@ -552,7 +562,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                                                 height:
                                                                                     0.2.h,
                                                                                 width:
-                                                                                    28.w,
+                                                                                    26.5.w,
                                                                                 color:
                                                                                     isSelected
                                                                                         ? Colors.black
@@ -713,21 +723,26 @@ class AdminHomeScreen extends StatelessWidget {
                                                 fontFamily: "CormorantGaramond",
                                                 color: blackColor,
                                               ),
-                                              Row(
-                                                children: [
-                                                  customText(
-                                                    text: "View All",
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: blackColor,
-                                                  ),
-                                                  SizedBox(width: 1.w),
-                                                  Icon(
-                                                    Icons.arrow_forward,
-                                                    color: blackColor,
-                                                    size: 16.sp,
-                                                  ),
-                                                ],
+                                              InkWell(
+                                                onTap: (){
+                                                  controller.changePage(1);
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    customText(
+                                                      text: "View All",
+                                                      fontSize: 15.sp,
+                                                      fontWeight: FontWeight.w400,
+                                                      color: blackColor,
+                                                    ),
+                                                    SizedBox(width: 1.w),
+                                                    Icon(
+                                                      Icons.arrow_forward,
+                                                      color: blackColor,
+                                                      size: 16.sp,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -827,9 +842,8 @@ class AdminHomeScreen extends StatelessWidget {
                           Expanded(
                             child: customText(
                               text: eventname ?? "",
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "CormorantGaramond",
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
                               color: blackColor,
                             ),
                           ),
@@ -883,10 +897,9 @@ Widget buildCreateNewEventButton(BuildContext context) {
           Icon(Icons.add, size: 20.sp, color: Colors.white),
           SizedBox(width: 2.w),
           customText(
-            text: "Create A New Event",
-            fontSize: 17.sp,
+            text: "Create an Event",
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
-            fontFamily: "CormorantGaramond",
             color: Colors.white,
           ),
         ],
@@ -913,9 +926,9 @@ Widget guestListAllergiesWidget({
         children: [
           customText(
             text: name,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            fontFamily: "CormorantGaramond",
+            fontSize: 17.sp,
+            fontWeight: FontWeight.w500,
+            // fontFamily: "CormorantGaramond",
           ),
 
           Container(
@@ -926,9 +939,9 @@ Widget guestListAllergiesWidget({
             ),
             child: customText(
               text: allergen,
-              fontSize: 14.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: "WorkSans",
+              fontFamily: "WorkSans2",
               color: greyTextColor,
             ),
           ),

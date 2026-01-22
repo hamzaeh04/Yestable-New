@@ -61,10 +61,10 @@ void showShareWithFriendsBottomSheet(BuildContext context) {
             ),
             SizedBox(height: 1.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w),
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: customText(
-                text: 'Communicating is more effective when you connect with firends!',
-                fontSize: 15.5.sp,
+                text: 'let your host know about your needs & preferences. Send your taste profile to anyone!',
+                fontSize: 15.sp,
                 fontFamily: "WorkSans",
                 textAlign: TextAlign.center
               ),
@@ -75,9 +75,10 @@ void showShareWithFriendsBottomSheet(BuildContext context) {
               children: [
                 customText(
                   text: 'Share your link',
-                  fontSize: 15.5.sp,
-                  fontFamily: "WorkSans",
+                  fontSize: 15.sp,
+                  fontFamily: "CormorantGaramond",
                   fontWeight: FontWeight.w600,
+                  color: Colors.black
                 ),
               ],
             ),
@@ -85,19 +86,25 @@ void showShareWithFriendsBottomSheet(BuildContext context) {
             TextField(
               readOnly: true,
               controller: TextEditingController(
-                text: 'https://app.yestable841759709',
+
               ),
               decoration: InputDecoration(
                 hintText: 'https://app.yestable841759709',
                 fillColor: friendTextfieldColor,
                 filled: true,
+                hintStyle: TextStyle(
+                  fontSize: 14.5.sp, // slightly smaller
+                  color: Colors.black.withValues(alpha: 0.7), // lighter grey
+                  fontFamily: 'CormorantGaramond'
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
                 ),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.copy,size: 18.sp),
+                  icon: Icon(Icons.copy, size: 18.sp),
                   onPressed: () {
+                    // Copy functionality
                   },
                 ),
               ),

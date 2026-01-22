@@ -11,6 +11,7 @@ Widget buttonWidget(
       double? width,
       VoidCallback? onTap,
       IconData? icon,
+      Image? image,
       Color? borderColor,
       double? fontsize,
       FontWeight? fontweight,
@@ -28,7 +29,7 @@ Widget buttonWidget(
             : null, // 👈 Apply only if given
       ),
       child: Center(
-        child: Row(
+        child: image == null ? Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
@@ -45,6 +46,22 @@ Widget buttonWidget(
               fontFamily: 'WorkSans',
               color: textColor,
               fontWeight: FontWeight.w500
+            ),
+          ],
+        ):
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (image != null) ...[
+              image,
+              SizedBox(width: 2.w),
+            ],
+            customText(
+                text: text,
+                fontSize: fontsize != null ? fontsize : 17.sp,
+                fontFamily: 'WorkSans',
+                color: textColor,
+                fontWeight: FontWeight.w500
             ),
           ],
         ),

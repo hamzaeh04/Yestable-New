@@ -48,6 +48,7 @@ class AddFreindScreen extends StatelessWidget {
             ),
             SizedBox(height: 2.h),
 
+
             /// Expanded Scrollable Section
             Expanded(
               child: ClipRRect(
@@ -168,7 +169,7 @@ class AddFreindScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(url, width: 16.w, height: 16.w, fit: BoxFit.cover),
+          Image.asset(url, width: 15.w, height: 15.w, fit: BoxFit.cover),
           SizedBox(width: 3.w), // spacing between image and text
           Expanded(
             child: Stack(
@@ -176,7 +177,7 @@ class AddFreindScreen extends StatelessWidget {
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(right: 4.w, top: 0.8.h),
+                      padding: EdgeInsets.only(right: 4.w, top: 0.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -190,7 +191,7 @@ class AddFreindScreen extends StatelessWidget {
                               customText(
                                 text: msgtitle ?? "",
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: "CormorantGaramond",
                               ),
                             ],

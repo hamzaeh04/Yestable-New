@@ -7,11 +7,10 @@ import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../controllers/navigation_controller.dart';
 import '../../../widget/button_widget.dart';
-import '../../../widget/event_accesibility_widget.dart';
 import '../../../widget/foodpreference_yesno_widget.dart';
 import '../../../widget/home_screen_widget.dart';
-import '../dashboard/event_details_screen.dart';
-import '../profile_setup_screens/host_profile_reviews.dart';
+import '../dashboard/my_profile_screen.dart';
+import 'community_profile.dart';
 
 class HostProfileScreen extends StatelessWidget {
   HostProfileScreen({super.key});
@@ -71,17 +70,44 @@ class HostProfileScreen extends StatelessWidget {
                     color: lightgreenColor,
                     iconsize: 16.sp,
                     onTap: () {
-                      controller.goToHome();
+                      if(controller.isUser.value == true){
+                        Get.back();
+                      }
+                      else{
+                        controller.goToHome();
+                      }
+
                     },
                   ),
                   SizedBox(width: 2.w),
-                  customText(
-                    text: "Host Profile",
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                    color: whiteColor,
-                    fontFamily: "CormorantGaramond",
+                  Expanded(
+                    child: customText(
+                      text: "Host Profile",
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500,
+                      color: whiteColor,
+                      fontFamily: "CormorantGaramond",
+                    ),
                   ),
+                  controller.isUser.value == false
+                      ? homeIconWidget(
+                    icon: Icons.logout,
+                    onTap: () {
+                      // 1. Pehle lock lagao taake HomeScreen ka dialog trigger na ho
+                      controller.hasCheckedProfile.value = true;
+
+                      // 2. Index reset karo
+                      controller.currentIndex.value = 0;
+
+                      // 3. Status change karo
+                      controller.isUser.value = true;
+
+                      // 4. IMPORTANT: offAllNamed use karo taake pichli saari screens khatam ho jayein
+                      // Isse black screen ya background rebuild wala masla nahi aayega
+                      Get.offAllNamed("getstarted");
+                    },
+                  )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
@@ -134,7 +160,7 @@ class HostProfileScreen extends StatelessWidget {
                                                 customText(
                                                   text: "Sarah Scarnio",
                                                   fontSize: 20.sp,
-                                                  fontWeight: FontWeight.w600,
+                                                  fontWeight: FontWeight.w500,
                                                   fontFamily: "CormorantGaramond",
                                                 ),
                                                 customText(
@@ -146,17 +172,23 @@ class HostProfileScreen extends StatelessWidget {
                                                 SizedBox(height: 0.8.h),
                                                 Row(
                                                   children: [
-                                                    buttonWidget(
-                                                      "Message",
-                                                      whiteColor,
-                                                      colors: greenColor.withAlpha(140),
-                                                      height: 3.5.h,
-                                                      width: 27.w,
-                                                      fontsize: 14.sp,
-                                                      onTap: () {
-                                                      },
+                                                    Obx(() =>
+                                                      controller.isUser.value == true ?
+                                                      buttonWidget(
+                                                        "Message",
+                                                        whiteColor,
+                                                        colors: greenColor.withAlpha(140),
+                                                        height: 3.5.h,
+                                                        width: 27.w,
+                                                        fontsize: 14.sp,
+                                                        onTap: () {
+                                                        },
+                                                      ):SizedBox.shrink(),
                                                     ),
-                                                    SizedBox(width: 2.w),
+                                                    Obx(() =>
+                                                      controller.isUser.value == true?
+                                                      SizedBox(width: 2.w):SizedBox.shrink(),
+                                                    ),
                                                     buttonWidget(
                                                       "Share Profile",
                                                       whiteColor,
@@ -202,7 +234,7 @@ class HostProfileScreen extends StatelessWidget {
                                           customText(
                                             text: "New York",
                                             fontSize: 14.sp,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w500,
                                             color: blackColor,
                                             txtDecoration: TextDecoration.underline,
                                           ),
@@ -248,7 +280,7 @@ class HostProfileScreen extends StatelessWidget {
                                       customText(
                                         text: "Dietary Priorities",
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                         color: blackColor,
                                       ),
                                       SizedBox(height: 1.h),
@@ -256,7 +288,9 @@ class HostProfileScreen extends StatelessWidget {
                                         text: "Allergies:",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                        fontWeight: FontWeight.w500,
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -271,10 +305,12 @@ class HostProfileScreen extends StatelessWidget {
                                       ),
                                       SizedBox(height: 1.h),
                                       customText(
-                                        text: "Diet:",
+                                        text: "Diets:",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                        fontWeight: FontWeight.w500,
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -287,11 +323,31 @@ class HostProfileScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 1.5.h),
+                                      SizedBox(height: 2.h),
+                                      customText(
+                                          text: "Yuck Or Yum?",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: blackColor,
+                                          fontFamily: 'CormorantGaramond'
+                                      ),
+                                      SizedBox(height: 0.7.h),
+                                      Column(
+                                        spacing: 2.h,
+                                        children: [
+                                          yuckOrYumList(title: '🥜 Peanuts', color: greenColor, isSelected: true),
+                                          yuckOrYumList(title: '🦐 Shellfish', color: redColor, isSelected: false),
+                                          yuckOrYumList(title: '🥛 Dairy', color: redColor, isSelected: false),
+                                          yuckOrYumList(title: '🌾 Gluten', color: greenColor, isSelected: true),
+                                          yuckOrYumList(title: '🥚 Eggs', color: redColor, isSelected: false),
+                                          yuckOrYumList(title: '🫛 Soy', color: redColor, isSelected: false),
+                                        ],
+                                      ),
+                                      SizedBox(height: 2.h),
                                       customText(
                                         text: "Food Preferences",
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                         color: blackColor,
                                       ),
                                       SizedBox(height: 1.h),
@@ -299,7 +355,9 @@ class HostProfileScreen extends StatelessWidget {
                                         text: "Liked Cuisines:",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                        fontWeight: FontWeight.w500,
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -317,7 +375,9 @@ class HostProfileScreen extends StatelessWidget {
                                         text: "Disliked Ingredients",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                        fontWeight: FontWeight.w500,
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -331,21 +391,21 @@ class HostProfileScreen extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(height: 2.h),
-                                      customText(
-                                        text: "Accessibility Needs",
-                                        fontSize: 15.sp,
-                                        color: blackColor,
-                                      ),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          eventAccesibilityList.length,
-                                              (index) => eventAccesibillityWidget(
-                                            eventAccesibilityList[index],
-                                          ),
-                                        ),
-                                      ),
+                                      // customText(
+                                      //   text: "Accessibility Needs",
+                                      //   fontSize: 15.sp,
+                                      //   color: blackColor,
+                                      // ),
+                                      // Wrap(
+                                      //   spacing: 5,
+                                      //   runSpacing: 1,
+                                      //   children: List.generate(
+                                      //     eventAccesibilityList.length,
+                                      //         (index) => eventAccesibillityWidget(
+                                      //       eventAccesibilityList[index],
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       SizedBox(height: 5.h),
                                     ],
                                   ),
@@ -361,8 +421,7 @@ class HostProfileScreen extends StatelessWidget {
                                         profileImage: "assets/png/chat_images/user5.png",
                                         userName: "Sarah Scarnio",
                                         postTime: "2hrs ago",
-                                        postText:
-                                        "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                        postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
                                         postImage: "assets/png/chat_images/group_profile_pic.png",
                                       ),
                                       SizedBox(height: 5.h),
@@ -448,188 +507,4 @@ class HostProfileScreen extends StatelessWidget {
     );
   }
 
-}
-Widget buildPostCard({
-  required String profileImage,
-  required String userName,
-  required String postTime,
-  required String postText,
-  double? userNameFontSize,
-  double? postTimeFontSize,
-  double? postTextFontSize,
-  Color? color,
-  String? postImage, // Optional image
-  String repliesCount = "8 replies",
-  String likesCount = "12k Likes",
-  bool showReadMore = true,
-  bool showRepliesAndAvatar = true, // 👈 New flag
-}) {
-  return Container(
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(20.sp),
-    ),
-    child: Column(
-      children: [
-        // Post Header
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Picture
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 2.5.h),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    height: 5.h,
-                    width: 5.h,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12.sp),
-                    ),
-                    clipBehavior: Clip.antiAlias, // Optional: this clips the image only
-                    child: Image.asset(
-                      profileImage,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.person,
-                        size: 4.h,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -0.5.h,
-                    right: -0.5.h,
-                    child: Container(
-                      height: 1.8.h,
-                      width: 1.8.h,
-                      decoration: BoxDecoration(
-                        color: blueColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1), // Optional border
-                      ),
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 1.2.h,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 2.w),
-
-            // Username, Time, Text, Image, Footer
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 2.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      customText(
-                        text: userName,
-                        fontSize: userNameFontSize != null ? userNameFontSize : 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: blackColor,
-                        fontFamily: "CormorantGaramond",
-                      ),
-                      Icon(
-                        Icons.more_horiz,
-                        size: 20.sp,
-                        color: blackColor,
-                      ),
-                    ],
-                  ),
-                  customText(
-                    text: postTime,
-                    fontSize: postTimeFontSize != null ? postTimeFontSize : 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: darkGreyColor,
-                  ),
-                  SizedBox(height: 0.5.h),
-
-                  // Post Text
-                  customText(
-                    text: postText,
-                    fontSize: postTextFontSize!= null ? postTextFontSize : 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: darkGreyColor,
-                    maxLines: showReadMore ? 4 : null,
-                  ),
-                  SizedBox(height: 0.5.h),
-
-                  // Post Image
-                  if (postImage != null && postImage.isNotEmpty)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15.sp),
-                      child: Image.asset(
-                        postImage,
-                        width: double.infinity,
-                        height: 20.h,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-
-                  SizedBox(height: 0.5.h),
-
-                  // Footer Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Replies + Likes
-                      Row(
-                        children: [
-                          if (showRepliesAndAvatar) ...[
-                            CircleAvatar(
-                              radius: 12.sp,
-                              backgroundImage:
-                              AssetImage('assets/png/chat_images/user5.png'),
-                            ),
-                            SizedBox(width: 2.w),
-                            customText(
-                              text: repliesCount,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: darkGreyColor,
-                              txtDecoration: TextDecoration.underline,
-                            ),
-                            SizedBox(width: 4.w),
-                          ],
-                          // Likes (always shown)
-                          customText(
-                            text: likesCount,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: darkGreyColor,
-                          ),
-                        ],
-                      ),
-
-                      // Action Icons
-                      Row(
-                        children: [
-                          Icon(Icons.favorite_border, size: 20.sp),
-                          SizedBox(width: 3.w),
-                          Icon(Icons.chat_bubble_outline, size: 20.sp),
-                          // Updated icon
-                          SizedBox(width: 3.w),
-                          Icon(Icons.repeat_sharp, size: 20.sp),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        if (postImage != null && postImage.isNotEmpty) SizedBox(height: 1.5.h),
-      ],
-    ),
-  );
 }

@@ -26,7 +26,7 @@ void showRedirectingDialog(BuildContext context) {
               // Title
               customText(
                 text: "Redirecting to Dialpad.",
-                fontSize: 20.sp,
+                fontSize: 19.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
                 fontFamily: "CormorantGaramond",
@@ -37,7 +37,7 @@ void showRedirectingDialog(BuildContext context) {
               // Subtitle
               customText(
                 text: "Please hold on for immediate assistance in an allergy emergency.",
-                fontSize: 15.sp,
+                fontSize: 14.5.sp,
                 fontWeight: FontWeight.w400,
                 color: darkGreyColor,
                 textAlign: TextAlign.center

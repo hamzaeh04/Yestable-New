@@ -3,18 +3,15 @@ import 'package:sizer/sizer.dart';
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 
-import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
-import '../constants/color_constants.dart';
-import '../constants/constants_widgets.dart';
+
 
 Widget socialIconWidget(
     String text,
     String path, {
       double? height,
       double? width,
-      Color? borderColor, // Optional border color
-      double borderWidth = 1.0, // Optional border width
+      Color? borderColor,
+      double borderWidth = 1.0,
     }) {
   return Container(
     height: height ?? 5.5.h,
@@ -27,17 +24,18 @@ Widget socialIconWidget(
           ? Border.all(color: borderColor, width: borderWidth)
           : null,
     ),
-    child: Row(
-      children: [
-        Image.asset(path, height: 32, width: 32),
-        SizedBox(width: 5.w),
-        Expanded(
-          child: customText(
+    child: Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // 👈 important
+        children: [
+          Image.asset(path, height: 24, width: 24),
+          SizedBox(width: 3.w),
+          customText(
             text: text,
             fontSize: 16.sp,
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

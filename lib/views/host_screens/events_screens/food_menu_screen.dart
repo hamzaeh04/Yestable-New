@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/widget/ai_menu_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
@@ -41,7 +42,7 @@ class FoodMenuScreen extends StatelessWidget {
                       customText(
                         text: "Select Your Food Menu",
                         fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: whiteColor,
                         fontFamily: "CormorantGaramond",
                       ),
@@ -51,7 +52,8 @@ class FoodMenuScreen extends StatelessWidget {
                 SizedBox(height: 2.h),
 
                 // Main Scrollable Body with Rounded Corners
-                Expanded(
+                SizedBox(
+                  height: 80.h,
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -79,11 +81,12 @@ class FoodMenuScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     customText(
-                                      text: "Allergen Analytics",
+                                      text: "Food preferences",
                                       fontSize: 20.sp,
                                       fontFamily: "CormorantGaramond",
                                       fontWeight: FontWeight.w600,
                                       color: blackColor,
+                                      height: 0.13.h
                                     ),
                                     customText(
                                       text: "Your guests' safety, visualized.",
@@ -136,33 +139,72 @@ class FoodMenuScreen extends StatelessWidget {
                               SizedBox(height: 3.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                child: Row(
+                                // child: Row(
+                                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //   children: [
+                                //     Row(
+                                //       children: [
+                                //         buttonWidget(
+                                //           "YesTable Menu (AI)",
+                                //           image: Image.asset('assets/png/chat_images/yesGPT.png', width: 5.w,),
+                                //           whiteColor,
+                                //           colors: greenColor,
+                                //           width: 43.w,
+                                //           height: 4.5.h,
+                                //           fontsize: 14.sp,
+                                //           onTap: (){
+                                //
+                                //           }
+                                //         ),
+                                //       ],
+                                //     ),
+                                //     buttonWidget(
+                                //       "Manually Picked",
+                                //       blackColor,
+                                //       colors: backgroundColor,
+                                //       width: 43.w,
+                                //       height: 4.5.h,
+                                //       borderColor: greenColor,
+                                //       fontsize: 14.sp,
+                                //     ),
+                                //   ],
+                                // ),
+                                child: Obx(() => Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     buttonWidget(
-                                      "Ai Suggested",
-                                      whiteColor,
-                                      colors: greenColor,
+                                      "YesTable Menu (AI)",
+                                      image: Image.asset(
+                                        'assets/png/chat_images/yesGPT.png',
+                                        width: 5.w,
+                                      ),
+                                      controller.isYesTableSelected.value ? whiteColor:blackColor,
+                                      colors: controller.isYesTableSelected.value
+                                          ? greenColor
+                                          : backgroundColor,
+                                      borderColor: greenColor.withValues(alpha: 0.3),
                                       width: 43.w,
                                       height: 4.5.h,
                                       fontsize: 14.sp,
-                                      onTap: (){
-                                        Get.toNamed("yesgptscreen");
-                                      }
+                                      onTap: controller.selectYesTable,
                                     ),
+
                                     buttonWidget(
                                       "Manually Picked",
-                                      blackColor,
-                                      colors: backgroundColor,
+                                      controller.isYesTableSelected.value ? blackColor:whiteColor,
+                                      colors: controller.isYesTableSelected.value
+                                          ? backgroundColor
+                                          : greenColor,
+                                      borderColor: greenColor.withValues(alpha: 0.3),
                                       width: 43.w,
                                       height: 4.5.h,
-                                      borderColor: greenColor,
                                       fontsize: 14.sp,
+                                      onTap: controller.selectManual,
                                     ),
                                   ],
-                                ),
+                                )),
                               ),
-                              SizedBox(height: 1.h),
+                              SizedBox(height: 0.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                                 child: Column(
@@ -172,86 +214,164 @@ class FoodMenuScreen extends StatelessWidget {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          TabBar(
-                                            labelColor: Colors.black,
-                                            unselectedLabelColor: Colors.grey,
-                                            indicatorColor: Colors.black,
-                                            indicatorWeight: 2,
-                                            tabs: const [
-                                              Tab(text: "Appetizers"),
-                                              Tab(text: "Main Course"),
-                                              Tab(text: "Drinks"),
-                                            ],
-                                          ),
+
                                           SizedBox(height: 1.h),
-                                          SizedBox(
-                                            height: 32.h,
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
+                                          Obx(() {
+                                            if (controller.isYesTableSelected.value) {
+                                              /// ✅ YesTable Menu Selected (VERTICAL LIST)
+                                              return Column(
                                                 children: [
-                                                  SizedBox(width: 2.w),
-                                                  menuItem(
-                                                    title: "Caprese Skewers",
-                                                    subtitle: "Cherry Tomatoes, Fresh Mozzarella, Basil, Balsamic Glaze",
-                                                    imagePath: "assets/png/event_detail_img/event1.png",
-                                                    text1: "Vegetarian",
-                                                    text2: "Containt Dairy",
-                                                    boximg1: "assets/png/event_food_image/brocolli.png",
-                                                    boximg2: "assets/png/event_food_image/milk.png",
+                                                  Container(
+                                                    //margin: EdgeInsets.symmetric(horizontal: 5.w),
+                                                    height: 5.5.h,
+                                                    width: double.infinity,
+                                                    padding: EdgeInsets.only(right: 2.w, left: 4.w),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(25.sp),
+                                                      border: Border.all(color: lightgreenColor),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: TextField(
+                                                            style: TextStyle(
+                                                              fontSize: 14.sp,
+                                                              fontFamily: "WorkSans",
+                                                            ),
+                                                            decoration: InputDecoration(
+                                                              hintText: '"Suggest a brunch for this group!"',
+                                                              hintStyle: TextStyle(
+                                                                fontSize: 14.5.sp,
+                                                                color: Colors.black.withValues(alpha: 0.6),
+                                                              ),
+                                                              border: InputBorder.none,       // ✅ remove border
+                                                              enabledBorder: InputBorder.none,
+                                                              focusedBorder: InputBorder.none,
+                                                              disabledBorder: InputBorder.none,
+                                                              isDense: true,
+                                                              contentPadding: EdgeInsets.zero,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height: 5.2.h,
+                                                          width: 9.w,
+                                                          decoration: BoxDecoration(
+                                                            shape: BoxShape.circle,
+                                                            color: greenColor,
+                                                          ),
+                                                          child: Image.asset('assets/png/chat_images/circle.png'),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
-                                                  SizedBox(width: 3.w),
-                                                  menuItem(
-                                                    title: "Avocado Shrimp Ceviche",
-                                                    subtitle: "Shrimp, Avocado, Lime, Red Onion, Cilantro, Tomato",
-                                                    imagePath: "assets/png/event_detail_img/event2.png",
-                                                    text1: "Gluten Free",
-                                                    text2: "Shellfish",
-                                                    boximg1: "assets/png/event_food_image/glutenfree.png",
-                                                    boximg2: "assets/png/event_food_image/shell.png",
+                                                  SizedBox(height: 0.8.h,),
+                                                  SizedBox(
+                                                    height: 4.h,
+                                                    child: SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal,
+                                                      physics: const BouncingScrollPhysics(),
+                                                      child: Row(
+                                                        children: [
+                                                          list('Suggest a brunch menu this group would like'),
+                                                          SizedBox(width: 2.w,),
+                                                          list('Suggest a brunch menu this group would like'),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                  SizedBox(width: 3.w),
-                                                  menuItem(
-                                                    title: "Spiced Chickpea Falafel",
-                                                    subtitle: "Chickpeas, Garlic, Cumin, Parsley, Tahini Dip",
-                                                    imagePath: "assets/png/event_detail_img/event3.png",
-                                                    text1: "Vegan",
-                                                    text2: "Nut Free",
-                                                    boximg1: "assets/png/event_food_image/vegan.png",
-                                                    boximg2: "assets/png/event_food_image/nutfree.png",
+                                                  SizedBox(
+                                                    height: 24.h,
+                                                    child: SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal,
+                                                      physics: const BouncingScrollPhysics(),
+                                                      child: Row(
+                                                        children: [
+                                                          FoodMenuCard(),
+                                                          SizedBox(width: 2.w),
+                                                          FoodMenuCard(),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                  SizedBox(width: 3.w),
-                                                  menuItem(
-                                                    title: "Stuffed Mushrooms",
-                                                    subtitle: "Cremini Mushrooms, Cream Cheese, Garlic, Breadcrumbs",
-                                                    imagePath: "assets/png/event_detail_img/event1.png",
-                                                    text1: "Vegetarian",
-                                                    text2: "Containt Dairy",
-                                                    boximg1: "assets/png/event_food_image/glutenfree.png",
-                                                    boximg2: "assets/png/event_food_image/milk.png",
-                                                  ),
-                                                  SizedBox(width: 3.w),
-                                                  menuItem(
-                                                    title: "Mango Salsa & Chips",
-                                                    subtitle: "Mango, Red Bell Pepper, Jalapeño, Lime, Corn Tortilla Chips",
-                                                    imagePath: "assets/png/event_detail_img/event2.png",
-                                                    text1: "Gluten Free",
-                                                    text2: "Shellfish",
-                                                    boximg1: "assets/png/event_food_image/vegan.png",
-                                                    boximg2: "assets/png/event_food_image/milk.png",
-                                                  ),
-                                                  SizedBox(width: 2.w),
                                                 ],
-                                              ),
-                                            ),
-                                          ),
+                                              );
+                                            } else {
+                                              /// ✅ Manual Menu Selected (HORIZONTAL LIST)
+                                              return Column(
+                                                children: [
+
+                                                  TabBar(
+                                                    labelColor: Colors.black,
+                                                    unselectedLabelColor: Colors.grey,
+                                                    indicatorColor: Colors.black,
+                                                    indicatorWeight: 2,
+
+                                                    labelStyle: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      fontWeight: FontWeight.w600,
+                                                      fontFamily: "WorkSans",
+                                                    ),
+                                                    // unselectedLabelStyle: TextStyle(
+                                                    //   fontSize: 14.sp,
+                                                    //   fontWeight: FontWeight.w400,
+                                                    //   fontFamily: "WorkSans",
+                                                    // ),
+
+                                                    tabs: const [
+                                                      Tab(text: "Appetizers"),
+                                                      Tab(text: "Main Course"),
+                                                      Tab(text: "Drinks"),
+                                                    ],
+                                                  ),
+
+                                                  SizedBox(height: 0.7.h,),
+                                                  SizedBox(
+                                                    height: 32.h,
+                                                    child: SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal,
+                                                      physics: const BouncingScrollPhysics(),
+                                                      child: Row(
+                                                        children: [
+                                                          SizedBox(width: 2.w),
+                                                          menuItem(
+                                                            title: "Caprese Skewers",
+                                                            subtitle:
+                                                            "Cherry Tomatoes, Fresh Mozzarella, Basil, Balsamic Glaze",
+                                                            imagePath: "assets/png/event_detail_img/event1.png",
+                                                            text1: "Vegetarian",
+                                                            text2: "Containt Dairy",
+                                                            boximg1: "assets/png/event_food_image/brocolli.png",
+                                                            boximg2: "assets/png/event_food_image/milk.png",
+                                                          ),
+                                                          SizedBox(width: 3.w),
+                                                          menuItem(
+                                                            title: "Avocado Shrimp Ceviche",
+                                                            subtitle:
+                                                            "Shrimp, Avocado, Lime, Red Onion, Cilantro, Tomato",
+                                                            imagePath: "assets/png/event_detail_img/event2.png",
+                                                            text1: "Gluten Free",
+                                                            text2: "Shellfish",
+                                                            boximg1: "assets/png/event_food_image/glutenfree.png",
+                                                            boximg2: "assets/png/event_food_image/shell.png",
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          }),
+
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 10.h), // Give space for bottom panel
+                              SizedBox(height: 5.h), // Give space for bottom panel
                             ],
                           ),
                         ),
@@ -320,7 +440,7 @@ class FoodMenuScreen extends StatelessWidget {
                         Get.toNamed("eventcomfortone");
                       },
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 1.h),
                   ],
                 ),
               ),
@@ -386,7 +506,7 @@ Widget menuItem({
         SizedBox(height: 0.5.h),
         customText(
           text: title,
-          fontSize: 18.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w600,
           fontFamily: "CormorantGaramond",
           color: blackColor,
@@ -446,6 +566,22 @@ Widget foodPreferenceBox({
           ),
         ),
       ],
+    ),
+  );
+}
+Widget list(String title){
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+    height: 3.5.h,
+    // width: 10.w,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.sp),
+        border: Border.all(color: Colors.grey)
+    ),
+    child: customText(
+        textAlign: TextAlign.center,
+        text: title,
+        fontSize: 14.sp
     ),
   );
 }

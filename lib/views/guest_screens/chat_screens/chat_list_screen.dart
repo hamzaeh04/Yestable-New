@@ -30,8 +30,9 @@ class ChatListScreen extends StatelessWidget {
                         text: "Hi, Sarah Scarnio!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: whiteColor,
+                        height: 0.1.h
                       ),
                       customText(
                         text: "May 01, 2025",
@@ -46,7 +47,7 @@ class ChatListScreen extends StatelessWidget {
                       onTap: (){
                         controller.addtoFriendScreen();
                       },
-                      child: homeIconWidget(imagePath: "assets/png/icons/add_friend_icon.png")
+                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
@@ -116,7 +117,7 @@ class ChatListScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 1.5.h),
 
                             // Expanded ListView for chat messages
 

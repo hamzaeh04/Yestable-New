@@ -39,10 +39,9 @@ class NewMessageScreen extends StatelessWidget {
                   children: [
                     customText(
                       text: username,
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
                       color: Colors.black,
-                      fontFamily: "CormorantGaramond"
                     ),
                     customText(
                       text: address,
@@ -88,7 +87,7 @@ class NewMessageScreen extends StatelessWidget {
                       color: whiteColor,
                     ),
                   ),
-                  SizedBox(width: 15.w),
+                  SizedBox(width: 10.w),
                   customText(
                     text: "New Messages",
                     fontSize: 20.sp,

@@ -47,8 +47,8 @@ class ChatMessageScreen extends StatelessWidget {
                         SizedBox(width: 2.w),
                         customText(
                           text: "Gizelle Dinner Event",
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 19.sp,
+                          fontWeight: FontWeight.w700,
                           color: whiteColor,
                           fontFamily: "CormorantGaramond",
                         ),
@@ -111,7 +111,7 @@ class ChatMessageScreen extends StatelessWidget {
                                           child: customText(
                                             text:
                                             "The dessert menu shows tiramisu\n(has dairy). Could we add a nut-free\nsorbet? I’ll bring some if it’s easier!",
-                                            fontSize: 16.sp,
+                                            fontSize: 15.5.sp,
                                             fontWeight: FontWeight.w400,
                                             color: Colors.white,
                                           ),
@@ -121,7 +121,7 @@ class ChatMessageScreen extends StatelessWidget {
                                           padding: EdgeInsets.only(left: 1.w),
                                           child: customText(
                                             text: "08:15 AM",
-                                            fontSize: 15.sp,
+                                            fontSize: 14.sp,
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
@@ -148,8 +148,9 @@ class ChatMessageScreen extends StatelessWidget {
                                         children: [
                                           customText(
                                             text: "Gizelle Jekronia ( Host )",
-                                            fontSize: 16.sp,
+                                            fontSize: 15.sp,
                                             fontWeight: FontWeight.w600,
+                                            fontFamily: 'CormorrantGaramond'
                                           ),
                                           Container(
                                             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
@@ -164,7 +165,7 @@ class ChatMessageScreen extends StatelessWidget {
                                             child: customText(
                                               text:
                                               "Vote for the main:\n(A) Lemon-herb chicken\n(B) Eggplant parm\nReact with 🍗 or 🍆!",
-                                              fontSize: 16.sp,
+                                              fontSize: 15.5.sp,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
@@ -174,7 +175,7 @@ class ChatMessageScreen extends StatelessWidget {
                                             child: Row(
                                               children: [
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.5.h),
+                                                  padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.25.h),
                                                   decoration: BoxDecoration(
                                                     color: whiteColor,
                                                     borderRadius: BorderRadius.all(
@@ -183,13 +184,13 @@ class ChatMessageScreen extends StatelessWidget {
                                                   ),
                                                   child: customText(
                                                     text: "🍗 10",
-                                                    fontSize: 12.sp,
+                                                    fontSize: 14.sp,
                                                     fontWeight: FontWeight.w400,
                                                   ),
                                                 ),
                                                 SizedBox(width: 0.5.w),
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.5.h),
+                                                  padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.25.h),
                                                   decoration: BoxDecoration(
                                                     color: whiteColor,
                                                     borderRadius: BorderRadius.all(
@@ -198,14 +199,14 @@ class ChatMessageScreen extends StatelessWidget {
                                                   ),
                                                   child: customText(
                                                     text: "🍆 3",
-                                                    fontSize: 12.sp,
+                                                    fontSize: 14.sp,
                                                     fontWeight: FontWeight.w400,
                                                   ),
                                                 ),
                                                 SizedBox(width: 18.w),
                                                 customText(
                                                   text: "08:15 AM",
-                                                  fontSize: 15.sp,
+                                                  fontSize: 14.sp,
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ],
@@ -238,7 +239,7 @@ class ChatMessageScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 3.w),
                             child: Row(
                               children: [
-                                Icon(Icons.add),
+                                // Icon(Icons.add),
                                 SizedBox(width: 2.w),
                                 Expanded(
                                   child: Container(
@@ -256,14 +257,14 @@ class ChatMessageScreen extends StatelessWidget {
                                           maxHeight: 6.h,
                                           maxWidth: 6.w,
                                         ),
-                                        suffixIcon: SizedBox(
-                                          height: 5.h,
-                                          width: 5.w,
-                                          child: Image.asset(
-                                            "assets/png/icons/office_pin_icon.png",
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
+                                        // suffixIcon: SizedBox(
+                                        //   height: 5.h,
+                                        //   width: 5.w,
+                                        //   child: Image.asset(
+                                        //     "assets/png/icons/office_pin_icon.png",
+                                        //     fit: BoxFit.contain,
+                                        //   ),
+                                        // ),
                                       ),
                                       style: TextStyle(
                                         fontSize: 16.sp,

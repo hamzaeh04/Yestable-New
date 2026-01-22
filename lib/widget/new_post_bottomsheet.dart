@@ -8,7 +8,7 @@ void showNewPostBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: const Color(0xFFF6F0EC),
+    backgroundColor: backgroundColor,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
     ),
@@ -73,12 +73,12 @@ void showNewPostBottomSheet(BuildContext context) {
                                 customText(
                                   text: "Sarah Scarnio",
                                   fontSize: 17.sp,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "CormorantGaramond",
+                                  fontWeight: FontWeight.w700,
+                                  // fontFamily: "CormorantGaramond",
                                 ),
                                 SizedBox(height: 1.h),
                                 TextField(
-                                  style: TextStyle(fontSize: 11.sp),
+                                  style: TextStyle(fontSize: 15.sp,fontFamily: "WorkSans"),
                                   decoration: InputDecoration(
                                     isCollapsed: true,
                                     contentPadding: EdgeInsets.zero,
@@ -86,11 +86,12 @@ void showNewPostBottomSheet(BuildContext context) {
                                     hintStyle: TextStyle(
                                       fontSize: 14.sp,
                                       color: Colors.grey,
+                                      fontFamily: "WorkSans"
                                     ),
                                     border: InputBorder.none,
                                   ),
                                 ),
-                                SizedBox(height: 1.h),
+                                SizedBox(height: 3.h),
                                 Row(
                                   children: [
                                     Image.asset(
@@ -122,35 +123,22 @@ void showNewPostBottomSheet(BuildContext context) {
 
                       SizedBox(height: 2.h),
                       // Reply + Accept Row
-                      Row(
-                        children: [
-                          Icon(Icons.public, size: 20.sp),
-                          SizedBox(width: 2.w),
-                          customText(
-                            text: "Anyone Can Reply",
-                            fontSize: 14.sp,
-                          ),
-                          const Spacer(),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF1E5A99),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 6.w,
-                                vertical: 1.2.h,
-                              ),
-                            ),
-                            child: customText(
-                              text: "Accept",
-                              color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.w),
+                        child: Row(
+                          children: [
+                            Icon(Icons.public, size: 20.sp),
+                            SizedBox(width: 2.w),
+                            customText(
+                              text: "Anyone Can Reply",
                               fontSize: 14.sp,
+                              fontWeight: FontWeight.w500
                             ),
-                          ),
-                          SizedBox(height: 3.h),
-                        ],
+                            const Spacer(),
+                            buttonWidget("Post", whiteColor,colors: blueColor,height: 3.5.h,width: 19.w,fontsize: 14.sp),
+                            SizedBox(height: 8.h),
+                          ],
+                        ),
                       ),
                     ],
                   ),

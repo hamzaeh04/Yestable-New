@@ -27,16 +27,16 @@ class CustomPhoneInput extends StatelessWidget {
               );
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.2.h),
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.05.h),
               decoration: BoxDecoration(
-                border: Border.all(color: greenColor),
+                border: Border.all(color: greenColor,width: 0.17.w),
                 borderRadius: BorderRadius.circular(2.w),
               ),
               child: Row(
                 children: [
                   customText(
                     text: controller.selectedCountry.value.flagEmoji,
-                    fontSize: 18.sp,
+                    fontSize: 23.sp,
                   ),
                   Icon(Icons.keyboard_arrow_down_rounded, size: 16.sp),
                 ],
@@ -49,26 +49,27 @@ class CustomPhoneInput extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 3.w),
               decoration: BoxDecoration(
-                border: Border.all(color: greenColor),
+                border: Border.all(color: greenColor,width: 0.17.w),
                 borderRadius: BorderRadius.circular(2.w),
               ),
               child: Row(
                 children: [
                   customText(
                     text: '+${controller.selectedCountry.value.phoneCode}',
-                    fontSize: 15.sp,
-                    color: Colors.black54,
+                    fontSize: 16.sp,
+                    color: blackColor,
                   ),
-                  SizedBox(width: 2.w),
+                  SizedBox(width: 4.w),
+
                   Expanded(
                     child: TextField(
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
-                      style: TextStyle(fontSize: 15.sp,),
+                      style: TextStyle(fontSize: 15.sp,color: blackColor,fontFamily: "WorkSans"),
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Enter Your Phone Number',
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: TextStyle(color: blackColor,fontFamily: "WorkSans"),
                       ),
                     ),
                   ),

@@ -205,6 +205,8 @@ class ColorConstant {
   static Color lightGrey = fromHex('#999999');
   static Color textfldFillColor = fromHex('#F8F8F8');
   static Color lightGrey3 = fromHex('#EBEBEB');
+  static Color redColor = fromHex('#D90E0E');
+
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();

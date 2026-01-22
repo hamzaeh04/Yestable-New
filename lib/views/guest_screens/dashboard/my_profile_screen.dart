@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -13,6 +14,7 @@ import '../../../widget/button_widget.dart';
 import '../../../widget/event_accesibility_widget.dart';
 import '../../../widget/foodpreference_yesno_widget.dart';
 import '../../../widget/home_screen_widget.dart';
+import '../profile_setup_screens/community_profile.dart';
 import '../profile_setup_screens/host_profile_reviews.dart';
 
 class MyProfileScreen extends StatelessWidget {
@@ -82,7 +84,7 @@ class MyProfileScreen extends StatelessWidget {
           children: [
             // Top Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Row(
                 children: [
                   Expanded(
@@ -97,25 +99,38 @@ class MyProfileScreen extends StatelessWidget {
                           child: customText(
                             text: "My Profile",
                             fontSize: 20.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: whiteColor,
                             fontFamily: "CormorantGaramond",
+                            height: 0.1.h,
                           ),
                         ),
                         customText(
                           text: "May 01, 2025",
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w400,
                           color: whiteColor,
                         ),
                       ],
                     ),
                   ),
                   Spacer(),
-                  homeIconWidget(icon: Icons.logout,onTap: () {
-                    Get.toNamed("getstarted");
-                    controller.isUser.value = true;
-                  }),
+                  homeIconWidget(
+                    icon: Icons.logout,
+                    onTap: () {
+                      // 1. Pehle flag ko true kar dein taake dialog block ho jaye
+                      controller.hasCheckedProfile.value = true;
+
+                      // 2. Index ko reset karein
+                      controller.currentIndex.value = 0;
+                      // 3. User status set karein
+                      controller.isUser.value = true;
+                      // controller.isLoggedIn.value = false; // Isko bhi false karna zaroori hai
+
+                      // 4. offAllNamed use karein taake stack saaf ho jaye aur black screen ya dialog issue na aaye
+                      Get.offAllNamed("getstarted");
+                    },
+                  ),
                   SizedBox(width: 2.w),
                   homeIconWidget(icon: Icons.notifications,onTap: () => controller.goToNotificationPage()),
                 ],
@@ -264,7 +279,7 @@ class MyProfileScreen extends StatelessWidget {
                                           customText(
                                             text: "New York",
                                             fontSize: 14.sp,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w500,
                                             color: blackColor,
                                             txtDecoration: TextDecoration
                                                 .underline,
@@ -318,7 +333,7 @@ class MyProfileScreen extends StatelessWidget {
                                       customText(
                                         text: "Dietary Priorities",
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                         color: blackColor,
                                       ),
                                       SizedBox(height: 1.h),
@@ -327,6 +342,7 @@ class MyProfileScreen extends StatelessWidget {
                                         fontSize: 14.sp,
                                         color: blackColor,
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -343,10 +359,12 @@ class MyProfileScreen extends StatelessWidget {
                                       ),
                                       SizedBox(height: 1.h),
                                       customText(
-                                        text: "Diet:",
+                                        text: "Diets:",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                        fontWeight: FontWeight.w500
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -357,11 +375,31 @@ class MyProfileScreen extends StatelessWidget {
                                           },
                                         ),
                                       ),
-                                      SizedBox(height: 1.5.h),
+                                      SizedBox(height: 2.h),
+                                      customText(
+                                          text: "Yuck Or Yum?",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: blackColor,
+                                          fontFamily: 'CormorantGaramond'
+                                      ),
+                                      SizedBox(height: 0.7.h),
+                                      Column(
+                                        spacing: 2.h,
+                                        children: [
+                                          yuckOrYumList(title: '🥜 Peanuts', color: greenColor, isSelected: true),
+                                          yuckOrYumList(title: '🦐 Shellfish', color: redColor, isSelected: false),
+                                          yuckOrYumList(title: '🥛 Dairy', color: redColor, isSelected: false),
+                                          yuckOrYumList(title: '🌾 Gluten', color: greenColor, isSelected: true),
+                                          yuckOrYumList(title: '🥚 Eggs', color: redColor, isSelected: false),
+                                          yuckOrYumList(title: '🫛 Soy', color: redColor, isSelected: false),
+                                        ],
+                                      ),
+                                      SizedBox(height: 2.h),
                                       customText(
                                         text: "Food Preferences",
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                         color: blackColor,
                                       ),
                                       SizedBox(height: 1.h),
@@ -369,7 +407,9 @@ class MyProfileScreen extends StatelessWidget {
                                         text: "Liked Cuisines:",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                          fontWeight: FontWeight.w500
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -383,7 +423,9 @@ class MyProfileScreen extends StatelessWidget {
                                         text: "Disliked Ingredients",
                                         fontSize: 14.sp,
                                         color: blackColor,
+                                          fontWeight: FontWeight.w500
                                       ),
+                                      SizedBox(height: 0.5.h),
                                       Wrap(
                                         spacing: 5,
                                         runSpacing: 1,
@@ -401,6 +443,7 @@ class MyProfileScreen extends StatelessWidget {
                                             text: "Accessibility Needs",
                                             fontSize: 15.sp,
                                             color: blackColor,
+                                            fontWeight: FontWeight.w600
                                           ),
                                           Wrap(
                                             spacing: 5,
@@ -619,6 +662,21 @@ class MyProfileScreen extends StatelessWidget {
                                                 postImage: "assets/png/chat_images/group_profile_pic.png",
                                               ),
                                             ),
+                                            SizedBox(height: 1.h),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                              ),
+                                            ),
+                                            SizedBox(height: 1.h),
                                             Divider(),
                                             Padding(
                                               padding: EdgeInsets.symmetric(
@@ -632,19 +690,7 @@ class MyProfileScreen extends StatelessWidget {
                                                 showRepliesAndAvatar: false, // 👈 Only likes shown
                                               ),
                                             ),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1.4k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
+                                    SizedBox(height: 1.h),
                                             Divider(),
                                             Padding(
                                               padding: EdgeInsets.symmetric(
@@ -670,6 +716,48 @@ class MyProfileScreen extends StatelessWidget {
                                                 postTime: "2hrs ago",
                                                 postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
                                                 postImage: "assets/png/chat_images/group_profile_pic.png",
+                                              ),
+                                            ),
+                                            SizedBox(height: 1.h),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1.4k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                              ),
+                                            ),
+                                    SizedBox(height: 1.h),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1.4k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
+                                              ),
+                                            ),
+                                    SizedBox(height: 1.h),
+                                            Divider(),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: buildPostCard(
+                                                profileImage: 'assets/png/chat_images/user5.png',
+                                                userName: 'Sarah Scarnio',
+                                                postTime: '3h ago',
+                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                likesCount: '1.4k Likes',
+                                                showRepliesAndAvatar: false, // 👈 Only likes shown
                                               ),
                                             ),
                                           ],
@@ -769,8 +857,10 @@ Widget buildPostCard({
   String likesCount = "12k Likes",
   bool showReadMore = true,
   bool showRepliesAndAvatar = true,
-
+  bool isExpanded = false,
 }) {
+  bool isLiked = false;
+
   return Container(
     decoration: BoxDecoration(
       color: color,
@@ -847,12 +937,35 @@ Widget buildPostCard({
                         fontSize: userNameFontSize != null ? userNameFontSize : 16.sp,
                         fontWeight: FontWeight.w600,
                         color: blackColor,
-                        fontFamily: "CormorantGaramond",
+                        // fontFamily: "CormorantGaramond",
                       ),
-                      Icon(
-                        Icons.more_horiz,
-                        size: 20.sp,
-                        color: blackColor,
+                      // Dropdown using local StatefulBuilder context to avoid breaking existing calls
+                      StatefulBuilder(
+                        builder: (localContext, setMenuState) {
+                          return GestureDetector(
+                            onTapDown: (details) {
+                              showMenu(
+                                color: backgroundColor,
+                                context: localContext,
+                                position: RelativeRect.fromLTRB(
+                                  details.globalPosition.dx,
+                                  details.globalPosition.dy,
+                                  details.globalPosition.dx,
+                                  details.globalPosition.dy,
+                                ),
+                                items: [
+                                  const PopupMenuItem(value: 'edit', child: Text("Edit")),
+                                  const PopupMenuItem(value: 'delete', child: Text("Delete")),
+                                ],
+                              );
+                            },
+                            child: Icon(
+                              Icons.more_horiz,
+                              size: 20.sp,
+                              color: blackColor,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -863,17 +976,63 @@ Widget buildPostCard({
                     color: darkGreyColor,
                   ),
                   SizedBox(height: 0.5.h),
+                  //
+                  // // Post Text
+                  // customText(
+                  //   text: postText,
+                  //   fontSize: postTextFontSize!= null ? postTextFontSize : 14.sp,
+                  //   fontWeight: FontWeight.w400,
+                  //   color: darkGreyColor,
+                  //   maxLines: showReadMore ? 4 : null,
+                  // ),
+                  SizedBox(height: 0.5.h),
+                  StatefulBuilder(
+                    builder: (context, setState) {
+                      final int maxChars = 200;
+                      final bool needTruncate = postText.length > maxChars;
+                      String displayText;
 
-                  // Post Text
-                  customText(
-                    text: postText,
-                    fontSize: postTextFontSize!= null ? postTextFontSize : 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: darkGreyColor,
-                    maxLines: showReadMore ? 4 : null,
+                      if (isExpanded || !needTruncate) {
+                        displayText = postText;
+                      } else {
+                        displayText = postText.substring(0, maxChars) + "...";
+                      }
+
+                      return RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: displayText,
+                              style: TextStyle(
+                                fontSize: postTextFontSize ?? 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: darkGreyColor,
+                                fontFamily: "WorkSans",
+                              ),
+                            ),
+                            if (!isExpanded && needTruncate)
+                              TextSpan(
+                                text: ' Read more',
+                                style: TextStyle(
+                                  fontSize: postTextFontSize ?? 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: blueColor,
+                                  fontFamily: "WorkSans",
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    setState(() {
+                                      isExpanded = true;
+                                    });
+                                  },
+                              ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(height: 0.5.h),
-
                   // Post Image
                   if (postImage != null && postImage.isNotEmpty)
                     ClipRRect(
@@ -906,17 +1065,16 @@ Widget buildPostCard({
                               text: repliesCount,
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
-                              color: darkGreyColor,
                               txtDecoration: TextDecoration.underline,
                             ),
                             SizedBox(width: 4.w),
                           ],
                           // Likes (always shown)
                           customText(
-                            text: likesCount,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: darkGreyColor,
+                              text: likesCount,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: darkGreyColor
                           ),
                         ],
                       ),
@@ -924,7 +1082,22 @@ Widget buildPostCard({
                       // Action Icons
                       Row(
                         children: [
-                          Icon(Icons.favorite_border,size: 18.sp,),
+                          StatefulBuilder(
+                            builder: (context, setLikeState) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setLikeState(() {
+                                    isLiked = !isLiked;
+                                  });
+                                },
+                                child: Icon(
+                                  isLiked ? Icons.favorite : Icons.favorite_border,
+                                  size: 18.sp,
+                                  color: isLiked ? Colors.red : null,
+                                ),
+                              );
+                            },
+                          ),
                           SizedBox(width: 2.5.w),
                           Image.asset("assets/png/icons/comment_icon.png", height: 16.sp),
                           SizedBox(width: 3.w),

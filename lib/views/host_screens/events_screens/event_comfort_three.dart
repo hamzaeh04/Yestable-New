@@ -54,7 +54,8 @@ class EventComfortThree extends StatelessWidget {
                 Padding(
                   padding:EdgeInsets.symmetric(horizontal: 6.w),
                   child: customText(
-                    text: "3. May Guest Contact You About Dietry Or Access Concerns",
+                    text: "3. May guests contact you about dietary or access concerns",
+                    fontFamily: "CormorantGaramond",
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),

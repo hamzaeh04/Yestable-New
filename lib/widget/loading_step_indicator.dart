@@ -32,7 +32,8 @@ Widget loadingStepIndicator(String? step, double? loadingvalue){
               text: '$step',
               color: Colors.white,
               fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w500,
+              fontFamily: "CormorantGaramond"
             ),
           ],
         ),

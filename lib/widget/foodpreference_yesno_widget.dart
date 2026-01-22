@@ -22,7 +22,7 @@ Widget yesNoWidget(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null)
-          customText(text: title, fontSize: 15.sp, fontWeight: FontWeight.w400),
+          customText(text: title, fontSize: 15.5.sp, fontWeight: FontWeight.w400,color: blackColor),
         SizedBox(height: 2.h),
 
         Obx(() {
@@ -164,9 +164,9 @@ Widget foodPreferencesOne(
       },
       child: IntrinsicWidth(
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 0.5.h),
-          height: 4.h,
-          padding: EdgeInsets.symmetric(horizontal: 5.w),
+          margin: EdgeInsets.symmetric(vertical: 0.3.h),
+          height: 3.25.h,
+          padding: EdgeInsets.symmetric(horizontal: 3.w),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isSelected ? greenColor : Colors.transparent,
@@ -182,11 +182,11 @@ Widget foodPreferencesOne(
             children: [
               if (imgpath != null) ...[
                 Image.asset(imgpath, height: 16.sp),
-                SizedBox(width: 2.w),
+                SizedBox(width: 1.5.w),
               ],
               customText(
                 text: title,
-                fontSize: fontsize != null ? fontsize : 15.sp,
+                fontSize: fontsize != null ? fontsize : 14.sp,
                 fontWeight: FontWeight.w500,
                 color: isSelected ? whiteColor : blackColor,
               ),

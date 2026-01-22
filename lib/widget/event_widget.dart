@@ -46,7 +46,7 @@ Widget eventScreenWidget({Color? bgcolor}) {
                     text: "Sophia Dinner Event",
                     fontSize: 17.sp,
                     fontWeight: FontWeight.w600,
-                    fontFamily: "CormorantGaramond",
+                     fontFamily: "CormorantGaramond",
                     color: blackColor,
                   ),
                   Row(
@@ -59,7 +59,7 @@ Widget eventScreenWidget({Color? bgcolor}) {
                         text: "132 My Street, Kingston, New York 12486",
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
-                        color: Colors.grey[800],
+                        color: blackColor,
                       ),
                     ],
                   ),
@@ -78,14 +78,26 @@ Widget eventScreenWidget({Color? bgcolor}) {
                         text: "Dietary Compatibility Score",
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
-                        color: blackColor,
+                        color: blueColor,
                       ),
-                      customText(
-                        text: "95%",
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w400,
-                        color: greenColor,
-                      ),
+                      Row(
+                        children: [
+                          customText(
+                            text: "95",
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            color: blueColor,
+                            fontFamily: "CormorantGaramond",
+                          ),
+                          customText(
+                            text: "%", // example of another item in the row
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            color: blueColor,
+                            fontFamily: "CormorantGaramond",
+                          ),
+                        ],
+                      )
                     ],
                   ),
                   SizedBox(height: 1.h),
@@ -115,8 +127,9 @@ Widget eventScreenWidget({Color? bgcolor}) {
                           customText(
                             text: "(30/25)",
                             fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                             color: greenColor,
+                            fontFamily: "CormorantGaramond",
                           ),
                         ],
                       ),

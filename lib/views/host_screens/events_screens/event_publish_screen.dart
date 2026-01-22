@@ -10,6 +10,7 @@ import 'package:yestable/widget/event_posted_dialog.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../widget/event_accesibility_widget.dart';
+import '../../guest_screens/dashboard/event_details_screen.dart';
 
 class EventPublishScreen extends StatelessWidget {
   EventPublishScreen({super.key});
@@ -55,7 +56,6 @@ class EventPublishScreen extends StatelessWidget {
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
-
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
                   child: Column(
@@ -63,18 +63,45 @@ class EventPublishScreen extends StatelessWidget {
                     children: [
                       customText(
                         text: "Gizelle Dinner Event",
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: "CormorantGaramond",
                         color: blackColor,
                       ),
+
                       SizedBox(height: 0.5.h),
                       customText(
                         text:
                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus\neget magna sapien. Faucibus nibh mauris mattis aliquam\nproin pellentesque sed done.",
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
-                        color: Colors.grey[700],
+                        color: darkGreyColor,
+                      ),
+                      SizedBox(height: 1.h),
+                    ],
+                  ),
+                ),
+                Divider(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      customText(
+                        text: "Invitation Message",
+                        fontSize: 19.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "CormorantGaramond",
+                        color: blackColor,
+                      ),
+
+                      SizedBox(height: 0.5.h),
+                      customText(
+                        text:
+                        "With hearts full of joy, we invite you to join us in celebrating the first birthday of our beloved [Baby’s Name]. This special milestone means so much to us, and your presence will make the day even more memorable.",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: darkGreyColor,
                       ),
                       SizedBox(height: 1.h),
                     ],
@@ -90,14 +117,24 @@ class EventPublishScreen extends StatelessWidget {
                     child: ExpansionTile(
                       tilePadding: EdgeInsets.zero,
                       childrenPadding: EdgeInsets.only(bottom: 1.h),
-                      title: customText(
-                        text: "Event Comfort & Accessibility",
-                        fontSize: 19.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "CormorantGaramond",
-                        color: blackColor,
+                      dense: true,
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: customText(
+                              text: "Event Comfort & Accessibility",
+                              fontSize: 18.5.sp,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "CormorantGaramond",
+                              color: blackColor,
+                              maxLines: 1,
+                              overFlow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                       children: [
+                        // Event Accessibility List
                         Wrap(
                           spacing: 5,
                           runSpacing: 1,
@@ -108,9 +145,10 @@ class EventPublishScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+
                         Divider(),
 
-                        /// 👇 FIXED: Align "Items Are Not Allowed" section to start in cross-axis
+                        // Items Are Not Allowed Section
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -120,10 +158,12 @@ class EventPublishScreen extends StatelessWidget {
                                 children: [
                                   customText(
                                     text: "Items Are Not Allowed",
-                                    fontSize: 19.sp,
+                                    fontSize: 18.5.sp,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: "CormorantGaramond",
                                     color: blackColor,
+                                    maxLines: 1,
+                                    overFlow: TextOverflow.ellipsis,
                                   ),
                                   SizedBox(height: 1.h),
                                   Wrap(
@@ -150,34 +190,38 @@ class EventPublishScreen extends StatelessWidget {
                 Divider(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        "assets/png/chat_images/user1.png",
-                        height: 9.h,
-                        width: 14.w,
-                      ),//
-                      SizedBox(width: 3.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          customText(
-                            text: "Gizelle Jekronia",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "CormorantGaramond",
-                            color: blackColor,
-                          ),
-                          SizedBox(height: 0.1.h),
-                          customText(
-                            text: "Event Host",
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: blackColor,
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: InkWell(
+                    onTap: (){
+                      Get.toNamed("hostprofilepcreen");
+                    },
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/png/chat_images/user1.png",
+                          height: 9.h,
+                          width: 14.w,
+                        ),
+                        SizedBox(width: 3.w),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            customText(
+                              text: "Gizelle Jekronia",
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: blackColor,
+                            ),
+                            SizedBox(height: 0.1.h),
+                            customText(
+                              text: "Event Host",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: blackColor,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
@@ -202,9 +246,9 @@ class EventPublishScreen extends StatelessWidget {
                             customText(
                               text: "May 02, 2025",
                               fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "CormorantGaramond",
+                              fontWeight: FontWeight.w500,
                               color: blackColor,
+                              height: 0.1.h,
                             ),
                             SizedBox(height: 0.5.h),
                             customText(
@@ -239,9 +283,9 @@ class EventPublishScreen extends StatelessWidget {
                             customText(
                               text: "IN HOUSES",
                               fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "CormorantGaramond",
+                              fontWeight: FontWeight.w500,
                               color: blackColor,
+                              height: 0.1.h,
                             ),
                             SizedBox(height: 0.5.h),
                             customText(
@@ -269,7 +313,8 @@ class EventPublishScreen extends StatelessWidget {
                         customText(
                           text: "25 People Are Coming",
                           fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "CormorantGaramond",
                           color: blackColor,
                         ),
                         SizedBox(height: 1.h),
@@ -277,12 +322,12 @@ class EventPublishScreen extends StatelessWidget {
                           height: 4.h,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            itemCount: 10,
+                            itemCount: 9,
                             separatorBuilder: (_, __) => SizedBox(width: 2.w),
                             itemBuilder: (_, index) {
                               final image = Image.asset(
                                 'assets/png/chat_images/user${(index%5) + 1}.png',
-                                width: 4.h,
+                                width: 3.8.h,
                                 height: 4.h,
                                 fit: BoxFit.cover,
                               );
@@ -292,7 +337,7 @@ class EventPublishScreen extends StatelessWidget {
                                 child: Stack(
                                   children: [
                                     image,
-                                    if (index == 9)
+                                    if (index == 8)
                                       Positioned.fill(
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -304,6 +349,7 @@ class EventPublishScreen extends StatelessWidget {
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w500,
                                               color: whiteColor,
+                                              fontFamily: "WorkSans2"
                                             ),
                                           ),
                                         ),
@@ -326,7 +372,7 @@ class EventPublishScreen extends StatelessWidget {
                     children: [
                       customText(
                         text: "Where You’ll Be",
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: "CormorantGaramond",
                         color: blackColor,
@@ -354,7 +400,7 @@ class EventPublishScreen extends StatelessWidget {
                     children: [
                       customText(
                         text: "Event Menu",
-                        fontSize: 20.sp,
+                        fontSize: 19.sp,
                         fontWeight: FontWeight.w600,
                         fontFamily: "CormorantGaramond",
                         color: blackColor,
@@ -372,13 +418,13 @@ class EventPublishScreen extends StatelessWidget {
                           customText(
                             text: "Your Dietry Compactibility Score",
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: greenColor,
                           ),
                           customText(
                             text: "95%",
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             color: greenColor,
                           ),
                         ],
@@ -430,7 +476,8 @@ class EventPublishScreen extends StatelessWidget {
                                       text1: "Vegetarian",
                                       text2: "Containt Dairy",
                                       boximg1: "assets/png/event_food_image/brocolli.png",
-                                      boximg2: "assets/png/event_food_image/milk.png"
+                                      boximg2: "assets/png/event_food_image/milk.png",
+                                      containerColor: backgroundColor
                                   ),
                                   Divider(),
                                   menuItem(
@@ -440,7 +487,8 @@ class EventPublishScreen extends StatelessWidget {
                                       text1: "Gluten Free",
                                       text2: "Shellfish",
                                       boximg1: "assets/png/event_food_image/glutenfree.png",
-                                      boximg2: "assets/png/event_food_image/shell.png"
+                                      boximg2: "assets/png/event_food_image/shell.png",
+                                      containerColor: backgroundColor
                                   ),
                                   Divider(),
                                   menuItem(
@@ -450,7 +498,8 @@ class EventPublishScreen extends StatelessWidget {
                                       text1: "Vegen",
                                       text2: "Nut Free",
                                       boximg1: "assets/png/event_food_image/vegan.png",
-                                      boximg2: "assets/png/event_food_image/nutfree.png"
+                                      boximg2: "assets/png/event_food_image/nutfree.png",
+                                      containerColor: backgroundColor
                                   ),
                                   Divider(),
                                   menuItem(
@@ -460,7 +509,8 @@ class EventPublishScreen extends StatelessWidget {
                                       text1: "Vegetarian",
                                       text2: "Containt Dairy",
                                       boximg1: "assets/png/event_food_image/glutenfree.png",
-                                      boximg2: "assets/png/event_food_image/milk.png"
+                                      boximg2: "assets/png/event_food_image/milk.png",
+                                      containerColor: backgroundColor
                                   ),
                                   Divider(),
                                   menuItem(
@@ -470,7 +520,8 @@ class EventPublishScreen extends StatelessWidget {
                                       text1: "Gluten Free",
                                       text2: "Shellfish",
                                       boximg1: "assets/png/event_food_image/vegan.png",
-                                      boximg2: "assets/png/event_food_image/milk.png"
+                                      boximg2: "assets/png/event_food_image/milk.png",
+                                      containerColor: backgroundColor
                                   ),
                                   Divider(),
                                 ]
@@ -619,98 +670,3 @@ Widget reveiwWidget(BuildContext context) {
   );
 }
 
-Widget menuItem({
-  required String title,
-  required String subtitle,
-  required String imagePath,
-  required String text1,
-  required String text2,
-  required String boximg1,
-  required String boximg2,
-}) {
-  return Container(
-    margin: EdgeInsets.symmetric(vertical: 1.5.h),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              customText(
-                text: title,
-                fontSize: 19.sp,
-                fontWeight: FontWeight.w600,
-                fontFamily: "CormorantGaramond",
-                color: blackColor,
-              ),
-              SizedBox(height: 0.5.h),
-              customText(
-                text: subtitle,
-                fontSize: 14.sp,
-                color: darkGreyColor,
-              ),
-              SizedBox(height: 1.h),
-              Row(
-                children: [
-                  foodPreferenceBox(text: text1, imgPath: boximg1),
-                  SizedBox(width: 3.w),
-                  foodPreferenceBox(text: text2, imgPath: boximg2),
-                ],
-              )
-            ],
-          ),
-        ),
-        SizedBox(width: 3.w),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(2.w),
-          child: Image.asset(
-            imagePath,
-            height: 15.h,
-            width: 12.h,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-Widget foodPreferenceBox({
-  required String text,
-  required String imgPath,
-}) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-    decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(30.w),
-        border: Border.all(
-          color: Colors.grey, // 👈 Grey border color
-          width: 0.1.w,
-        )
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          imgPath,
-          height: 16.sp,
-          width: 16.sp,
-          fit: BoxFit.contain,
-        ),
-        SizedBox(width: 2.w),
-        Flexible(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    ),
-  );
-}

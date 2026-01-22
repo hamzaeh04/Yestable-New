@@ -40,7 +40,7 @@ class GuestListScreen extends StatelessWidget {
                   customText(
                     text: "Guest List",
                     fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: whiteColor,
                     fontFamily: "CormorantGaramond",
                   ),
@@ -141,18 +141,13 @@ class GuestListScreen extends StatelessWidget {
                           ),
                           Divider(),
                           SizedBox(height: 2.h),
-                          InkWell(
-                            onTap: (){
-                              Get.toNamed("eventcomfortone");
-                            },
-                            child: addFriendWidget(
-                                index: 0,
-                                url: "assets/png/chat_images/guest4.png",
-                                msgtitle: "Samuel Kendrio",
-                                msgText: "20+ Mutual Friends",
-                                place: "Live In New York",
-                                controller: controller
-                            ),
+                          addFriendWidget(
+                              index: 0,
+                              url: "assets/png/chat_images/guest4.png",
+                              msgtitle: "Samuel Kendrio",
+                              msgText: "20+ Mutual Friends",
+                              place: "Live In New York",
+                              controller: controller
                           ),
 
                           SizedBox(height: 1.h),
@@ -246,8 +241,7 @@ class GuestListScreen extends StatelessWidget {
                                   customText(
                                     text: msgtitle ?? "",
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: "CormorantGaramond",
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ],
                               ),
@@ -316,16 +310,6 @@ class GuestListScreen extends StatelessWidget {
                                   }
                                 ),
                                 SizedBox(width: 2.w),
-                                /*buttonWidget(
-                                  "-",
-                                  greenColor,
-                                  borderColor: greenColor,
-                                  colors: whiteColor,
-                                  fontsize: 14.sp,
-                                  height: 4.h,
-                                  width: 10.w,
-                                  onTap: () => controller.toggleAdd(index), // remove friend
-                                ),*/
                                 InkWell(
                                   onTap: () {
                                     controller.toggleAdd(index);
@@ -353,45 +337,48 @@ class GuestListScreen extends StatelessWidget {
               ),
             ],
           ),
-          Obx(() {
-            bool notesExpanded = controller!.isNotesExpanded(index);
-            if (notesExpanded) {
-              return Padding(
-                padding: EdgeInsets.only(right: 5.w),
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 1.w),
-                  padding: EdgeInsets.all(8.sp),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: greenColor),
-                    color: backgroundColor,
+      Obx(() {
+        bool notesExpanded = controller!.isNotesExpanded(index);
+
+        if (notesExpanded) {
+          return Padding(
+            padding: EdgeInsets.only(right: 5.w),
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 1.w),
+              padding: EdgeInsets.all(8.sp),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: greenColor,width: 0.15.w),
+                color: backgroundColor,
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+                child: TextField(
+                  maxLines: null,
+                  minLines: 2,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontFamily: "WorkSans",
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 3.w,vertical: 1.h),
-                    child: Text(
-                      "Lorem ipsum is simply dummy text of the printing and typesetting industry. "
-                          "Lorem Ipsum has been the industry's standard dummy text ever.",
-                      style: TextStyle(fontSize: 13.sp, fontFamily: "WorkSans"),
+                  decoration: InputDecoration(
+                    hintText: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever",
+                    hintStyle: TextStyle(
+                      fontSize: 10.sp,
+                      fontFamily: "WorkSans",
+                      color: darkGreyColor,
                     ),
+                    border: InputBorder.none,
+                    isDense: true,
                   ),
                 ),
-              );
-            }
-            return SizedBox.shrink();
-          }),
-          // Row(
-          //   children: [
-          //     SizedBox(width: 18.w),
-          //     Expanded(
-          //       child: Divider(
-          //         color: Colors.grey,   // or any visible color
-          //         thickness: 1,         // makes it clearly visible
-          //         height: 1,            // keeps it compact
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          SizedBox(height: 1.h,child:
+              ),
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      }),
+      SizedBox(height: 1.h,child:
           Padding(
             padding: EdgeInsets.only(left: 20.w),
             child: Divider(

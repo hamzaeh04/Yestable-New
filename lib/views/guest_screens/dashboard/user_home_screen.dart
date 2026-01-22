@@ -18,9 +18,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!controller.isInvited.value) {
-        controller.hasCheckedProfile.value = true;
+      // SIRF YEH SIMPLE CHECK: Kya dialog pehle dikha chuke hain?
+      if (controller.hasShownInvitedDialog.value == false) {
+
+        // 1. Foran lock kar dein taake dobara na chale
+        controller.hasShownInvitedDialog.value = true;
+
+        // 2. Dialog dikha dein
         youAreInvitedDialog(context);
+
+        print("Dialog shown for the first time.");
       }
     });
     return Scaffold(
@@ -39,8 +46,9 @@ class HomeScreen extends StatelessWidget {
                         text: "Hi, Sarah Scarnio!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: whiteColor,
+                        height: 0.1.h
                       ),
                       customText(
                         text: "May 01, 2025",
@@ -55,7 +63,7 @@ class HomeScreen extends StatelessWidget {
                     onTap: (){
                       controller.goTSearchScreen();
                     },
-                      child: homeIconWidget(icon: Icons.search)
+                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
@@ -101,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     customText(
-                                      text: "Dinner Calander",
+                                      text: "Dinner Calender",
                                       fontSize: 20.sp,
                                       fontFamily: "CormorantGaramond",
                                       fontWeight: FontWeight.w600,
@@ -133,8 +141,7 @@ class HomeScreen extends StatelessWidget {
                                         customText(
                                           text: "Lunch",
                                           fontSize: 13.sp,
-                                          fontFamily: "CormorantGaramond",
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w400,
                                           color: blackColor,
                                         ),
                                       ],
@@ -195,7 +202,7 @@ class HomeScreen extends StatelessWidget {
                                     children: [
                                       customText(
                                         text: "View All",
-                                        fontSize: 15.sp,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w400,
                                         color: blackColor,
                                       ),
@@ -264,7 +271,7 @@ class HomeScreen extends StatelessWidget {
                                     children: [
                                       customText(
                                         text: "View All",
-                                        fontSize: 15.sp,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w400,
                                         color: blackColor,
                                       ),
@@ -272,7 +279,7 @@ class HomeScreen extends StatelessWidget {
                                       Icon(
                                         Icons.arrow_forward,
                                         color: blackColor,
-                                        size: 16.sp,
+                                        size: 15.sp,
                                       ),
                                     ],
                                   ),

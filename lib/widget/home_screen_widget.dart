@@ -38,7 +38,7 @@ Widget invitationWidget(
                 SizedBox(width: 3.w),
                 Expanded(
                   child: customText(
-                    text: "Joseph Kindario Invited You to",
+                    text: "Joseph Kindario Invited You to..",
                     fontSize: 13.sp,
                     color: darkGreyColor,
                   ),
@@ -65,13 +65,16 @@ Widget invitationWidget(
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min, // important
                     children: [
-                      customText(
-                        text: eventName,
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.w600,
-                        color: blackColor,
-                        fontFamily: "CormorantGaramond",
+                      Flexible( // or just remove Flexible
+                        child: customText(
+                          text: eventName,
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w600,
+                          color: blackColor,
+                          overFlow: TextOverflow.ellipsis, // fix typo
+                        ),
                       ),
                       Row(
                         children: [
@@ -95,18 +98,20 @@ Widget invitationWidget(
                         ],
                       ),
                     ],
-                  ),
+                  )
+
                 ),
                 SizedBox(width: 2.w),
                 Align(
                   alignment: Alignment.topRight,
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 1.8.h),
+                    padding: EdgeInsets.only(top: 0.7.h),
                     child: customText(
                       text: attend,
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w400,
                       color: blackColor,
+                      fontFamily: "CormorantGaramond",
                     ),
                   ),
                 ),
@@ -125,12 +130,24 @@ Widget invitationWidget(
                   fontWeight: FontWeight.w400,
                   color: blackColor,
                 ),
-                customText(
-                  text: "95%",
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400,
-                  color: greenColor,
-                ),
+                Row(
+                  children: [
+                    customText(
+                      text: "88",
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      color: greenColor,
+                      fontFamily: "CormorantGaramond",
+                    ),
+                    customText(
+                      text: "%", // example of another item in the row
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      color: greenColor,
+                      fontFamily: "CormorantGaramond",
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -214,7 +231,6 @@ Widget upComingEventWidget({double? width,double? height}) {
                 text: "Sophia Dinner Event",
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
-                fontFamily: "CormorantGaramond",
                 color: blackColor,
               ),
               customText(
@@ -238,14 +254,26 @@ Widget upComingEventWidget({double? width,double? height}) {
                     text: "Dietary Compatibility Score",
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
-                    color: blackColor,
+                    color: blueColor,
                   ),
-                  customText(
-                    text: "95%",
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
-                    color: greenColor,
-                  ),
+                  Row(
+                    children: [
+                      customText(
+                        text: "95",
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: blueColor,
+                        fontFamily: "CormorantGaramond",
+                      ),
+                      customText(
+                        text: "%", // example of another item in the row
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        color: blackColor,
+                        fontFamily: "CormorantGaramond",
+                      ),
+                    ],
+                  )
                 ],
               ),
               SizedBox(height: 1.h),
@@ -281,7 +309,8 @@ Widget buildEventRow(String title, String text,{double? textSize,String? path}) 
               text: title,
               fontSize: textSize!=null ? textSize : 13.sp,
               fontWeight: FontWeight.w400,
-              color: Colors.grey[800],
+              color: blackColor
+
             ),
           ],
         ),
@@ -291,13 +320,13 @@ Widget buildEventRow(String title, String text,{double? textSize,String? path}) 
           text: title,
           fontSize: textSize!=null ? textSize : 13.sp,
           fontWeight: FontWeight.w400,
-          color: Colors.grey[800],
+          color: blackColor,
         ),
       customText(
         text: text,
         fontSize: textSize!=null ? textSize : 13.sp,
         fontWeight: FontWeight.w400,
-        color: Colors.grey[800],
+        color: blackColor,
       ),
     ],
   );

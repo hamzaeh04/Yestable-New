@@ -8,6 +8,9 @@ import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 
 void profileUpdateDialog(BuildContext context) {
+  // Track selection state
+  List<bool> selectedHosts = [true, false]; // Initial selection states
+
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -16,35 +19,33 @@ void profileUpdateDialog(BuildContext context) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.sp),
       ),
-      insetPadding: EdgeInsets.symmetric(horizontal: 6.w), // 👈 Add this line
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 1.h),
-            child: Column(
-              children: [
-                SizedBox(height: 2.h),
-                Container(
-                  height: 20.w,
-                  width: 20.w,
-                  decoration: BoxDecoration(
-                    color: containerBlueColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      "assets/png/profile_update_tick.png",
-                      width: 12.w, // Smaller than container size
-                      height: 12.w,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      insetPadding: EdgeInsets.symmetric(horizontal: 6.w),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+                child: Column(
                   children: [
+                    SizedBox(height: 2.h),
+                    Container(
+                      height: 20.w,
+                      width: 20.w,
+                      decoration: BoxDecoration(
+                        color: containerBlueColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          "assets/png/profile_update_tick.png",
+                          width: 12.w,
+                          height: 12.w,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 1.h),
                     Center(
                       child: customText(
@@ -57,67 +58,112 @@ void profileUpdateDialog(BuildContext context) {
                     SizedBox(height: 1.h),
                     Center(
                       child: customText(
-                          text: "Would you like to send this update\nto your host?",
-                          fontWeight: FontWeight.w400,
-                          fontSize: 15.sp,
-                          fontFamily: "WorkSans",
-                          textAlign: TextAlign.center
+                        text: "Would you like to send this update\nto your host?",
+                        fontWeight: FontWeight.w400,
+                        fontSize: 15.sp,
+                        fontFamily: "WorkSans",
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     SizedBox(height: 1.h),
                     customText(
-                        text: "Select hosts to notify:",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
-                        fontFamily: "WorkSans",
-
+                      text: "Select hosts to notify:",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                      fontFamily: "WorkSans",
                     ),
                     SizedBox(height: 1.h),
-                    hostToNotifyWidget(isSelected: true,path: "assets/png/profile_update_image1.png",hostTitle: "Emma's Dinner Party",date: "Nov 24"),
+
+                    // ✅ Selectable host widgets
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedHosts[0] = !selectedHosts[0];
+                        });
+                      },
+                      child: hostToNotifyWidget(
+                        isSelected: selectedHosts[0],
+                        path: "assets/png/profile_update_image1.png",
+                        hostTitle: "Emma's Dinner Party",
+                        date: "Nov 24",
+                      ),
+                    ),
                     SizedBox(height: 1.h),
-                    hostToNotifyWidget(isSelected: false,path: "assets/png/profile_update_image2.png",hostTitle: "Thanksgiving at David's",date: "Nov 28"),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedHosts[1] = !selectedHosts[1];
+                        });
+                      },
+                      child: hostToNotifyWidget(
+                        isSelected: selectedHosts[1],
+                        path: "assets/png/profile_update_image2.png",
+                        hostTitle: "Thanksgiving at David's",
+                        date: "Nov 28",
+                      ),
+                    ),
                     SizedBox(height: 1.h),
+
                     Center(
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           showShareWithFriendsBottomSheet(context);
                         },
                         child: customText(
-                            text: "Share via Link another method",
-                            fontWeight: FontWeight.w400,
-                            fontSize: 15.sp,
-                            fontFamily: "WorkSans",
-
+                          text: "Share via Link another method",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15.sp,
+                          fontFamily: "WorkSans",
+                          color: Colors.black.withValues(alpha: 0.6)
                         ),
                       ),
                     ),
                     SizedBox(height: 2.h),
+
                     Row(
                       children: [
-                        Expanded(child: buttonWidget("Not Now", blackColor,colors: backgroundColor,borderColor: Colors.grey.shade400,fontsize: 15.sp,height: 4.5.h,onTap: (){
-                          Get.back();
-                        })),
+                        Expanded(
+                          child: buttonWidget(
+                            "Not Now",
+                            blackColor,
+                            colors: backgroundColor,
+                            borderColor: Colors.grey.shade400,
+                            fontsize: 15.sp,
+                            height: 4.5.h,
+                            onTap: () {
+                              Get.back();
+                            },
+                          ),
+                        ),
                         SizedBox(width: 4.w),
-                        Expanded(child: buttonWidget("Send Update", whiteColor,colors: greenColor,fontsize: 15.sp,height: 4.5.h,onTap: () {
-                          Get.back(); // 👈 Close current dialog
-                          Future.delayed(Duration(milliseconds: 200), () {
-                            updateSentSuccessfull(context); // 👈 Then open the next
-                          });
-                        })),
+                        Expanded(
+                          child: buttonWidget(
+                            "Send Update",
+                            whiteColor,
+                            colors: greenColor,
+                            fontsize: 15.sp,
+                            height: 4.5.h,
+                            onTap: () {
+                              Future.delayed(Duration(milliseconds: 200), () {
+                                updateSentSuccessfull(context);
+                              });
+                            },
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 1.5.h),
                   ],
-                )
-
-              ],
-            ),
-          )
-        ],
+                ),
+              )
+            ],
+          );
+        },
       ),
     ),
   );
 }
+
 Widget hostToNotifyWidget({bool? isSelected,String? path,String? hostTitle,String? date}){
   return Container(
     decoration: BoxDecoration(
@@ -171,7 +217,7 @@ Widget hostToNotifyWidget({bool? isSelected,String? path,String? hostTitle,Strin
                   fontWeight: FontWeight.w500,
                   fontSize: 15.sp,
                   fontFamily: "WorkSans",
-                  color: Colors.grey
+                  color: Colors.black.withValues(alpha: 0.6)
               ),
             ],
           )

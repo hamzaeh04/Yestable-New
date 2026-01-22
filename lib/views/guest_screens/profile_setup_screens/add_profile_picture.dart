@@ -3,13 +3,15 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
+import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
 import '../../../widget/button_widget.dart';
 
 class AddProfilePicture extends StatelessWidget {
-  const AddProfilePicture({super.key});
+  AddProfilePicture({super.key});
+  final NavigationController navigationController = Get.find<NavigationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class AddProfilePicture extends StatelessWidget {
             // Progress bar
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 2.h),
-              child: loadingStepIndicator("0/6", 0.02)
+              child: navigationController.isUser == true ? loadingStepIndicator("0/6", 0.02):loadingStepIndicator("0/3", 0.1),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -31,17 +33,26 @@ class AddProfilePicture extends StatelessWidget {
                   SizedBox(height: 1.h),
                   customText(
                     text: "Add A Profile Picture",
-                    fontSize: 24.sp,
+                    fontSize: 23.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
                   ),
+                  navigationController.isUser.value == true ?
                   customText(
-                    text: "Lorem ipsum dolor sit amet consectetur. Tincidunt\ndiam ligula leo scelerisque volutpat.",
-                    fontSize: 16.sp,
-                    fontFamily: "CormorantGaramond",
-                    fontWeight: FontWeight.w600,
+                    text: "Let everyone get to know that cute face of yours!",
+                    fontSize: 15.sp,
+                    fontFamily: "WorkSans",
+                    fontWeight: FontWeight.w400,
+                    color: darkGreyColor
+                  ):
+                  customText(
+                    text: "You’re sparkling like gluten-free champagne",
+                    fontSize: 15.sp,
+                    fontFamily: "WorkSans",
+                    fontWeight: FontWeight.w400,
+                    color: darkGreyColor
                   ),
-                  SizedBox(height: 7.h),
+                  SizedBox(height: 15.h),
                   Center(
                     child: Container(
                       height: 20.h,
@@ -59,7 +70,7 @@ class AddProfilePicture extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 21.5.h),
+                  SizedBox(height: 23.h),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 1.h), // Adjust as needed
                     child: buttonWidget(

@@ -66,9 +66,10 @@ class EventComfortOne extends StatelessWidget {
                 Padding(
                   padding:EdgeInsets.symmetric(horizontal: 6.w),
                   child: customText(
-                    text: "1. Would You Like To Let Your Guest Know That You Will Be Offering(Check All That Apply)",
+                    text: "1. Let your guests know what you are offering. Check all that apply!",
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
+                    fontFamily: "CormorantGaramond",
                   ),
                 ),
 
@@ -101,6 +102,7 @@ class EventComfortOne extends StatelessWidget {
                 text: "Other Menu Option I.E Halal,Kosher",
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
+                color: blackColor
               ),
             ),
             Padding(
@@ -123,7 +125,7 @@ class EventComfortOne extends StatelessWidget {
               color: Colors.grey.shade400,
               height: 3.h,
             ),
-            yesNoWidget(title: "All Gender Or Faimly Restroom", 6, text1: "All Gender" ,text2: "Faimly Restroom"),
+            yesNoWidget(title: "Restroom", 6),
             SizedBox(height: 3.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),

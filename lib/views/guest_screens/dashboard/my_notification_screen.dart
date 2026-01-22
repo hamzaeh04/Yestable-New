@@ -40,7 +40,7 @@ class MyNotificationScreen extends StatelessWidget {
                   customText(
                     text: "My Notifications",
                     fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: whiteColor,
                     fontFamily: "CormorantGaramond",
                   ),
@@ -83,7 +83,7 @@ class MyNotificationScreen extends StatelessWidget {
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 6.w,
-                                      vertical: 1.h,
+                                      vertical: 0.7.h,
                                     ),
                                     decoration: BoxDecoration(
                                       color:
@@ -121,12 +121,12 @@ class MyNotificationScreen extends StatelessWidget {
                                   padding: EdgeInsets.only(left: 4.w),
                                   child: customText(
                                     text: "Today",
-                                    fontSize: 20.sp,
+                                    fontSize: 19.sp,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: "CormorantGaramond",
                                   ),
                                 ),
-                                SizedBox(height: 2.h),
+                                SizedBox(height: 1.h),
 
                                 // 1. cheque = true
                                 myNotificayionWidget(
@@ -139,7 +139,7 @@ class MyNotificationScreen extends StatelessWidget {
                                 // 2. cheque = true
                                 myNotificayionWidget(
                                   url: "assets/png/notification_img/notification2.png",
-                                  msgtitle: "Yacht trip reminder",
+                                  msgtitle: "Alex invited you to \"Taco Night\"",
                                   msgText: "Harbor 14B | Bring sunscreen!",
                                   cheque: true,
                                 ),
@@ -147,7 +147,7 @@ class MyNotificationScreen extends StatelessWidget {
                                 // 3. cheque = false
                                 myNotificayionWidget(
                                   url: "assets/png/notification_img/notification3.png",
-                                  msgtitle: "Event Cancelled",
+                                  msgtitle: "Jamie Wants To Connect",
                                   msgText: "Rain forecasted | See details",
                                   cheque: true,
                                 ),
@@ -155,7 +155,7 @@ class MyNotificationScreen extends StatelessWidget {
                                 // 4. cheque = false
                                 myNotificayionWidget(
                                   url: "assets/png/notification_img/notification4.png",
-                                  msgtitle: "Discount unlocked!",
+                                  msgtitle: "Maria Joseph Mention You",
                                   msgText: "15% off your next booking",
                                   cheque: false,
                                 ),
@@ -163,11 +163,11 @@ class MyNotificationScreen extends StatelessWidget {
                                 // 5. cheque = false
                                 myNotificayionWidget(
                                   url: "assets/png/notification_img/notification5.png",
-                                  msgtitle: "Profile viewed 10 times today",
+                                  msgtitle: "Sam Replied To Your Recipe Post",
                                   msgText: "Check who's interested",
                                   cheque: false,
                                 ),
-                                SizedBox(height: 1.h),
+                                SizedBox(height: 0.5.h),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -181,7 +181,7 @@ class MyNotificationScreen extends StatelessWidget {
                                     Icon(Icons.keyboard_arrow_down,size: 17.sp),
                                   ],
                                 ),
-                                SizedBox(height: 1.h),
+                                SizedBox(height: 1.5.h),
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 4.w),
                                   child: Row(
@@ -189,7 +189,7 @@ class MyNotificationScreen extends StatelessWidget {
                                     children: [
                                       customText(
                                         text: "Suggested For You",
-                                        fontSize: 20.sp,
+                                        fontSize: 19.sp,
                                         fontWeight: FontWeight.w600,
                                         fontFamily: "CormorantGaramond",
                                       ),
@@ -269,7 +269,7 @@ class MyNotificationScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(url, width: 12.w, height: 12.w, fit: BoxFit.cover),
+          Image.asset(url, width: 11.w, height: 11.5.w, fit: BoxFit.cover),
           SizedBox(width: 3.w), // spacing between image and text
           Expanded(
             child: Stack(
@@ -289,9 +289,10 @@ class MyNotificationScreen extends StatelessWidget {
                               Flexible(
                                 child: customText(
                                   text: msgtitle ?? "",
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: "CormorantGaramond",
+                                  fontSize: 15.5.sp,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1
+                                  //fontFamily: "CormorantGaramond",
                                 ),
                               ),
 
@@ -306,16 +307,14 @@ class MyNotificationScreen extends StatelessWidget {
                                 )
                               else
                                 customText(
-                                  text: "1 h",
+                                  text: "",
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w500,
                                   color: darkGreyColor,
                                 ),
                             ],
                           ),
-
-
-                          SizedBox(height: 0.5.h),
+                          SizedBox(height: 0.2.h),
 
                           /// Message Text
                           customText(
@@ -324,6 +323,7 @@ class MyNotificationScreen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                             color: darkGreyColor,
                           ),
+                          SizedBox(height: 0.5.h),
                         ],
                       ),
                     ), // add spacing so buttons don't overlap
@@ -334,7 +334,7 @@ class MyNotificationScreen extends StatelessWidget {
                 /// ✅ Correct use of Positioned
                 if (cheque)
                   Positioned(
-                    top: 20.sp, // Adjust based on actual visual
+                    top: 16.sp, // Adjust based on actual visual
                     right: 7.w,
                     child: Row(
                       children: [
@@ -369,7 +369,7 @@ class MyNotificationScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(url, width: 12.w, height: 12.w, fit: BoxFit.cover),
+          Image.asset(url, width: 11.w, height: 11.5.w, fit: BoxFit.cover),
           SizedBox(width: 3.w), // spacing between image and text
           Expanded(
             child: Stack(
@@ -391,15 +391,16 @@ class MyNotificationScreen extends StatelessWidget {
                               Flexible(
                                 child: customText(
                                   text: msgtitle ?? "",
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: "CormorantGaramond",
+                                  fontSize: 15.5.sp,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1
+                                  //fontFamily: "CormorantGaramond",
                                 ),
                               ),
                             ],
                           ),
 
-                          SizedBox(height: 0.5.h),
+                          SizedBox(height: 0.2.h),
 
                           /// Message Text
                           customText(
@@ -408,6 +409,7 @@ class MyNotificationScreen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                             color: darkGreyColor,
                           ),
+                          SizedBox(height: 0.5.h,)
                         ],
                       ),
                     ), // add spacing so buttons don't overlap

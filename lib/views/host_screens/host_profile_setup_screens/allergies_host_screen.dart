@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
-import 'package:yestable/views/host_screens/host_profile_setup_screens/host_food_preference_one.dart';
+import 'package:yestable/views/guest_screens/profile_setup_screens/your_root_and_rules.dart';
 import 'package:yestable/widget/allergens_widget.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 
@@ -277,7 +277,7 @@ class AllergiesHostScreen extends StatelessWidget {
                       whiteColor,
                       colors: greenColor,
                       onTap: () {
-                        Get.to(HostFoodPreferenceOne());
+                        Get.to(YourRootAndRules());
                       },
                     ),
                   ],

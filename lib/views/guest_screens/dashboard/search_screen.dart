@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -112,8 +113,8 @@ class SearchScreen extends StatelessWidget {
                           () => SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                          vertical: 3.h,
+                          horizontal: 6.w,
+                          vertical: 1.4.h,
                         ),
                         child: Row(
                           children: List.generate(controller.searchScreenTabs.length, (index) {
@@ -126,8 +127,8 @@ class SearchScreen extends StatelessWidget {
                                 onTap: () => controller.selectTabSearch(index),
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 6.w,
-                                    vertical: 1.h,
+                                    horizontal: 5.w,
+                                    vertical: 0.5.h,
                                   ),
                                   decoration: BoxDecoration(
                                     color: isSelected
@@ -161,7 +162,7 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
+                    SizedBox(height: 0.25.h,),
                     Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -201,8 +202,8 @@ class SearchScreen extends StatelessWidget {
                                         postImage: "assets/png/chat_images/group_profile_pic.png",
                                         color: whiteColor,
                                         userNameFontSize: 15.sp,
-                                        postTextFontSize: 12.sp,
-                                        postTimeFontSize: 12.sp,
+                                        postTextFontSize: 12.5.sp,
+                                        postTimeFontSize: 12.5.sp,
                                       );
                                     }),
                                   ),
@@ -215,7 +216,7 @@ class SearchScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     customText(
-                                      text: "Your Event",
+                                      text: "Your Events",
                                       fontSize: 19.sp,
                                       fontWeight: FontWeight.w600,
                                       color: blackColor,
@@ -275,8 +276,11 @@ Widget buildPostCard({
   String repliesCount = "8 replies",
   String likesCount = "12k Likes",
   bool showReadMore = true,
-  bool showRepliesAndAvatar = true, // 👈 New flag
+  bool showRepliesAndAvatar = true,
 }) {
+  bool isExpanded = false;
+  bool isLiked = false; // logic for heart state
+
   return Padding(
     padding: EdgeInsets.only(right: 2.w),
     child: Container(
@@ -304,7 +308,7 @@ Widget buildPostCard({
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(12.sp),
                       ),
-                      clipBehavior: Clip.antiAlias, // Optional: this clips the image only
+                      clipBehavior: Clip.antiAlias,
                       child: Image.asset(
                         profileImage,
                         fit: BoxFit.cover,
@@ -324,7 +328,7 @@ Widget buildPostCard({
                         decoration: BoxDecoration(
                           color: blueColor,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1), // Optional border
+                          border: Border.all(color: Colors.white, width: 1),
                         ),
                         child: Icon(
                           Icons.add,
@@ -337,7 +341,7 @@ Widget buildPostCard({
                 ),
                 SizedBox(width: 2.w),
 
-                // Username, Time, Text, Image, Footer
+                // Username, Time
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,38 +351,103 @@ Widget buildPostCard({
                         children: [
                           customText(
                             text: userName,
-                            fontSize: userNameFontSize != null ? userNameFontSize : 16.sp,
+                            fontSize: userNameFontSize ?? 16.sp,
                             fontWeight: FontWeight.w600,
                             color: blackColor,
                             fontFamily: "CormorantGaramond",
                           ),
-                          Icon(
-                            Icons.more_horiz,
-                            size: 16.sp,
-                            color: blackColor,
+                          // WORKING 3-DOT DROPDOWN
+                          StatefulBuilder(
+                            builder: (localContext, setMenuState) {
+                              return GestureDetector(
+                                onTapDown: (details) {
+                                  showMenu(
+                                    context: localContext,
+                                    color: Colors.white, // Background color
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.sp)),
+                                    position: RelativeRect.fromLTRB(
+                                      details.globalPosition.dx,
+                                      details.globalPosition.dy,
+                                      details.globalPosition.dx,
+                                      details.globalPosition.dy,
+                                    ),
+                                    items: [
+                                      const PopupMenuItem(value: 'edit', child: Text("Edit")),
+                                      const PopupMenuItem(value: 'delete', child: Text("Delete", style: TextStyle(color: Colors.red))),
+                                    ],
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.more_horiz,
+                                  size: 16.sp,
+                                  color: blackColor,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
                       customText(
                         text: postTime,
-                        fontSize: postTimeFontSize != null ? postTimeFontSize : 14.sp,
+                        fontSize: postTimeFontSize ?? 14.sp,
                         fontWeight: FontWeight.w400,
                         color: darkGreyColor,
                       ),
-
                     ],
                   ),
                 ),
               ],
             ),
             SizedBox(height: 0.5.h),
-            customText(
-              text: postText,
-              fontSize: postTextFontSize!= null ? postTextFontSize : 14.sp,
-              fontWeight: FontWeight.w400,
-              color: darkGreyColor,
-              maxLines: showReadMore ? 4 : null,
+
+            // Post Text with Read More
+            StatefulBuilder(
+              builder: (context, setState) {
+                final int maxChars = 200;
+                final bool needTruncate = postText.length > maxChars;
+                String displayText;
+
+                if (isExpanded || !needTruncate) {
+                  displayText = postText;
+                } else {
+                  displayText = postText.substring(0, maxChars) + "...";
+                }
+
+                return RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: displayText,
+                        style: TextStyle(
+                          fontSize: postTextFontSize ?? 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: darkGreyColor,
+                          fontFamily: "WorkSans",
+                        ),
+                      ),
+                      if (!isExpanded && needTruncate)
+                        TextSpan(
+                          text: ' Read more',
+                          style: TextStyle(
+                            fontSize: postTextFontSize ?? 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: blueColor,
+                            fontFamily: "WorkSans",
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              setState(() {
+                                isExpanded = true;
+                              });
+                            },
+                        ),
+                    ],
+                  ),
+                );
+              },
             ),
+
             SizedBox(height: 0.5.h),
 
             // Post Image
@@ -409,19 +478,19 @@ Widget buildPostCard({
                       SizedBox(width: 2.w),
                       customText(
                         text: repliesCount,
-                        fontSize: 12.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                         color: darkGreyColor,
                         txtDecoration: TextDecoration.underline,
                       ),
                       SizedBox(width: 4.w),
                     ],
-                    // Likes (always shown)
                     customText(
                       text: likesCount,
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                       color: darkGreyColor,
+                      txtDecoration: TextDecoration.underline,
                     ),
                   ],
                 ),
@@ -429,7 +498,23 @@ Widget buildPostCard({
                 // Action Icons
                 Row(
                   children: [
-                    Icon(Icons.favorite_border,size: 18.sp,),
+                    // WORKING LIKE HEART
+                    StatefulBuilder(
+                      builder: (context, setLikeState) {
+                        return GestureDetector(
+                          onTap: () {
+                            setLikeState(() {
+                              isLiked = !isLiked;
+                            });
+                          },
+                          child: Icon(
+                            isLiked ? Icons.favorite : Icons.favorite_border,
+                            size: 18.sp,
+                            color: isLiked ? Colors.red : blackColor,
+                          ),
+                        );
+                      },
+                    ),
                     SizedBox(width: 2.5.w),
                     Image.asset("assets/png/icons/comment_icon.png", height: 16.sp),
                     SizedBox(width: 3.w),
@@ -438,13 +523,15 @@ Widget buildPostCard({
                 ),
               ],
             ),
-            if (postImage != null && postImage.isNotEmpty) SizedBox(height: 1.5.h),
+            if (postImage != null && postImage.isNotEmpty)
+              SizedBox(height: 1.5.h),
           ],
         ),
       ),
     ),
   );
 }
+
 Widget yourEventWidget({double? width,double? height}) {
   return Container(
     height: height!=null ? height : 41.h,
@@ -503,14 +590,14 @@ Widget yourEventWidget({double? width,double? height}) {
                 children: [
                   customText(
                     text: "Dietary Compatibility Score",
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    color: blackColor,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
+                    color: blueColor,
                   ),
                   customText(
                     text: "95%",
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
                     color: greenColor,
                   ),
                 ],
