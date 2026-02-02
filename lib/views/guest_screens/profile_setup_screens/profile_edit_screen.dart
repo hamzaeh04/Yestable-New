@@ -7,6 +7,7 @@ import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
+import '../../../utils/utility.dart';
 import '../../../widget/loading_step_indicator.dart';
 import '../../../widget/privacy_dialog.dart';
 
@@ -79,15 +80,18 @@ class ProfileEditScreen extends StatelessWidget {
                   SizedBox(width: 1.w),
                   InkWell(
                     onTap: (){
+                      controller.isPreferences.value = false;
+                      print(controller.isPreferences.value);
                       Get.toNamed('allergiesdietryscreen');
                     },
                     child: customText(
-                      text: "Continue",
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.sp,
+                        text: "Continue",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.sp,
                         color: whiteColor
                     ),
                   ),
+
                 ],
               ),
             ):Padding(
@@ -210,7 +214,7 @@ class ProfileEditScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
-                              SizedBox(height: 15.4.h),
+                              SizedBox(height: 14.3.h),
                               customText(
                                 text: "Location",
                                 fontWeight: FontWeight.w400,
@@ -322,8 +326,7 @@ class ProfileEditScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Divider(),
-                        SizedBox(height: 0.7.h),
+
                         // Padding(
                         //   padding: EdgeInsets.only(left: 5.w),
                         //   child: Row(
@@ -349,106 +352,168 @@ class ProfileEditScreen extends StatelessWidget {
                         //     ],
                         //   ),
                         // ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                          child: Column(
+                        Obx(() =>
+                          navigationController.isUser.value == true ?
+                          Column(
                             children: [
-                              Obx(() => Row(
+                              Divider(),
+                              SizedBox(height: 0.7.h),
+                              Padding(
+                                padding: EdgeInsets.only(left: 5.w, right: 5.w),
+                                child: Column(
+                                  children: [
+
+                                    /// ================= HEADER =================
+                                    Obx(() => Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        customText(
+                                          text: "Set a Place for Someone Else",
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 17.sp,
+                                          color: greenColor,
+                                        ),
+
+                                        InkWell(
+                                          onTap: () => controller.isPlaceExpanded.toggle(),
+                                          child: Container(
+                                            height: 3.h,
+                                            width: 6.5.w,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              controller.isPlaceExpanded.value
+                                                  ? Icons.remove
+                                                  : Icons.add,
+                                              color: Colors.white,
+                                              size: 17.sp,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+
+                                    /// ================= EXPANDABLE CONTENT =================
+                                    Obx(() => AnimatedCrossFade(
+                                      firstChild: SizedBox.shrink(),
+                                      secondChild: Padding(
+                                        padding: EdgeInsets.only(top: 1.h),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+
+                                            /// 🔹 MULTIPLE SET PLACE FORMS
+                                            Obx(() => Column(
+                                              children: [
+                                                // Pehla form hamesha show
+                                                setPlace(0),
+
+                                                // Second form tabhi show jab pehla complete ho
+                                                if (controller.places.length > 1 && controller.placeCompleted[0])
+                                                  setPlace(1),
+
+                                                // Third form tabhi show jab second complete ho
+                                                if (controller.places.length > 2 && controller.placeCompleted[1])
+                                                  setPlace(2),
+
+                                                // Fourth form tabhi show jab third complete ho
+                                                if (controller.places.length > 3 && controller.placeCompleted[2])
+                                                  setPlace(3),
+                                              ],
+                                            )),
+
+                                            SizedBox(height: 1.5.h),
+
+                                            /// 🔹 ADD MORE BUTTON
+                                            if (controller.places.length < 4)
+                                              InkWell(
+                                                onTap: () {
+                                                  int lastIndex = controller.places.length - 1;
+
+                                                  // Check if previous form is completed
+                                                  if (!controller.placeCompleted[lastIndex]) {
+                                                    Utils.showToast("Please complete previous form first", false);
+                                                    return;
+                                                  }
+
+                                                  // Add new form
+                                                  controller.places.add(controller.places.length);
+                                                  controller.placeCompleted.add(false); // new form initially not completed
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(width: 23.w),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: greenColor,
+                                                      ),
+                                                      padding: EdgeInsets.all(0.5.w),
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        size: 14.sp,
+                                                        color: whiteColor,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 2.w),
+                                                    customText(
+                                                      text: 'Add more',
+                                                      fontSize: 15.5.sp,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: greenColor,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      crossFadeState: controller.isPlaceExpanded.value
+                                          ? CrossFadeState.showSecond
+                                          : CrossFadeState.showFirst,
+                                      duration: Duration(milliseconds: 300),
+                                    )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ): SizedBox.shrink(),
+                        ),
+
+
+
+
+
+                        SizedBox(height: 0.7.h),
+                        navigationController.isUser.value == true ? SizedBox.shrink():
+                        Column(
+                          children: [
+                            Divider(),
+                            Padding(
+                              padding: EdgeInsets.only(left: 5.w),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   customText(
-                                    text: "Set a Place for Someone Else",
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 17.sp,
-                                    color: greenColor,
+                                      text: "I'm Hosting!",
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17.sp,
+                                      color: greenColor
                                   ),
-                                  InkWell(
-                                    onTap: () => controller.isPlaceExpanded.toggle(),
-                                    child: Container(
-                                      margin: EdgeInsets.only(right: 0),
-                                      height: 3.h,
-                                      width: 6.5.w,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        controller.isPlaceExpanded.value ? Icons.remove : Icons.add,
-                                        color: Colors.white,
-                                        size: 17.sp,
-                                      ),
-                                    ),
+                                  Transform.scale(
+                                    scale: 7.w / 50,
+                                    child: Obx(() => CupertinoSwitch(
+                                      activeTrackColor: blackColor,
+                                      value: controller.switchValue2.value,
+                                      onChanged: (val) => controller.toggleSwitch2(val),
+                                    )),
                                   ),
                                 ],
-                              )),
-
-                              // Expandable content
-                              Obx(() => AnimatedCrossFade(
-                                firstChild: SizedBox.shrink(),
-                                secondChild: Padding(
-                                  padding: EdgeInsets.only(top: 1.h),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      setPlace(),
-SizedBox(height: 1.5.h,),
-                                      Row(
-                                        children: [
-                                          SizedBox(width: 23.w,),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: greenColor
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(0.5.w),
-                                              child: Icon(Icons.add,size: 14.sp,color: whiteColor,),
-                                            ),
-                                          ),
-                                          SizedBox(width: 2.w),
-                                          customText(
-                                            text: 'Add more',
-                                            fontSize: 15.5.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: greenColor
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                crossFadeState: controller.isPlaceExpanded.value
-                                    ? CrossFadeState.showSecond
-                                    : CrossFadeState.showFirst,
-                                duration: Duration(milliseconds: 300),
-                              )),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 0.7.h),
-                        Divider(),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              customText(
-                                text: "I'm Hosting!",
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17.sp,
-                                  color: greenColor
                               ),
-                              Transform.scale(
-                                scale: 7.w / 50,
-                                child: Obx(() => CupertinoSwitch(
-                                  activeTrackColor: blackColor,
-                                  value: controller.switchValue.value,
-                                  onChanged: (val) => controller.toggleSwitch(val),
-                                )),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         Divider(),
                         SizedBox(height: 0.7.h),
@@ -606,133 +671,165 @@ Widget pronounItem(String title, int index){
     ),
   ));
 }
-Widget setPlace(){
-  return Column(
-    children: [
-      Row(
-        children: [
-          customText(
-            text: 'Name',
-            fontSize: 15.5.sp,
-          ),
-          SizedBox(width: 13.w), // spacing between label and field
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Robert Elbert',
-                hintStyle: TextStyle(
-                  fontFamily: 'CormorantGaramond',
-                  fontSize: 15.sp,
-                  height: 1.2,
-                ),
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey,
-                    width: 0.6,
-                  ),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey,
-                    width: 0.6,
-                  ),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey, // change color on focus
-                    width: 0.6,
-                  ),
-                ),
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
-                suffixIcon: Padding(
-                  padding: EdgeInsets.only(right: 0.w), // optional small padding for alignment
-                  child: Icon(
-                    Icons.delete,
-                    size: 18.sp,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+Widget setPlace(int index,{String? title}) {
+  final ProfileController controller = Get.find<ProfileController>();
+  return Padding(
+    padding: EdgeInsets.only(bottom: 1.5.h),
+    child: Column(
+      children: [
 
-      Row(
-        children: [
-          customText(
-            text: 'Relation',
-            fontSize: 15.5.sp,
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Son',
-                hintStyle: TextStyle(
-                  fontFamily: 'CormorantGaramond',
-                  fontSize: 15.sp,
-                  height: 1.2,
-                ),
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                ),
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
-                suffixIcon: Padding(
-                  padding: EdgeInsets.only(right: 0.w), // optional small padding for alignment
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 20.sp,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        /// 🔹 Divider & spacing ONLY for 2nd+ forms
+        if (index > 0) ...[
+          SizedBox(height: 1.h),
+          Divider(thickness: 0.4),
+          SizedBox(height: 1.h),
         ],
-      ),
 
-      Row(
-        children: [
-          customText(
-            text: 'Age',
-            fontSize: 15.5.sp,
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: '15',
-                hintStyle: TextStyle(
+        /// ================= NAME =================
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            customText(
+              text: 'Name',
+              fontSize: 15.5.sp,
+            ),
+            SizedBox(width: 13.w),
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Robert Elbert',
+                  hintStyle: TextStyle(
                     fontFamily: 'CormorantGaramond',
                     fontSize: 15.sp,
-                    height: 2.2
+                  ),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                  suffixIcon: index == 0
+                      ? null // first item cannot be deleted
+                      : InkWell(
+                    onTap: () {
+                      controller.places.removeAt(index);
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      size: 18.sp,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.6),
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 0.8.h),
+
+        /// ================= RELATION (Plain TextField, no dropdown) =================
+        Row(
+          children: [
+            customText(
+              text: 'Relation',
+              fontSize: 15.5.sp,
+            ),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Son',
+                  hintStyle: TextStyle(
+                    fontFamily: 'CormorantGaramond',
+                    fontSize: 15.sp,
+                  ),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
                 ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.6),
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 0.8.h),
+
+        /// ================= AGE =================
+        Row(
+          children: [
+            customText(
+              text: 'Age',
+              fontSize: 15.5.sp,
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: '15',
+                  hintStyle: TextStyle(
+                    fontFamily: 'CormorantGaramond',
+                    fontSize: 15.sp,
+                    height: 1.8,
+                  ),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 0.8.h),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
                 ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                ),
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0.6.h),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 2.h),
+        InkWell(
+          onTap: (){
+            controller.setData(
+            index: index,
+            screenTitle: title ?? "Robert",
+            );
+            controller.isPreferences.value = true;
+            print(controller.isPreferences.value);
+            Get.toNamed('allergiesdietryscreen',);
+  },
+
+          child: Container(
+            decoration: BoxDecoration(
+              color: greenColor,
+              borderRadius: BorderRadius.circular(20.sp),
+              border: Border.all(
+                width: 0.1.w,
+                color: greenColor
+              )
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2.5.w,vertical: 0.3.h),
+              child: customText(
+                text: "Set Preferences",
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                color: whiteColor
               ),
             ),
           ),
+        ),
 
-        ],
-      ),
-    ],
+      ],
+    ),
   );
 }
+
+
+

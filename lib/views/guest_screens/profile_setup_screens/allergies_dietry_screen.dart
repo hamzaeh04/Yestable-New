@@ -114,13 +114,23 @@ class AllergiesDietryScreen extends StatelessWidget {
                 loadingStepIndicator("3/6", 0.5),
                 backButton(),
                 SizedBox(height: 2.h),
-                customText(
-                  text: "Food Boundaries & Beliefs",
-                  fontSize: 23.sp,
-                  fontFamily: "CormorantGaramond",
-                  fontWeight: FontWeight.w600,
-                  height: 0.11.h,
+                Obx(() =>
+                  controller.isPreferences.value == true ?
+                  customText(
+                    text: "${controller.title} Food Boundaries & Beliefs",
+                    fontSize: 23.sp,
+                    fontFamily: "CormorantGaramond",
+                    fontWeight: FontWeight.w600,
+                    height: 0.12.h,
+                  ):customText(
+                    text: "Food Boundaries & Beliefs",
+                    fontSize: 23.sp,
+                    fontFamily: "CormorantGaramond",
+                    fontWeight: FontWeight.w600,
+                    height: 0.12.h,
+                  ),
                 ),
+
                 SizedBox(height: 0.5.h),
                 customText(
                   text: "Do eggs scramble your system? Tell us!",
@@ -250,109 +260,109 @@ class AllergiesDietryScreen extends StatelessWidget {
                 // ),
                 // SizedBox(height: 2.h),
 
-                /// More About Plate
-                customText(
-                  text: "More about your plate",
-                  fontSize: 16.5.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-                SizedBox(height: 1.h),
-                ListView.builder(
-                  itemCount: more.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) {
-                    String text = more[index];
-                    Widget? leadingWidget;
-
-                    if (text.contains("Kosher")) {
-                      leadingWidget = Image.asset(
-                        "assets/png/profile_food_images/kosher_icon.png",
-                        height: 16.sp,
-                      );
-                    } else if (text.contains("Keto")) {
-                      leadingWidget = Image.asset(
-                        "assets/png/profile_food_images/keto_icon.png",
-                        height: 16.sp,
-                      );
-                    } else if (text.contains("Halal")) {
-                      leadingWidget = Image.asset(
-                        "assets/png/Halal.png",
-                        height: 16.sp,
-                      );
-                    }
-                    return allergenWidget(index + 10, text, icon: leadingWidget);
-                  },
-                ),
-
-                /// Other Foods
-                Obx(
-                      () => controller.other.value
-                      ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      customText(
-                        text: "Other",
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      SizedBox(height: 1.h),
-                      TextField(
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          hintText:
-                          "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
-                          hintStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontFamily: "WorkSans",
-                            fontWeight: FontWeight.w400,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.sp),
-                            borderSide: BorderSide(
-                              color: foodBoundariesBorderGreenColor,
-                              width: 1,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.sp),
-                            borderSide: BorderSide(
-                              color: foodBoundariesBorderGreenColor,
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.sp),
-                            borderSide: BorderSide(
-                              color: foodBoundariesBorderGreenColor,
-                              width: 1,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: backgroundColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 2.w,
-                            vertical: 1.h,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      buttonWidget(
-                        "Edit Other",
-                        whiteColor,
-                        colors: blueColor,
-                        height: 4.h,
-                        fontsize: 15.sp,
-                        onTap: () {},
-                      ),
-                    ],
-                  )
-                      : others(
-                    title: "Others",
-                    path: "assets/png/icons/others_icon.png",
-                  ),
-                ),
+                // /// More About Plate
+                // customText(
+                //   text: "More about your plate",
+                //   fontSize: 16.5.sp,
+                //   fontWeight: FontWeight.bold,
+                // ),
+                // SizedBox(height: 1.h),
+                // ListView.builder(
+                //   itemCount: more.length,
+                //   shrinkWrap: true,
+                //   physics: NeverScrollableScrollPhysics(),
+                //   padding: EdgeInsets.zero,
+                //   itemBuilder: (context, index) {
+                //     String text = more[index];
+                //     Widget? leadingWidget;
+                //
+                //     if (text.contains("Kosher")) {
+                //       leadingWidget = Image.asset(
+                //         "assets/png/profile_food_images/kosher_icon.png",
+                //         height: 16.sp,
+                //       );
+                //     } else if (text.contains("Keto")) {
+                //       leadingWidget = Image.asset(
+                //         "assets/png/profile_food_images/keto_icon.png",
+                //         height: 16.sp,
+                //       );
+                //     } else if (text.contains("Halal")) {
+                //       leadingWidget = Image.asset(
+                //         "assets/png/Halal.png",
+                //         height: 16.sp,
+                //       );
+                //     }
+                //     return allergenWidget(index + 10, text, icon: leadingWidget);
+                //   },
+                // ),
+                //
+                // /// Other Foods
+                // Obx(
+                //       () => controller.other.value
+                //       ? Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       customText(
+                //         text: "Other",
+                //         fontSize: 15.sp,
+                //         fontWeight: FontWeight.bold,
+                //       ),
+                //       SizedBox(height: 1.h),
+                //       TextField(
+                //         maxLines: 4,
+                //         decoration: InputDecoration(
+                //           hintText:
+                //           "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
+                //           hintStyle: TextStyle(
+                //             fontSize: 15.sp,
+                //             fontFamily: "WorkSans",
+                //             fontWeight: FontWeight.w400,
+                //           ),
+                //           border: OutlineInputBorder(
+                //             borderRadius: BorderRadius.circular(10.sp),
+                //             borderSide: BorderSide(
+                //               color: foodBoundariesBorderGreenColor,
+                //               width: 1,
+                //             ),
+                //           ),
+                //           enabledBorder: OutlineInputBorder(
+                //             borderRadius: BorderRadius.circular(10.sp),
+                //             borderSide: BorderSide(
+                //               color: foodBoundariesBorderGreenColor,
+                //               width: 1,
+                //             ),
+                //           ),
+                //           focusedBorder: OutlineInputBorder(
+                //             borderRadius: BorderRadius.circular(10.sp),
+                //             borderSide: BorderSide(
+                //               color: foodBoundariesBorderGreenColor,
+                //               width: 1,
+                //             ),
+                //           ),
+                //           filled: true,
+                //           fillColor: backgroundColor,
+                //           contentPadding: EdgeInsets.symmetric(
+                //             horizontal: 2.w,
+                //             vertical: 1.h,
+                //           ),
+                //         ),
+                //       ),
+                //       SizedBox(height: 1.h),
+                //       buttonWidget(
+                //         "Edit Other",
+                //         whiteColor,
+                //         colors: blueColor,
+                //         height: 4.h,
+                //         fontsize: 15.sp,
+                //         onTap: () {},
+                //       ),
+                //     ],
+                //   )
+                //       : others(
+                //     title: "Others",
+                //     path: "assets/png/icons/others_icon.png",
+                //   ),
+                // ),
                 SizedBox(height: 2.h),
 
                 /// Continue Button

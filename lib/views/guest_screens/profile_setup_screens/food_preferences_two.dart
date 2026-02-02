@@ -10,6 +10,7 @@ import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/preferences_widget.dart';
 import 'package:yestable/widget/privacy_dialog.dart';
+import 'package:yestable/widget/update_sent_sucessfull_dialog.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -568,7 +569,27 @@ class FoodPreferencesTwo extends StatelessWidget {
                     whiteColor,
                     colors: greenColor,
                     onTap: () {
-                      Get.toNamed("allownotificationscreen");
+                      final index = controller.selectedIndex.value;
+                      print(controller.isPreferences.value);
+                      if (controller.isPreferences.value == true) {
+                        print(controller.isPreferences.value);
+                        controller.placeCompleted[index] = true;
+                        // Show dialog
+                        updateSentSuccessfull(context, desc: "Your preference for this person has been added successfully");
+
+                        // Delay + navigation
+                        Future.delayed(Duration(seconds: 3), () {
+                          if(controller.isPreferences.value == true) { // check again
+                            Get.toNamed('profileeditscreen');
+                            controller.isPreferences.value = false;
+                          }
+                          print(controller.isPreferences.value);
+                        });
+                      } else {
+                        Get.toNamed("allownotificationscreen");
+                      }
+
+
                     },
                   ),
                 ),

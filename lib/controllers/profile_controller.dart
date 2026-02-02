@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
   // --- Existing Variables (No changes here) ---
+
+
   var switchValue = true.obs;
+  var switchValue2 = true.obs;
   RxString selectedValue = ''.obs;
   RxBool isSelected = false.obs;
   RxMap<int, String> selectedOptions = <int, String>{}.obs;
@@ -12,10 +16,33 @@ class ProfileController extends GetxController {
   var isChecked = false.obs;
   var isRadioChecked = false.obs;
   RxInt pronounIsSelected = 0.obs;
-  final RxBool isPlaceExpanded = false.obs;
+  // final RxBool isPlaceExpanded = false.obs;
   RxBool isArrowRotated = false.obs;
   RxBool isExpanded = false.obs;
   RxString selectedOption = "Hearing Loss".obs;
+  // final RxList<int> places = <int>[0].obs; // first item permanent
+
+  final RxList<int> places = <int>[0].obs;
+  final RxBool isPlaceExpanded = false.obs;
+  final RxBool isPreferences = false.obs;
+  /// Track completion for each setPlace
+  RxList<bool> placeCompleted = <bool>[false].obs;
+
+  RxInt selectedIndex = (-1).obs;
+  RxString title = ''.obs;
+
+  void setData({required int index, String? screenTitle}) {
+    selectedIndex.value = index;
+    title.value = screenTitle ?? '';
+  }
+  /// Controllers for each setPlace
+  RxList<Map<String, TextEditingController>> placeControllers = <Map<String, TextEditingController>>[
+    {
+      'name': TextEditingController(),
+      'relation': TextEditingController(),
+      'age': TextEditingController(),
+    }
+  ].obs;
 
   List<String> options = [
     "Help Carrying Plate",
@@ -94,6 +121,10 @@ class ProfileController extends GetxController {
 
   void toggleSwitch(bool value) {
     switchValue.value = value;
+  }
+
+  void toggleSwitch2(bool value) {
+    switchValue2.value = value;
   }
 
   void switchOption(int index, String option) {

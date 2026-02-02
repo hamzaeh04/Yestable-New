@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/controllers/notification_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/controllers/yes_gpt_controller.dart';
 import 'package:yestable/utils/App_Routing.dart';
@@ -15,7 +16,7 @@ void main() {
   Get.put(ProfileController());
   Get.put(YesGptController());
   Get.put(NavigationController());
-
+  Get.put(NotificationController());
   runApp(MyApp());
 }
 

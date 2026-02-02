@@ -92,6 +92,19 @@ void eventPostedDialog(BuildContext context) {
                   },
                 ),
               ),
+              /// 🎉 CELEBRATION GIF (OVERLAY)
+              Positioned(
+                top: 0.h, // adjust for perfect overlap
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Image.asset(
+                    'assets/png/get_started.gif',
+                    width: 45.w,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
             ],
 
           ),

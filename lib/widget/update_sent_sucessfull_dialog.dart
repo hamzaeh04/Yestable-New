@@ -3,7 +3,7 @@ import 'package:sizer/sizer.dart';
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 
-void updateSentSuccessfull(BuildContext context) {
+void updateSentSuccessfull(BuildContext context, {String? desc}) {
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -12,16 +12,19 @@ void updateSentSuccessfull(BuildContext context) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.sp),
       ),
-      insetPadding: EdgeInsets.symmetric(horizontal: 6.w), // 👈 Add this line
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+      insetPadding: EdgeInsets.symmetric(horizontal: 6.w),
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
+
+          /// MAIN CONTENT
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 1.h),
+            padding: EdgeInsets.only(top: 10.w, left: 4.w, right: 4.w, bottom: 3.h),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 2.h),
+
+                /// CIRCLE ICON
                 Container(
                   height: 22.w,
                   width: 22.w,
@@ -32,39 +35,55 @@ void updateSentSuccessfull(BuildContext context) {
                   child: Center(
                     child: Image.asset(
                       "assets/png/update_successfull_icon.png",
-                      width: 12.w, // Smaller than container size
+                      width: 12.w,
                       height: 12.w,
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
-                Column(
-                  children: [
-                    SizedBox(height: 1.h),
-                    customText(
-                      text: "Success!",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 21.sp,
-                      fontFamily: "CormorantGaramond",
-                    ),
-                    SizedBox(height: 1.h),
-                    customText(
-                        text: "Your profile updates have been shared with the selected host(s)",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15.sp,
-                        fontFamily: "WorkSans",
-                        textAlign: TextAlign.center
-                    ),
-                    SizedBox(height: 2.h),
-                  ],
-                )
 
+                SizedBox(height: 1.h),
+
+                /// SUCCESS TITLE
+                customText(
+                  text: "Success!",
+                  fontWeight: FontWeight.w600,
+                  fontSize: 21.sp,
+                  fontFamily: "CormorantGaramond",
+                ),
+
+                SizedBox(height: 0.8.h),
+
+                /// DESCRIPTION
+                customText(
+                  text: desc ??
+                      "Your profile updates have been shared with the selected host(s)",
+                  fontWeight: FontWeight.w400,
+                  fontSize: 15.sp,
+                  fontFamily: "WorkSans",
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
-          )
+          ),
+
+          /// 🎉 CELEBRATION GIF (OVERLAY)
+          Positioned(
+            top: -5.w, // minimal top gap
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                'assets/png/get_started.gif',
+                width: 45.w,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
         ],
       ),
     ),
   );
 }
+
 
