@@ -7,6 +7,7 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/ai_menu_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
+import 'package:yestable/widget/menu_form_widget.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
 import 'package:yestable/widget/selected_menu_bottomsheet.dart';
 import '../../../widget/home_screen_widget.dart';
@@ -371,7 +372,7 @@ class FoodMenuScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 5.h), // Give space for bottom panel
+                              SizedBox(height: 8.h), // Give space for bottom panel
                             ],
                           ),
                         ),
@@ -447,6 +448,16 @@ class FoodMenuScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 12.h),
+        child: FloatingActionButton(
+          backgroundColor: greenColor,
+          shape: CircleBorder(),
+          onPressed: (){
+            menuFormDialog(context);
+        },
+        child: Icon(Icons.add, color: whiteColor,),),
       ),
     );
   }

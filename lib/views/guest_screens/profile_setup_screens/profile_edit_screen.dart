@@ -77,7 +77,7 @@ class ProfileEditScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(width: 1.w),
+                  SizedBox(width: 6.w),
                   InkWell(
                     onTap: (){
                       controller.isPreferences.value = false;
@@ -118,7 +118,7 @@ class ProfileEditScreen extends StatelessWidget {
                       fontFamily: "CormorantGaramond",
                       color: whiteColor
                   ),
-                  SizedBox(width: 1.w),
+                  SizedBox(width: 6.w),
                   InkWell(
                     onTap: (){
                       Get.toNamed('bottomnavigationbar');
@@ -196,19 +196,19 @@ class ProfileEditScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
-                              SizedBox(height: 1.8.h),
+                              SizedBox(height: 1.9.h),
                               customText(
                                 text: "Username",
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
-                              SizedBox(height: 1.8.h),
+                              SizedBox(height: 2.h),
                               customText(
                                 text: "Emails",
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
-                              SizedBox(height: 1.9.h),
+                              SizedBox(height: 2.h),
                               customText(
                                 text: "Pronouns",
                                 fontWeight: FontWeight.w400,
@@ -234,23 +234,27 @@ class ProfileEditScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              customText(
-                                text: "Sarah Scarnio!",
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.sp,
-                              ),
+                              // customText(
+                              //   text: "Sarah Scarnio!",
+                              //   fontWeight: FontWeight.w400,
+                              //   fontSize: 15.sp,
+                              // ),
+                              customProfileField(hint: 'Sarah Scarnio!'),
                               const Divider(),
-                              customText(
-                                text: "Sarah_scarnio01",
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.sp,
-                              ),
+                              // customText(
+                              //   text: "Sarah_scarnio01",
+                              //   fontWeight: FontWeight.w400,
+                              //   fontSize: 15.sp,
+                              // ),
+                              customProfileField(hint: 'Sarah_scarnio01'),
+
                               const Divider(),
-                              customText(
-                                text: "Sarahscarnio@gmail.com",
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.sp,
-                              ),
+                              // customText(
+                              //   text: "Sarahscarnio@gmail.com",
+                              //   fontWeight: FontWeight.w400,
+                              //   fontSize: 15.sp,
+                              // ),
+                              customProfileField(hint: "Sarahscarnio@gmail.com"),
                               const Divider(),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,30 +296,31 @@ class ProfileEditScreen extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(height: 0.8.h,),
-
-                              customText(
-                                text: "📍   New York",
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.sp,
-                              ),
+                              // customText(
+                              //   text: "📍   New York",
+                              //   fontWeight: FontWeight.w400,
+                              //   fontSize: 15.sp,
+                              // ),
+                              customProfileField(hint: "📍   New York"),
                               const Divider(),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  customText(
-                                    text: "✏️   ",
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 15.sp,
-                                  ),
-                                  Expanded(
-                                    child: customText(
-                                      text: "Dog mom, dairy-free diva,\nalways RSVPs yes.",
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 15.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     customText(
+                              //       text: "✏️   ",
+                              //       fontWeight: FontWeight.w400,
+                              //       fontSize: 15.sp,
+                              //     ),
+                              //     Expanded(
+                              //       child: customText(
+                              //         text: "Dog mom, dairy-free diva,\nalways RSVPs yes.",
+                              //         fontWeight: FontWeight.w400,
+                              //         fontSize: 15.sp,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              customProfileField(hint: "✏️   Dog mom, dairy-free diva, always RSVPs yes."),
                               const Divider(),
                             ],
                           ),
@@ -833,3 +838,32 @@ Widget setPlace(int index,{String? title}) {
 
 
 
+Widget customProfileField({
+  required String hint,
+  TextEditingController? controller,
+}) {
+  return TextField(
+    controller: controller,
+    textAlignVertical: TextAlignVertical.center, // centers text, removes vertical padding
+    decoration: InputDecoration(
+      hintText: hint,
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      isDense: true, // removes extra vertical space
+      contentPadding: EdgeInsets.zero, // ZERO padding
+      hintStyle: TextStyle(
+        fontFamily: 'WorkSans',
+        fontWeight: FontWeight.w400,
+        fontSize: 15.sp,
+        overflow: TextOverflow.visible,
+      ),
+    ),
+    style: TextStyle(
+      fontFamily: 'WorkSans',
+      fontWeight: FontWeight.w400,
+      fontSize: 15.sp,
+      overflow: TextOverflow.visible
+    ),
+  );
+}
