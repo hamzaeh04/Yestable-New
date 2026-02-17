@@ -49,7 +49,8 @@ class SignupScreen extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 SizedBox(height: 2.h),
-                CustomPhoneInput(),
+                // CustomPhoneInput(),
+                signupEmailField(),
                 SizedBox(height: 2.h),
                 // buttonWidget(
                 //   "Continue",
@@ -147,4 +148,23 @@ class SignupScreen extends StatelessWidget {
       ),
     );
   }
+}
+Widget signupEmailField(){
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 3.w),
+    decoration: BoxDecoration(
+      border: Border.all(color: greenColor,width: 0.17.w),
+      borderRadius: BorderRadius.circular(2.w),
+    ),
+    child: TextField(
+      //controller: controller.phoneController,
+      keyboardType: TextInputType.phone,
+      style: TextStyle(fontSize: 15.sp,color: blackColor,fontFamily: "WorkSans"),
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+        hintText: 'Enter Your Email',
+        hintStyle: TextStyle(color: blackColor,fontFamily: "WorkSans"),
+      ),
+    ),
+  );
 }

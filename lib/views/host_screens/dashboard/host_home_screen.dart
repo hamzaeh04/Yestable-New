@@ -74,18 +74,15 @@ class AdminHomeScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // SIRF EK LOCK: Kya humne check kar liya hai?
       if (controller.hasCheckedProfile.value == false) {
-
         // 1. Foran lock lagao taake ye block dobara execute na ho
         controller.hasCheckedProfile.value = true;
 
         // 2. Ab priority wise check karo konsa dialog dikhana hai
         if (controller.isInvited.value == false) {
-
           if (!controller.isProfileComplete.value) {
             // Agar profile incomplete hai to ye dikhao
             completeGuestProfileDialog(context);
-          }
-          else if (controller.isGuestUpdateReceived.value) {
+          } else if (controller.isGuestUpdateReceived.value) {
             // Agar profile complete hai lekin koi update aayi hai to ye dikhao
             controller.isGuestUpdateReceived.value = false;
             guestUpdateReceived(context);
@@ -111,8 +108,8 @@ class AdminHomeScreen extends StatelessWidget {
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
-                        color: whiteColor,height: 0.1.h,
-
+                        color: whiteColor,
+                        height: 0.1.h,
                       ),
                       customText(
                         text: "May 01, 2025",
@@ -124,17 +121,20 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   InkWell(
-                      onTap: (){
-                        controller.goTSearchScreen();
-                      },
-                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
+                    onTap: () {
+                      controller.goTSearchScreen();
+                    },
+                    child: homeIconWidget(
+                      imagePath: "assets/png/icons/search_icon.png",
+                    ),
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
-                      onTap: (){
-                        controller.goToNotificationPage();
-                      },
-                      child: homeIconWidget(icon: Icons.notifications)),
+                    onTap: () {
+                      controller.goToNotificationPage();
+                    },
+                    child: homeIconWidget(icon: Icons.notifications),
+                  ),
                 ],
               ),
             ),
@@ -644,9 +644,11 @@ class AdminHomeScreen extends StatelessWidget {
                                                                             1.h,
                                                                       ),
                                                                       InkWell(
-                                                                        onTap:(){
-                                                                          Get.toNamed("newguestlistscreen");
-                                                              },
+                                                                        onTap: () {
+                                                                          Get.toNamed(
+                                                                            "newguestlistscreen",
+                                                                          );
+                                                                        },
                                                                         child: Image.asset(
                                                                           "assets/png/new_guest_illustrations/allergen_graph_two.png",
                                                                         ),
@@ -724,7 +726,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                 color: blackColor,
                                               ),
                                               InkWell(
-                                                onTap: (){
+                                                onTap: () {
                                                   controller.changePage(1);
                                                 },
                                                 child: Row(
@@ -732,7 +734,8 @@ class AdminHomeScreen extends StatelessWidget {
                                                     customText(
                                                       text: "View All",
                                                       fontSize: 15.sp,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       color: blackColor,
                                                     ),
                                                     SizedBox(width: 1.w),
