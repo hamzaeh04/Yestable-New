@@ -182,64 +182,64 @@ class MyNotificationScreen extends StatelessWidget {
                                   ],
                                 ),
                                 SizedBox(height: 1.5.h),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      customText(
-                                        text: "Suggested For You",
-                                        fontSize: 19.sp,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: "CormorantGaramond",
-                                      ),
-                                      SizedBox(width: 2.w),
-                                      customText(
-                                        text: "View All",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: blueColor,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 2.h),
-                                suggestedForYou(
-                                  url: "assets/png/chat_images/guest4.png",
-                                  msgtitle: "Samuel Kendrio",
-                                  msgText: "20+ Mutual Friends",
-                                  cheque: true,
-                                ),
-                                suggestedForYou(
-                                  url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Floyed Gerhold",
-                                  msgText: "20+ Mutual Friends",
-                                  cheque: true,
-                                ),
-                                suggestedForYou(
-                                  url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Kimberly Mayert",
-                                  msgText: "20+ Mutual Friends",
-                                  cheque: true,
-                                ),
-                                suggestedForYou(
-                                  url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Carol Brakus",
-                                  msgText: "20+ Mutual Friends",
-                                  cheque: true,
-                                ),
-                                suggestedForYou(
-                                  url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Natasha Adams",
-                                  msgText: "20+ Mutual Friends",
-                                  cheque: true,
-                                ),
-                                suggestedForYou(
-                                  url: "assets/png/chat_images/user1.png",
-                                  msgtitle: "Nelson Dickinson",
-                                  msgText: "20+ Mutual Friends",
-                                  cheque: true,
-                                ),
+                                // Padding(
+                                //   padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                //   child: Row(
+                                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       customText(
+                                //         text: "Suggested For You",
+                                //         fontSize: 19.sp,
+                                //         fontWeight: FontWeight.w600,
+                                //         fontFamily: "CormorantGaramond",
+                                //       ),
+                                //       SizedBox(width: 2.w),
+                                //       customText(
+                                //         text: "View All",
+                                //         fontSize: 14.sp,
+                                //         fontWeight: FontWeight.w400,
+                                //         color: blueColor,
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                // SizedBox(height: 2.h),
+                                // suggestedForYou(
+                                //   url: "assets/png/chat_images/guest4.png",
+                                //   msgtitle: "Samuel Kendrio",
+                                //   msgText: "20+ Mutual Friends",
+                                //   cheque: true,
+                                // ),
+                                // suggestedForYou(
+                                //   url: "assets/png/chat_images/user1.png",
+                                //   msgtitle: "Floyed Gerhold",
+                                //   msgText: "20+ Mutual Friends",
+                                //   cheque: true,
+                                // ),
+                                // suggestedForYou(
+                                //   url: "assets/png/chat_images/user1.png",
+                                //   msgtitle: "Kimberly Mayert",
+                                //   msgText: "20+ Mutual Friends",
+                                //   cheque: true,
+                                // ),
+                                // suggestedForYou(
+                                //   url: "assets/png/chat_images/user1.png",
+                                //   msgtitle: "Carol Brakus",
+                                //   msgText: "20+ Mutual Friends",
+                                //   cheque: true,
+                                // ),
+                                // suggestedForYou(
+                                //   url: "assets/png/chat_images/user1.png",
+                                //   msgtitle: "Natasha Adams",
+                                //   msgText: "20+ Mutual Friends",
+                                //   cheque: true,
+                                // ),
+                                // suggestedForYou(
+                                //   url: "assets/png/chat_images/user1.png",
+                                //   msgtitle: "Nelson Dickinson",
+                                //   msgText: "20+ Mutual Friends",
+                                //   cheque: true,
+                                // ),
 
                               ],
                             ),

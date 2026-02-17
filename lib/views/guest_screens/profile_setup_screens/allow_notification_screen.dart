@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
+import 'package:yestable/widget/animated_button.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
@@ -63,59 +64,9 @@ class AllowNotificationScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start, // <-- add this
                 children: [
                   SizedBox(height: 5.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 1.h),
-                    // Adjust as needed
-                    // child: buttonWidget(
-                    //   "Allow Notifications",
-                    //   whiteColor,
-                    //   colors: greenColor,
-                    //   onTap: () {
-                    //     Get.toNamed("profilecompletescreen");
-                    //   },
-                    // ),
-                    child: InkWell(
-                      onTap: () {
-                        Get.toNamed("profilecompletescreen");
-                      },
-                      child: Obx(
-                        () => AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                          height: 5.5.h,
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.sp),
-                            gradient: LinearGradient(
-                              begin:
-                              controller.isHorizontal.value
-                                      ? Alignment.centerLeft
-                                      : Alignment.topCenter,
-                              end:
-                              controller.isHorizontal.value
-                                      ? Alignment.centerRight
-                                      : Alignment.bottomCenter,
-                              colors: const [
-                                Color(0xFFFFC72C),
-                                Color(0xFF4CAF50),
-                                Color(0xED008809),
-                                Color(0xED008809),
-                                Color(0xFF88C713),
-                                Color(0xFFFF6200),
-                              ],
-                            ),
-                          ),
-                          child: customText(
-                            text: 'Allow Notifications',
-                            color: Colors.white,
-                            fontSize: 16.5.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  animatedButton((){
+                    Get.toNamed("profilecompletescreen");
+                  }, "Allow Notifications"),
                   buttonWidget(
                     "Maybe Later",
                     greenColor,

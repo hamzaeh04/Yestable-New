@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/constants/image_constants.dart';
+import 'package:yestable/widget/animated_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../widget/button_widget.dart';
@@ -50,14 +51,17 @@ class SignupScreen extends StatelessWidget {
                 SizedBox(height: 2.h),
                 CustomPhoneInput(),
                 SizedBox(height: 2.h),
-                buttonWidget(
-                  "Continue",
-                  whiteColor,
-                  colors: greenColor,
-                  onTap: () {
-                    Get.toNamed('verificationcodescreen');
-                  },
-                ),
+                // buttonWidget(
+                //   "Continue",
+                //   whiteColor,
+                //   colors: greenColor,
+                //   onTap: () {
+                //     Get.toNamed('verificationcodescreen');
+                //   },
+                // ),
+                animatedButton((){
+                  Get.toNamed('verificationcodescreen');
+                }, "Continue"),
                 SizedBox(height: 4.h),
                 Row(
                   children: [
