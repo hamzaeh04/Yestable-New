@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/custom_checkBox.dart';
@@ -15,6 +16,7 @@ class VerificationCodeScreen extends StatelessWidget {
   VerificationCodeScreen({super.key});
 
   final NavigationController controller = Get.find<NavigationController>();
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +101,7 @@ class VerificationCodeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   PinCodeTextField(
+                    controller: authController.otpController,
                     appContext: context,
                     length: 6,
                     obscureText: false,
@@ -135,7 +138,7 @@ class VerificationCodeScreen extends StatelessWidget {
                     whiteColor,
                     colors: greenColor,
                     onTap: () {
-                        Get.toNamed('addprofilepicture');
+                      Get.toNamed('addprofilepicture');
                     },
                   ),
                 ],

@@ -5,12 +5,14 @@ import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/constants/image_constants.dart';
 
 import '../../../constants/color_constants.dart';
+import '../../../controllers/auth_controller.dart';
 import '../../../widget/button_widget.dart';
 import '../../../widget/custom_phone_feild.dart';
 import '../../../widget/social_icon_widget.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+  SignupScreen({super.key});
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +148,7 @@ class SignupScreen extends StatelessWidget {
   }
 }
 Widget signupEmailField(){
+  final AuthController authController = Get.find<AuthController>();
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 3.w),
     decoration: BoxDecoration(
@@ -153,8 +156,7 @@ Widget signupEmailField(){
       borderRadius: BorderRadius.circular(2.w),
     ),
     child: TextField(
-      //controller: controller.phoneController,
-      keyboardType: TextInputType.phone,
+      controller: authController.emailController,
       style: TextStyle(fontSize: 15.sp,color: blackColor,fontFamily: "WorkSans"),
       decoration: const InputDecoration(
         border: InputBorder.none,
