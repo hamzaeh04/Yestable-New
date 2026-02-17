@@ -54,7 +54,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>     {
   final List<Widget> pages = [
     Obx(() => Get.find<NavigationController>().isUser.value ? HomeScreen() : AdminHomeScreen()),
     EventScreen(),
-    CommunityScreen(),
+    // CommunityScreen(),
     ChatListScreen(),
     Obx(() => Get.find<NavigationController>().isUser.value ? MyProfileScreen() : HostProfileScreen()),
     ViewallInvitationScreen(),
@@ -85,9 +85,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>     {
             children: [
               navItem("assets/png/bottom_bar_icons/home_icon.png", 0, 'Home'),
               navItem("assets/png/bottom_bar_icons/event_icon.png", 1, 'Event'),
-              navItem("assets/png/bottom_bar_icons/community_icon.png", 2, 'Community'),
-              navItem("assets/png/bottom_bar_icons/chat_icon.png", 3, 'Chat'),
-              navItem("assets/png/bottom_bar_icons/profile_icon.png", 4, 'My Profile'),
+              // navItem("assets/png/bottom_bar_icons/community_icon.png", 2, 'Community'),
+              navItem("assets/png/bottom_bar_icons/chat_icon.png", 2, 'Chat'),
+              navItem("assets/png/bottom_bar_icons/profile_icon.png", 3, 'My Profile'),
             ],
           )),
         ),
