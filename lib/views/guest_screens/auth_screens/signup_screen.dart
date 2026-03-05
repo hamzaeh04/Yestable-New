@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/constants/image_constants.dart';
+import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/widget/animated_button.dart';
 
 import '../../../constants/color_constants.dart';
@@ -11,7 +12,8 @@ import '../../../widget/custom_phone_feild.dart';
 import '../../../widget/social_icon_widget.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+  SignupScreen({super.key});
+  final AuthController controller = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +62,29 @@ class SignupScreen extends StatelessWidget {
                 //     Get.toNamed('verificationcodescreen');
                 //   },
                 // ),
-                animatedButton((){
-                  Get.toNamed('verificationcodescreen');
+                animatedButton(() async {
+                  if(controller.controller.isUser.value == true ){
+                    if (controller.emailController.text.trim().isEmpty) {
+                      Get.snackbar(
+                        "Error",
+                        "Please fill all required fields",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                        margin: const EdgeInsets.all(12),
+                        borderRadius: 8,
+                        duration: const Duration(seconds: 2),
+                      );
+                    } else {
+                      await controller.passwordLessLogin();
+                    }
+                  }
+                  else{
+                    Get.offAllNamed('/verificationcodescreen');
+                  }
+
+
+
                 }, "Continue"),
                 SizedBox(height: 4.h),
                 Row(
@@ -150,6 +173,7 @@ class SignupScreen extends StatelessWidget {
   }
 }
 Widget signupEmailField(){
+  final AuthController controller = Get.find<AuthController>();
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 3.w),
     decoration: BoxDecoration(
@@ -157,7 +181,7 @@ Widget signupEmailField(){
       borderRadius: BorderRadius.circular(2.w),
     ),
     child: TextField(
-      //controller: controller.phoneController,
+      controller: controller.emailController,
       keyboardType: TextInputType.phone,
       style: TextStyle(fontSize: 15.sp,color: blackColor,fontFamily: "WorkSans"),
       decoration: const InputDecoration(

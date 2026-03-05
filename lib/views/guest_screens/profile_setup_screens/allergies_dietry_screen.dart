@@ -5,6 +5,7 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/allergens_widget.dart';
 import 'package:yestable/widget/animated_button.dart';
 import 'package:yestable/widget/back_button_widget.dart';
+import 'package:yestable/widget/show_other_dialog_box.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -13,107 +14,7 @@ import '../../../widget/loading_step_indicator.dart';
 
 class AllergiesDietryScreen extends StatelessWidget {
   AllergiesDietryScreen({super.key});
-  final ProfileController controller = Get.put(ProfileController());
-
-  final List<String> levels = [
-    "🚨 Severe Allergy",
-    "🤧 Mild Or Digestive Reaction",
-    "🙏🏼 Avoid For Belief Or Culture",
-    "👋 No Allergy Just A Preference",
-  ];
-
-  final List<String> more = [
-    "🍀 Vegan",
-    "🥬 Vegetarian",
-    "Halal",
-    "Kosher",
-    "Keto",
-  ];
-
-  final List<Map<String, dynamic>> allergens = [
-    {
-      "progress": 0.3.obs,
-      "title": "🥜 Peanuts",
-      "desc": "Severe Allergy (Anaphylaxis)",
-      "circleImg": "🥜",
-      "isEmoji" : false,
-    },
-    {
-      "progress": 0.0.obs,
-      "title": "Tree Nuts",
-      "desc": "No Allergy",
-      "circleImg": "🤗",
-      "isEmoji" : true,
-      "path" : "assets/png/profile_food_images/tree_nut.png",
-    },
-    {
-      "progress": 0.0.obs,
-      "title": "Sesame",
-      "desc": "No Allergy",
-      "circleImg": "🤗",
-      "isEmoji" : true,
-      "path" : "assets/png/profile_food_images/sesame.png",
-    },
-    {
-      "progress": 0.0.obs,
-      "title": "🌾 Gluten",
-      "desc": "Severe Allergy",
-      "circleImg": "🌾",
-      "isEmoji" : false
-    },
-    {
-      "progress": 0.8.obs,
-      "title": "🥚 Eggs",
-      "desc": "Avoid for Beliefs or Culture",
-      "circleImg": "🥚",
-      "isEmoji" : false
-    },
-    {
-      "progress": 0.7.obs,
-      "title": "🫘 Soy",
-      "desc": "Mild or Digestive Reaction",
-      "circleImg": "🫘",
-      "isEmoji" : false
-    },
-    {
-      "progress": 0.6.obs,
-      "title": " Fish",
-      "desc": "Severe Allergy (Anaphylaxis)",
-      "circleImg": "📷",
-      "isEmoji" : true,
-      "path" : "assets/png/profile_food_images/gold_fish.png",
-    },
-    {
-      "progress": 0.0.obs,
-      "title": "🦐 Shellfish",
-      "desc": "No Allergy",
-      "circleImg": "🦐",
-      "isEmoji" : false
-    },
-    {
-      "progress": 0.0.obs,
-      "title": "🥛 Dairy",
-      "desc": "No Allergy",
-      "circleImg": "🥛",
-      "isEmoji" : false,
-
-
-    },
-  ];
-  String getAllergyType(double progress) {
-    double percentage = progress * 100;
-
-    if (percentage <= 30) {
-      return "No Allergy";
-    } else if (percentage < 60) {
-      return "Mild or Digestive Reaction";
-    } else if (percentage < 80) {
-      return "Avoid for belief or Culture";
-    } else {
-      return "Severe Allergy (Anaphylaxis)";
-    }
-  }
-
+  final ProfileController controller = Get.find<ProfileController>();
 
 
   @override
@@ -163,93 +64,109 @@ class AllergiesDietryScreen extends StatelessWidget {
 
                 /// Allergens Progress Bars
                 ListView.builder(
-                  itemCount: allergens.length,
+                  itemCount: controller.allergens.length,
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
-                    return Obx(() =>
-                      progressBar(
-                        allergens[index]['progress'], // RxDouble
-                        allergens[index]['title'],
-                        getAllergyType(allergens[index]['progress'].value),
-                        // allergens[index]['desc'],
-                        circleImg: allergens[index]['circleImg'],
-                        isEmoji: allergens[index]['isEmoji'],
-                        path: allergens[index]['path']
-                      ),
-                    );
 
+                    final title = controller.allergenKeys[index];
+                    final allergyType = controller.getAllergyType(controller.allergens[index]['progress'].value);
+
+                    // Store directly in single map
+                    controller.commanAllergens[title] = allergyType;
+
+                    // Print the map (ab index se nahi, title se print karo)
+                    print('${title} -> ${controller.commanAllergens[title]}');
+
+                    return Obx(() => progressBar(
+                      controller.allergens[index]['progress'], // RxDouble
+                      controller.allergens[index]['title'],
+                      controller.getAllergyType(controller.allergens[index]['progress'].value),
+                      circleImg: controller.allergens[index]['circleImg'],
+                      isEmoji: controller.allergens[index]['isEmoji'],
+                      path: controller.allergens[index]['path'],
+                    ));
                   },
                 ),
 
+
                 /// Other Allergens
-                Obx(
-                      () => controller.other.value
-                      ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      customText(
-                        text: "Other",
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      SizedBox(height: 1.h),
-                      TextField(
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          hintText:
-                          "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
-                          hintStyle: TextStyle(
-                            fontSize: 15.sp,
-                            fontFamily: "WorkSans",
-                            fontWeight: FontWeight.w400,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.sp),
-                            borderSide: BorderSide(
-                              color: foodBoundariesBorderGreenColor,
-                              width: 1,
+                Obx(() {
+                        return controller.other.value
+                            ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            customText(
+                              text: "Other",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.sp),
-                            borderSide: BorderSide(
-                              color: foodBoundariesBorderGreenColor,
-                              width: 1,
+                            SizedBox(height: 1.h),
+                            TextField(
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontFamily: "WorkSans",
+                                fontWeight: FontWeight.w400,
+                              ),
+                              controller: controller.otherController,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontFamily: "WorkSans",
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.sp),
+                                  borderSide: BorderSide(
+                                    color: foodBoundariesBorderGreenColor,
+                                    width: 1,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.sp),
+                                  borderSide: BorderSide(
+                                    color: foodBoundariesBorderGreenColor,
+                                    width: 1,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.sp),
+                                  borderSide: BorderSide(
+                                    color: foodBoundariesBorderGreenColor,
+                                    width: 1,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: backgroundColor,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 2.w,
+                                  vertical: 1.h,
+                                ),
+                              ),
                             ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.sp),
-                            borderSide: BorderSide(
-                              color: foodBoundariesBorderGreenColor,
-                              width: 1,
+                            SizedBox(height: 1.h),
+                            buttonWidget(
+                              "Edit Other",
+                              whiteColor,
+                              colors: blueColor,
+                              height: 4.h,
+                              fontsize: 15.sp,
+                              onTap: () {
+                                showCustomOtherDialog(controller: controller.otherController,);
+
+                              },
                             ),
-                          ),
-                          filled: true,
-                          fillColor: backgroundColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 2.w,
-                            vertical: 1.h,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      buttonWidget(
-                        "Edit Other",
-                        whiteColor,
-                        colors: blueColor,
-                        height: 4.h,
-                        fontsize: 15.sp,
-                        onTap: () {},
-                      ),
-                    ],
-                  )
-                      : others(
-                    title: "Others",
-                    path: "assets/png/icons/others_icon.png",
-                  ),
-                ),
+                          ],
+                        )
+                            : others(
+                          textFieldController: controller.otherController,
+                          title: "Others",
+                          path: "assets/png/icons/others_icon.png",
+                        );
+
+                      }),
+
                 SizedBox(height: 3.h),
 
                 /// Severity Level

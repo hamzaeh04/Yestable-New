@@ -54,20 +54,63 @@ class AddProfilePicture extends StatelessWidget {
                   ),
                   SizedBox(height: 15.h),
                   Center(
-                    child: Container(
-                      height: 20.h,
-                      width: 45.w,
-                      decoration: BoxDecoration(
-                        color: greenColor,
-                        borderRadius: BorderRadius.circular(15.sp),
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/png/profile_image_large.png",
-                          height: 30.h,
-                          width: 30.w,
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 20.h,
+                          width: 45.w,
+                          decoration: BoxDecoration(
+                            color: greenColor,
+                            borderRadius: BorderRadius.circular(15.sp),
+                          ),
+                          child: Center(
+                            child: Obx(() {
+                              return navigationController.controller.profilePicture.value != null
+                                  ? ClipRRect(
+                                borderRadius: BorderRadius.circular(15.sp),
+                                child: Image.file(
+                                  navigationController.controller.profilePicture.value!,
+                                  height: 20.h,
+                                  width: 45.w,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                                  : Image.asset(
+                                "assets/png/profile_image_large.png",
+                                height: 30.h,
+                                width: 30.w,
+                              );
+                            }),
+                          ),
                         ),
-                      ),
+
+                        // Cross button overlay
+                        Obx(() {
+                          return navigationController.controller.profilePicture.value != null
+                              ? Positioned(
+                            top: 5,
+                            right: 5,
+                            child: GestureDetector(
+                              onTap: () {
+                                navigationController.controller.profilePicture.value = null;
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.5),
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: EdgeInsets.all(5.sp),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 15.sp,
+                                ),
+                              ),
+                            ),
+                          )
+                              : SizedBox.shrink();
+                        }),
+                      ],
                     ),
                   ),
                   SizedBox(height: 23.h),
@@ -82,13 +125,15 @@ class AddProfilePicture extends StatelessWidget {
                       },
                     ),
                   ),
-                  buttonWidget(
-                    "Skip",
-                    greenColor,
-                    borderColor: greenColor,
-                    onTap: () {
-                      Get.toNamed("profileeditscreen");
-                    },
+                  Obx(()=>
+                    buttonWidget(
+                      navigationController.controller.profilePicture.value != null ? "Next" : "Skip",
+                      greenColor,
+                      borderColor: greenColor,
+                      onTap: () {
+                        Get.toNamed("profileeditscreen");
+                      },
+                    ),
                   ),
                 ],
               ),

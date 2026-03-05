@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/custom_checkBox.dart';
@@ -15,7 +16,7 @@ class VerificationCodeScreen extends StatelessWidget {
   VerificationCodeScreen({super.key});
 
   final NavigationController controller = Get.find<NavigationController>();
-
+  final AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,19 +125,38 @@ class VerificationCodeScreen extends StatelessWidget {
                       inactiveBorderWidth: 0.2.w,
                     ),
                     onChanged: (value) {
+                      authController.verificationCode.value = value;
+                      print("OTP reactive: ${authController.verificationCode.value}");
                       print("OTP: $value");
                     },
                   ),
-
 
                   SizedBox(height: 27.5.h),
                   buttonWidget(
                     "Continue",
                     whiteColor,
                     colors: greenColor,
-                    onTap: () {
+                    onTap: () async {
+                      if(authController.controller.isUser.value == true){
+                        if (authController.verificationCode.value.length < 6) {
+                          Get.snackbar(
+                            "Error",
+                            "Please fill all required fields",
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.redAccent,
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(12),
+                            borderRadius: 8,
+                            duration: const Duration(seconds: 2),
+                          );
+                        } else {
+                          await authController.codeVerification();
+                        }
+                      } else{
                         Get.toNamed('addprofilepicture');
+                      }
                     },
+                    // Get.toNamed('addprofilepicture');
                   ),
                 ],
               ),

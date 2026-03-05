@@ -77,7 +77,7 @@ class FoodPreferencesTwo extends StatelessWidget {
                       backButton(),
                       Spacer(),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.toNamed("allownotificationscreen");
                         },
                         child: customText(
@@ -110,6 +110,7 @@ class FoodPreferencesTwo extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                   TextField(
+                    controller: controller.mobilityConcerns,
                     decoration: InputDecoration(
                       hintText: "Type here...", // 💬 Your hint text
                       hintStyle: TextStyle(
@@ -138,20 +139,50 @@ class FoodPreferencesTwo extends StatelessWidget {
                   Column(
                     spacing: 1.0.h,
                     children: [
-                      SizedBox(height: 0.1.h),
                       seatingList('Larger Seat Or Chair Without Arms', 0),
                       seatingList('Chair With Arms', 1),
                       seatingList('Seating Near Restroom', 2),
                       seatingList('Other', 3),
                     ],
                   ),
-
-                  SizedBox(height: 0.5.h),
-                  Divider(
-                    thickness: 1,
-                    color: Colors.grey.shade400,
-                    height: 3.h,
+                  Obx(
+                        () => controller.showSeatingOther.value
+                        ? Column(
+                      children: [
+                        TextField(
+                          controller: controller.seatingOther,
+                          onChanged: (val) {
+                            controller.updateOtherFields();
+                            controller.removeOtherIfEmpty();
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Type here...",
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontFamily: "WorkSans",
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 1.h),
+                      ],
+                    )
+                        : Divider(
+                      thickness: 1,
+                      color: Colors.grey.shade400,
+                      height: 3.h,
+                    ),
                   ),
+
                   SizedBox(height: 1.h),
                   customText(
                     text: "Needing A Quiet Area",
@@ -180,100 +211,6 @@ class FoodPreferencesTwo extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                   SizedBox(height: 1.h),
-                  // ─── in your build() ────────────────────────────────────────────────
-                  // Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     // ── header row with rotating arrow ──────────────────────────────
-                  //     Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Obx(() =>
-                  //           customText(
-                  //             text: controller.selectedOption.value,              // shows chosen text
-                  //             fontSize: 16.sp,
-                  //             fontWeight: FontWeight.w400,
-                  //           ),
-                  //         ),
-                  //         GestureDetector(
-                  //           onTap: () => controller.toggleDropdown(),
-                  //           child: Obx(
-                  //                 () => AnimatedRotation(
-                  //               turns: controller.isExpanded.value ? 0.5 : 0.0, // 180°
-                  //               duration: const Duration(milliseconds: 300),
-                  //               child: const Icon(Icons.keyboard_arrow_down),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //
-                  //     // ── dropdown sheet (renders only when expanded) ─────────────────
-                  //     Obx(
-                  //           () => controller.isExpanded.value
-                  //           ? Container(
-                  //         margin: EdgeInsets.only(top: 1.h),
-                  //         padding: EdgeInsets.zero, // ✅ No top & bottom padding
-                  //         decoration: BoxDecoration(
-                  //           color: Colors.white,
-                  //           borderRadius: BorderRadius.circular(15),
-                  //           boxShadow: [
-                  //             BoxShadow(color: Colors.black12, blurRadius: 4),
-                  //           ],
-                  //         ),
-                  //         child: ListView.separated(
-                  //           padding: EdgeInsets.zero,
-                  //           physics: const NeverScrollableScrollPhysics(),
-                  //           shrinkWrap: true,
-                  //           itemCount: controller.options.length,
-                  //           separatorBuilder: (_, __) =>
-                  //               Container(height: 1, color: Colors.grey[300]),
-                  //           itemBuilder: (_, index) {
-                  //             final value = controller.options[index];
-                  //             final selected = controller.selectedOption.value == value;
-                  //
-                  //             return InkWell(
-                  //               onTap: () => controller.selectOption(value),
-                  //               child: Padding(
-                  //                 padding: EdgeInsets.symmetric(
-                  //                   horizontal: 4.w,
-                  //                   vertical: 1.2.h,
-                  //                 ),
-                  //                 child: Row(
-                  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //                   children: [
-                  //                     Row(
-                  //                       children: [
-                  //                         if (value == "Other") ...[
-                  //                           Image.asset(
-                  //                             "assets/png/icons/others_icon.png",
-                  //                             width: 16.sp,
-                  //                             height: 16.sp,
-                  //                             color: Colors.black, // optional if your icon is single color and needs tint
-                  //                           ),
-                  //                           SizedBox(width: 2.w),
-                  //                         ],
-                  //                         customText(
-                  //                           text: value,
-                  //                           fontSize: 15.sp,
-                  //                           fontWeight: FontWeight.w400,
-                  //                         ),
-                  //                       ],
-                  //                     ),
-                  //                     if (selected)
-                  //                       Icon(Icons.check, size: 16.sp, color: Colors.black),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //             );
-                  //           },
-                  //         ),
-                  //       )
-                  //           : const SizedBox.shrink(),
-                  //     ),
-                  //
-                  //   ],
-                  // ),
                   Column(
                     spacing: 1.h,
                     children: [
@@ -286,32 +223,90 @@ class FoodPreferencesTwo extends StatelessWidget {
                       seatingList('Other', 10),
                     ],
                   ),
-                  // seatingList('Help Carrying Plate', 4),
-                  // SizedBox(height: 0.7.h,),
-                  // seatingList('Seating Near A Restroom', 5),
-                  // SizedBox(height: 0.7.h,),
-                  // seatingList('Non Verbal', 6),
-                  // SizedBox(height: 0.7.h,),
-                  // seatingList('Bringing A Care Aide', 7),
-                  // SizedBox(height: 0.7.h,),
-                  // seatingList('Hearing Loss', 8),
-                  // SizedBox(height: 0.7.h,),
-                  // seatingList('Assistance Walking In', 9),
-                  // SizedBox(height: 0.7.h,),
-                  // seatingList('Other', 10),
-                  SizedBox(height: 2.h),
-                  Divider(
-                    thickness: 1,
-                    color: Colors.grey.shade400,
-                    height: 3.h,
+                  Obx(
+                    () =>
+                        controller.showAssistanceOther.value
+                            ? Column(
+                              children: [
+                                TextField(
+                                  controller: controller.assistanceOther,
+                                  onChanged: (val) {
+                                    controller.updateOtherFields();
+                                    controller.removeOtherIfEmpty();
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: "Type here...",
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: "WorkSans",
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 1.h),
+                              ],
+                            )
+                            : Divider(
+                              thickness: 1,
+                              color: Colors.grey.shade400,
+                              height: 3.h,
+                            ),
                   ),
-                  SizedBox(height: 1.h),
+
+                  // Obx(() {
+                  //   bool showOtherField = controller.selectExtraAssistance.contains('other');
+                  //
+                  //   return Column(
+                  //     children: [
+                  //       if (!showOtherField) SizedBox(height: 0.6.h),
+                  //       if (!showOtherField)
+                  //         Divider(
+                  //           thickness: 1,
+                  //           color: Colors.grey.shade400,
+                  //           height: 3.h,
+                  //         ),
+                  //       if (showOtherField)
+                  //         TextField(
+                  //           controller: controller.assistanceOther,
+                  //           onChanged: (val) {
+                  //             controller.updateOtherFields();
+                  //             controller.removeOtherIfEmpty();
+                  //           },
+                  //           decoration: InputDecoration(
+                  //             hintText: "Type here...",
+                  //             hintStyle: TextStyle(
+                  //               color: Colors.grey,
+                  //               fontFamily: "WorkSans",
+                  //             ),
+                  //             enabledBorder: UnderlineInputBorder(
+                  //               borderSide: BorderSide(color: Colors.grey.shade300),
+                  //             ),
+                  //             focusedBorder: UnderlineInputBorder(
+                  //               borderSide: BorderSide(color: Colors.grey.shade500),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //     ],
+                  //   );
+                  // }),
+
+                  //SizedBox(height: 1.h),
                   customText(
                     text: "Need Anything alse",
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   TextField(
+                    controller: controller.anythingElse,
                     decoration: InputDecoration(
                       hintText: "Write Your Needs Here", // 💬 Your hint text
                       hintStyle: TextStyle(
@@ -333,137 +328,6 @@ class FoodPreferencesTwo extends StatelessWidget {
                 ],
               ),
             ),
-            // SizedBox(height: 1.h),
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Padding(
-            //       padding:EdgeInsets.symmetric(horizontal: 6.w),
-            //       child: customText(
-            //         text: "Would You Like To Let Your Guests Know That You Will Be Offering: (Check All That Apply)",
-            //         fontSize: 20.sp,
-            //         fontFamily: "CormorantGaramond",
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //     SizedBox(height: 1.5.h),
-            //     ListView.builder(
-            //       itemCount: titles.length,
-            //       shrinkWrap: true,
-            //       physics: NeverScrollableScrollPhysics(),
-            //       padding: EdgeInsets.zero, // 🔥 This removes default padding
-            //       itemBuilder: (context, index) {
-            //         return Column(
-            //           children: [
-            //             yesNoWidget(title: titles[index], index + 1,),
-            //             Divider(
-            //               thickness: 1,
-            //               color: Colors.grey.shade400,
-            //               height: 3.h,
-            //             ),
-            //           ],
-            //         );
-            //       },
-            //     ),
-            //   ],
-            // ),
-
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 6.w),
-            //   child: customText(
-            //     text: "Other Menu Option I.E Halal, Kosher",
-            //     fontSize: 17.sp,
-            //     fontWeight: FontWeight.w400,
-            //   ),
-            // ),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 6.w),
-            //   child: TextField(
-            //     decoration: InputDecoration(
-            //       hintText: "Type Here", // 💬 Your hint text
-            //       hintStyle: TextStyle(color: Colors.grey), // optional: customize hint text color
-            //       enabledBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey.shade300), // ✨ Lightened bottom border
-            //       ),
-            //       focusedBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey.shade500), // optional: slightly darker on focus
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // Divider(
-            //   thickness: 1,
-            //   color: Colors.grey.shade400,
-            //   height: 3.h,
-            // ),
-            // yesNoWidget(title: "All Gender Or Faimly Restroom", 100, text1: "All Gender" ,text2: "Faimly Restroom",imgYes: "assets/png/icons/all_gender.png",imgNo: "assets/png/icons/faimly_restroom.png"),
-            // SizedBox(height: 1.h),
-
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Padding(
-            //       padding:EdgeInsets.symmetric(horizontal: 6.w),
-            //       child: customText(
-            //         text: "Would You Like To Let Your Guests Know About: (Check All That Apply)",
-            //         fontSize: 20.sp,
-            //         fontFamily: "CormorantGaramond",
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //     SizedBox(height: 1.5.h),
-            //     ListView.builder(
-            //       itemCount: checkList.length,
-            //       shrinkWrap: true,
-            //       physics: NeverScrollableScrollPhysics(),
-            //       padding: EdgeInsets.zero, // 🔥 This removes default padding
-            //       itemBuilder: (context, index) {
-            //         final bool isSpecialIndex = index == 8;
-            //         final bool isOkIndex = index == 13;
-            //         return Column(
-            //           children: [
-            //             yesNoWidget(title: checkList[index], index + 1,text1: isOkIndex ? "Ok":null,text2: isSpecialIndex ? "Non Swimming Event": null,myBool: false),
-            //             Divider(
-            //               thickness: 1,
-            //               color: Colors.grey.shade400,
-            //               height: 3.h,
-            //             ),
-            //
-            //           ],
-            //         );
-            //       },
-            //     ),
-            //     Padding(
-            //       padding: EdgeInsets.symmetric(horizontal: 6.w),
-            //       child: customText(
-            //         text: "Others",
-            //         fontSize: 17.sp,
-            //         fontWeight: FontWeight.w400,
-            //       ),
-            //     ),
-            //     Padding(
-            //       padding: EdgeInsets.symmetric(horizontal: 6.w),
-            //       child: TextField(
-            //         decoration: InputDecoration(
-            //           hintText: "Type Here", // 💬 Your hint text
-            //           hintStyle: TextStyle(color: Colors.grey), // optional: customize hint text color
-            //           enabledBorder: UnderlineInputBorder(
-            //             borderSide: BorderSide(color: Colors.grey.shade300), // ✨ Lightened bottom border
-            //           ),
-            //           focusedBorder: UnderlineInputBorder(
-            //             borderSide: BorderSide(color: Colors.grey.shade500), // optional: slightly darker on focus
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     Divider(
-            //       thickness: 1,
-            //       color: Colors.grey.shade400,
-            //       height: 3.h,
-            //     ),
-            //   ],
-            // ),
-            // SizedBox(height: 1.h),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -507,9 +371,9 @@ class FoodPreferencesTwo extends StatelessWidget {
                   children: [
                     SizedBox(width: 6.w),
 
-                    Obx(() =>
-                       InkWell(
-                        onTap: (){
+                    Obx(
+                      () => InkWell(
+                        onTap: () {
                           if (!controller.isSelected.value) {
                             privacyDialog(context);
                           } else {
@@ -522,9 +386,16 @@ class FoodPreferencesTwo extends StatelessWidget {
                           width: 4.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: controller.isSelected == false ? Colors.white : radioButtonBlueColor,
+                            color:
+                                controller.isSelected == false
+                                    ? Colors.white
+                                    : radioButtonBlueColor,
                           ),
-                          child: Icon(Icons.check, size: 14.sp, color: Colors.white,),
+                          child: Icon(
+                            Icons.check,
+                            size: 14.sp,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -569,26 +440,26 @@ class FoodPreferencesTwo extends StatelessWidget {
                     whiteColor,
                     colors: greenColor,
                     onTap: () {
-                      final index = controller.selectedIndex.value;
-                      print(controller.isPreferences.value);
-                      if (controller.isPreferences.value == true) {
-                        print(controller.isPreferences.value);
-                        controller.placeCompleted[index] = true;
-                        // Show dialog
-                        updateSentSuccessfull(context, desc: "Your preference for this person has been added successfully");
-
-                        // Delay + navigation
-                        Future.delayed(Duration(seconds: 3), () {
-                          if(controller.isPreferences.value == true) { // check again
-                            Get.toNamed('profileeditscreen');
-                            controller.isPreferences.value = false;
-                          }
-                          print(controller.isPreferences.value);
-                        });
-                      } else {
-                        Get.toNamed("allownotificationscreen");
-                      }
-
+                      // final index = controller.selectedIndex.value;
+                      // print(controller.isPreferences.value);
+                      // if (controller.isPreferences.value == true) {
+                      //   print(controller.isPreferences.value);
+                      //   controller.placeCompleted[index] = true;
+                      //   // Show dialog
+                      //   updateSentSuccessfull(context, desc: "Your preference for this person has been added successfully");
+                      //
+                      //   // Delay + navigation
+                      //   Future.delayed(Duration(seconds: 3), () {
+                      //     if(controller.isPreferences.value == true) { // check again
+                      //       Get.toNamed('profileeditscreen');
+                      //       controller.isPreferences.value = false;
+                      //     }
+                      //     print(controller.isPreferences.value);
+                      //   });
+                      // } else {
+                      //   Get.toNamed("allownotificationscreen");
+                      // }
+                      controller.UpdateSeatingAssistance();
 
                     },
                   ),
@@ -605,44 +476,72 @@ class FoodPreferencesTwo extends StatelessWidget {
 
 Widget seatingList(String title, int index) {
   ProfileController controller = Get.find<ProfileController>();
-  return Obx(
-    () => InkWell(
-      onTap: () => controller.updatePronounIsSelected(index),
+
+  bool isSeating = index < controller.seating.length;
+
+  return Obx(() {
+    String value =
+    isSeating
+        ? controller.seating[index]
+        : controller.assistance[index - controller.seating.length];
+
+    bool isSelected;
+
+    if (isSeating) {
+      if (value == 'other') {
+        isSelected = controller.showSeatingOther.value;
+      } else {
+        isSelected = controller.selectSeatingRequirements.contains(value);
+      }
+    } else {
+      if (value == 'other') {
+        isSelected = controller.showAssistanceOther.value;
+      } else {
+        isSelected = controller.selectExtraAssistance.contains(value);
+      }
+    }
+
+    return InkWell(
+      onTap: () {
+        if (isSeating) {
+          controller.toggleSeatingSelection(index);
+        } else {
+          controller.toggleAssistanceSelection(index);
+        }
+      },
       child: Row(
         children: [
           Container(
-            //padding: EdgeInsets.all(0.6.w),
             height: 1.8.h,
             width: 4.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
             ),
-            child:
-                controller.pronounIsSelected.value == index
-                    ? Container(
-                      height: 1.h,
-                      width: 1.w,
-                      decoration: BoxDecoration(
-                        color: radioButtonBlueColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.check,
-                          size: 14.sp,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                    : SizedBox.shrink(),
+            child: isSelected
+                ? Container(
+              height: 1.h,
+              width: 1.w,
+              decoration: BoxDecoration(
+                color: radioButtonBlueColor,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.check,
+                  size: 14.sp,
+                  color: Colors.white,
+                ),
+              ),
+            )
+                : SizedBox.shrink(),
           ),
           SizedBox(width: 1.5.w),
           customText(text: title, fontSize: 15.sp),
         ],
       ),
-    ),
-  );
+    );
+  });
 }
 
 Widget yesOrNoItem(String title, ProfileController controller) {

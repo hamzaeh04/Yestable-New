@@ -76,7 +76,7 @@ class AppRoutes {
     GetPage(name: '/addhostprofilepicture', page: () => AddHostProfilePicture()),
     GetPage(name: '/hosteditprofilescreen', page: () => HostEditProfileScreen()),
     GetPage(name: '/allowhostnotificationscreen', page: () => AllowHostNotificationScreen()),
-    GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
+    // GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
     GetPage(name: '/disclaimerscreen', page: () => DisclaimerScreen()),
     GetPage(name: '/yesgptscreen', page: () => YesGptScreen()),
     GetPage(name: '/yourrootandrules', page: () => YourRootAndRules()),

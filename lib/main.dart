@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -16,10 +17,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   Get.put<SharedPreferences>(prefs, permanent: true);
-  Get.put(AuthController());
   Get.put(ProfileController());
-  Get.put(YesGptController());
   Get.put(NavigationController());
+  Get.put(AuthController());
+  Get.put(YesGptController());
   Get.put(NotificationController());
   runApp(MyApp());
 }
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
           initialBinding: Binding(),
           // initialRoute: '/',
           home: SplashScreen(),
+          builder: EasyLoading.init(),
           getPages: AppRoutes.routes,
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
