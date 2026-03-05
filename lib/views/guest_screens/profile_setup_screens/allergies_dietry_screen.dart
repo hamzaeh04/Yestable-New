@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/allergens_widget.dart';
+import 'package:yestable/widget/animated_button.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 
 import '../../../constants/color_constants.dart';
@@ -34,55 +35,69 @@ class AllergiesDietryScreen extends StatelessWidget {
       "progress": 0.3.obs,
       "title": "🥜 Peanuts",
       "desc": "Severe Allergy (Anaphylaxis)",
-      "circleImg": "📷",
+      "circleImg": "🥜",
+      "isEmoji" : false,
     },
     {
       "progress": 0.0.obs,
-      "title": "🥜 Tree Nuts",
+      "title": "Tree Nuts",
       "desc": "No Allergy",
       "circleImg": "🤗",
+      "isEmoji" : true,
+      "path" : "assets/png/profile_food_images/tree_nut.png",
     },
     {
       "progress": 0.0.obs,
-      "title": "🥛 Sesame",
+      "title": "Sesame",
       "desc": "No Allergy",
       "circleImg": "🤗",
+      "isEmoji" : true,
+      "path" : "assets/png/profile_food_images/sesame.png",
     },
     {
       "progress": 0.0.obs,
       "title": "🌾 Gluten",
       "desc": "Severe Allergy",
-      "circleImg": "🤗",
+      "circleImg": "🌾",
+      "isEmoji" : false
     },
     {
       "progress": 0.8.obs,
       "title": "🥚 Eggs",
       "desc": "Avoid for Beliefs or Culture",
-      "circleImg": "🙏",
+      "circleImg": "🥚",
+      "isEmoji" : false
     },
     {
       "progress": 0.7.obs,
       "title": "🫘 Soy",
       "desc": "Mild or Digestive Reaction",
-      "circleImg": "🤧",
+      "circleImg": "🫘",
+      "isEmoji" : false
     },
     {
       "progress": 0.6.obs,
-      "title": "🌾 Fish",
+      "title": " Fish",
       "desc": "Severe Allergy (Anaphylaxis)",
       "circleImg": "📷",
+      "isEmoji" : true,
+      "path" : "assets/png/profile_food_images/gold_fish.png",
     },
     {
       "progress": 0.0.obs,
       "title": "🦐 Shellfish",
       "desc": "No Allergy",
-      "circleImg": "🤗",
+      "circleImg": "🦐",
+      "isEmoji" : false
     },
     {
       "progress": 0.0.obs,
       "title": "🥛 Dairy",
       "desc": "No Allergy",
-      "circleImg": "🤗",
+      "circleImg": "🥛",
+      "isEmoji" : false,
+
+
     },
   ];
   String getAllergyType(double progress) {
@@ -111,7 +126,7 @@ class AllergiesDietryScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                loadingStepIndicator("3/6", 0.5),
+                loadingStepIndicator("2/6", 0.5),
                 backButton(),
                 SizedBox(height: 2.h),
                 Obx(() =>
@@ -160,6 +175,8 @@ class AllergiesDietryScreen extends StatelessWidget {
                         getAllergyType(allergens[index]['progress'].value),
                         // allergens[index]['desc'],
                         circleImg: allergens[index]['circleImg'],
+                        isEmoji: allergens[index]['isEmoji'],
+                        path: allergens[index]['path']
                       ),
                     );
 
@@ -366,14 +383,9 @@ class AllergiesDietryScreen extends StatelessWidget {
                 SizedBox(height: 2.h),
 
                 /// Continue Button
-                buttonWidget(
-                  "Continue",
-                  whiteColor,
-                  colors: greenColor,
-                  onTap: () {
-                    Get.toNamed("yourrootandrules");
-                  },
-                ),
+                animatedButton((){
+                  Get.toNamed("yourrootandrules");
+                }, "Continue")
               ],
             ),
           ),
@@ -384,7 +396,7 @@ class AllergiesDietryScreen extends StatelessWidget {
 }
 
 /// Progress Bar Widget
-Widget progressBar(RxDouble progress, String title, String desc,{String? circleImg}) {
+Widget progressBar(RxDouble progress, String title, String desc,{String? circleImg,bool? isEmoji,String? path}) {
   return Padding(
     padding: EdgeInsets.only(bottom: 1.h),
     child: Column(
@@ -392,7 +404,23 @@ Widget progressBar(RxDouble progress, String title, String desc,{String? circleI
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            customText(text: title, fontSize: 16.sp),
+            /// LEFT SIDE (IMAGE ONLY IF PATH EXISTS)
+            Row(
+              children: [
+                if (path != null) ...[
+                  Image.asset(
+                    path,
+                    height: 2.5.h,
+                    width: 2.5.h,
+                  ),
+                  SizedBox(width: 1.w),
+                ],
+                customText(
+                  text: title,
+                  fontSize: 16.sp,
+                ),
+              ],
+            ),
             // Obx(() => customText(
             //   text: "${(progress.value * 100).round()}%",
             //   fontSize: 14.5.sp,
@@ -484,7 +512,11 @@ Widget progressBar(RxDouble progress, String title, String desc,{String? circleI
                             ),
                           ),
                           child: Center(
-                            child: customText(
+                            child: path !=null ? Image.asset(
+                              path,
+                              height: 2.h,
+                              width: 2.h,
+                            ):customText(
                               text: circleImg,
                               fontSize: 15.sp,
                             ),

@@ -78,6 +78,7 @@ class YourRootAndRules extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 2.h),
+                  loadingStepIndicator("3/6", 0.5),
                   Row(
                     children: [
                       backButton(),
@@ -89,6 +90,7 @@ class YourRootAndRules extends StatelessWidget {
                         color: greenColor,))
                     ],
                   ),
+
                   SizedBox(height: 1.h),
                   customText(
                     text: "Your Roots & Rules",

@@ -7,6 +7,7 @@ import 'package:yestable/widget/button_widget.dart';
 import 'package:flutter/gestures.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../controllers/profile_controller.dart';
+import '../../../widget/loading_step_indicator.dart';
 
 class FoodPreferencesOne extends StatelessWidget {
   FoodPreferencesOne({super.key});
@@ -27,6 +28,7 @@ class FoodPreferencesOne extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    loadingStepIndicator("4/6", 0.5),
                     Row(
                       children: [
                         backButton(),

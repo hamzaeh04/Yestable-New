@@ -149,7 +149,7 @@ class ProfileEditScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 2.h),
-                      child: navigationController.isUser.value == true ? loadingStepIndicator("2/6", 0.08):loadingStepIndicator("2/3", 0.3),
+                      child: navigationController.isUser.value == true ? loadingStepIndicator("1/6", 0.08):loadingStepIndicator("2/3", 0.3),
                     ),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.sp), // Apply the same border radius here

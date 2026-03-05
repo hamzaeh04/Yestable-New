@@ -101,7 +101,7 @@ class VerificationCodeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   PinCodeTextField(
-                    controller: authController.otpController,
+                    // controller: authControllerroller.otpController,
                     appContext: context,
                     length: 6,
                     obscureText: false,

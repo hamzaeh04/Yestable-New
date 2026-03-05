@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/animated_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -62,14 +63,9 @@ class ProfileCompleteScreen extends StatelessWidget {
                 SizedBox(height: 10.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6.w), // Adjust as needed
-                  child: buttonWidget(
-                    "Get Started",
-                    whiteColor,
-                    colors: greenColor,
-                    onTap: () {
-                      Get.offAllNamed('bottomnavigationbar');
-                    },
-                  ),
+                  child: animatedButton(() {
+                    Get.offAllNamed('bottomnavigationbar');
+                  }, "Get Started"),
                 ),
               ],
             ),

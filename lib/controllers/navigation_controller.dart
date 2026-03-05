@@ -142,11 +142,11 @@ class NavigationController extends GetxController {
   }
 
   // Named navigation helpers
-  void goToSeeAllPage() => changePage(5);
-  void goToNotificationPage() => changePage(6);
-  void goTSearchScreen() => changePage(7);
-  void addtoFriendScreen() => changePage(8);
-  void addtoCommunityProfile() => changePage(9);
+  void goToSeeAllPage() => changePage(4);
+  void goToNotificationPage() => changePage(5);
+  void goTSearchScreen() => changePage(6);
+  void addtoFriendScreen() => changePage(7);
+  void addtoCommunityProfile() => changePage(8);
   void viewAllEvents() => changePage(1);
 
   void goToHome() {

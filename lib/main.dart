@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -11,14 +10,12 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/controllers/yes_gpt_controller.dart';
 import 'package:yestable/utils/App_Routing.dart';
 import 'package:yestable/utils/init_binding.dart';
-import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
 
-void main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   final prefs = await SharedPreferences.getInstance();
-  Get.put<SharedPreferences>(prefs);
+  Get.put<SharedPreferences>(prefs, permanent: true);
   Get.put(AuthController());
   Get.put(ProfileController());
   Get.put(YesGptController());
@@ -41,7 +38,6 @@ class MyApp extends StatelessWidget {
           getPages: AppRoutes.routes,
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
-          builder: EasyLoading.init(),   // 🔥 ADD THIS LINE
           theme: ThemeData(
             scaffoldBackgroundColor: backgroundColor,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
