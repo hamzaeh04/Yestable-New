@@ -112,7 +112,7 @@ Future<void> menuFormDialog(BuildContext context) {
                           () => DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
                           value: authController.selectedCategory.value,
-                          hint: Text("Select Category"),
+                          hint: Text("Select Type"),
 
                           items: authController.categories
                               .map(
@@ -166,7 +166,7 @@ Future<void> menuFormDialog(BuildContext context) {
                     ),
                     SizedBox(height: 1.h,),
                     CustomTextField(
-                      hintText: 'Enter type',
+                      hintText: 'Enter meal category',
                     ),
                     SizedBox(height: 2.h),
 

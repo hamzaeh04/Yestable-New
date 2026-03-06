@@ -15,6 +15,7 @@ class AuthController extends GetxController {
   RxString verificationCode = "".obs;
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  // final TextEditingController emailControllerHost = TextEditingController();
 
   void changeCountry(Country country) {
     selectedCountry.value = country;
@@ -48,7 +49,7 @@ class AuthController extends GetxController {
     // final prefs = SharedPreferencesMethod.storage;
     // await prefs.setString(LocalDBKeys.USERFULLNAME, nameController.text);
     // 🚀 AB DASHBOARD PE JAO
-    Get.offAllNamed('/verificationcodescreen');
+    Get.toNamed('/verificationcodescreen');
 
     // print("🎉 SIGNUP SUCCESS → ${data["email"]}");
   }

@@ -63,7 +63,7 @@ class VerificationCodeScreen extends StatelessWidget {
                   Row(
                     children: [
                       customText(
-                        text: "Sent to +1*** **** **92",
+                        text: "Sent to your email",
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: darkGreyColor
@@ -153,7 +153,21 @@ class VerificationCodeScreen extends StatelessWidget {
                           await authController.codeVerification();
                         }
                       } else{
-                        Get.toNamed('addprofilepicture');
+                        if (authController.verificationCode.value.length < 6) {
+                          Get.snackbar(
+                            "Error",
+                            "Please fill all required fields",
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.redAccent,
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(12),
+                            borderRadius: 8,
+                            duration: const Duration(seconds: 2),
+                          );
+                        } else {
+                          await authController.codeVerification();
+                        }
+                        // Get.toNamed('addprofilepicture');
                       }
                     },
                     // Get.toNamed('addprofilepicture');

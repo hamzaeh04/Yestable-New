@@ -6,6 +6,7 @@ import 'package:yestable/constants/color_constants.dart';
 Widget backButton() {
   return InkWell(
     onTap: (){
+      print("Back pressed");
       Get.back();
     },
     child: Container(

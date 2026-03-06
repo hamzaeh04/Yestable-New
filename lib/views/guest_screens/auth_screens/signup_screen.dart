@@ -80,11 +80,21 @@ class SignupScreen extends StatelessWidget {
                     }
                   }
                   else{
-                    Get.offAllNamed('/verificationcodescreen');
+                    if (controller.emailController.text.trim().isEmpty) {
+                      Get.snackbar(
+                        "Error",
+                        "Please fill all required fields",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                        margin: const EdgeInsets.all(12),
+                        borderRadius: 8,
+                        duration: const Duration(seconds: 2),
+                      );
+                    } else {
+                      await controller.passwordLessLogin();
+                    }
                   }
-
-
-
                 }, "Continue"),
                 SizedBox(height: 4.h),
                 Row(
@@ -181,7 +191,7 @@ Widget signupEmailField(){
       borderRadius: BorderRadius.circular(2.w),
     ),
     child: TextField(
-      controller: controller.emailController,
+      controller: controller.controller.isUser == true? controller.emailController: controller.emailController,
       keyboardType: TextInputType.phone,
       style: TextStyle(fontSize: 15.sp,color: blackColor,fontFamily: "WorkSans"),
       decoration: const InputDecoration(

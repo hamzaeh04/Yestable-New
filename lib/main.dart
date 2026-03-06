@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return GetMaterialApp(
           initialBinding: Binding(),
-          // initialRoute: '/',
+          initialRoute: '/',
           home: SplashScreen(),
           builder: EasyLoading.init(),
           getPages: AppRoutes.routes,

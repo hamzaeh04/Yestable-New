@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
+import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
 
 class GetStartedScreen extends StatelessWidget {
   GetStartedScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,8 @@ class GetStartedScreen extends StatelessWidget {
                   controller.isUser.value = true;
                   print(controller.currentIndex.value);
                   Get.toNamed('signupscreen');
-
+                  authController.emailController.clear();
+                  authController.verificationCode.value = '';
                 },
               ),
             ),
@@ -75,6 +78,8 @@ class GetStartedScreen extends StatelessWidget {
                 onTap: () {
                   controller.switchUser();
                   Get.toNamed('signupscreen');
+                  authController.emailController.clear();
+                  authController.verificationCode.value = '';
                 },
               ),
             ),
