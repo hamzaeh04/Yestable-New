@@ -243,9 +243,11 @@ class ProfileEditScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
-                              Obx(() =>
-                                controller.pronounIsSelected.value == 3 ?
-                                SizedBox(height: 20.3.h):SizedBox(height: 18.h),
+                              Obx(
+                                () =>
+                                    controller.pronounIsSelected.value == 3
+                                        ? SizedBox(height: 20.3.h)
+                                        : SizedBox(height: 18.h),
                               ),
                               customText(
                                 text: "Location",
@@ -271,14 +273,20 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontWeight: FontWeight.w400,
                               //   fontSize: 15.sp,
                               // ),
-                              customProfileField(hint: 'Sarah Scarnio!',controller: controller.nameController),
+                              customProfileField(
+                                hint: 'Sarah Scarnio!',
+                                controller: controller.nameController,
+                              ),
                               const Divider(),
                               // customText(
                               //   text: "Sarah_scarnio01",
                               //   fontWeight: FontWeight.w400,
                               //   fontSize: 15.sp,
                               // ),
-                              customProfileField(hint: 'Sarah_scarnio01',controller: controller.userName),
+                              customProfileField(
+                                hint: 'Sarah_scarnio01',
+                                controller: controller.userName,
+                              ),
 
                               const Divider(),
                               // customText(
@@ -287,7 +295,8 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontSize: 15.sp,
                               // ),
                               customProfileField(
-                                hint: "Sarahscarnio@gmail.com",controller: controller.email
+                                hint: "Sarahscarnio@gmail.com",
+                                controller: controller.email,
                               ),
                               const Divider(),
                               Column(
@@ -338,7 +347,10 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontWeight: FontWeight.w400,
                               //   fontSize: 15.sp,
                               // ),
-                              customProfileField(hint: "📍   New York",controller: controller.location),
+                              customProfileField(
+                                hint: "📍   New York",
+                                controller: controller.location,
+                              ),
                               const Divider(),
                               // Row(
                               //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,34 +484,19 @@ class ProfileEditScreen extends StatelessWidget {
                                                         () => Column(
                                                           children: [
                                                             // Pehla form hamesha show
-                                                            setPlace(0),
+                                                            setPlace(0,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
 
                                                             // Second form tabhi show jab pehla complete ho
-                                                            if (controller
-                                                                        .places
-                                                                        .length >
-                                                                    1 &&
-                                                                controller
-                                                                    .placeCompleted[0])
-                                                              setPlace(1),
+                                                            if (controller.places.length > 1 && controller.placeCompleted[0])
+                                                              setPlace(1,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
 
                                                             // Third form tabhi show jab second complete ho
-                                                            if (controller
-                                                                        .places
-                                                                        .length >
-                                                                    2 &&
-                                                                controller
-                                                                    .placeCompleted[1])
-                                                              setPlace(2),
+                                                            if (controller.places.length > 2 && controller.placeCompleted[1])
+                                                              setPlace(2,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
 
                                                             // Fourth form tabhi show jab third complete ho
-                                                            if (controller
-                                                                        .places
-                                                                        .length >
-                                                                    3 &&
-                                                                controller
-                                                                    .placeCompleted[2])
-                                                              setPlace(3),
+                                                            if (controller.places.length > 3 && controller.placeCompleted[2])
+                                                              setPlace(3,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
                                                           ],
                                                         ),
                                                       ),
@@ -507,21 +504,14 @@ class ProfileEditScreen extends StatelessWidget {
                                                       SizedBox(height: 1.5.h),
 
                                                       /// 🔹 ADD MORE BUTTON
-                                                      if (controller
-                                                              .places
-                                                              .length <
-                                                          4)
+                                                      if (controller.places.length <4)
                                                         InkWell(
                                                           onTap: () {
                                                             int lastIndex =
-                                                                controller
-                                                                    .places
-                                                                    .length -
-                                                                1;
+                                                                controller.places.length - 1;
 
                                                             // Check if previous form is completed
-                                                            if (!controller
-                                                                .placeCompleted[lastIndex]) {
+                                                            if (!controller.placeCompleted[lastIndex]) {
                                                               Utils.showToast(
                                                                 "Please complete previous form first",
                                                                 false,
@@ -530,17 +520,8 @@ class ProfileEditScreen extends StatelessWidget {
                                                             }
 
                                                             // Add new form
-                                                            controller.places
-                                                                .add(
-                                                                  controller
-                                                                      .places
-                                                                      .length,
-                                                                );
-                                                            controller
-                                                                .placeCompleted
-                                                                .add(
-                                                                  false,
-                                                                ); // new form initially not completed
+                                                            controller.places.add(controller.places.length,);
+                                                            controller.placeCompleted.add(false,); // new form initially not completed
                                                           },
                                                           child: Row(
                                                             children: [
@@ -807,9 +788,9 @@ Widget pronounItem(String title, int index) {
           SizedBox(height: 0.7.h),
           controller.pronounIsSelected.value == index && index == 3
               ? customProfileField(
-            hint: "Select Custom Values",
-            controller: controller.customPronoun,
-          )
+                hint: "Select Custom Values",
+                controller: controller.customPronoun,
+              )
               : SizedBox.shrink(),
         ],
       ),
@@ -817,7 +798,7 @@ Widget pronounItem(String title, int index) {
   );
 }
 
-Widget setPlace(int index, {String? title}) {
+Widget setPlace(int index, {String? title,TextEditingController? nameController,TextEditingController? relationController,TextEditingController? ageController}) {
   final ProfileController controller = Get.find<ProfileController>();
   return Padding(
     padding: EdgeInsets.only(bottom: 1.5.h),
@@ -838,6 +819,8 @@ Widget setPlace(int index, {String? title}) {
             SizedBox(width: 13.w),
             Expanded(
               child: TextField(
+                controller: nameController,
+                cursorColor: greenColor,
                 decoration: InputDecoration(
                   hintText: 'Robert Elbert',
                   hintStyle: TextStyle(
@@ -880,6 +863,8 @@ Widget setPlace(int index, {String? title}) {
             SizedBox(width: 8.w),
             Expanded(
               child: TextField(
+                controller: relationController,
+                cursorColor: greenColor,
                 decoration: InputDecoration(
                   hintText: 'Son',
                   hintStyle: TextStyle(
@@ -909,6 +894,8 @@ Widget setPlace(int index, {String? title}) {
             SizedBox(width: 16.w),
             Expanded(
               child: TextField(
+                controller: ageController,
+                cursorColor: greenColor,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: '15',

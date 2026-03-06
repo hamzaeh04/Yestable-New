@@ -271,14 +271,16 @@ class ProfileController extends GetxController {
     selectedIndex.value = index;
     title.value = screenTitle ?? '';
   }
-  /// Controllers for each setPlace
-  RxList<Map<String, TextEditingController>> placeControllers = <Map<String, TextEditingController>>[
-    {
-      'name': TextEditingController(),
-      'relation': TextEditingController(),
-      'age': TextEditingController(),
-    }
-  ].obs;
+  /// Member flow
+  TextEditingController memberNameController = TextEditingController();
+  TextEditingController memberReleationController = TextEditingController();
+  TextEditingController memberAgeController = TextEditingController();
+
+  void clearMembersFeild(){
+    memberNameController.clear();
+    memberReleationController.clear();
+    memberAgeController.clear();
+  }
 
   List<String> options = [
     "Help Carrying Plate",
