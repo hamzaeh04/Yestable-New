@@ -126,7 +126,14 @@ class FoodPreferencesOne extends StatelessWidget {
                   whiteColor,
                   colors: greenColor,
                   borderColor: greenColor,
-                  onTap: () => Get.toNamed("foodpreferencestwo"),
+                  onTap: () {
+                    controller.UpdateYumYuckAPI();
+                    // controller.updateYumYuck();
+                    // print(controller.foodSelections);
+                    // print("yum: ${controller.yum}");
+                    // print("yuck: ${controller.yuck}");
+                    // Get.toNamed("foodpreferencestwo");
+                  },
                 ),
               ),
               // Extra space for bottom safe area if needed

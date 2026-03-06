@@ -17,38 +17,6 @@ class YourRootAndRules extends StatelessWidget {
   YourRootAndRules({super.key});
 
   final ProfileController controller = Get.find<ProfileController>();
-  TextEditingController otherTextController = TextEditingController();
-  RxBool shareToggle = false.obs;
-
-
-  final List<Map<String, String>> foodOptions = [
-    {"name": "Italian", "imgPath": "assets/png/profile_food_images/pizza.png"},
-    {"name": "American Comfort", "imgPath": "assets/png/profile_food_images/burger.png"},
-    {"name": "Mexican", "imgPath": "assets/png/profile_food_images/mexican.png"},
-    {"name": "Mediterranean", "imgPath": "assets/png/profile_food_images/meditrain.png"},
-    {"name": "Japanese", "imgPath": "assets/png/profile_food_images/sushi.png"},
-    {"name": "Indian", "imgPath": "assets/png/profile_food_images/indian.png"},
-    {"name": "Thai", "imgPath": "assets/png/profile_food_images/thai.png"},
-  ];
-
-
-  final List<String> more = [
-    "🍀 Vegan",
-    "🥬 Vegetarian",
-    "Halal",
-    "Kosher",
-    "Keto",
-  ];
-
-  final List<Map<String, String>> yuckList = [
-    {"name": "Cilantro", "imgPath": "assets/png/profile_food_images/dhaniya.png"},
-    {"name": "Mushrooms", "imgPath": "assets/png/profile_food_images/mushroom_new.png"},
-    {"name": "Mayonnaise", "imgPath": "assets/png/profile_food_images/mayonise.png"},
-    {"name": "Olives", "imgPath": "assets/png/profile_food_images/olive.png"},
-    {"name": "Blue Cheese", "imgPath": "assets/png/profile_food_images/bluecheese.png"},
-    {"name": "Raw Onions", "imgPath": "assets/png/profile_food_images/onion.png"},
-    {"name": "Spicy Heat", "imgPath": "assets/png/profile_food_images/spicyfood.png"},
-  ];
 
 
   @override
@@ -112,14 +80,15 @@ class YourRootAndRules extends StatelessWidget {
                   ),
                   SizedBox(height: 1.h),
                   ListView.builder(
-                    itemCount: more.length,
+                    itemCount: controller.more.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     itemBuilder: (context, index) {
-                      String text = more[index];
+                      String text = controller.more[index];
                       Widget? leadingWidget;
-
+                      print(controller.selectedAllergens);
+                      print(controller.getSelectedPlateString());
                       if (text.contains("Kosher")) {
                         leadingWidget = Image.asset(
                           "assets/png/profile_food_images/kosher_icon.png",
@@ -136,13 +105,13 @@ class YourRootAndRules extends StatelessWidget {
                           height: 16.sp,
                         );
                       }
-                      return allergenWidget(index + 10, text, icon: leadingWidget);
+                      return allergenWidget(index + 1, text, icon: leadingWidget);
                     },
                   ),
 
                   /// Other Foods
                   Obx(
-                        () => controller.other.value
+                        () => controller.other3.value
                         ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -153,10 +122,14 @@ class YourRootAndRules extends StatelessWidget {
                         ),
                         SizedBox(height: 1.h),
                         TextField(
-                          maxLines: 4,
+                          readOnly: true,
+                          controller: controller.otherRootRuleController,
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontFamily: "WorkSans",
+                            fontWeight: FontWeight.w400,
+                          ),
                           decoration: InputDecoration(
-                            hintText:
-                            "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
                             hintStyle: TextStyle(
                               fontSize: 15.sp,
                               fontFamily: "WorkSans",
@@ -198,11 +171,17 @@ class YourRootAndRules extends StatelessWidget {
                           colors: blueColor,
                           height: 4.h,
                           fontsize: 15.sp,
-                          onTap: () {},
+                          onTap: () {
+                            showCustomOtherDialog(controller: controller.otherRootRuleController);
+                          },
                         ),
                       ],
                     )
                         : others(
+                          onDone: (){
+                            controller.otherToggleSwitch3();
+                          },
+                          textFieldController: controller.otherRootRuleController,
                       title: "Others",
                       path: "assets/png/icons/others_icon.png",
                     ),
@@ -226,61 +205,128 @@ class YourRootAndRules extends StatelessWidget {
                     spacing: 8.0,
                     runSpacing: 8.0,
                     children: [
-                      // 🔁 Loop through foodOptions (first 5 items)
                       ...List.generate(
-                        foodOptions.length,
-                            (index) => foodPreferencesOne(
-                          index + 1,
-                          foodOptions[index]['name']!,
-                          imgpath: foodOptions[index]['imgPath'],
-                        ),
-                      ),
-
-                      // ➕ Manually added item (custom, opens dialog)
-                      GestureDetector(
-                        onTap: () {
-                          showCustomOtherDialog(
-                            controller: otherTextController,
-                            shareWithHost: shareToggle,
-                            onDone: () {
-                              controller.otherToggleSwitch(); // your custom logic
-                              print("Typed Text: ${otherTextController.text}");
-                            },
+                        controller.foodOptions.length,
+                            (index) {
+                          final foodType = controller.foodOptions[index]['name']!;
+                          return foodPreferencesOne(
+                            index,
+                            foodType,
+                            imgpath: controller.foodOptions[index]['imgPath'],
                           );
                         },
-                        child: IntrinsicWidth(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 0.5.h),
-                            height: 3.1.h,
-                            padding: EdgeInsets.symmetric(horizontal: 5.w),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.sp),
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 0.1.w,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+
+                      Obx((){
+                        return controller.other2.value ?
+                        Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Image.asset(
-                                  'assets/png/icons/others_icon.png', // change to your desired icon
-                                  height: 14.5.sp,
-                                ),
-                                SizedBox(width: 2.w),
                                 customText(
                                   text: "Other",
                                   fontSize: 15.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: blackColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                SizedBox(height: 1.h),
+                                TextField(
+                                  readOnly: true,
+                                  controller: controller.otherMoodController,
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontFamily: "WorkSans",
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintStyle: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontFamily: "WorkSans",
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.sp),
+                                      borderSide: BorderSide(
+                                        color: foodBoundariesBorderGreenColor,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.sp),
+                                      borderSide: BorderSide(
+                                        color: foodBoundariesBorderGreenColor,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.sp),
+                                      borderSide: BorderSide(
+                                        color: foodBoundariesBorderGreenColor,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: backgroundColor,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 2.w,
+                                      vertical: 1.h,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 1.h),
+                                buttonWidget(
+                                  "Edit Other",
+                                  whiteColor,
+                                  colors: blueColor,
+                                  height: 4.h,
+                                  fontsize: 15.sp,
+                                  onTap: () {
+                                    showCustomOtherDialog(controller: controller.otherMoodController,);
+                                  },
                                 ),
                               ],
+                            ):
+                        GestureDetector(
+                          onTap: () {
+                            showCustomOtherDialog(
+                              onDone: (){
+                                controller.otherToggleSwitch2();
+                              },
+                              controller: controller.otherMoodController,
+                            );
+                          },
+                          child: IntrinsicWidth(
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 0.5.h),
+                              height: 3.1.h,
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.sp),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 0.1.w,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/png/icons/others_icon.png',
+                                    height: 14.5.sp,
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  customText(
+                                    text: "Others",
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: blackColor,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                     ],
                   ),
                   // SizedBox(height: 2.h),
@@ -360,7 +406,8 @@ class YourRootAndRules extends StatelessWidget {
                     borderColor: greenColor,
                     onTap: () {
                       // Get.to(HostFoodPreferenceTwo());
-                      Get.toNamed('foodpreferencesone');
+                      controller.UpdateAllergensPlate();
+                      // Get.toNamed('foodpreferencesone');
                     },
                   ),
                 ],

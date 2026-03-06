@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yestable/controllers/profile_controller.dart';
 
 import '../widget/complete_guest_dialog.dart';
 
 class NavigationController extends GetxController {
+  final ProfileController controller = Get.find<ProfileController>();
   var currentIndex = 0.obs;
   RxInt allergenSelectedIndex = 0.obs;
   var showAllergicGuest = false.obs;

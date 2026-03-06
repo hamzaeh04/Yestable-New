@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/profile_controller.dart';
 
 import '../constants/constants_widgets.dart';
 
 void pictureUpload(BuildContext context) {
+  final ProfileController controller = Get.find<ProfileController>();
   showModalBottomSheet(
     backgroundColor: greenColor,
     context: context,
@@ -46,11 +48,16 @@ void pictureUpload(BuildContext context) {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-                    child: customText(
-                      text: "Choose From Camera Roll",
-                      fontSize: 17.sp,
-                      fontWeight: FontWeight.w400,
-                      color: blackColor
+                    child: InkWell(
+                      onTap: (){
+                       controller.pickFromCamera();
+                      },
+                      child: customText(
+                        text: "Choose From Camera Roll",
+                        fontSize: 17.sp,
+                        fontWeight: FontWeight.w400,
+                        color: blackColor
+                      ),
                     ),
                   ),
                   Divider(
@@ -60,11 +67,16 @@ void pictureUpload(BuildContext context) {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-                    child: customText(
-                      text: "Add from Gallery",
-                      fontSize: 17.sp,
-                      fontWeight: FontWeight.w400,
-                        color: blackColor
+                    child: InkWell(
+                      onTap: (){
+                        controller.pickFromGallery();
+                      },
+                      child: customText(
+                        text: "Add from Gallery",
+                        fontSize: 17.sp,
+                        fontWeight: FontWeight.w400,
+                          color: blackColor
+                      ),
                     ),
                   ),
                 ],

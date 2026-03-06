@@ -144,11 +144,11 @@ Widget yesNoWidget(
 }
 
 Widget foodPreferencesOne(
-  int index,
-  String title, {
-  String? imgpath,
-  double? fontsize,
-}) {
+    int index,
+    String title, {
+      String? imgpath,
+      double? fontsize,
+    }) {
   final ProfileController controller = Get.find<ProfileController>();
 
   return Obx(() {
@@ -161,6 +161,9 @@ Widget foodPreferencesOne(
         } else {
           controller.foodNationality.add(index);
         }
+
+        // ✅ Update the reactive list
+        controller.updateFoodMoodList();
       },
       child: IntrinsicWidth(
         child: Container(
@@ -186,7 +189,7 @@ Widget foodPreferencesOne(
               ],
               customText(
                 text: title,
-                fontSize: fontsize != null ? fontsize : 14.sp,
+                fontSize: fontsize ?? 14.sp,
                 fontWeight: FontWeight.w500,
                 color: isSelected ? whiteColor : blackColor,
               ),
@@ -197,6 +200,8 @@ Widget foodPreferencesOne(
     );
   });
 }
+
+
 
 // Widget okWidget({
 //   required int index,

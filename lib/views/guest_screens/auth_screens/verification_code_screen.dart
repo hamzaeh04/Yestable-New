@@ -17,7 +17,6 @@ class VerificationCodeScreen extends StatelessWidget {
 
   final NavigationController controller = Get.find<NavigationController>();
   final AuthController authController = Get.find<AuthController>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +63,7 @@ class VerificationCodeScreen extends StatelessWidget {
                   Row(
                     children: [
                       customText(
-                        text: "Sent to +1*** **** **92",
+                        text: "Sent to your email",
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: darkGreyColor
@@ -101,7 +100,6 @@ class VerificationCodeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   PinCodeTextField(
-                    // controller: authControllerroller.otpController,
                     appContext: context,
                     length: 6,
                     obscureText: false,
@@ -127,19 +125,52 @@ class VerificationCodeScreen extends StatelessWidget {
                       inactiveBorderWidth: 0.2.w,
                     ),
                     onChanged: (value) {
+                      authController.verificationCode.value = value;
+                      print("OTP reactive: ${authController.verificationCode.value}");
                       print("OTP: $value");
                     },
                   ),
-
 
                   SizedBox(height: 27.5.h),
                   buttonWidget(
                     "Continue",
                     whiteColor,
                     colors: greenColor,
-                    onTap: () {
-                      Get.toNamed('addprofilepicture');
+                    onTap: () async {
+                      if(authController.controller.isUser.value == true){
+                        if (authController.verificationCode.value.length < 6) {
+                          Get.snackbar(
+                            "Error",
+                            "Please fill all required fields",
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.redAccent,
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(12),
+                            borderRadius: 8,
+                            duration: const Duration(seconds: 2),
+                          );
+                        } else {
+                          await authController.codeVerification();
+                        }
+                      } else{
+                        if (authController.verificationCode.value.length < 6) {
+                          Get.snackbar(
+                            "Error",
+                            "Please fill all required fields",
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.redAccent,
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(12),
+                            borderRadius: 8,
+                            duration: const Duration(seconds: 2),
+                          );
+                        } else {
+                          await authController.codeVerification();
+                        }
+                        // Get.toNamed('addprofilepicture');
+                      }
                     },
+                    // Get.toNamed('addprofilepicture');
                   ),
                 ],
               ),

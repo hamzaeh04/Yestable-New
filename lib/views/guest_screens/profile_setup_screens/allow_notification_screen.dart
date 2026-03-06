@@ -7,6 +7,7 @@ import 'package:yestable/widget/animated_button.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
+import '../../../controllers/auth_controller.dart';
 import '../../../controllers/notification_controller.dart';
 import '../../../widget/button_widget.dart';
 
@@ -14,6 +15,7 @@ class AllowNotificationScreen extends StatelessWidget {
   AllowNotificationScreen({super.key});
 
   final NotificationController controller = Get.find<NotificationController>();
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class AllowNotificationScreen extends StatelessWidget {
             // Progress bar
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
-              child: loadingStepIndicator("6/6", 10),
+              child: authController.controller.isUser.value == true ? loadingStepIndicator("6/6", 10): loadingStepIndicator("3/3", 10),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -65,7 +67,8 @@ class AllowNotificationScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 5.h),
                   animatedButton((){
-                    Get.toNamed("profilecompletescreen");
+                    authController.controller.isUser.value == true ?
+                    Get.toNamed("profilecompletescreen"): Get.toNamed('bottomnavigationbar');
                   }, "Allow Notifications"),
                   buttonWidget(
                     "Maybe Later",
