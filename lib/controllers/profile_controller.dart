@@ -673,9 +673,6 @@ class ProfileController extends GetxController {
         Utils.showToast("Preferences updated successfully", false);
         print("Response: $response");
         Get.toNamed('foodpreferencesone');
-        otherToggleSwitch();
-        otherToggleSwitch2();
-        otherToggleSwitch3();
       } else {
         // API returned error
         print("Error: ${response["message"]}");
