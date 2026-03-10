@@ -6,5 +6,6 @@ class ApiEndPoints{
   static const String updateAllergensPlate = '/users/profile/allergens-plate';
   static const String updateYumYuck = '/users/profile/yum-yuck';
   static const String seatingAssistance = '/users/profile/seating-assistance';
+  static const String getMyProfile = '/users/profile';
 
 }

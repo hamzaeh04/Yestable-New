@@ -43,6 +43,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>     {
         _pageController.jumpToPage(index);
       }
     });
+    controller.controller.fetchMyProfile();
   }
 
   @override

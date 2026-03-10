@@ -88,7 +88,6 @@ class YourRootAndRules extends StatelessWidget {
                       String text = controller.more[index];
                       Widget? leadingWidget;
                       print(controller.selectedAllergens);
-                      print(controller.getSelectedPlateString());
                       if (text.contains("Kosher")) {
                         leadingWidget = Image.asset(
                           "assets/png/profile_food_images/kosher_icon.png",

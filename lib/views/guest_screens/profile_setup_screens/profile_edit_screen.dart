@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/outh_file/local_db_key.dart';
 
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../utils/utility.dart';
 import '../../../widget/loading_step_indicator.dart';
 import '../../../widget/privacy_dialog.dart';
@@ -17,9 +20,11 @@ class ProfileEditScreen extends StatelessWidget {
   final NavigationController navigationController =
       Get.find<NavigationController>();
   final ProfileController controller = Get.find<ProfileController>();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
+    controller.email.text = prefs.getString(LocalDBKeys.USEREMAIL)!;
     return Scaffold(
       backgroundColor: greenColor,
       body: Column(
@@ -287,7 +292,7 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontSize: 15.sp,
                               // ),
                               customProfileField(
-                                hint: "Sarahscarnio@gmail.com",controller: controller.email
+                                hint: "Sarahscarnio@gmail.com",controller: controller.email, readonly: true
                               ),
                               const Divider(),
                               Column(
@@ -634,7 +639,7 @@ class ProfileEditScreen extends StatelessWidget {
                                                 controller.switchValue2.value,
                                             onChanged:
                                                 (val) => controller
-                                                    .toggleSwitch2(val),
+                                                    .toggleSwitch2(),
                                           ),
                                         ),
                                       ),
@@ -964,8 +969,10 @@ Widget setPlace(int index, {String? title}) {
 Widget customProfileField({
   required String hint,
   TextEditingController? controller,
+  bool? readonly = false
 }) {
   return TextField(
+    readOnly: readonly ?? false,
     controller: controller,
     cursorColor: greenColor,
     textAlignVertical: TextAlignVertical.center,

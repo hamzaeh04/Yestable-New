@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
 import '../widget/complete_guest_dialog.dart';
@@ -86,6 +87,26 @@ class NavigationController extends GetxController {
   }
 
 
+
+  /// Formats the date part: "2026-02-20T16:46:23.956Z" -> "20 Feb 2026"
+  String formatDate(String isoDate) {
+    try {
+      DateTime dateTime = DateTime.parse(isoDate).toLocal(); // Convert to local time
+      return DateFormat('MMM dd, yyyy').format(dateTime);
+    } catch (e) {
+      return isoDate; // fallback to original string if parsing fails
+    }
+  }
+
+  /// Formats the time part: "2026-02-20T16:46:23.956Z" -> "04:46 PM"
+  String formatTime(String isoDate) {
+    try {
+      DateTime dateTime = DateTime.parse(isoDate).toLocal();
+      return DateFormat('hh:mm a').format(dateTime);
+    } catch (e) {
+      return isoDate;
+    }
+  }
 
   final List<String> tabs = [
     "All",

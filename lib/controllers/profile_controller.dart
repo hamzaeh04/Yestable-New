@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/core/services/multipart_request.dart';
+import 'package:yestable/model/get_my_profile.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 
 import '../core/services/apiendpoints.dart';
@@ -21,6 +22,7 @@ class ProfileController extends GetxController {
   BaseService baseService = BaseService();
   final prefs = SharedPreferencesMethod.storage;
 
+  Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
 
   var profilePicture = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
@@ -187,7 +189,94 @@ class ProfileController extends GetxController {
   TextEditingController otherMoodController = TextEditingController();
   RxBool shareToggle = false.obs;
 
+  List<Map<String, dynamic>> getAllergensList() {
+    final ca = getMyProfileModel.value?.data?.preferences?.commonAllergens;
 
+    if (ca == null) return [];
+
+    return [
+      {
+        "progress": 0.3.obs,
+        "title": "🥜 Peanuts",
+        "desc": ca.peanut ?? "Unknown",
+        "circleImg": "🥜",
+        "isEmoji": true,
+        "path": null,
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "Tree Nuts",
+        "desc": ca.treeNuts ?? "Unknown",
+        "circleImg": "🤗",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/tree_nut.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "Sesame",
+        "desc": ca.sesame ?? "Unknown",
+        "circleImg": "🤗",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/sesame.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🌾 Gluten",
+        "desc": ca.gluten ?? "Unknown",
+        "circleImg": "🌾",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/gluten.png",
+      },
+      {
+        "progress": 0.8.obs,
+        "title": "🥚 Eggs",
+        "desc": ca.eggs ?? "Unknown",
+        "circleImg": "🥚",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/eggs.png",
+      },
+      {
+        "progress": 0.7.obs,
+        "title": "🫘 Soy",
+        "desc": ca.soy ?? "Unknown",
+        "circleImg": "🫘",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/soy.png",
+      },
+      {
+        "progress": 0.6.obs,
+        "title": "🐟 Fish",
+        "desc": ca.fish ?? "Unknown",
+        "circleImg": "🐟",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/fish.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🦐 Shellfish",
+        "desc": ca.shellFish ?? "Unknown",
+        "circleImg": "🦐",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/shellfish.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🥛 Dairy",
+        "desc": ca.dairy ?? "Unknown",
+        "circleImg": "🥛",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/dairy.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🥑 Others",
+        "desc": ca.others ?? "Unknown",
+        "circleImg": "🥑",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/others.png",
+      },
+    ];
+  }
   final List<Map<String, String>> foodOptions = [
     {"name": "Italian", "imgPath": "assets/png/profile_food_images/pizza.png"},
     {"name": "American Comfort", "imgPath": "assets/png/profile_food_images/burger.png"},
@@ -209,25 +298,65 @@ class ProfileController extends GetxController {
 
 
   // More About Your Plates
-  String getSelectedPlateString() {
-    List<String> values = [];
+  // String getSelectedPlateString() {
+  //   List<String> values = [];
+  //
+  //   for (var index in selectedAllergens) {
+  //     switch (index) {
+  //       case 1:
+  //         values.add("vegan");
+  //         break;
+  //       case 2:
+  //         values.add("vegetarian");
+  //         break;
+  //       case 3:
+  //         values.add("halal");
+  //         break;
+  //       case 4:
+  //         values.add("kosher");
+  //         break;
+  //       case 5:
+  //         values.add("keto");
+  //         break;
+  //     }
+  //   }
+  //
+  //   // Add "Other" text if not empty
+  //   String otherText = otherRootRuleController.text.trim();
+  //   if (otherText.isNotEmpty) {
+  //     values.add(otherText);
+  //   }
+  //
+  //   return values.join(',');
+  // }
+
+  Map<String, dynamic> getSelectedPlateMap() {
+    // Initialize all plates as false
+    Map<String, dynamic> plateMap = {
+      "vegan": false,
+      "vegetarian": false,
+      "halal": false,
+      "kosher": false,
+      "keto": false,
+      "other": "",
+    };
 
     for (var index in selectedAllergens) {
       switch (index) {
         case 1:
-          values.add("vegan");
+          plateMap["vegan"] = true;
           break;
         case 2:
-          values.add("vegetarian");
+          plateMap["vegetarian"] = true;
           break;
         case 3:
-          values.add("halal");
+          plateMap["halal"] = true;
           break;
         case 4:
-          values.add("kosher");
+          plateMap["kosher"] = true;
           break;
         case 5:
-          values.add("keto");
+          plateMap["keto"] = true;
           break;
       }
     }
@@ -235,10 +364,10 @@ class ProfileController extends GetxController {
     // Add "Other" text if not empty
     String otherText = otherRootRuleController.text.trim();
     if (otherText.isNotEmpty) {
-      values.add(otherText);
+      plateMap["other"] = otherText;
     }
 
-    return values.join(',');
+    return plateMap;
   }
 
   final List<String> more = [
@@ -398,8 +527,8 @@ class ProfileController extends GetxController {
     switchValue.value = value;
   }
 
-  void toggleSwitch2(bool value) {
-    switchValue2.value = value;
+  void toggleSwitch2() {
+    switchValue2.value = true;
   }
 
   void switchOption(int index, String option) {
@@ -637,6 +766,7 @@ class ProfileController extends GetxController {
         // Example if backend returns user data
         // final userId = jsonResponse['data']['user']['id'];
         Get.toNamed('allergiesdietryscreen');
+
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
@@ -650,16 +780,13 @@ class ProfileController extends GetxController {
   }
 
   Future<void> UpdateAllergensPlate() async {
-    List<String> platesList = getSelectedPlateString()
-        .split(',')               // ["vegan", "other"]
-        .map((e) => e.trim())     // trim spaces
-        .toList();
-    print("formatteddddd: ${platesList}");
+    final plateData = getSelectedPlateMap();
+    print("formatteddddd: ${plateData}");
     try {
       // Construct your API body
       Map<String, dynamic> body = {
         "commonAllergens": commanAllergens,
-        "plate": platesList,
+        "plate": plateData,
         "favMood": foodMoodOptionList
       };
       // Make PATCH API call
@@ -673,6 +800,7 @@ class ProfileController extends GetxController {
         Utils.showToast("Preferences updated successfully", false);
         print("Response: $response");
         Get.toNamed('foodpreferencesone');
+        // print("faaaah: ${response["data"]["preferences"]["plate"]}");
       } else {
         // API returned error
         print("Error: ${response["message"]}");
@@ -744,6 +872,7 @@ class ProfileController extends GetxController {
         print("isQuite: ${IsYes()}",);
         showSeatingOther.value = !showSeatingOther.value;
         showAssistanceOther.value = !showAssistanceOther.value;
+
         Get.toNamed("allownotificationscreen");
       } else {
         print("Failed: ${response?['message']}");
@@ -752,6 +881,29 @@ class ProfileController extends GetxController {
     } catch (e) {
       print("Error updating seating assistance: $e");
       Utils.showToast("Something went wrong", true);
+    }
+  }
+
+  Future<void> fetchMyProfile() async {
+    try {
+      // Optional: show loading
+
+      final response = await baseService.baseGetAPI(ApiEndPoints.getMyProfile);
+
+      // Check if the response is successful
+      if (response['success'] == true && response['data'] != null) {
+        // Update your reactive model
+        getMyProfileModel.value = GetMyProfile.fromJson(response);
+
+        // Show a success message
+        Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
+      } else {
+        // Handle API errors
+        Utils.showToast(response['message'] ?? "Failed to fetch profile", true);
+      }
+    } catch (e) {
+      // Handle exceptions
+      Utils.showToast("Something went wrong: $e", true);
     }
   }
 }
