@@ -69,15 +69,15 @@ class ProfileEditScreen extends StatelessWidget {
                             onTap: () {
                               controller.isPreferences.value = false;
                               print(controller.isPreferences.value);
-                              // if(controller.nameController.text.isNotEmpty && controller.userName.text.isNotEmpty && controller.email.text.isNotEmpty && controller.location.text.isNotEmpty && controller.bio.text.isNotEmpty) {
-                              //   controller.setupProfile(profilePic: navigationController
-                              //       .controller
-                              //       .profilePicture
-                              //       .value!);
-                              // } else {
-                              //   Utils.showToast("Fill all the fields!", true);
-                              // }
-                              Get.toNamed('allergiesdietryscreen');
+                              if(controller.nameController.text.isNotEmpty && controller.userName.text.isNotEmpty && controller.email.text.isNotEmpty && controller.location.text.isNotEmpty && controller.bio.text.isNotEmpty) {
+                                controller.setupProfile(navigationController.isUser.value,profilePic: navigationController
+                                    .controller
+                                    .profilePicture
+                                    .value!);
+                              } else {
+                                Utils.showToast("Fill all the fields!", true);
+                              }
+                              // Get.toNamed('allergiesdietryscreen');
                               print("Name: ${controller.nameController.text}");
                               print("Email: ${controller.email.text}");
                               print("Username: ${controller.userName.text}");
@@ -124,8 +124,15 @@ class ProfileEditScreen extends StatelessWidget {
                           SizedBox(width: 6.w),
                           InkWell(
                             onTap: () {
-                              Get.toNamed('allownotificationscreen');
-                              // Get.toNamed('bottomnavigationbar');
+                              if(controller.nameController.text.isNotEmpty && controller.userName.text.isNotEmpty && controller.email.text.isNotEmpty && controller.location.text.isNotEmpty && controller.bio.text.isNotEmpty) {
+                                controller.setupProfile(navigationController.isUser.value,profilePic: navigationController
+                                    .controller
+                                    .profilePicture
+                                    .value!);
+                              } else {
+                                Utils.showToast("Fill all the fields!", true);
+                              }
+                              // Get.toNamed('allownotificationscreen');
                             },
                             child: customText(
                               text: "Continue",
@@ -920,10 +927,11 @@ Widget setPlace(int index, {String? title,TextEditingController? nameController,
         SizedBox(height: 2.h),
         InkWell(
           onTap: () {
-            controller.setData(index: index, screenTitle: title ?? "Robert");
+            controller.setData(index: index, screenTitle: title ?? "-");
             controller.isPreferences.value = true;
             print(controller.isPreferences.value);
             Get.toNamed('allergiesdietryscreen');
+            // controller.addMember();
           },
 
           child: Container(

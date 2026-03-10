@@ -69,12 +69,15 @@ class AllowNotificationScreen extends StatelessWidget {
                   animatedButton((){
                     authController.controller.isUser.value == true ?
                     Get.toNamed("profilecompletescreen"): Get.toNamed('bottomnavigationbar');
-                  }, "Allow Notifications"),
+                  authController.controller.controller.clearSetupProfileFields();
+                    }, "Allow Notifications"),
                   buttonWidget(
                     "Maybe Later",
                     greenColor,
                     borderColor: greenColor,
-                    onTap: () {},
+                    onTap: () {
+                      authController.controller.controller.clearSetupProfileFields();
+                    },
                   ),
                 ],
               ),

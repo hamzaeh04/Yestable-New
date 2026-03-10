@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/core/services/multipart_request.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
@@ -282,6 +283,8 @@ class ProfileController extends GetxController {
     memberAgeController.clear();
   }
 
+
+
   List<String> options = [
     "Help Carrying Plate",
     "Assistance Walking In",
@@ -401,7 +404,7 @@ class ProfileController extends GetxController {
   }
 
   void toggleSwitch2(bool value) {
-    switchValue2.value = value;
+    switchValue2.value = true;
   }
 
   void switchOption(int index, String option) {
@@ -543,6 +546,7 @@ class ProfileController extends GetxController {
 
     },
   ];
+
   String getAllergyType(double progress) {
     double percentage = progress * 100;
 
@@ -563,17 +567,20 @@ class ProfileController extends GetxController {
         getAllergyType(newProgress);
   }
 
-  Future<void> setupProfile({File? profilePic}) async {
+
+  Future<void> setupProfile(bool isUser, {File? profilePic}) async {
     final fields = {
       "name": nameController.text.trim(),
       "username": userName.text.trim(),
       "pronoun": pronounsValue(),
       "location": location.text.trim(),
       "bio": bio.text.trim(),
+      "iAmHosting": (isUser == true ? false: true).toString(),
       "isProfilePublic": switchValue.value.toString(), // MUST be string
     };
 
     await _sendMultipartRequest(
+      isUser,
       ApiEndPoints.setupProfile,
       fields,
       profilePic,
@@ -581,6 +588,7 @@ class ProfileController extends GetxController {
   }
 
   Future<void> _sendMultipartRequest(
+      bool isUser,
       String endpoint,
       Map<String, String> fields,
       File? profilePic,
@@ -634,11 +642,12 @@ class ProfileController extends GetxController {
       final jsonResponse = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Utils.showToast("Profile setup successfully", false);
+        Utils.showToast("${jsonResponse['message']}", false);
 
         // Example if backend returns user data
         // final userId = jsonResponse['data']['user']['id'];
-        Get.toNamed('allergiesdietryscreen');
+        isUser == true ? Get.toNamed('allergiesdietryscreen'): Get.toNamed('allownotificationscreen');
+        // clearSetupProfileFields();
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
@@ -758,5 +767,52 @@ class ProfileController extends GetxController {
       print("Error updating seating assistance: $e");
       Utils.showToast("Something went wrong", true);
     }
+  }
+
+
+  Future<void> addMember() async {
+    try {
+      // Construct your API body
+      Map<String, dynamic> body = {
+        "members": [
+          {
+            "name": memberNameController.text.trim(),
+            "relation": memberReleationController.text.trim(),
+            "age": int.parse(memberAgeController.text.trim())
+          }
+        ]
+
+      };
+      // Make PATCH API call
+      final response = await baseService.basePostAPI(
+        ApiEndPoints.addMember,
+        body,
+        loading: true, // show loading if needed
+      );
+
+      if (response["success"] == true) {
+        Utils.showToast("Member Added Successfully", false);
+        print("Response: $response");
+        Get.toNamed('allergiesdietryscreen');
+      } else {
+        // API returned error
+        print("Error: ${response["message"]}");
+        Utils.showToast('${response['message']}', true);
+      }
+    } catch (e) {
+      print("Unexpected error: $e");
+      Utils.showToast("Something went wrong", true);
+    }
+  }
+
+  void clearSetupProfileFields(){
+    nameController.clear();
+    userName.clear();
+    email.clear();
+    bio.clear();
+    location.clear();
+    customPronoun.clear();
+    pronounIsSelected.value = 0;
+    profilePicture.value = null;
   }
 }
