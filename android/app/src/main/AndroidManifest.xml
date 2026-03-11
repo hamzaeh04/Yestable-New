@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.yourcompany.yestable">
-
+    package="com.example.yestable">
   <!-- Camera feature (optional, avoids Play Store filtering) -->
   <uses-feature
     android:name="android.hardware.camera"

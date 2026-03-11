@@ -301,7 +301,15 @@ class AllergiesDietryScreen extends StatelessWidget {
 
                 /// Continue Button
                 animatedButton((){
-                  Get.toNamed("yourrootandrules");
+
+                  if( controller.isPreferences.value == true){
+                    controller.addMember();
+                  }
+                 else{
+                    Get.toNamed("yourrootandrules");
+                  }
+
+
                 }, "Continue")
               ],
             ),

@@ -127,6 +127,7 @@ class FoodPreferencesOne extends StatelessWidget {
                   colors: greenColor,
                   borderColor: greenColor,
                   onTap: () {
+                    controller.isPreferences.value == true ? controller.UpdateYumYuckAPI(isMember: true, memberId: controller.memberId) :
                     controller.UpdateYumYuckAPI();
                     // controller.updateYumYuck();
                     // print(controller.foodSelections);

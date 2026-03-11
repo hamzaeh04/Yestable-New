@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/views/guest_screens/profile_setup_screens/profile_edit_screen.dart';
 import 'package:yestable/widget/back_button_widget.dart';
@@ -19,6 +20,7 @@ import '../../../widget/extra_assitance_dropdown.dart';
 class FoodPreferencesTwo extends StatelessWidget {
   FoodPreferencesTwo({super.key});
   final ProfileController controller = Get.find<ProfileController>();
+  final NavigationController navigationController = Get.find<NavigationController>();
   final List<String> titles = [
     "Access To Quiet Space Away From Main Event",
     "Can Accommodate Larger Seating",
@@ -135,6 +137,8 @@ class FoodPreferencesTwo extends StatelessWidget {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
+                  SizedBox(height: 1.h),
+
                   // preferencesWidget("chair without arms"),
                   Column(
                     spacing: 1.0.h,
@@ -459,7 +463,8 @@ class FoodPreferencesTwo extends StatelessWidget {
                       // } else {
                       //   Get.toNamed("allownotificationscreen");
                       // }
-                      controller.UpdateSeatingAssistance();
+                      controller.isPreferences.value == true ? controller.UpdateSeatingAssistance(context,isMember: true, memberId: controller.memberId) :
+                      controller.UpdateSeatingAssistance(context);
 
                     },
                   ),

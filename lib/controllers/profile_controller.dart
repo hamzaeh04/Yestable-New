@@ -14,14 +14,16 @@ import 'package:yestable/outh_file/local_db_key.dart';
 
 import '../core/services/apiendpoints.dart';
 import '../core/services/multipart_request.dart';
+import '../model/get_my_profile.dart';
 import '../utils/shared_prefrences_methods.dart';
 import '../utils/utility.dart';
+import '../widget/update_sent_sucessfull_dialog.dart';
 
 class ProfileController extends GetxController {
   // --- Existing Variables (No changes here) ---
   BaseService baseService = BaseService();
   final prefs = SharedPreferencesMethod.storage;
-
+  Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
 
   var profilePicture = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
@@ -38,6 +40,7 @@ class ProfileController extends GetxController {
   var isChecked = false.obs;
   var isRadioChecked = false.obs;
   RxBool isYes = false.obs;
+  String memberId = '';
 
   // final RxBool isPlaceExpanded = false.obs;
   RxBool isArrowRotated = false.obs;
@@ -188,7 +191,94 @@ class ProfileController extends GetxController {
   TextEditingController otherMoodController = TextEditingController();
   RxBool shareToggle = false.obs;
 
+  List<Map<String, dynamic>> getAllergensList() {
+    final ca = getMyProfileModel.value?.data?.preferences?.commonAllergens;
 
+    if (ca == null) return [];
+
+    return [
+      {
+        "progress": 0.3.obs,
+        "title": "🥜 Peanuts",
+        "desc": ca.peanut ?? "Unknown",
+        "circleImg": "🥜",
+        "isEmoji": true,
+        "path": null,
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "Tree Nuts",
+        "desc": ca.treeNuts ?? "Unknown",
+        "circleImg": "🤗",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/tree_nut.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "Sesame",
+        "desc": ca.sesame ?? "Unknown",
+        "circleImg": "🤗",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/sesame.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🌾 Gluten",
+        "desc": ca.gluten ?? "Unknown",
+        "circleImg": "🌾",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/gluten.png",
+      },
+      {
+        "progress": 0.8.obs,
+        "title": "🥚 Eggs",
+        "desc": ca.eggs ?? "Unknown",
+        "circleImg": "🥚",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/eggs.png",
+      },
+      {
+        "progress": 0.7.obs,
+        "title": "🫘 Soy",
+        "desc": ca.soy ?? "Unknown",
+        "circleImg": "🫘",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/soy.png",
+      },
+      {
+        "progress": 0.6.obs,
+        "title": "🐟 Fish",
+        "desc": ca.fish ?? "Unknown",
+        "circleImg": "🐟",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/fish.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🦐 Shellfish",
+        "desc": ca.shellFish ?? "Unknown",
+        "circleImg": "🦐",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/shellfish.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🥛 Dairy",
+        "desc": ca.dairy ?? "Unknown",
+        "circleImg": "🥛",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/dairy.png",
+      },
+      {
+        "progress": 0.0.obs,
+        "title": "🥑 Others",
+        "desc": ca.others ?? "Unknown",
+        "circleImg": "🥑",
+        "isEmoji": true,
+        "path": "assets/png/profile_food_images/others.png",
+      },
+    ];
+  }
   final List<Map<String, String>> foodOptions = [
     {"name": "Italian", "imgPath": "assets/png/profile_food_images/pizza.png"},
     {"name": "American Comfort", "imgPath": "assets/png/profile_food_images/burger.png"},
@@ -210,25 +300,64 @@ class ProfileController extends GetxController {
 
 
   // More About Your Plates
-  String getSelectedPlateString() {
-    List<String> values = [];
+  // String getSelectedPlateString() {
+  //   List<String> values = [];
+  //
+  //   for (var index in selectedAllergens) {
+  //     switch (index) {
+  //       case 1:
+  //         values.add("vegan");
+  //         break;
+  //       case 2:
+  //         values.add("vegetarian");
+  //         break;
+  //       case 3:
+  //         values.add("halal");
+  //         break;
+  //       case 4:
+  //         values.add("kosher");
+  //         break;
+  //       case 5:
+  //         values.add("keto");
+  //         break;
+  //     }
+  //   }
+  //
+  //   // Add "Other" text if not empty
+  //   String otherText = otherRootRuleController.text.trim();
+  //   if (otherText.isNotEmpty) {
+  //     values.add(otherText);
+  //   }
+  //
+  //   return values.join(',');
+  // }
+  Map<String, dynamic> getSelectedPlateMap() {
+    // Initialize all plates as false
+    Map<String, dynamic> plateMap = {
+      "vegan": false,
+      "vegetarian": false,
+      "halal": false,
+      "kosher": false,
+      "keto": false,
+      "other": "",
+    };
 
     for (var index in selectedAllergens) {
       switch (index) {
         case 1:
-          values.add("vegan");
+          plateMap["vegan"] = true;
           break;
         case 2:
-          values.add("vegetarian");
+          plateMap["vegetarian"] = true;
           break;
         case 3:
-          values.add("halal");
+          plateMap["halal"] = true;
           break;
         case 4:
-          values.add("kosher");
+          plateMap["kosher"] = true;
           break;
         case 5:
-          values.add("keto");
+          plateMap["keto"] = true;
           break;
       }
     }
@@ -236,10 +365,10 @@ class ProfileController extends GetxController {
     // Add "Other" text if not empty
     String otherText = otherRootRuleController.text.trim();
     if (otherText.isNotEmpty) {
-      values.add(otherText);
+      plateMap["other"] = otherText;
     }
 
-    return values.join(',');
+    return plateMap;
   }
 
   final List<String> more = [
@@ -403,7 +532,7 @@ class ProfileController extends GetxController {
     switchValue.value = value;
   }
 
-  void toggleSwitch2(bool value) {
+  void toggleSwitch2() {
     switchValue2.value = true;
   }
 
@@ -660,22 +789,23 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> UpdateAllergensPlate() async {
-    List<String> platesList = getSelectedPlateString()
-        .split(',')               // ["vegan", "other"]
-        .map((e) => e.trim())     // trim spaces
-        .toList();
-    print("formatteddddd: ${platesList}");
+  Future<void> UpdateAllergensPlate({bool? isMember = false, String? memberId}) async {
+    // List<String> platesList = getSelectedPlateString()
+    //     .split(',')               // ["vegan", "other"]
+    //     .map((e) => e.trim())     // trim spaces
+    //     .toList();
+    final plateData = getSelectedPlateMap();
+    print("formatteddddd: ${plateData}");
     try {
       // Construct your API body
       Map<String, dynamic> body = {
         "commonAllergens": commanAllergens,
-        "plate": platesList,
+        "plate": plateData,
         "favMood": foodMoodOptionList
       };
       // Make PATCH API call
       final response = await baseService.basePatchAPI(
-        ApiEndPoints.updateAllergensPlate,
+        isMember == false ? ApiEndPoints.updateAllergensPlate: ApiEndPoints.updateMemberAllergensPlate(memberId??""),
         body: body,
         loading: true, // show loading if needed
       );
@@ -684,9 +814,6 @@ class ProfileController extends GetxController {
         Utils.showToast("Preferences updated successfully", false);
         print("Response: $response");
         Get.toNamed('foodpreferencesone');
-        otherToggleSwitch();
-        otherToggleSwitch2();
-        otherToggleSwitch3();
       } else {
         // API returned error
         print("Error: ${response["message"]}");
@@ -698,7 +825,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> UpdateYumYuckAPI() async {
+  Future<void> UpdateYumYuckAPI({bool? isMember = false, String? memberId}) async {
     try {
       updateYumYuck();
 
@@ -707,7 +834,7 @@ class ProfileController extends GetxController {
 
       // Make the PATCH request
       final response = await baseService.basePatchAPI(
-        ApiEndPoints.updateYumYuck,
+        isMember == true ? ApiEndPoints.updateMemberYumYuck(memberId??"") :ApiEndPoints.updateYumYuck,
         body: body, // pass your JSON here
       );
 
@@ -727,7 +854,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> UpdateSeatingAssistance() async {
+  Future<void> UpdateSeatingAssistance(BuildContext context,{bool? isMember = false, String? memberId}) async {
     try {
       final body = {
         "seatingRequirement": {
@@ -742,7 +869,7 @@ class ProfileController extends GetxController {
       };
 
       final response = await baseService.basePatchAPI(
-        ApiEndPoints.seatingAssistance,
+        isMember == true ? ApiEndPoints.updateMemberSeating(memberId ?? "") : ApiEndPoints.seatingAssistance,
         body: body,
       );
 
@@ -758,7 +885,25 @@ class ProfileController extends GetxController {
         print("isQuite: ${IsYes()}",);
         showSeatingOther.value = !showSeatingOther.value;
         showAssistanceOther.value = !showAssistanceOther.value;
-        Get.toNamed("allownotificationscreen");
+        final index = selectedIndex.value;
+        print(isPreferences.value);
+        if (isPreferences.value == true) {
+          print(isPreferences.value);
+          placeCompleted[index] = true;
+          // Show dialog
+          updateSentSuccessfull(context, desc: "Your preference for this person has been added successfully");
+
+          // Delay + navigation
+          Future.delayed(Duration(seconds: 3), () {
+            if(isPreferences.value == true) { // check again
+              Get.toNamed('profileeditscreen');
+             isPreferences.value = false;
+            }
+            print(isPreferences.value);
+          });
+        } else {
+          Get.toNamed("allownotificationscreen");
+        }
       } else {
         print("Failed: ${response?['message']}");
         Utils.showToast(response?['message'] ?? "Update failed", true);
@@ -793,7 +938,10 @@ class ProfileController extends GetxController {
       if (response["success"] == true) {
         Utils.showToast("Member Added Successfully", false);
         print("Response: $response");
-        Get.toNamed('allergiesdietryscreen');
+        Get.toNamed("yourrootandrules");
+        // Get.toNamed('allergiesdietryscreen');
+        memberId = response["data"][0]["_id"];
+        print("Idddddd: ${memberId}");
       } else {
         // API returned error
         print("Error: ${response["message"]}");
@@ -802,6 +950,29 @@ class ProfileController extends GetxController {
     } catch (e) {
       print("Unexpected error: $e");
       Utils.showToast("Something went wrong", true);
+    }
+  }
+
+  Future<void> fetchMyProfile() async {
+    try {
+      // Optional: show loading
+
+      final response = await baseService.baseGetAPI(ApiEndPoints.getMyProfile);
+
+      // Check if the response is successful
+      if (response['success'] == true && response['data'] != null) {
+        // Update your reactive model
+        getMyProfileModel.value = GetMyProfile.fromJson(response);
+
+        // Show a success message
+        Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
+      } else {
+        // Handle API errors
+        Utils.showToast(response['message'] ?? "Failed to fetch profile", true);
+      }
+    } catch (e) {
+      // Handle exceptions
+      Utils.showToast("Something went wrong: $e", true);
     }
   }
 

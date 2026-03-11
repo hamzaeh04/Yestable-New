@@ -72,6 +72,7 @@ class AuthController extends GetxController {
     if (data == null) return; // Safety guard
     final prefs = SharedPreferencesMethod.storage;
     await prefs.setString(LocalDBKeys.TOKEN, data["access_token"]);
+    await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
     print("Faaaaahhhh: ${data["access_token"]}");
     // 🚀 AB DASHBOARD PE JAO
     Get.offAllNamed('/addprofilepicture');

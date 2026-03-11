@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/outh_file/local_db_key.dart';
 
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../utils/utility.dart';
 import '../../../widget/loading_step_indicator.dart';
 import '../../../widget/privacy_dialog.dart';
@@ -17,9 +20,11 @@ class ProfileEditScreen extends StatelessWidget {
   final NavigationController navigationController =
       Get.find<NavigationController>();
   final ProfileController controller = Get.find<ProfileController>();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
+    controller.email.text = prefs.getString(LocalDBKeys.USEREMAIL)!;
     return Scaffold(
       backgroundColor: greenColor,
       body: Column(
@@ -69,15 +74,15 @@ class ProfileEditScreen extends StatelessWidget {
                             onTap: () {
                               controller.isPreferences.value = false;
                               print(controller.isPreferences.value);
-                              if(controller.nameController.text.isNotEmpty && controller.userName.text.isNotEmpty && controller.email.text.isNotEmpty && controller.location.text.isNotEmpty && controller.bio.text.isNotEmpty) {
-                                controller.setupProfile(navigationController.isUser.value,profilePic: navigationController
-                                    .controller
-                                    .profilePicture
-                                    .value!);
-                              } else {
-                                Utils.showToast("Fill all the fields!", true);
-                              }
-                              // Get.toNamed('allergiesdietryscreen');
+                              // if(controller.nameController.text.isNotEmpty && controller.userName.text.isNotEmpty && controller.email.text.isNotEmpty && controller.location.text.isNotEmpty && controller.bio.text.isNotEmpty) {
+                              //   controller.setupProfile(profilePic: navigationController
+                              //       .controller
+                              //       .profilePicture
+                              //       .value!);
+                              // } else {
+                              //   Utils.showToast("Fill all the fields!", true);
+                              // }
+                              Get.toNamed('allergiesdietryscreen');
                               print("Name: ${controller.nameController.text}");
                               print("Email: ${controller.email.text}");
                               print("Username: ${controller.userName.text}");
@@ -124,15 +129,8 @@ class ProfileEditScreen extends StatelessWidget {
                           SizedBox(width: 6.w),
                           InkWell(
                             onTap: () {
-                              if(controller.nameController.text.isNotEmpty && controller.userName.text.isNotEmpty && controller.email.text.isNotEmpty && controller.location.text.isNotEmpty && controller.bio.text.isNotEmpty) {
-                                controller.setupProfile(navigationController.isUser.value,profilePic: navigationController
-                                    .controller
-                                    .profilePicture
-                                    .value!);
-                              } else {
-                                Utils.showToast("Fill all the fields!", true);
-                              }
-                              // Get.toNamed('allownotificationscreen');
+                              Get.toNamed('allownotificationscreen');
+                              // Get.toNamed('bottomnavigationbar');
                             },
                             child: customText(
                               text: "Continue",
@@ -250,11 +248,9 @@ class ProfileEditScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
-                              Obx(
-                                () =>
-                                    controller.pronounIsSelected.value == 3
-                                        ? SizedBox(height: 20.3.h)
-                                        : SizedBox(height: 18.h),
+                              Obx(() =>
+                                controller.pronounIsSelected.value == 3 ?
+                                SizedBox(height: 20.3.h):SizedBox(height: 18.h),
                               ),
                               customText(
                                 text: "Location",
@@ -280,20 +276,14 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontWeight: FontWeight.w400,
                               //   fontSize: 15.sp,
                               // ),
-                              customProfileField(
-                                hint: 'Sarah Scarnio!',
-                                controller: controller.nameController,
-                              ),
+                              customProfileField(hint: 'Sarah Scarnio!',controller: controller.nameController),
                               const Divider(),
                               // customText(
                               //   text: "Sarah_scarnio01",
                               //   fontWeight: FontWeight.w400,
                               //   fontSize: 15.sp,
                               // ),
-                              customProfileField(
-                                hint: 'Sarah_scarnio01',
-                                controller: controller.userName,
-                              ),
+                              customProfileField(hint: 'Sarah_scarnio01',controller: controller.userName),
 
                               const Divider(),
                               // customText(
@@ -302,8 +292,7 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontSize: 15.sp,
                               // ),
                               customProfileField(
-                                hint: "Sarahscarnio@gmail.com",
-                                controller: controller.email,
+                                hint: "Sarahscarnio@gmail.com",controller: controller.email, readonly: true
                               ),
                               const Divider(),
                               Column(
@@ -354,10 +343,7 @@ class ProfileEditScreen extends StatelessWidget {
                               //   fontWeight: FontWeight.w400,
                               //   fontSize: 15.sp,
                               // ),
-                              customProfileField(
-                                hint: "📍   New York",
-                                controller: controller.location,
-                              ),
+                              customProfileField(hint: "📍   New York",controller: controller.location),
                               const Divider(),
                               // Row(
                               //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,19 +477,34 @@ class ProfileEditScreen extends StatelessWidget {
                                                         () => Column(
                                                           children: [
                                                             // Pehla form hamesha show
-                                                            setPlace(0,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
+                                                            setPlace(0),
 
                                                             // Second form tabhi show jab pehla complete ho
-                                                            if (controller.places.length > 1 && controller.placeCompleted[0])
-                                                              setPlace(1,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
+                                                            if (controller
+                                                                        .places
+                                                                        .length >
+                                                                    1 &&
+                                                                controller
+                                                                    .placeCompleted[0])
+                                                              setPlace(1),
 
                                                             // Third form tabhi show jab second complete ho
-                                                            if (controller.places.length > 2 && controller.placeCompleted[1])
-                                                              setPlace(2,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
+                                                            if (controller
+                                                                        .places
+                                                                        .length >
+                                                                    2 &&
+                                                                controller
+                                                                    .placeCompleted[1])
+                                                              setPlace(2),
 
                                                             // Fourth form tabhi show jab third complete ho
-                                                            if (controller.places.length > 3 && controller.placeCompleted[2])
-                                                              setPlace(3,nameController: controller.memberNameController,relationController: controller.memberReleationController,ageController: controller.memberAgeController),
+                                                            if (controller
+                                                                        .places
+                                                                        .length >
+                                                                    3 &&
+                                                                controller
+                                                                    .placeCompleted[2])
+                                                              setPlace(3),
                                                           ],
                                                         ),
                                                       ),
@@ -511,14 +512,21 @@ class ProfileEditScreen extends StatelessWidget {
                                                       SizedBox(height: 1.5.h),
 
                                                       /// 🔹 ADD MORE BUTTON
-                                                      if (controller.places.length <4)
+                                                      if (controller
+                                                              .places
+                                                              .length <
+                                                          4)
                                                         InkWell(
                                                           onTap: () {
                                                             int lastIndex =
-                                                                controller.places.length - 1;
+                                                                controller
+                                                                    .places
+                                                                    .length -
+                                                                1;
 
                                                             // Check if previous form is completed
-                                                            if (!controller.placeCompleted[lastIndex]) {
+                                                            if (!controller
+                                                                .placeCompleted[lastIndex]) {
                                                               Utils.showToast(
                                                                 "Please complete previous form first",
                                                                 false,
@@ -527,8 +535,17 @@ class ProfileEditScreen extends StatelessWidget {
                                                             }
 
                                                             // Add new form
-                                                            controller.places.add(controller.places.length,);
-                                                            controller.placeCompleted.add(false,); // new form initially not completed
+                                                            controller.places
+                                                                .add(
+                                                                  controller
+                                                                      .places
+                                                                      .length,
+                                                                );
+                                                            controller
+                                                                .placeCompleted
+                                                                .add(
+                                                                  false,
+                                                                ); // new form initially not completed
                                                           },
                                                           child: Row(
                                                             children: [
@@ -622,7 +639,7 @@ class ProfileEditScreen extends StatelessWidget {
                                                 controller.switchValue2.value,
                                             onChanged:
                                                 (val) => controller
-                                                    .toggleSwitch2(val),
+                                                    .toggleSwitch2(),
                                           ),
                                         ),
                                       ),
@@ -795,9 +812,9 @@ Widget pronounItem(String title, int index) {
           SizedBox(height: 0.7.h),
           controller.pronounIsSelected.value == index && index == 3
               ? customProfileField(
-                hint: "Select Custom Values",
-                controller: controller.customPronoun,
-              )
+            hint: "Select Custom Values",
+            controller: controller.customPronoun,
+          )
               : SizedBox.shrink(),
         ],
       ),
@@ -805,7 +822,7 @@ Widget pronounItem(String title, int index) {
   );
 }
 
-Widget setPlace(int index, {String? title,TextEditingController? nameController,TextEditingController? relationController,TextEditingController? ageController}) {
+Widget setPlace(int index, {String? title}) {
   final ProfileController controller = Get.find<ProfileController>();
   return Padding(
     padding: EdgeInsets.only(bottom: 1.5.h),
@@ -826,8 +843,7 @@ Widget setPlace(int index, {String? title,TextEditingController? nameController,
             SizedBox(width: 13.w),
             Expanded(
               child: TextField(
-                controller: nameController,
-                cursorColor: greenColor,
+                controller: controller.memberNameController,
                 decoration: InputDecoration(
                   hintText: 'Robert Elbert',
                   hintStyle: TextStyle(
@@ -870,8 +886,7 @@ Widget setPlace(int index, {String? title,TextEditingController? nameController,
             SizedBox(width: 8.w),
             Expanded(
               child: TextField(
-                controller: relationController,
-                cursorColor: greenColor,
+                controller: controller.memberReleationController,
                 decoration: InputDecoration(
                   hintText: 'Son',
                   hintStyle: TextStyle(
@@ -901,8 +916,7 @@ Widget setPlace(int index, {String? title,TextEditingController? nameController,
             SizedBox(width: 16.w),
             Expanded(
               child: TextField(
-                controller: ageController,
-                cursorColor: greenColor,
+                controller: controller.memberAgeController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: '15',
@@ -927,11 +941,10 @@ Widget setPlace(int index, {String? title,TextEditingController? nameController,
         SizedBox(height: 2.h),
         InkWell(
           onTap: () {
-            controller.setData(index: index, screenTitle: title ?? "-");
+            controller.setData(index: index, screenTitle: title ?? "Robert");
             controller.isPreferences.value = true;
             print(controller.isPreferences.value);
             Get.toNamed('allergiesdietryscreen');
-            // controller.addMember();
           },
 
           child: Container(
@@ -959,8 +972,10 @@ Widget setPlace(int index, {String? title,TextEditingController? nameController,
 Widget customProfileField({
   required String hint,
   TextEditingController? controller,
+  bool? readonly = false
 }) {
   return TextField(
+    readOnly: readonly ?? false,
     controller: controller,
     cursorColor: greenColor,
     textAlignVertical: TextAlignVertical.center,

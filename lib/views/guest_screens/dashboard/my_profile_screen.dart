@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/bar_chart.dart';
 import 'package:yestable/widget/guest_update_received.dart';
 import 'package:yestable/widget/showShareDialogBox_widget.dart';
@@ -11,6 +12,7 @@ import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../controllers/navigation_controller.dart';
 import '../../../widget/button_widget.dart';
+import '../../../widget/custom_image_widget.dart';
 import '../../../widget/event_accesibility_widget.dart';
 import '../../../widget/foodpreference_yesno_widget.dart';
 import '../../../widget/home_screen_widget.dart';
@@ -20,13 +22,15 @@ import '../profile_setup_screens/host_profile_reviews.dart';
 class MyProfileScreen extends StatelessWidget {
   MyProfileScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
-  final List<Map<String, String>> allergies = [
-    {"name": "Peanuts", "imgPath": "assets/png/profile_food_images/peanut.png"},
-    {"name": "Shellfish", "imgPath": "assets/png/profile_food_images/shellfish.png"},
-    {"name": "Dairy", "imgPath": "assets/png/profile_food_images/food.png"},
-    {"name": "Gluten", "imgPath": "assets/png/profile_food_images/gluten.png"},
-    {"name": "Soy", "imgPath": "assets/png/profile_food_images/soy.png"},
-  ];
+  final ProfileController profileController = Get.find<ProfileController>();
+
+  // final List<Map<String, String>> allergies = [
+  //   {"name": "Peanuts", "imgPath": "assets/png/profile_food_images/peanut.png"},
+  //   {"name": "Shellfish", "imgPath": "assets/png/profile_food_images/shellfish.png"},
+  //   {"name": "Dairy", "imgPath": "assets/png/profile_food_images/food.png"},
+  //   {"name": "Gluten", "imgPath": "assets/png/profile_food_images/gluten.png"},
+  //   {"name": "Soy", "imgPath": "assets/png/profile_food_images/soy.png"},
+  // ];
 
   final List<Map<String, String>> diet = [
     {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
@@ -74,6 +78,9 @@ class MyProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final data = controller.controller.getMyProfileModel.value?.data;
+    final allergensList = profileController.getAllergensList();
+
     return Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
@@ -106,7 +113,7 @@ class MyProfileScreen extends StatelessWidget {
                           ),
                         ),
                         customText(
-                          text: "May 01, 2025",
+                          text: controller.formatDate(data?.createdAt ?? "May 01, 2025"),
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                           color: whiteColor,
@@ -178,7 +185,14 @@ class MyProfileScreen extends StatelessWidget {
                                                 height: 11.h,
                                                 width: 11.h,
                                                 color: Colors.grey.shade200,
-                                                child: Image.asset(
+                                                child: data?.profilePic != null ? CustomProfileWidget(
+                                                  imageUrl:
+                                                  "${controller.controller.baseService.baseURL}${data?.profilePic ?? ""}",
+                                                  width: 80,
+                                                  height: 80,
+                                                  radius: 40,
+                                                  fit: BoxFit.cover,
+                                                ) : Image.asset(
                                                   "assets/png/girl_profile.png",
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (context, error,
@@ -201,7 +215,7 @@ class MyProfileScreen extends StatelessWidget {
                                                     .start,
                                                 children: [
                                                   customText(
-                                                    text: "Sarah Scarnio",
+                                                    text: data?.name ?? "Sarah Scarnio",
                                                     fontSize: 20.sp,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily: "CormorantGaramond",
@@ -252,7 +266,7 @@ class MyProfileScreen extends StatelessWidget {
                                       SizedBox(height: 2.h),
                                       customText(
                                         text:
-                                        "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
+                                        data?.bio ?? "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
                                             "eget magna sapien. Faucibus nibh mauris mattis aliquam\n"
                                             "proin pellentesque sed done Nu lla sed cons memagnat\n"
                                             "consectetur. Viv emauris rra tellus eget magna sapieneget\n"
@@ -277,7 +291,7 @@ class MyProfileScreen extends StatelessWidget {
                                           ),
                                           SizedBox(width: 1.w),
                                           customText(
-                                            text: "New York",
+                                            text: data?.location ?? "New York",
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w500,
                                             color: blackColor,
@@ -323,10 +337,12 @@ class MyProfileScreen extends StatelessWidget {
                               ),
                             ],
                             body: controller.isUser.value ? TabBarView(
+
                               children: [
                                 SingleChildScrollView(
                                   padding: EdgeInsets.all(5.w),
                                   child: Column(
+
                                     crossAxisAlignment: CrossAxisAlignment
                                         .start,
                                     children: [
@@ -347,16 +363,17 @@ class MyProfileScreen extends StatelessWidget {
                                         spacing: 5,
                                         runSpacing: 1,
                                         children: List.generate(
-                                          allergies.length,
+                                          profileController.allergens.length,
                                               (index) {
                                             return foodPreferencesOne(
                                               index+15,
-                                              allergies[index]['name']!,
-                                              imgpath: allergies[index]['imgPath'],
+                                              profileController.allergens[index]['title'],
+                                              imgpath: profileController.allergens[index]['path'],
                                             );
                                           },
                                         ),
                                       ),
+
                                       SizedBox(height: 1.h),
                                       customText(
                                         text: "Diets:",
@@ -559,12 +576,12 @@ class MyProfileScreen extends StatelessWidget {
                                         spacing: 5,
                                         runSpacing: 1,
                                         children: List.generate(
-                                          allergies.length,
+                                          profileController.allergens.length,
                                               (index) {
                                             return foodPreferencesOne(
                                               index+15,
-                                              allergies[index]['name']!,
-                                              imgpath: allergies[index]['imgPath'],
+                                              profileController.allergens[index]['title'],
+                                              imgpath: profileController.allergens[index]['path'],
                                             );
                                           },
                                         ),
