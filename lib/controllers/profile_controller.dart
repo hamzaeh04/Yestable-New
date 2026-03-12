@@ -25,6 +25,30 @@ class ProfileController extends GetxController {
   final prefs = SharedPreferencesMethod.storage;
   Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
 
+  List<TextEditingController> memberNameControllers = [];
+  List<TextEditingController> memberReleationControllers = [];
+  List<TextEditingController> memberAgeControllers = [];
+  void addMemberList() {
+    places.add(places.length);
+
+    memberNameControllers.add(TextEditingController());
+    memberReleationControllers.add(TextEditingController());
+    memberAgeControllers.add(TextEditingController());
+
+    placeCompleted.add(false);
+  }
+  void fillMembersFromApi() {
+    final members = getMyProfileModel.value?.data?.members ?? [];
+
+    for (var member in members) {
+      memberNameControllers.add(TextEditingController(text: member.name ?? ""));
+      memberReleationControllers.add(TextEditingController(text: member.relation ?? ""));
+      memberAgeControllers.add(TextEditingController(text: member.age?.toString() ?? ""));
+
+      places.add(places.length);
+      placeCompleted.add(true);
+    }
+  }
   var profilePicture = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
   var switchValue = true.obs;
@@ -675,6 +699,30 @@ class ProfileController extends GetxController {
 
     },
   ];
+  Map<String, String> get allergensMap {
+    return getMyProfileModel.value
+        ?.data
+        ?.preferences
+        ?.commonAllergens
+        ?.toMap()
+        .map((key, value) => MapEntry(key, value ?? '')) ?? {};
+  }
+
+  // Function to convert API value to simplified severity
+  String getAllergySeverity(String apiValue) {
+    switch (apiValue) {
+      case 'No Allergy':
+        return 'No Allergy';
+      case 'Mild or Digestive Reaction':
+        return 'Mild';
+      case 'Avoid for belief or Culture':
+        return 'Moderate';
+      case 'Severe Allergy (Anaphylaxis)':
+        return 'Severe Allergy';
+      default:
+        return 'Unknown';
+    }
+  }
 
   String getAllergyType(double progress) {
     double percentage = progress * 100;
@@ -915,19 +963,43 @@ class ProfileController extends GetxController {
   }
 
 
-  Future<void> addMember() async {
+  Future<void> addMember({int activeIndex = 0}) async {
     try {
-      // Construct your API body
-      Map<String, dynamic> body = {
-        "members": [
-          {
-            "name": memberNameController.text.trim(),
-            "relation": memberReleationController.text.trim(),
-            "age": int.parse(memberAgeController.text.trim())
-          }
-        ]
+      final controller = Get.find<ProfileController>();
 
-      };
+      // Safety check: make sure lists are long enough
+      if (activeIndex >= controller.memberNameControllers.length ||
+          activeIndex >= controller.memberReleationControllers.length ||
+          activeIndex >= controller.memberAgeControllers.length) {
+        Utils.showToast("Invalid member index", true);
+        return;
+      }
+
+      // Construct member payload only for completed members up to activeIndex
+      List<Map<String, dynamic>> membersPayload = [];
+
+      for (int i = 0; i <= activeIndex; i++) {
+        if (controller.placeCompleted[i]) {
+          membersPayload.add({
+            "name": controller.memberNameControllers[i].text.trim(),
+            "relation": controller.memberReleationControllers[i].text.trim(),
+            "age": int.tryParse(controller.memberAgeControllers[i].text.trim()) ?? 0,
+          });
+        } else if (i == activeIndex) {
+          // Include the active member even if not completed yet
+          membersPayload.add({
+            "name": controller.memberNameControllers[i].text.trim(),
+            "relation": controller.memberReleationControllers[i].text.trim(),
+            "age": int.tryParse(controller.memberAgeControllers[i].text.trim()) ?? 0,
+          });
+        }
+      }
+
+      // Final API body
+      Map<String, dynamic> body = {"members": membersPayload};
+
+      print("Payload to send: $body");
+
       // Make PATCH API call
       final response = await baseService.basePostAPI(
         ApiEndPoints.addMember,
@@ -938,10 +1010,15 @@ class ProfileController extends GetxController {
       if (response["success"] == true) {
         Utils.showToast("Member Added Successfully", false);
         print("Response: $response");
+
+        // Navigate wherever you want
         Get.toNamed("yourrootandrules");
-        // Get.toNamed('allergiesdietryscreen');
-        memberId = response["data"][0]["_id"];
-        print("Idddddd: ${memberId}");
+
+        // Save the last added member ID
+        if (response["data"] != null && response["data"].isNotEmpty) {
+          memberId = response["data"][0]["_id"];
+          print("Member ID: $memberId");
+        }
       } else {
         // API returned error
         print("Error: ${response["message"]}");
@@ -952,7 +1029,6 @@ class ProfileController extends GetxController {
       Utils.showToast("Something went wrong", true);
     }
   }
-
   Future<void> fetchMyProfile() async {
     try {
       // Optional: show loading
@@ -976,6 +1052,77 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> deleteMember(String memberId, int index) async {
+    final controller = Get.find<ProfileController>();
+
+    if (index < 0 || index >= controller.places.length) {
+      Utils.showToast("Invalid member index", true);
+      return;
+    }
+
+    final members = controller.getMyProfileModel.value?.data?.members;
+
+    /// Backup data
+    final removedPlace = controller.places[index];
+    final removedNameController = controller.memberNameControllers[index];
+    final removedRelationController = controller.memberReleationControllers[index];
+    final removedAgeController = controller.memberAgeControllers[index];
+    final removedCompleted = controller.placeCompleted[index];
+    final removedMember = members != null && members.length > index
+        ? members[index]
+        : null;
+
+    /// 🔥 Remove instantly from UI
+    controller.places.removeAt(index);
+    controller.memberNameControllers.removeAt(index);
+    controller.memberReleationControllers.removeAt(index);
+    controller.memberAgeControllers.removeAt(index);
+    controller.placeCompleted.removeAt(index);
+
+    if (members != null && members.length > index) {
+      members.removeAt(index);
+    }
+
+    try {
+      final response = await baseService.baseDeleteAPI(
+        ApiEndPoints.deleteMember(memberId),
+      );
+
+      if (response['success'] == true) {
+        Utils.showToast("Member deleted successfully", false);
+      } else {
+        /// Restore everything if API fails
+        controller.places.insert(index, removedPlace);
+        controller.memberNameControllers.insert(index, removedNameController);
+        controller.memberReleationControllers.insert(index, removedRelationController);
+        controller.memberAgeControllers.insert(index, removedAgeController);
+        controller.placeCompleted.insert(index, removedCompleted);
+
+        if (members != null && removedMember != null) {
+          members.insert(index, removedMember);
+        }
+
+        Utils.showToast(response['message'] ?? "Failed to delete member", true);
+      }
+    } catch (e) {
+      /// Restore on error
+      controller.places.insert(index, removedPlace);
+      controller.memberNameControllers.insert(index, removedNameController);
+      controller.memberReleationControllers.insert(index, removedRelationController);
+      controller.memberAgeControllers.insert(index, removedAgeController);
+      controller.placeCompleted.insert(index, removedCompleted);
+
+      if (members != null && removedMember != null) {
+        members.insert(index, removedMember);
+      }
+
+      Utils.showToast("Something went wrong", true);
+    }
+
+    if (controller.places.isEmpty) {
+      controller.isPlaceExpanded.value = false;
+    }
+  }
   void clearSetupProfileFields(){
     nameController.clear();
     userName.clear();

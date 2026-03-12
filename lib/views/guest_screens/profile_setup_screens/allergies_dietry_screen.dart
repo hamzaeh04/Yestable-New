@@ -33,8 +33,7 @@ class AllergiesDietryScreen extends StatelessWidget {
                 Obx(() =>
                   controller.isPreferences.value == true ?
                   customText(
-                    text: "${controller.memberNameController.text} Food Boundaries & Beliefs",
-                    fontSize: 23.sp,
+                    text: "${controller.memberNameControllers.isNotEmpty ? controller.memberNameControllers.last.text : ""} Food Boundaries & Beliefs",                    fontSize: 23.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
                     height: 0.12.h,

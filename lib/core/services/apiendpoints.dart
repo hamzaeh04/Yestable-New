@@ -21,4 +21,8 @@ class ApiEndPoints{
     return '/users/members/${memberId}/seating-assistance';
   }
 
+  static String deleteMember(String memberId){
+    return '/users/members/$memberId';
+  }
+
 }

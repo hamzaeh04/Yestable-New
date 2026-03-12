@@ -405,6 +405,7 @@ class YourRootAndRules extends StatelessWidget {
                     borderColor: greenColor,
                     onTap: () {
                       // Get.to(HostFoodPreferenceTwo());
+                      print("Faaaaahhhhhh: ${controller.memberId}");
                       controller.isPreferences.value == true ? controller.UpdateAllergensPlate(isMember: true, memberId: controller.memberId) :
                       controller.UpdateAllergensPlate(isMember: false);
                       // Get.toNamed('foodpreferencesone');

@@ -22,7 +22,7 @@ import '../profile_setup_screens/host_profile_reviews.dart';
 class MyProfileScreen extends StatelessWidget {
   MyProfileScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
-  final ProfileController profileController = Get.find<ProfileController>();
+  // final ProfileController profileController = Get.find<ProfileController>();
 
   // final List<Map<String, String>> allergies = [
   //   {"name": "Peanuts", "imgPath": "assets/png/profile_food_images/peanut.png"},
@@ -34,21 +34,39 @@ class MyProfileScreen extends StatelessWidget {
 
   final List<Map<String, String>> diet = [
     {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
-    {"name": " Vegetarian", "imgPath": "assets/png/profile_food_images/vegetarian.png"},
+    {
+      "name": " Vegetarian",
+      "imgPath": "assets/png/profile_food_images/vegetarian.png",
+    },
     {"name": "Kosher", "imgPath": "assets/png/profile_food_images/kosher.png"},
     {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
   ];
 
   final List<Map<String, String>> dislikedIngredient = [
-    {"name": "Cilantro", "imgPath": "assets/png/profile_food_images/cilantro.png"},
-    {"name": "Mushrooms", "imgPath": "assets/png/profile_food_images/mushroom.png"},
-    {"name": "Spicy Foods", "imgPath": "assets/png/profile_food_images/spicyfood.png"},
+    {
+      "name": "Cilantro",
+      "imgPath": "assets/png/profile_food_images/cilantro.png",
+    },
+    {
+      "name": "Mushrooms",
+      "imgPath": "assets/png/profile_food_images/mushroom.png",
+    },
+    {
+      "name": "Spicy Foods",
+      "imgPath": "assets/png/profile_food_images/spicyfood.png",
+    },
   ];
 
   final List<Map<String, String>> likedCuisine = [
     {"name": "Italian", "imgPath": "assets/png/profile_food_images/pizza.png"},
-    {"name": "Japanese", "imgPath": "assets/png/profile_food_images/japnese.png"},
-    {"name": "Mediterranean", "imgPath": "assets/png/profile_food_images/mediterranean.png"},
+    {
+      "name": "Japanese",
+      "imgPath": "assets/png/profile_food_images/japnese.png",
+    },
+    {
+      "name": "Mediterranean",
+      "imgPath": "assets/png/profile_food_images/mediterranean.png",
+    },
   ];
 
   final List<String> eventAccesibilityList = [
@@ -75,11 +93,12 @@ class MyProfileScreen extends StatelessWidget {
     "Event Ends At A Time",
   ];
 
-
   @override
   Widget build(BuildContext context) {
     final data = controller.controller.getMyProfileModel.value?.data;
-    final allergensList = profileController.getAllergensList();
+    final allergensList = controller.controller.getAllergensList();
+    final list = controller.controller.allergens;
+
 
     return Scaffold(
       backgroundColor: greenColor,
@@ -99,7 +118,7 @@ class MyProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             // hostReviewsBottomSheet(context);
                             AllergenBarChart();
                           },
@@ -113,7 +132,9 @@ class MyProfileScreen extends StatelessWidget {
                           ),
                         ),
                         customText(
-                          text: controller.formatDate(data?.createdAt ?? "May 01, 2025"),
+                          text: controller.formatDate(
+                            data?.createdAt ?? "May 01, 2025",
+                          ),
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                           color: whiteColor,
@@ -139,7 +160,10 @@ class MyProfileScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(width: 2.w),
-                  homeIconWidget(icon: Icons.notifications,onTap: () => controller.goToNotificationPage()),
+                  homeIconWidget(
+                    icon: Icons.notifications,
+                    onTap: () => controller.goToNotificationPage(),
+                  ),
                 ],
               ),
             ),
@@ -161,690 +185,942 @@ class MyProfileScreen extends StatelessWidget {
                         // Profile Info
                         Expanded(
                           child: NestedScrollView(
-                            headerSliverBuilder: (context,
-                                innerBoxIsScrolled) =>
-                            [
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w, vertical: 2.h),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Row(
+                            headerSliverBuilder:
+                                (context, innerBoxIsScrolled) => [
+                                  SliverToBoxAdapter(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w,
+                                        vertical: 2.h,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                                21.sp),
-                                            child: InkWell(
-                                              onTap: (){
-                                                guestUpdateReceived(context);
-                                              },
-                                              child: Container(
-                                                height: 11.h,
-                                                width: 11.h,
-                                                color: Colors.grey.shade200,
-                                                child: data?.profilePic != null ? CustomProfileWidget(
-                                                  imageUrl:
-                                                  "${controller.controller.baseService.baseURL}${data?.profilePic ?? ""}",
-                                                  width: 80,
-                                                  height: 80,
-                                                  radius: 40,
-                                                  fit: BoxFit.cover,
-                                                ) : Image.asset(
-                                                  "assets/png/girl_profile.png",
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) =>
-                                                      Icon(
-                                                          Icons.person, size: 8.h,
-                                                          color: Colors.grey),
+                                          Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      21.sp,
+                                                    ),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    guestUpdateReceived(
+                                                      context,
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    height: 11.h,
+                                                    width: 11.h,
+                                                    color: Colors.grey.shade200,
+                                                    child:
+                                                        data?.profilePic != null
+                                                            ? CustomProfileWidget(
+                                                              imageUrl:
+                                                                  "${controller.controller.baseService.baseURL}${data?.profilePic ?? ""}",
+                                                              width: 80,
+                                                              height: 80,
+                                                              radius: 40,
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                            : Image.asset(
+                                                              "assets/png/girl_profile.png",
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder:
+                                                                  (
+                                                                    context,
+                                                                    error,
+                                                                    stackTrace,
+                                                                  ) => Icon(
+                                                                    Icons
+                                                                        .person,
+                                                                    size: 8.h,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey,
+                                                                  ),
+                                                            ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 4.w),
-                                          Expanded(
-                                            child: InkWell(
-                                              onTap: (){
-                                                AllergenBarChart();
-                                              },
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  customText(
-                                                    text: data?.name ?? "Sarah Scarnio",
-                                                    fontSize: 20.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "CormorantGaramond",
-                                                  ),
-                                                  customText(
-                                                    text: "256 Friends",
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: darkGreyColor,
-                                                  ),
-                                                  SizedBox(height: 0.8.h),
-                                                  Row(
-
+                                              SizedBox(width: 4.w),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    AllergenBarChart();
+                                                  },
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      buttonWidget(
-                                                        "Edit Profile",
-                                                        whiteColor,
-                                                        colors: greenColor
-                                                            .withAlpha(140),
-                                                        height: 3.5.h,
-                                                        width: 27.w,
-                                                        fontsize: 14.sp,
-                                                        onTap: (){
-                                                          Get.toNamed("profileeditscreen");
-                                                        }
+                                                      customText(
+                                                        text:
+                                                            data?.name ??
+                                                            "Sarah Scarnio",
+                                                        fontSize: 20.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily:
+                                                            "CormorantGaramond",
                                                       ),
-                                                      SizedBox(width: 2.w),
-                                                      buttonWidget(
-                                                        "Share Profile",
-                                                        whiteColor,
-                                                        colors: blueColor
-                                                            .withAlpha(140),
-                                                        height: 3.5.h,
-                                                        width: 27.w,
-                                                        fontsize: 14.sp,
-                                                        onTap: () {
-                                                          showShareProfileDialog(context);
-                                                        },
+                                                      customText(
+                                                        text: "256 Friends",
+                                                        fontSize: 14.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: darkGreyColor,
+                                                      ),
+                                                      SizedBox(height: 0.8.h),
+                                                      Row(
+                                                        children: [
+                                                          buttonWidget(
+                                                            "Edit Profile",
+                                                            whiteColor,
+                                                            colors: greenColor
+                                                                .withAlpha(140),
+                                                            height: 3.5.h,
+                                                            width: 27.w,
+                                                            fontsize: 14.sp,
+                                                            onTap: () {
+                                                              Get.toNamed(
+                                                                "profileeditscreen",
+                                                              );
+                                                            },
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                          buttonWidget(
+                                                            "Share Profile",
+                                                            whiteColor,
+                                                            colors: blueColor
+                                                                .withAlpha(140),
+                                                            height: 3.5.h,
+                                                            width: 27.w,
+                                                            fontsize: 14.sp,
+                                                            onTap: () {
+                                                              showShareProfileDialog(
+                                                                context,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 2.h),
+                                          customText(
+                                            text:
+                                                data?.bio ??
+                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
+                                                    "eget magna sapien. Faucibus nibh mauris mattis aliquam\n"
+                                                    "proin pellentesque sed done Nu lla sed cons memagnat\n"
+                                                    "consectetur. Viv emauris rra tellus eget magna sapieneget\n"
+                                                    "Faucibusequat scelerisque.",
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: darkGreyColor,
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/png/icons/map_location_icon.png",
+                                                height: 2.h,
+                                                width: 2.h,
+                                                fit: BoxFit.contain,
+                                                errorBuilder:
+                                                    (
+                                                      context,
+                                                      error,
+                                                      stackTrace,
+                                                    ) => Icon(
+                                                      Icons.location_on,
+                                                      size: 2.h,
+                                                      color: Colors.grey,
+                                                    ),
+                                              ),
+                                              SizedBox(width: 1.w),
+                                              customText(
+                                                text:
+                                                    data?.location ??
+                                                    "New York",
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: blackColor,
+                                                txtDecoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SliverToBoxAdapter(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
+                                      child: TabBar(
+                                        indicatorColor: blackColor,
+                                        labelColor: blackColor,
+                                        unselectedLabelColor: Colors.grey,
+                                        labelStyle: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        tabs:
+                                            controller.isUser.value
+                                                ? [
+                                                  Tab(text: "Preference"),
+                                                  Tab(text: "Posts"),
+                                                ]
+                                                : [
+                                                  Tab(text: "Preference"),
+                                                  Tab(text: "Posts"),
+                                                  Tab(text: "Highlights"),
+                                                ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                            body:
+                                controller.isUser.value
+                                    ? TabBarView(
+                                      children: [
+                                        SingleChildScrollView(
+                                          padding: EdgeInsets.all(5.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              customText(
+                                                text: "Dietary Priorities",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: blackColor,
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Allergies:",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                              ),
+                                              SizedBox(height: 0.5.h),
+
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  controller.controller.allergens.length,
+                                                      (index) {
+                                                    final key = controller.controller.allergensMap.keys.elementAt(index);
+                                                    final rawValue = controller.controller.allergensMap[key] ?? '';
+
+                                                    // Use the new function to get simplified severity
+                                                    final severity = controller.controller.getAllergySeverity(rawValue);
+
+                                                    return foodPreferencesOne(
+                                                      index + 15,
+                                                      "${controller.controller.allergens[index]['title']} - $severity",
+                                                      imgpath: controller.controller.allergens[index]['path'],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Diets:",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              SizedBox(height: 0.5.h),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  diet.length,
+                                                  (index) {
+                                                    return foodPreferencesOne(
+                                                      index + 24,
+                                                      diet[index]['name']!,
+                                                      imgpath:
+                                                          diet[index]['imgPath'],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(height: 2.h),
+                                              customText(
+                                                text: "Yuck Or Yum?",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: blackColor,
+                                                fontFamily: 'CormorantGaramond',
+                                              ),
+                                              SizedBox(height: 0.7.h),
+                                              Column(
+                                                spacing: 2.h,
+                                                children: [
+                                                  yuckOrYumList(
+                                                    title: '🥜 Peanuts',
+                                                    color: greenColor,
+                                                    isSelected: true,
+                                                  ),
+                                                  yuckOrYumList(
+                                                    title: '🦐 Shellfish',
+                                                    color: redColor,
+                                                    isSelected: false,
+                                                  ),
+                                                  yuckOrYumList(
+                                                    title: '🥛 Dairy',
+                                                    color: redColor,
+                                                    isSelected: false,
+                                                  ),
+                                                  yuckOrYumList(
+                                                    title: '🌾 Gluten',
+                                                    color: greenColor,
+                                                    isSelected: true,
+                                                  ),
+                                                  yuckOrYumList(
+                                                    title: '🥚 Eggs',
+                                                    color: redColor,
+                                                    isSelected: false,
+                                                  ),
+                                                  yuckOrYumList(
+                                                    title: '🫛 Soy',
+                                                    color: redColor,
+                                                    isSelected: false,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.h),
+                                              customText(
+                                                text: "Food Preferences",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: blackColor,
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Liked Cuisines:",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              SizedBox(height: 0.5.h),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  likedCuisine.length,
+                                                  (index) => foodPreferencesOne(
+                                                    index + 28,
+                                                    likedCuisine[index]['name']!,
+                                                    imgpath:
+                                                        likedCuisine[index]['imgPath'],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Disliked Ingredients",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              SizedBox(height: 0.5.h),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  dislikedIngredient.length,
+                                                  (index) => foodPreferencesOne(
+                                                    index + 35,
+                                                    dislikedIngredient[index]["name"]!,
+                                                    imgpath:
+                                                        dislikedIngredient[index]["imgPath"],
+                                                  ),
+                                                ),
+                                              ),
+                                              controller.isUser.value
+                                                  ? Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      SizedBox(height: 2.h),
+                                                      customText(
+                                                        text:
+                                                            "Accessibility Needs",
+                                                        fontSize: 15.sp,
+                                                        color: blackColor,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                      Wrap(
+                                                        spacing: 5,
+                                                        runSpacing: 1,
+                                                        children: List.generate(
+                                                          eventAccesibilityList
+                                                              .length,
+                                                          (
+                                                            index,
+                                                          ) => eventAccesibillityWidget(
+                                                            eventAccesibilityList[index],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ],
                                                   )
-                                                ],
-                                              ),
-                                            ),
+                                                  : SizedBox.shrink(),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      customText(
-                                        text:
-                                        data?.bio ?? "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
-                                            "eget magna sapien. Faucibus nibh mauris mattis aliquam\n"
-                                            "proin pellentesque sed done Nu lla sed cons memagnat\n"
-                                            "consectetur. Viv emauris rra tellus eget magna sapieneget\n"
-                                            "Faucibusequat scelerisque.",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: darkGreyColor,
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/png/icons/map_location_icon.png",
-                                            height: 2.h,
-                                            width: 2.h,
-                                            fit: BoxFit.contain,
-                                            errorBuilder: (context, error,
-                                                stackTrace) =>
-                                                Icon(Icons.location_on,
-                                                    size: 2.h,
-                                                    color: Colors.grey),
-                                          ),
-                                          SizedBox(width: 1.w),
-                                          customText(
-                                            text: data?.location ?? "New York",
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: blackColor,
-                                            txtDecoration: TextDecoration
-                                                .underline,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade300,
-                                          width: 1.0),
-                                    ),
-                                  ),
-                                  child: TabBar(
-                                    indicatorColor: blackColor,
-                                    labelColor: blackColor,
-                                    unselectedLabelColor: Colors.grey,
-                                    labelStyle: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    tabs: controller.isUser.value
-                                        ? [
-                                      Tab(text: "Preference"),
-                                      Tab(text: "Posts"),
-                                    ]
-                                        : [
-                                      Tab(text: "Preference"),
-                                      Tab(text: "Posts"),
-                                      Tab(text: "Highlights"),
-                                    ],
-                                  ),
-
-                                ),
-                              ),
-                            ],
-                            body: controller.isUser.value ? TabBarView(
-
-                              children: [
-                                SingleChildScrollView(
-                                  padding: EdgeInsets.all(5.w),
-                                  child: Column(
-
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      customText(
-                                        text: "Dietary Priorities",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Allergies:",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 0.5.h),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          profileController.allergens.length,
-                                              (index) {
-                                            return foodPreferencesOne(
-                                              index+15,
-                                              profileController.allergens[index]['title'],
-                                              imgpath: profileController.allergens[index]['path'],
-                                            );
-                                          },
                                         ),
-                                      ),
-
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Diets:",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                        fontWeight: FontWeight.w500
-                                      ),
-                                      SizedBox(height: 0.5.h),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          diet.length,
-                                              (index) {
-                                            return foodPreferencesOne(index + 24, diet[index]['name']!,imgpath: diet[index]['imgPath']);
-                                          },
+                                        Center(
+                                          child: SingleChildScrollView(
+                                            child:
+                                                controller.isUser.value
+                                                    ? Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                                vertical: 1.h,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                "assets/png/chat_images/user5.png",
+                                                            userName:
+                                                                "Sarah Scarnio",
+                                                            postTime:
+                                                                "2hrs ago",
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                                            postImage:
+                                                                "assets/png/chat_images/group_profile_pic.png",
+                                                          ),
+                                                        ),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                    : Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                                vertical: 1.h,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                "assets/png/chat_images/user5.png",
+                                                            userName:
+                                                                "Sarah Scarnio",
+                                                            postTime:
+                                                                "2hrs ago",
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                                            postImage:
+                                                                "assets/png/chat_images/group_profile_pic.png",
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      customText(
-                                          text: "Yuck Or Yum?",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackColor,
-                                          fontFamily: 'CormorantGaramond'
-                                      ),
-                                      SizedBox(height: 0.7.h),
-                                      Column(
-                                        spacing: 2.h,
-                                        children: [
-                                          yuckOrYumList(title: '🥜 Peanuts', color: greenColor, isSelected: true),
-                                          yuckOrYumList(title: '🦐 Shellfish', color: redColor, isSelected: false),
-                                          yuckOrYumList(title: '🥛 Dairy', color: redColor, isSelected: false),
-                                          yuckOrYumList(title: '🌾 Gluten', color: greenColor, isSelected: true),
-                                          yuckOrYumList(title: '🥚 Eggs', color: redColor, isSelected: false),
-                                          yuckOrYumList(title: '🫛 Soy', color: redColor, isSelected: false),
-                                        ],
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      customText(
-                                        text: "Food Preferences",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Liked Cuisines:",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                          fontWeight: FontWeight.w500
-                                      ),
-                                      SizedBox(height: 0.5.h),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          likedCuisine.length,
-                                              (index) => foodPreferencesOne(index + 28, likedCuisine[index]['name']!,imgpath: likedCuisine[index]['imgPath']),
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Disliked Ingredients",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                          fontWeight: FontWeight.w500
-                                      ),
-                                      SizedBox(height: 0.5.h),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          dislikedIngredient.length,
-                                              (index) => foodPreferencesOne(index + 35, dislikedIngredient[index]["name"]!,imgpath: dislikedIngredient[index]["imgPath"]),
-                                        ),
-                                      ),
-                                      controller.isUser.value ?
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(height: 2.h),
-                                          customText(
-                                            text: "Accessibility Needs",
-                                            fontSize: 15.sp,
-                                            color: blackColor,
-                                            fontWeight: FontWeight.w600
-                                          ),
-                                          Wrap(
-                                            spacing: 5,
-                                            runSpacing: 1,
-                                            children: List.generate(
-                                              eventAccesibilityList.length,
-                                                  (index) => eventAccesibillityWidget(
-                                                eventAccesibilityList[index],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ):
-                                      SizedBox.shrink(),
-
-                                    ],
-                                  ),
-                                ),
-                                Center(
-                                    child: SingleChildScrollView(
-                                      child: controller.isUser.value ? Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5.w, vertical: 1.h),
-                                            child: buildPostCard(
-                                              profileImage: "assets/png/chat_images/user5.png",
-                                              userName: "Sarah Scarnio",
-                                              postTime: "2hrs ago",
-                                              postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                              postImage: "assets/png/chat_images/group_profile_pic.png",
-                                            ),
-                                          ),
-                                          Divider(),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5.w),
-                                            child: buildPostCard(
-                                              profileImage: 'assets/png/chat_images/user5.png',
-                                              userName: 'Sarah Scarnio',
-                                              postTime: '3h ago',
-                                              postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                              likesCount: '1.4k Likes',
-                                              showRepliesAndAvatar: false, // 👈 Only likes shown
-                                            ),
-                                          ),
-                                          Divider(),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5.w),
-                                            child: buildPostCard(
-                                              profileImage: 'assets/png/chat_images/user5.png',
-                                              userName: 'Sarah Scarnio',
-                                              postTime: '3h ago',
-                                              postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                              likesCount: '1.4k Likes',
-                                              showRepliesAndAvatar: false, // 👈 Only likes shown
-                                            ),
-                                          ),
-                                          Divider(),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5.w),
-                                            child: buildPostCard(
-                                              profileImage: 'assets/png/chat_images/user5.png',
-                                              userName: 'Sarah Scarnio',
-                                              postTime: '3h ago',
-                                              postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                              likesCount: '1.4k Likes',
-                                              showRepliesAndAvatar: false, // 👈 Only likes shown
-                                            ),
-                                          ),
-                                        ],
-                                      ):Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5.w, vertical: 1.h),
-                                            child: buildPostCard(
-                                              profileImage: "assets/png/chat_images/user5.png",
-                                              userName: "Sarah Scarnio",
-                                              postTime: "2hrs ago",
-                                              postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                              postImage: "assets/png/chat_images/group_profile_pic.png",
-                                            ),
-                                          ),
-                                        ],
-                                      )
+                                      ],
                                     )
-                                ),
-                              ],
-                            ):TabBarView(
-                              children: [
-                                SingleChildScrollView(
-                                  padding: EdgeInsets.all(5.w),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      customText(
-                                        text: "Dietary Priorities",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Allergies:",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                      ),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          profileController.allergens.length,
-                                              (index) {
-                                            return foodPreferencesOne(
-                                              index+15,
-                                              profileController.allergens[index]['title'],
-                                              imgpath: profileController.allergens[index]['path'],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Diet:",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                      ),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          diet.length,
-                                              (index) {
-                                            return foodPreferencesOne(index + 24, diet[index]['name']!,imgpath: diet[index]['imgPath']);
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.5.h),
-                                      customText(
-                                        text: "Food Preferences",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Liked Cuisines:",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                      ),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          likedCuisine.length,
-                                              (index) => foodPreferencesOne(index + 28, likedCuisine[index]['name']!,imgpath: likedCuisine[index]['imgPath']),
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      customText(
-                                        text: "Disliked Ingredients",
-                                        fontSize: 14.sp,
-                                        color: blackColor,
-                                      ),
-                                      Wrap(
-                                        spacing: 5,
-                                        runSpacing: 1,
-                                        children: List.generate(
-                                          dislikedIngredient.length,
-                                              (index) => foodPreferencesOne(index + 35, dislikedIngredient[index]["name"]!,imgpath: dislikedIngredient[index]["imgPath"]),
-                                        ),
-                                      ),
-                                      controller.isUser.value ?
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(height: 2.h),
-                                          customText(
-                                            text: "Accessibility Needs",
-                                            fontSize: 15.sp,
-                                            color: blackColor,
+                                    : TabBarView(
+                                      children: [
+                                        SingleChildScrollView(
+                                          padding: EdgeInsets.all(5.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              customText(
+                                                text: "Dietary Priorities",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: blackColor,
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Allergies:",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                              ),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  controller
+                                                      .controller
+                                                      .allergens
+                                                      .length,
+                                                  (index) {
+                                                    return foodPreferencesOne(
+                                                      index + 15,
+                                                      controller
+                                                          .controller
+                                                          .allergens[index]['title'],
+                                                      imgpath:
+                                                          controller
+                                                              .controller
+                                                              .allergens[index]['path'],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Diet:",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                              ),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  diet.length,
+                                                  (index) {
+                                                    return foodPreferencesOne(
+                                                      index + 24,
+                                                      diet[index]['name']!,
+                                                      imgpath:
+                                                          diet[index]['imgPath'],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.5.h),
+                                              customText(
+                                                text: "Food Preferences",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: blackColor,
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Liked Cuisines:",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                              ),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  likedCuisine.length,
+                                                  (index) => foodPreferencesOne(
+                                                    index + 28,
+                                                    likedCuisine[index]['name']!,
+                                                    imgpath:
+                                                        likedCuisine[index]['imgPath'],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 1.h),
+                                              customText(
+                                                text: "Disliked Ingredients",
+                                                fontSize: 14.sp,
+                                                color: blackColor,
+                                              ),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  dislikedIngredient.length,
+                                                  (index) => foodPreferencesOne(
+                                                    index + 35,
+                                                    dislikedIngredient[index]["name"]!,
+                                                    imgpath:
+                                                        dislikedIngredient[index]["imgPath"],
+                                                  ),
+                                                ),
+                                              ),
+                                              controller.isUser.value
+                                                  ? Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      SizedBox(height: 2.h),
+                                                      customText(
+                                                        text:
+                                                            "Accessibility Needs",
+                                                        fontSize: 15.sp,
+                                                        color: blackColor,
+                                                      ),
+                                                      Wrap(
+                                                        spacing: 5,
+                                                        runSpacing: 1,
+                                                        children: List.generate(
+                                                          eventAccesibilityList
+                                                              .length,
+                                                          (
+                                                            index,
+                                                          ) => eventAccesibillityWidget(
+                                                            eventAccesibilityList[index],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                  : SizedBox.shrink(),
+                                            ],
                                           ),
-                                          Wrap(
-                                            spacing: 5,
-                                            runSpacing: 1,
-                                            children: List.generate(
-                                              eventAccesibilityList.length,
-                                                  (index) => eventAccesibillityWidget(
-                                                eventAccesibilityList[index],
-                                              ),
-                                            ),
+                                        ),
+                                        Center(
+                                          child: SingleChildScrollView(
+                                            child:
+                                                controller.isUser.value
+                                                    ? Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                                vertical: 1.h,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                "assets/png/chat_images/user5.png",
+                                                            userName:
+                                                                "Sarah Scarnio",
+                                                            postTime:
+                                                                "2hrs ago",
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                                            postImage:
+                                                                "assets/png/chat_images/group_profile_pic.png",
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 1.h),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 1.h),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 1.h),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                    : Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                                vertical: 1.h,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                "assets/png/chat_images/user5.png",
+                                                            userName:
+                                                                "Sarah Scarnio",
+                                                            postTime:
+                                                                "2hrs ago",
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                                            postImage:
+                                                                "assets/png/chat_images/group_profile_pic.png",
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 1.h),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 1.h),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 1.h),
+                                                        Divider(),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 5.w,
+                                                              ),
+                                                          child: buildPostCard(
+                                                            profileImage:
+                                                                'assets/png/chat_images/user5.png',
+                                                            userName:
+                                                                'Sarah Scarnio',
+                                                            postTime: '3h ago',
+                                                            postText:
+                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                                            likesCount:
+                                                                '1.4k Likes',
+                                                            showRepliesAndAvatar:
+                                                                false, // 👈 Only likes shown
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                           ),
-                                        ],
-                                      ):
-                                      SizedBox.shrink(),
-
-                                    ],
-                                  ),
-                                ),
-                                Center(
-                                    child: SingleChildScrollView(
-                                        child: controller.isUser.value ? Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w, vertical: 1.h),
-                                              child: buildPostCard(
-                                                profileImage: "assets/png/chat_images/user5.png",
-                                                userName: "Sarah Scarnio",
-                                                postTime: "2hrs ago",
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                                postImage: "assets/png/chat_images/group_profile_pic.png",
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1.4k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
-                                    SizedBox(height: 1.h),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1.4k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
-                                          ],
-                                        ):Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w, vertical: 1.h),
-                                              child: buildPostCard(
-                                                profileImage: "assets/png/chat_images/user5.png",
-                                                userName: "Sarah Scarnio",
-                                                postTime: "2hrs ago",
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                                postImage: "assets/png/chat_images/group_profile_pic.png",
-                                              ),
-                                            ),
-                                            SizedBox(height: 1.h),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1.4k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
-                                    SizedBox(height: 1.h),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1.4k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
-                                    SizedBox(height: 1.h),
-                                            Divider(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: buildPostCard(
-                                                profileImage: 'assets/png/chat_images/user5.png',
-                                                userName: 'Sarah Scarnio',
-                                                postTime: '3h ago',
-                                                postText: "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                likesCount: '1.4k Likes',
-                                                showRepliesAndAvatar: false, // 👈 Only likes shown
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    )
-                                ),
-                                SingleChildScrollView(
-                                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: List.generate(3, (index) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(right: index != 2 ? 2.w : 0.w),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.all(Radius.circular(18.sp)),
-                                              child: Image.asset(
-                                                'assets/png/reveiw_images/reveiw${index + 1}.png',
-                                                width: 28.w,
-                                                height: 12.h,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          );
-                                        }
                                         ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      Row(
-                                        children: List.generate(3, (index) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(right: index != 2 ? 2.w : 0.w),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.all(Radius.circular(18.sp)),
-                                              child: Image.asset(
-                                                'assets/png/reveiw_images/reveiw${index + 1}.png',
-                                                width: 28.w,
-                                                height: 12.h,
-                                                fit: BoxFit.cover,
+                                        SingleChildScrollView(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 5.w,
+                                            vertical: 1.h,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: List.generate(3, (
+                                                  index,
+                                                ) {
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                      right:
+                                                          index != 2
+                                                              ? 2.w
+                                                              : 0.w,
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                            Radius.circular(
+                                                              18.sp,
+                                                            ),
+                                                          ),
+                                                      child: Image.asset(
+                                                        'assets/png/reveiw_images/reveiw${index + 1}.png',
+                                                        width: 28.w,
+                                                        height: 12.h,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
                                               ),
-                                            ),
-                                          );
-                                        }
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      Row(
-                                        children: List.generate(3, (index) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(right: index != 2 ? 2.w : 0.w),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.all(Radius.circular(18.sp)),
-                                              child: Image.asset(
-                                                'assets/png/reveiw_images/reveiw${index + 1}.png',
-                                                width: 28.w,
-                                                height: 12.h,
-                                                fit: BoxFit.cover,
+                                              SizedBox(height: 1.h),
+                                              Row(
+                                                children: List.generate(3, (
+                                                  index,
+                                                ) {
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                      right:
+                                                          index != 2
+                                                              ? 2.w
+                                                              : 0.w,
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                            Radius.circular(
+                                                              18.sp,
+                                                            ),
+                                                          ),
+                                                      child: Image.asset(
+                                                        'assets/png/reveiw_images/reveiw${index + 1}.png',
+                                                        width: 28.w,
+                                                        height: 12.h,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
                                               ),
-                                            ),
-                                          );
-                                        }
+                                              SizedBox(height: 1.h),
+                                              Row(
+                                                children: List.generate(3, (
+                                                  index,
+                                                ) {
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                      right:
+                                                          index != 2
+                                                              ? 2.w
+                                                              : 0.w,
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                            Radius.circular(
+                                                              18.sp,
+                                                            ),
+                                                          ),
+                                                      child: Image.asset(
+                                                        'assets/png/reveiw_images/reveiw${index + 1}.png',
+                                                        width: 28.w,
+                                                        height: 12.h,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
+                                              SizedBox(height: 5.h),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 5.h),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )
+                                      ],
+                                    ),
                           ),
                         ),
                       ],
@@ -858,8 +1134,8 @@ class MyProfileScreen extends StatelessWidget {
       ),
     );
   }
-
 }
+
 Widget buildPostCard({
   required String profileImage,
   required String userName,
@@ -891,8 +1167,7 @@ Widget buildPostCard({
           children: [
             // Profile Picture
             GestureDetector(
-              onTap: (){
-              },
+              onTap: () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 2.5.h),
                 child: Stack(
@@ -905,15 +1180,17 @@ Widget buildPostCard({
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(12.sp),
                       ),
-                      clipBehavior: Clip.antiAlias, // Optional: this clips the image only
+                      clipBehavior:
+                          Clip.antiAlias, // Optional: this clips the image only
                       child: Image.asset(
                         profileImage,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.person,
-                          size: 4.h,
-                          color: Colors.grey,
-                        ),
+                        errorBuilder:
+                            (context, error, stackTrace) => Icon(
+                              Icons.person,
+                              size: 4.h,
+                              color: Colors.grey,
+                            ),
                       ),
                     ),
                     Positioned(
@@ -925,7 +1202,10 @@ Widget buildPostCard({
                         decoration: BoxDecoration(
                           color: blueColor,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1), // Optional border
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 1,
+                          ), // Optional border
                         ),
                         child: Icon(
                           Icons.add,
@@ -951,7 +1231,8 @@ Widget buildPostCard({
                     children: [
                       customText(
                         text: userName,
-                        fontSize: userNameFontSize != null ? userNameFontSize : 16.sp,
+                        fontSize:
+                            userNameFontSize != null ? userNameFontSize : 16.sp,
                         fontWeight: FontWeight.w600,
                         color: blackColor,
                         // fontFamily: "CormorantGaramond",
@@ -971,8 +1252,14 @@ Widget buildPostCard({
                                   details.globalPosition.dy,
                                 ),
                                 items: [
-                                  const PopupMenuItem(value: 'edit', child: Text("Edit")),
-                                  const PopupMenuItem(value: 'delete', child: Text("Delete")),
+                                  const PopupMenuItem(
+                                    value: 'edit',
+                                    child: Text("Edit"),
+                                  ),
+                                  const PopupMenuItem(
+                                    value: 'delete',
+                                    child: Text("Delete"),
+                                  ),
                                 ],
                               );
                             },
@@ -988,7 +1275,8 @@ Widget buildPostCard({
                   ),
                   customText(
                     text: postTime,
-                    fontSize: postTimeFontSize != null ? postTimeFontSize : 14.sp,
+                    fontSize:
+                        postTimeFontSize != null ? postTimeFontSize : 14.sp,
                     fontWeight: FontWeight.w400,
                     color: darkGreyColor,
                   ),
@@ -1037,12 +1325,13 @@ Widget buildPostCard({
                                   fontFamily: "WorkSans",
                                   decoration: TextDecoration.underline,
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    setState(() {
-                                      isExpanded = true;
-                                    });
-                                  },
+                                recognizer:
+                                    TapGestureRecognizer()
+                                      ..onTap = () {
+                                        setState(() {
+                                          isExpanded = true;
+                                        });
+                                      },
                               ),
                           ],
                         ),
@@ -1074,8 +1363,9 @@ Widget buildPostCard({
                           if (showRepliesAndAvatar) ...[
                             CircleAvatar(
                               radius: 14.sp,
-                              backgroundImage:
-                              AssetImage('assets/png/chat_images/user5.png'),
+                              backgroundImage: AssetImage(
+                                'assets/png/chat_images/user5.png',
+                              ),
                             ),
                             SizedBox(width: 2.w),
                             customText(
@@ -1088,10 +1378,10 @@ Widget buildPostCard({
                           ],
                           // Likes (always shown)
                           customText(
-                              text: likesCount,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: darkGreyColor
+                            text: likesCount,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: darkGreyColor,
                           ),
                         ],
                       ),
@@ -1108,7 +1398,9 @@ Widget buildPostCard({
                                   });
                                 },
                                 child: Icon(
-                                  isLiked ? Icons.favorite : Icons.favorite_border,
+                                  isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
                                   size: 18.sp,
                                   color: isLiked ? Colors.red : null,
                                 ),
@@ -1116,12 +1408,17 @@ Widget buildPostCard({
                             },
                           ),
                           SizedBox(width: 2.5.w),
-                          Image.asset("assets/png/icons/comment_icon.png", height: 16.sp),
+                          Image.asset(
+                            "assets/png/icons/comment_icon.png",
+                            height: 16.sp,
+                          ),
                           SizedBox(width: 3.w),
-                          Image.asset("assets/png/icons/repost_icon.png", height: 16.sp),
+                          Image.asset(
+                            "assets/png/icons/repost_icon.png",
+                            height: 16.sp,
+                          ),
                         ],
-                      )
-
+                      ),
                     ],
                   ),
                 ],
