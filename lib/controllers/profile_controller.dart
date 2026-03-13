@@ -104,6 +104,26 @@ class ProfileController extends GetxController {
   final selectSeatingRequirements = <String>[].obs;
   final selectExtraAssistance = <String>[].obs;
 
+  final Map<String, String> seatingMap = {
+    "largerSeat": "Larger Seat Or Chair Without Arms",
+    "chairWithArms": "Chair With Arms",
+    "nearRestroom": "Seating Near Restroom",
+    "other": "Other",
+  };
+
+  final Map<String, String> assistanceMap = {
+    "helpCarryingPlate": "Help Carrying Plate",
+    "nearRestroom": "Seating Near A Restroom",
+    "nonVerbal": "Non Verbal",
+    "bringingCareAide": "Bringing A Care Aide",
+    "hearingLoss": "Hearing Loss",
+    "assistanceWalkingIn": "Assistance Walking In",
+    "other": "Other",
+  };
+
+
+
+
   List<String> seating = ['largerSeat', 'chairWithArms', 'nearRestroom', 'other'];
   List<String> assistance = [
     'helpCarryingPlate',
@@ -355,6 +375,37 @@ class ProfileController extends GetxController {
   //
   //   return values.join(',');
   // }
+  final List<Map<String, String>> diet = [
+    {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
+    {"name": "Vegetarian", "imgPath": "assets/png/profile_food_images/vegetarian.png"},
+    {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
+    {"name": "Kosher", "imgPath": "assets/png/profile_food_images/kosher.png"},
+    {"name": "Keto", "imgPath": "assets/png/profile_food_images/keto_icon.png"},
+  ];
+
+  List<Map<String, String>> get selectedDiet {
+    final plate = getMyProfileModel.value?.data?.preferences?.plate;
+
+    return diet.where((item) {
+      switch (item['name']) {
+        case 'Vegan':
+          return plate?.vegan == true;
+        case 'Vegetarian':
+          return plate?.vegetarian == true;
+        case 'Halal':
+          return plate?.halal == true;
+        case 'Kosher':
+          return plate?.kosher == true;
+        case 'Keto':
+          return plate?.keto == true;
+        default:
+          return false;
+      }
+    }).toList();
+  }
+
+
+
   Map<String, dynamic> getSelectedPlateMap() {
     // Initialize all plates as false
     Map<String, dynamic> plateMap = {
@@ -449,7 +500,7 @@ class ProfileController extends GetxController {
   ];
 
   // --- Food Preferences (Cleaned up) ---
-  final List<String> yuckOrYumList = [
+  final List<String> yumYuckItems = [
     '☘️ Cilantro', '🍄 Mushrooms', '🧴 Mayonnaise', '🫒 Olives',
     '🦈 Anchovies', '🦪 Oysters', '💙 Blue Cheese', '🪵 Licorice',
     '🧅 Raw Onion', '🫑 Green Peppers', '🌿 Mint', '🟫‍ Dark Chocolate',
@@ -467,7 +518,7 @@ class ProfileController extends GetxController {
   }
 
   void _initializeFoodSelections() {
-    foodSelections.assignAll(List.generate(yuckOrYumList.length, (index) => 0));
+    foodSelections.assignAll(List.generate(yumYuckItems.length, (index) => 0));
   }
 
   // Updated Method to trigger UI update properly
@@ -492,7 +543,7 @@ class ProfileController extends GetxController {
 
     for (int i = 0; i < foodSelections.length; i++) {
       int selection = foodSelections[i]; // 0, 1, or 2 (your logic)
-      String title = yuckOrYumList[i];   // <-- use i as index to get title
+      String title = yumYuckItems[i];   // <-- use i as index to get title
       String cleanTitle = title.split(' ').sublist(1).join(' ').toLowerCase();
 
       if (selection == 1) {

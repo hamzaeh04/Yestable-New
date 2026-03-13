@@ -24,24 +24,6 @@ class MyProfileScreen extends StatelessWidget {
   final NavigationController controller = Get.find<NavigationController>();
   // final ProfileController profileController = Get.find<ProfileController>();
 
-  // final List<Map<String, String>> allergies = [
-  //   {"name": "Peanuts", "imgPath": "assets/png/profile_food_images/peanut.png"},
-  //   {"name": "Shellfish", "imgPath": "assets/png/profile_food_images/shellfish.png"},
-  //   {"name": "Dairy", "imgPath": "assets/png/profile_food_images/food.png"},
-  //   {"name": "Gluten", "imgPath": "assets/png/profile_food_images/gluten.png"},
-  //   {"name": "Soy", "imgPath": "assets/png/profile_food_images/soy.png"},
-  // ];
-
-  final List<Map<String, String>> diet = [
-    {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
-    {
-      "name": " Vegetarian",
-      "imgPath": "assets/png/profile_food_images/vegetarian.png",
-    },
-    {"name": "Kosher", "imgPath": "assets/png/profile_food_images/kosher.png"},
-    {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
-  ];
-
   final List<Map<String, String>> dislikedIngredient = [
     {
       "name": "Cilantro",
@@ -96,8 +78,61 @@ class MyProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = controller.controller.getMyProfileModel.value?.data;
-    final allergensList = controller.controller.getAllergensList();
-    final list = controller.controller.allergens;
+    final yumList =
+        controller.controller.getMyProfileModel.value?.data?.preferences?.yumYuck?.yum?.map((e) => e.toLowerCase().trim()).toList() ??
+        [];
+
+    final yuckList =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.yumYuck
+            ?.yuck
+            ?.map((e) => e.toLowerCase().trim())
+            .toList() ??
+        [];
+
+    // Filter the emoji list to only items present in API
+    final filteredItems =
+        controller.controller.yumYuckItems.where((item) {
+          String name =
+              item.replaceAll(RegExp(r'[^\w\s]'), '').trim().toLowerCase();
+          return yumList.contains(name) || yuckList.contains(name);
+        }).toList();
+    final List<String> favMoodFromApi = controller.controller.getMyProfileModel.value
+        ?.data?.preferences?.favMood
+        ?.map((e) => e.mood?.trim() ?? '')
+        .toList() ?? [];
+    final List<Map<String, String>> selectedCuisine = controller.controller.foodOptions.where((item) {
+      String name = item['name']!.trim();
+      return favMoodFromApi.contains(name);
+    }).toList();
+    final seatingOptions = controller.controller.getMyProfileModel.value?.data?.preferences?.seatingRequirement?.options ?? [];
+    final assistanceOptions = controller.controller.getMyProfileModel.value?.data?.preferences?.extraAssistance?.options ?? [];
+    final quietArea = controller.controller.getMyProfileModel.value?.data?.preferences?.quietArea ?? false;
+    final List<String> eventAccesibilityList = [];
+
+// Seating
+    for (var seat in seatingOptions) {
+      if (controller.controller.seatingMap.containsKey(seat)) {
+        eventAccesibilityList.add(controller.controller.seatingMap[seat]!);
+      }
+    }
+
+// Extra Assistance
+    for (var assist in assistanceOptions) {
+      if (controller.controller.assistanceMap.containsKey(assist)) {
+        eventAccesibilityList.add(controller.controller.assistanceMap[assist]!);
+      }
+    }
+
+// Quiet Area
+    if (quietArea) {
+      eventAccesibilityList.add("Quiet Area");
+    }
 
 
     return Scaffold(
@@ -383,7 +418,7 @@ class MyProfileScreen extends StatelessWidget {
                                             controller.isUser.value
                                                 ? [
                                                   Tab(text: "Preference"),
-                                                  Tab(text: "Posts"),
+                                                  // Tab(text: "Posts"),
                                                 ]
                                                 : [
                                                   Tab(text: "Preference"),
@@ -422,18 +457,36 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  controller.controller.allergens.length,
-                                                      (index) {
-                                                    final key = controller.controller.allergensMap.keys.elementAt(index);
-                                                    final rawValue = controller.controller.allergensMap[key] ?? '';
+                                                  controller
+                                                      .controller
+                                                      .allergens
+                                                      .length,
+                                                  (index) {
+                                                    final key = controller
+                                                        .controller
+                                                        .allergensMap
+                                                        .keys
+                                                        .elementAt(index);
+                                                    final rawValue =
+                                                        controller
+                                                            .controller
+                                                            .allergensMap[key] ??
+                                                        '';
 
                                                     // Use the new function to get simplified severity
-                                                    final severity = controller.controller.getAllergySeverity(rawValue);
+                                                    final severity = controller
+                                                        .controller
+                                                        .getAllergySeverity(
+                                                          rawValue,
+                                                        );
 
                                                     return foodPreferencesOne(
                                                       index + 15,
                                                       "${controller.controller.allergens[index]['title']} - $severity",
-                                                      imgpath: controller.controller.allergens[index]['path'],
+                                                      imgpath:
+                                                          controller
+                                                              .controller
+                                                              .allergens[index]['path'],
                                                     );
                                                   },
                                                 ),
@@ -450,17 +503,25 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  diet.length,
+                                                  controller
+                                                      .controller
+                                                      .selectedDiet
+                                                      .length,
                                                   (index) {
                                                     return foodPreferencesOne(
                                                       index + 24,
-                                                      diet[index]['name']!,
+                                                      controller
+                                                          .controller
+                                                          .selectedDiet[index]['name']!,
                                                       imgpath:
-                                                          diet[index]['imgPath'],
+                                                          controller
+                                                              .controller
+                                                              .selectedDiet[index]['imgPath'],
                                                     );
                                                   },
                                                 ),
                                               ),
+
                                               SizedBox(height: 2.h),
                                               customText(
                                                 text: "Yuck Or Yum?",
@@ -470,40 +531,38 @@ class MyProfileScreen extends StatelessWidget {
                                                 fontFamily: 'CormorantGaramond',
                                               ),
                                               SizedBox(height: 0.7.h),
-                                              Column(
-                                                spacing: 2.h,
-                                                children: [
-                                                  yuckOrYumList(
-                                                    title: '🥜 Peanuts',
-                                                    color: greenColor,
-                                                    isSelected: true,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🦐 Shellfish',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🥛 Dairy',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🌾 Gluten',
-                                                    color: greenColor,
-                                                    isSelected: true,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🥚 Eggs',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🫛 Soy',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                ],
+                                              ListView.builder(
+                                                padding: EdgeInsets.zero,
+                                                shrinkWrap: true,
+                                                physics: NeverScrollableScrollPhysics(),
+                                                itemCount: filteredItems.length,
+                                                itemBuilder: (context, index) {
+                                                  String item =
+                                                      filteredItems[index];
+                                                  String name =
+                                                      item.replaceAll(RegExp(r'[^\w\s]'), '',).trim().toLowerCase();
+                                                  bool isSelected;
+                                                  Color color;
+
+                                                  if (yumList.contains(name)) {
+                                                    isSelected = true;
+                                                    color = greenColor;
+                                                  } else if (yuckList.contains(
+                                                    name,
+                                                  )) {
+                                                    isSelected = false;
+                                                    color = redColor;
+                                                  } else {
+                                                    // This should not happen because we filtered already
+                                                    return SizedBox.shrink();
+                                                  }
+
+                                                  return yuckOrYumList(
+                                                    title: item,
+                                                    color: color,
+                                                    isSelected: isSelected,
+                                                  );
+                                                },
                                               ),
                                               SizedBox(height: 2.h),
                                               customText(
@@ -524,36 +583,35 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  likedCuisine.length,
-                                                  (index) => foodPreferencesOne(
+                                                  selectedCuisine.length,
+                                                      (index) => foodPreferencesOne(
                                                     index + 28,
-                                                    likedCuisine[index]['name']!,
-                                                    imgpath:
-                                                        likedCuisine[index]['imgPath'],
+                                                    selectedCuisine[index]['name']!,
+                                                    imgpath: selectedCuisine[index]['imgPath'],
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(height: 1.h),
-                                              customText(
-                                                text: "Disliked Ingredients",
-                                                fontSize: 14.sp,
-                                                color: blackColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              SizedBox(height: 0.5.h),
-                                              Wrap(
-                                                spacing: 5,
-                                                runSpacing: 1,
-                                                children: List.generate(
-                                                  dislikedIngredient.length,
-                                                  (index) => foodPreferencesOne(
-                                                    index + 35,
-                                                    dislikedIngredient[index]["name"]!,
-                                                    imgpath:
-                                                        dislikedIngredient[index]["imgPath"],
-                                                  ),
-                                                ),
-                                              ),
+                                              // SizedBox(height: 1.h),
+                                              // customText(
+                                              //   text: "Disliked Ingredients",
+                                              //   fontSize: 14.sp,
+                                              //   color: blackColor,
+                                              //   fontWeight: FontWeight.w500,
+                                              // ),
+                                              // SizedBox(height: 0.5.h),
+                                              // Wrap(
+                                              //   spacing: 5,
+                                              //   runSpacing: 1,
+                                              //   children: List.generate(
+                                              //     dislikedIngredient.length,
+                                              //     (index) => foodPreferencesOne(
+                                              //       index + 35,
+                                              //       dislikedIngredient[index]["name"]!,
+                                              //       imgpath:
+                                              //           dislikedIngredient[index]["imgPath"],
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               controller.isUser.value
                                                   ? Column(
                                                     crossAxisAlignment:
@@ -573,11 +631,8 @@ class MyProfileScreen extends StatelessWidget {
                                                         spacing: 5,
                                                         runSpacing: 1,
                                                         children: List.generate(
-                                                          eventAccesibilityList
-                                                              .length,
-                                                          (
-                                                            index,
-                                                          ) => eventAccesibillityWidget(
+                                                          eventAccesibilityList.length,
+                                                              (index) => eventAccesibillityWidget(
                                                             eventAccesibilityList[index],
                                                           ),
                                                         ),
@@ -754,13 +809,20 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  diet.length,
+                                                  controller
+                                                      .controller
+                                                      .diet
+                                                      .length,
                                                   (index) {
                                                     return foodPreferencesOne(
                                                       index + 24,
-                                                      diet[index]['name']!,
+                                                      controller
+                                                          .controller
+                                                          .diet[index]['name']!,
                                                       imgpath:
-                                                          diet[index]['imgPath'],
+                                                          controller
+                                                              .controller
+                                                              .diet[index]['imgPath'],
                                                     );
                                                   },
                                                 ),

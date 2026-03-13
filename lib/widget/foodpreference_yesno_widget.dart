@@ -148,6 +148,7 @@ Widget foodPreferencesOne(
     String title, {
       String? imgpath,
       double? fontsize,
+      bool? isSelectable = false
     }) {
   final ProfileController controller = Get.find<ProfileController>();
 
@@ -155,7 +156,8 @@ Widget foodPreferencesOne(
     bool isSelected = controller.foodNationality.contains(index);
 
     return GestureDetector(
-      onTap: () {
+      onTap: isSelectable ?? false
+          ? () {
         if (isSelected) {
           controller.foodNationality.remove(index);
         } else {
@@ -164,7 +166,9 @@ Widget foodPreferencesOne(
 
         // ✅ Update the reactive list
         controller.updateFoodMoodList();
-      },
+      }
+          : null,
+
       child: IntrinsicWidth(
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 0.3.h),
