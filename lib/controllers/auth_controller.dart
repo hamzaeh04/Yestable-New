@@ -69,14 +69,22 @@ class AuthController extends GetxController {
       return;
     }
     final data = responseMap["data"]; // user object
+    final profileCompleted = responseMap["data"]["user"]["profileCompleted"];
     if (data == null) return; // Safety guard
     final prefs = SharedPreferencesMethod.storage;
     await prefs.setString(LocalDBKeys.TOKEN, data["access_token"]);
     await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
+    await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, profileCompleted);
     print("Faaaaahhhh: ${data["access_token"]}");
+    print("SharedPreferences: ${prefs.getBool(LocalDBKeys.PROFILECOMPLETED)}");
+    print(profileCompleted);
     // 🚀 AB DASHBOARD PE JAO
-    Get.offAllNamed('/addprofilepicture');
-
+    if(profileCompleted == true){
+      Get.offAllNamed('bottomnavigationbar');
+    }
+    else{
+      Get.offAllNamed('/addprofilepicture');
+    }
     // print("🎉 SIGNUP SUCCESS → ${data["email"]}");
   }
 }
