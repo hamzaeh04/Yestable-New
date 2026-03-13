@@ -75,7 +75,7 @@ class FoodPreferencesOne extends StatelessWidget {
               ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(), // Scroll parent sambhalega
-                itemCount: controller.yuckOrYumList.length,
+                itemCount: controller.yumYuckItems.length,
                 separatorBuilder: (context, index) => Divider(
                     height: 0.h,
                     color: Colors.grey.shade200
@@ -89,7 +89,7 @@ class FoodPreferencesOne extends StatelessWidget {
                           children: [
                             Expanded(
                               child: customText(
-                                text: controller.yuckOrYumList[index],
+                                text: controller.yumYuckItems[index],
                                 fontSize: 15.5.sp,
                                 fontWeight: FontWeight.w500,
                               ),

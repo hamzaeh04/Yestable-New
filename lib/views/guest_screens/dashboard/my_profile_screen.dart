@@ -24,81 +24,106 @@ class MyProfileScreen extends StatelessWidget {
   final NavigationController controller = Get.find<NavigationController>();
   // final ProfileController profileController = Get.find<ProfileController>();
 
-  // final List<Map<String, String>> allergies = [
-  //   {"name": "Peanuts", "imgPath": "assets/png/profile_food_images/peanut.png"},
-  //   {"name": "Shellfish", "imgPath": "assets/png/profile_food_images/shellfish.png"},
-  //   {"name": "Dairy", "imgPath": "assets/png/profile_food_images/food.png"},
-  //   {"name": "Gluten", "imgPath": "assets/png/profile_food_images/gluten.png"},
-  //   {"name": "Soy", "imgPath": "assets/png/profile_food_images/soy.png"},
-  // ];
-
-  final List<Map<String, String>> diet = [
-    {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
-    {
-      "name": " Vegetarian",
-      "imgPath": "assets/png/profile_food_images/vegetarian.png",
-    },
-    {"name": "Kosher", "imgPath": "assets/png/profile_food_images/kosher.png"},
-    {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
-  ];
-
-  final List<Map<String, String>> dislikedIngredient = [
-    {
-      "name": "Cilantro",
-      "imgPath": "assets/png/profile_food_images/cilantro.png",
-    },
-    {
-      "name": "Mushrooms",
-      "imgPath": "assets/png/profile_food_images/mushroom.png",
-    },
-    {
-      "name": "Spicy Foods",
-      "imgPath": "assets/png/profile_food_images/spicyfood.png",
-    },
-  ];
-
-  final List<Map<String, String>> likedCuisine = [
-    {"name": "Italian", "imgPath": "assets/png/profile_food_images/pizza.png"},
-    {
-      "name": "Japanese",
-      "imgPath": "assets/png/profile_food_images/japnese.png",
-    },
-    {
-      "name": "Mediterranean",
-      "imgPath": "assets/png/profile_food_images/mediterranean.png",
-    },
-  ];
-
-  final List<String> eventAccesibilityList = [
-    "Quiet Space",
-    "Larger Seating",
-    "Gluten-Free",
-    "Wheelchair Accessible",
-    "ASL Interpreter",
-    "Vegan Option",
-    "Halal",
-    "Kosher",
-    "Keto",
-    "Accompanied By A Caregiver",
-    "Family Restroom",
-    "Childrens Area",
-    "Smoke Present",
-    "Pets Allowed",
-    "Peanuts Free",
-    "There Are Steps To Climb",
-    "Accompanied By Service Animal",
-    "Firearms Are Present",
-    "Shellfish Will Be Served",
-    "Need A Chair Without Arms",
-    "Event Ends At A Time",
-  ];
-
   @override
   Widget build(BuildContext context) {
     final data = controller.controller.getMyProfileModel.value?.data;
-    final allergensList = controller.controller.getAllergensList();
-    final list = controller.controller.allergens;
+    final yumList =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.yumYuck
+            ?.yum
+            ?.map((e) => e.toLowerCase().trim())
+            .toList() ??
+        [];
+    final yuckList =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.yumYuck
+            ?.yuck
+            ?.map((e) => e.toLowerCase().trim())
+            .toList() ??
+        [];
 
+    // Filter the emoji list to only items present in API
+    final filteredItems =
+        controller.controller.yumYuckItems.where((item) {
+          String name =
+              item.replaceAll(RegExp(r'[^\w\s]'), '').trim().toLowerCase();
+          return yumList.contains(name) || yuckList.contains(name);
+        }).toList();
+    final List<String> favMoodFromApi =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.favMood
+            ?.map((e) => e.mood?.trim() ?? '')
+            .toList() ??
+        [];
+    final List<Map<String, String>> selectedCuisine =
+        controller.controller.foodOptions.where((item) {
+          String name = item['name']!.trim();
+          return favMoodFromApi.contains(name);
+        }).toList();
+    final seatingOptions =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.seatingRequirement
+            ?.options ??
+        [];
+    final assistanceOptions =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.extraAssistance
+            ?.options ??
+        [];
+    final quietArea =
+        controller
+            .controller
+            .getMyProfileModel
+            .value
+            ?.data
+            ?.preferences
+            ?.quietArea ??
+        false;
+    final List<String> eventAccesibilityList = [];
+
+    // Seating
+    for (var seat in seatingOptions) {
+      if (controller.controller.seatingMap.containsKey(seat)) {
+        eventAccesibilityList.add(controller.controller.seatingMap[seat]!);
+      }
+    }
+
+    // Extra Assistance
+    for (var assist in assistanceOptions) {
+      if (controller.controller.assistanceMap.containsKey(assist)) {
+        eventAccesibilityList.add(controller.controller.assistanceMap[assist]!);
+      }
+    }
+
+    // Quiet Area
+    if (quietArea) {
+      eventAccesibilityList.add("Quiet Area");
+    }
 
     return Scaffold(
       backgroundColor: greenColor,
@@ -123,7 +148,10 @@ class MyProfileScreen extends StatelessWidget {
                             AllergenBarChart();
                           },
                           child: customText(
-                            text: "My Profile",
+                            text:
+                                controller.isUser.value
+                                    ? "My Profile"
+                                    : "Host Profile",
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
                             color: whiteColor,
@@ -131,14 +159,15 @@ class MyProfileScreen extends StatelessWidget {
                             height: 0.1.h,
                           ),
                         ),
-                        customText(
+                        controller.isUser.value
+                            ? customText(
                           text: controller.formatDate(
                             data?.createdAt ?? "May 01, 2025",
                           ),
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                           color: whiteColor,
-                        ),
+                        ): SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -179,7 +208,7 @@ class MyProfileScreen extends StatelessWidget {
                 child: Container(
                   color: backgroundColor,
                   child: DefaultTabController(
-                    length: controller.isUser.value ? 2 : 3,
+                    length: 1,
                     child: Column(
                       children: [
                         // Profile Info
@@ -265,13 +294,13 @@ class MyProfileScreen extends StatelessWidget {
                                                         fontFamily:
                                                             "CormorantGaramond",
                                                       ),
-                                                      customText(
-                                                        text: "256 Friends",
-                                                        fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: darkGreyColor,
-                                                      ),
+                                                      // customText(
+                                                      //   text: "256 Friends",
+                                                      //   fontSize: 14.sp,
+                                                      //   fontWeight:
+                                                      //       FontWeight.w400,
+                                                      //   color: darkGreyColor,
+                                                      // ),
                                                       SizedBox(height: 0.8.h),
                                                       Row(
                                                         children: [
@@ -280,7 +309,7 @@ class MyProfileScreen extends StatelessWidget {
                                                             whiteColor,
                                                             colors: greenColor
                                                                 .withAlpha(140),
-                                                            height: 3.5.h,
+                                                            height: 3.25.h,
                                                             width: 27.w,
                                                             fontsize: 14.sp,
                                                             onTap: () {
@@ -295,7 +324,7 @@ class MyProfileScreen extends StatelessWidget {
                                                             whiteColor,
                                                             colors: blueColor
                                                                 .withAlpha(140),
-                                                            height: 3.5.h,
+                                                            height: 3.25.h,
                                                             width: 27.w,
                                                             fontsize: 14.sp,
                                                             onTap: () {
@@ -372,6 +401,8 @@ class MyProfileScreen extends StatelessWidget {
                                         ),
                                       ),
                                       child: TabBar(
+                                        isScrollable: true,
+                                        padding: EdgeInsets.zero,
                                         indicatorColor: blackColor,
                                         labelColor: blackColor,
                                         unselectedLabelColor: Colors.grey,
@@ -379,24 +410,15 @@ class MyProfileScreen extends StatelessWidget {
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.w500,
                                         ),
-                                        tabs:
-                                            controller.isUser.value
-                                                ? [
-                                                  Tab(text: "Preference"),
-                                                  Tab(text: "Posts"),
-                                                ]
-                                                : [
-                                                  Tab(text: "Preference"),
-                                                  Tab(text: "Posts"),
-                                                  Tab(text: "Highlights"),
-                                                ],
+                                        labelPadding: EdgeInsets.zero,
+                                        tabs: [
+                                          Tab(text: "Preference"),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ],
-                            body:
-                                controller.isUser.value
-                                    ? TabBarView(
+                            body: TabBarView(
                                       children: [
                                         SingleChildScrollView(
                                           padding: EdgeInsets.all(5.w),
@@ -422,18 +444,36 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  controller.controller.allergens.length,
-                                                      (index) {
-                                                    final key = controller.controller.allergensMap.keys.elementAt(index);
-                                                    final rawValue = controller.controller.allergensMap[key] ?? '';
+                                                  controller
+                                                      .controller
+                                                      .allergens
+                                                      .length,
+                                                  (index) {
+                                                    final key = controller
+                                                        .controller
+                                                        .allergensMap
+                                                        .keys
+                                                        .elementAt(index);
+                                                    final rawValue =
+                                                        controller
+                                                            .controller
+                                                            .allergensMap[key] ??
+                                                        '';
 
                                                     // Use the new function to get simplified severity
-                                                    final severity = controller.controller.getAllergySeverity(rawValue);
+                                                    final severity = controller
+                                                        .controller
+                                                        .getAllergySeverity(
+                                                          rawValue,
+                                                        );
 
                                                     return foodPreferencesOne(
                                                       index + 15,
                                                       "${controller.controller.allergens[index]['title']} - $severity",
-                                                      imgpath: controller.controller.allergens[index]['path'],
+                                                      imgpath:
+                                                          controller
+                                                              .controller
+                                                              .allergens[index]['path'],
                                                     );
                                                   },
                                                 ),
@@ -450,17 +490,25 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  diet.length,
+                                                  controller
+                                                      .controller
+                                                      .selectedDiet
+                                                      .length,
                                                   (index) {
                                                     return foodPreferencesOne(
                                                       index + 24,
-                                                      diet[index]['name']!,
+                                                      controller
+                                                          .controller
+                                                          .selectedDiet[index]['name']!,
                                                       imgpath:
-                                                          diet[index]['imgPath'],
+                                                          controller
+                                                              .controller
+                                                              .selectedDiet[index]['imgPath'],
                                                     );
                                                   },
                                                 ),
                                               ),
+
                                               SizedBox(height: 2.h),
                                               customText(
                                                 text: "Yuck Or Yum?",
@@ -470,40 +518,45 @@ class MyProfileScreen extends StatelessWidget {
                                                 fontFamily: 'CormorantGaramond',
                                               ),
                                               SizedBox(height: 0.7.h),
-                                              Column(
-                                                spacing: 2.h,
-                                                children: [
-                                                  yuckOrYumList(
-                                                    title: '🥜 Peanuts',
-                                                    color: greenColor,
-                                                    isSelected: true,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🦐 Shellfish',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🥛 Dairy',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🌾 Gluten',
-                                                    color: greenColor,
-                                                    isSelected: true,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🥚 Eggs',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                  yuckOrYumList(
-                                                    title: '🫛 Soy',
-                                                    color: redColor,
-                                                    isSelected: false,
-                                                  ),
-                                                ],
+                                              ListView.builder(
+                                                padding: EdgeInsets.zero,
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount: filteredItems.length,
+                                                itemBuilder: (context, index) {
+                                                  String item =
+                                                      filteredItems[index];
+                                                  String name =
+                                                      item
+                                                          .replaceAll(
+                                                            RegExp(r'[^\w\s]'),
+                                                            '',
+                                                          )
+                                                          .trim()
+                                                          .toLowerCase();
+                                                  bool isSelected;
+                                                  Color color;
+
+                                                  if (yumList.contains(name)) {
+                                                    isSelected = true;
+                                                    color = greenColor;
+                                                  } else if (yuckList.contains(
+                                                    name,
+                                                  )) {
+                                                    isSelected = false;
+                                                    color = redColor;
+                                                  } else {
+                                                    // This should not happen because we filtered already
+                                                    return SizedBox.shrink();
+                                                  }
+
+                                                  return yuckOrYumList(
+                                                    title: item,
+                                                    color: color,
+                                                    isSelected: isSelected,
+                                                  );
+                                                },
                                               ),
                                               SizedBox(height: 2.h),
                                               customText(
@@ -524,36 +577,36 @@ class MyProfileScreen extends StatelessWidget {
                                                 spacing: 5,
                                                 runSpacing: 1,
                                                 children: List.generate(
-                                                  likedCuisine.length,
+                                                  selectedCuisine.length,
                                                   (index) => foodPreferencesOne(
                                                     index + 28,
-                                                    likedCuisine[index]['name']!,
+                                                    selectedCuisine[index]['name']!,
                                                     imgpath:
-                                                        likedCuisine[index]['imgPath'],
+                                                        selectedCuisine[index]['imgPath'],
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(height: 1.h),
-                                              customText(
-                                                text: "Disliked Ingredients",
-                                                fontSize: 14.sp,
-                                                color: blackColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              SizedBox(height: 0.5.h),
-                                              Wrap(
-                                                spacing: 5,
-                                                runSpacing: 1,
-                                                children: List.generate(
-                                                  dislikedIngredient.length,
-                                                  (index) => foodPreferencesOne(
-                                                    index + 35,
-                                                    dislikedIngredient[index]["name"]!,
-                                                    imgpath:
-                                                        dislikedIngredient[index]["imgPath"],
-                                                  ),
-                                                ),
-                                              ),
+                                              // SizedBox(height: 1.h),
+                                              // customText(
+                                              //   text: "Disliked Ingredients",
+                                              //   fontSize: 14.sp,
+                                              //   color: blackColor,
+                                              //   fontWeight: FontWeight.w500,
+                                              // ),
+                                              // SizedBox(height: 0.5.h),
+                                              // Wrap(
+                                              //   spacing: 5,
+                                              //   runSpacing: 1,
+                                              //   children: List.generate(
+                                              //     dislikedIngredient.length,
+                                              //     (index) => foodPreferencesOne(
+                                              //       index + 35,
+                                              //       dislikedIngredient[index]["name"]!,
+                                              //       imgpath:
+                                              //           dislikedIngredient[index]["imgPath"],
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               controller.isUser.value
                                                   ? Column(
                                                     crossAxisAlignment:
@@ -588,537 +641,118 @@ class MyProfileScreen extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        Center(
-                                          child: SingleChildScrollView(
-                                            child:
-                                                controller.isUser.value
-                                                    ? Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                                vertical: 1.h,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                "assets/png/chat_images/user5.png",
-                                                            userName:
-                                                                "Sarah Scarnio",
-                                                            postTime:
-                                                                "2hrs ago",
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                                            postImage:
-                                                                "assets/png/chat_images/group_profile_pic.png",
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                    : Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                                vertical: 1.h,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                "assets/png/chat_images/user5.png",
-                                                            userName:
-                                                                "Sarah Scarnio",
-                                                            postTime:
-                                                                "2hrs ago",
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                                            postImage:
-                                                                "assets/png/chat_images/group_profile_pic.png",
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                    : TabBarView(
-                                      children: [
-                                        SingleChildScrollView(
-                                          padding: EdgeInsets.all(5.w),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              customText(
-                                                text: "Dietary Priorities",
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w500,
-                                                color: blackColor,
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              customText(
-                                                text: "Allergies:",
-                                                fontSize: 14.sp,
-                                                color: blackColor,
-                                              ),
-                                              Wrap(
-                                                spacing: 5,
-                                                runSpacing: 1,
-                                                children: List.generate(
-                                                  controller
-                                                      .controller
-                                                      .allergens
-                                                      .length,
-                                                  (index) {
-                                                    return foodPreferencesOne(
-                                                      index + 15,
-                                                      controller
-                                                          .controller
-                                                          .allergens[index]['title'],
-                                                      imgpath:
-                                                          controller
-                                                              .controller
-                                                              .allergens[index]['path'],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              customText(
-                                                text: "Diet:",
-                                                fontSize: 14.sp,
-                                                color: blackColor,
-                                              ),
-                                              Wrap(
-                                                spacing: 5,
-                                                runSpacing: 1,
-                                                children: List.generate(
-                                                  diet.length,
-                                                  (index) {
-                                                    return foodPreferencesOne(
-                                                      index + 24,
-                                                      diet[index]['name']!,
-                                                      imgpath:
-                                                          diet[index]['imgPath'],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.5.h),
-                                              customText(
-                                                text: "Food Preferences",
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w500,
-                                                color: blackColor,
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              customText(
-                                                text: "Liked Cuisines:",
-                                                fontSize: 14.sp,
-                                                color: blackColor,
-                                              ),
-                                              Wrap(
-                                                spacing: 5,
-                                                runSpacing: 1,
-                                                children: List.generate(
-                                                  likedCuisine.length,
-                                                  (index) => foodPreferencesOne(
-                                                    index + 28,
-                                                    likedCuisine[index]['name']!,
-                                                    imgpath:
-                                                        likedCuisine[index]['imgPath'],
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              customText(
-                                                text: "Disliked Ingredients",
-                                                fontSize: 14.sp,
-                                                color: blackColor,
-                                              ),
-                                              Wrap(
-                                                spacing: 5,
-                                                runSpacing: 1,
-                                                children: List.generate(
-                                                  dislikedIngredient.length,
-                                                  (index) => foodPreferencesOne(
-                                                    index + 35,
-                                                    dislikedIngredient[index]["name"]!,
-                                                    imgpath:
-                                                        dislikedIngredient[index]["imgPath"],
-                                                  ),
-                                                ),
-                                              ),
-                                              controller.isUser.value
-                                                  ? Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(height: 2.h),
-                                                      customText(
-                                                        text:
-                                                            "Accessibility Needs",
-                                                        fontSize: 15.sp,
-                                                        color: blackColor,
-                                                      ),
-                                                      Wrap(
-                                                        spacing: 5,
-                                                        runSpacing: 1,
-                                                        children: List.generate(
-                                                          eventAccesibilityList
-                                                              .length,
-                                                          (
-                                                            index,
-                                                          ) => eventAccesibillityWidget(
-                                                            eventAccesibilityList[index],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                  : SizedBox.shrink(),
-                                            ],
-                                          ),
-                                        ),
-                                        Center(
-                                          child: SingleChildScrollView(
-                                            child:
-                                                controller.isUser.value
-                                                    ? Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                                vertical: 1.h,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                "assets/png/chat_images/user5.png",
-                                                            userName:
-                                                                "Sarah Scarnio",
-                                                            postTime:
-                                                                "2hrs ago",
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                                            postImage:
-                                                                "assets/png/chat_images/group_profile_pic.png",
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 1.h),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 1.h),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 1.h),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                    : Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                                vertical: 1.h,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                "assets/png/chat_images/user5.png",
-                                                            userName:
-                                                                "Sarah Scarnio",
-                                                            postTime:
-                                                                "2hrs ago",
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                                            postImage:
-                                                                "assets/png/chat_images/group_profile_pic.png",
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 1.h),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 1.h),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 1.h),
-                                                        Divider(),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 5.w,
-                                                              ),
-                                                          child: buildPostCard(
-                                                            profileImage:
-                                                                'assets/png/chat_images/user5.png',
-                                                            userName:
-                                                                'Sarah Scarnio',
-                                                            postTime: '3h ago',
-                                                            postText:
-                                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                                            likesCount:
-                                                                '1.4k Likes',
-                                                            showRepliesAndAvatar:
-                                                                false, // 👈 Only likes shown
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                          ),
-                                        ),
-                                        SingleChildScrollView(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 5.w,
-                                            vertical: 1.h,
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: List.generate(3, (
-                                                  index,
-                                                ) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(
-                                                      right:
-                                                          index != 2
-                                                              ? 2.w
-                                                              : 0.w,
-                                                    ),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                            Radius.circular(
-                                                              18.sp,
-                                                            ),
-                                                          ),
-                                                      child: Image.asset(
-                                                        'assets/png/reveiw_images/reveiw${index + 1}.png',
-                                                        width: 28.w,
-                                                        height: 12.h,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Row(
-                                                children: List.generate(3, (
-                                                  index,
-                                                ) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(
-                                                      right:
-                                                          index != 2
-                                                              ? 2.w
-                                                              : 0.w,
-                                                    ),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                            Radius.circular(
-                                                              18.sp,
-                                                            ),
-                                                          ),
-                                                      child: Image.asset(
-                                                        'assets/png/reveiw_images/reveiw${index + 1}.png',
-                                                        width: 28.w,
-                                                        height: 12.h,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                              ),
-                                              SizedBox(height: 1.h),
-                                              Row(
-                                                children: List.generate(3, (
-                                                  index,
-                                                ) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(
-                                                      right:
-                                                          index != 2
-                                                              ? 2.w
-                                                              : 0.w,
-                                                    ),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                            Radius.circular(
-                                                              18.sp,
-                                                            ),
-                                                          ),
-                                                      child: Image.asset(
-                                                        'assets/png/reveiw_images/reveiw${index + 1}.png',
-                                                        width: 28.w,
-                                                        height: 12.h,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                              ),
-                                              SizedBox(height: 5.h),
-                                            ],
-                                          ),
-                                        ),
+                                        // Center(
+                                        //   child: SingleChildScrollView(
+                                        //     child:
+                                        //         controller.isUser.value
+                                        //             ? Column(
+                                        //               children: [
+                                        //                 Padding(
+                                        //                   padding:
+                                        //                       EdgeInsets.symmetric(
+                                        //                         horizontal: 5.w,
+                                        //                         vertical: 1.h,
+                                        //                       ),
+                                        //                   child: buildPostCard(
+                                        //                     profileImage:
+                                        //                         "assets/png/chat_images/user5.png",
+                                        //                     userName:
+                                        //                         "Sarah Scarnio",
+                                        //                     postTime:
+                                        //                         "2hrs ago",
+                                        //                     postText:
+                                        //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                        //                     postImage:
+                                        //                         "assets/png/chat_images/group_profile_pic.png",
+                                        //                   ),
+                                        //                 ),
+                                        //                 Divider(),
+                                        //                 Padding(
+                                        //                   padding:
+                                        //                       EdgeInsets.symmetric(
+                                        //                         horizontal: 5.w,
+                                        //                       ),
+                                        //                   child: buildPostCard(
+                                        //                     profileImage:
+                                        //                         'assets/png/chat_images/user5.png',
+                                        //                     userName:
+                                        //                         'Sarah Scarnio',
+                                        //                     postTime: '3h ago',
+                                        //                     postText:
+                                        //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                        //                     likesCount:
+                                        //                         '1.4k Likes',
+                                        //                     showRepliesAndAvatar:
+                                        //                         false, // 👈 Only likes shown
+                                        //                   ),
+                                        //                 ),
+                                        //                 Divider(),
+                                        //                 Padding(
+                                        //                   padding:
+                                        //                       EdgeInsets.symmetric(
+                                        //                         horizontal: 5.w,
+                                        //                       ),
+                                        //                   child: buildPostCard(
+                                        //                     profileImage:
+                                        //                         'assets/png/chat_images/user5.png',
+                                        //                     userName:
+                                        //                         'Sarah Scarnio',
+                                        //                     postTime: '3h ago',
+                                        //                     postText:
+                                        //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                        //                     likesCount:
+                                        //                         '1.4k Likes',
+                                        //                     showRepliesAndAvatar:
+                                        //                         false, // 👈 Only likes shown
+                                        //                   ),
+                                        //                 ),
+                                        //                 Divider(),
+                                        //                 Padding(
+                                        //                   padding:
+                                        //                       EdgeInsets.symmetric(
+                                        //                         horizontal: 5.w,
+                                        //                       ),
+                                        //                   child: buildPostCard(
+                                        //                     profileImage:
+                                        //                         'assets/png/chat_images/user5.png',
+                                        //                     userName:
+                                        //                         'Sarah Scarnio',
+                                        //                     postTime: '3h ago',
+                                        //                     postText:
+                                        //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                        //                     likesCount:
+                                        //                         '1.4k Likes',
+                                        //                     showRepliesAndAvatar:
+                                        //                         false, // 👈 Only likes shown
+                                        //                   ),
+                                        //                 ),
+                                        //               ],
+                                        //             )
+                                        //             : Column(
+                                        //               children: [
+                                        //                 Padding(
+                                        //                   padding:
+                                        //                       EdgeInsets.symmetric(
+                                        //                         horizontal: 5.w,
+                                        //                         vertical: 1.h,
+                                        //                       ),
+                                        //                   child: buildPostCard(
+                                        //                     profileImage:
+                                        //                         "assets/png/chat_images/user5.png",
+                                        //                     userName:
+                                        //                         "Sarah Scarnio",
+                                        //                     postTime:
+                                        //                         "2hrs ago",
+                                        //                     postText:
+                                        //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                        //                     postImage:
+                                        //                         "assets/png/chat_images/group_profile_pic.png",
+                                        //                   ),
+                                        //                 ),
+                                        //               ],
+                                        //             ),
+                                        //   ),
+                                        // ),
                                       ],
                                     ),
                           ),

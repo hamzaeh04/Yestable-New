@@ -24,31 +24,44 @@ class ProfileController extends GetxController {
   BaseService baseService = BaseService();
   final prefs = SharedPreferencesMethod.storage;
   Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
+// Change these in your ProfileController
+  RxList<TextEditingController> memberNameControllers = <TextEditingController>[].obs;
+  RxList<TextEditingController> memberReleationControllers = <TextEditingController>[].obs;
+  RxList<TextEditingController> memberAgeControllers = <TextEditingController>[].obs;
 
-  List<TextEditingController> memberNameControllers = [];
-  List<TextEditingController> memberReleationControllers = [];
-  List<TextEditingController> memberAgeControllers = [];
-  void addMemberList() {
-    places.add(places.length);
 
-    memberNameControllers.add(TextEditingController());
-    memberReleationControllers.add(TextEditingController());
-    memberAgeControllers.add(TextEditingController());
+  // Call this after API fetch
+  void initializeMembers() {
+    final membersFromApi = getMyProfileModel.value?.data?.members ?? [];
 
-    placeCompleted.add(false);
-  }
-  void fillMembersFromApi() {
-    final members = getMyProfileModel.value?.data?.members ?? [];
-
-    for (var member in members) {
-      memberNameControllers.add(TextEditingController(text: member.name ?? ""));
-      memberReleationControllers.add(TextEditingController(text: member.relation ?? ""));
-      memberAgeControllers.add(TextEditingController(text: member.age?.toString() ?? ""));
-
-      places.add(places.length);
-      placeCompleted.add(true);
+    if (membersFromApi.isEmpty) {
+      // Add **at least one empty row** so UI has fields
+      addMemberList();
+    } else {
+      for (var member in membersFromApi) {
+        addMemberList(member as Map<String, dynamic>?);
+      }
     }
   }
+
+  void addMemberList([Map<String, dynamic>? member]) {
+    memberNameControllers.add(TextEditingController(text: member?['name'] ?? ''));
+    memberReleationControllers.add(TextEditingController(text: member?['relation'] ?? ''));
+    memberAgeControllers.add(TextEditingController(text: member?['age']?.toString() ?? ''));
+    placeCompleted.add(false);
+  }
+
+  void setData({required int index, String? screenTitle}) {
+    // Save data or open next screen
+    // Example: print data
+    print('Member ${index + 1}: '
+        '${memberNameControllers[index].text}, '
+        '${memberReleationControllers[index].text}, '
+        '${memberAgeControllers[index].text}');
+  }
+
+
+
   var profilePicture = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
   var switchValue = true.obs;
@@ -103,6 +116,26 @@ class ProfileController extends GetxController {
   var itemIsSelected = (-1).obs; // if needed
   final selectSeatingRequirements = <String>[].obs;
   final selectExtraAssistance = <String>[].obs;
+
+  final Map<String, String> seatingMap = {
+    "largerSeat": "Larger Seat Or Chair Without Arms",
+    "chairWithArms": "Chair With Arms",
+    "nearRestroom": "Seating Near Restroom",
+    "other": "Other",
+  };
+
+  final Map<String, String> assistanceMap = {
+    "helpCarryingPlate": "Help Carrying Plate",
+    "nearRestroom": "Seating Near A Restroom",
+    "nonVerbal": "Non Verbal",
+    "bringingCareAide": "Bringing A Care Aide",
+    "hearingLoss": "Hearing Loss",
+    "assistanceWalkingIn": "Assistance Walking In",
+    "other": "Other",
+  };
+
+
+
 
   List<String> seating = ['largerSeat', 'chairWithArms', 'nearRestroom', 'other'];
   List<String> assistance = [
@@ -355,6 +388,37 @@ class ProfileController extends GetxController {
   //
   //   return values.join(',');
   // }
+  final List<Map<String, String>> diet = [
+    {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
+    {"name": "Vegetarian", "imgPath": "assets/png/profile_food_images/vegetarian.png"},
+    {"name": "Halal", "imgPath": "assets/png/profile_food_images/halal.png"},
+    {"name": "Kosher", "imgPath": "assets/png/profile_food_images/kosher.png"},
+    {"name": "Keto", "imgPath": "assets/png/profile_food_images/keto_icon.png"},
+  ];
+
+  List<Map<String, String>> get selectedDiet {
+    final plate = getMyProfileModel.value?.data?.preferences?.plate;
+
+    return diet.where((item) {
+      switch (item['name']) {
+        case 'Vegan':
+          return plate?.vegan == true;
+        case 'Vegetarian':
+          return plate?.vegetarian == true;
+        case 'Halal':
+          return plate?.halal == true;
+        case 'Kosher':
+          return plate?.kosher == true;
+        case 'Keto':
+          return plate?.keto == true;
+        default:
+          return false;
+      }
+    }).toList();
+  }
+
+
+
   Map<String, dynamic> getSelectedPlateMap() {
     // Initialize all plates as false
     Map<String, dynamic> plateMap = {
@@ -421,10 +485,10 @@ class ProfileController extends GetxController {
   RxInt selectedIndex = (-1).obs;
   RxString title = ''.obs;
 
-  void setData({required int index, String? screenTitle}) {
-    selectedIndex.value = index;
-    title.value = screenTitle ?? '';
-  }
+  // void setData({required int index, String? screenTitle}) {
+  //   selectedIndex.value = index;
+  //   title.value = screenTitle ?? '';
+  // }
   /// Member flow
   TextEditingController memberNameController = TextEditingController();
   TextEditingController memberReleationController = TextEditingController();
@@ -449,7 +513,7 @@ class ProfileController extends GetxController {
   ];
 
   // --- Food Preferences (Cleaned up) ---
-  final List<String> yuckOrYumList = [
+  final List<String> yumYuckItems = [
     '☘️ Cilantro', '🍄 Mushrooms', '🧴 Mayonnaise', '🫒 Olives',
     '🦈 Anchovies', '🦪 Oysters', '💙 Blue Cheese', '🪵 Licorice',
     '🧅 Raw Onion', '🫑 Green Peppers', '🌿 Mint', '🟫‍ Dark Chocolate',
@@ -462,12 +526,15 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Ensure list is populated immediately on controller creation
     _initializeFoodSelections();
+    // If no members exist, add one empty set of controllers so the UI shows 1 row
+    if (memberNameControllers.isEmpty) {
+      addMemberList();
+    }
   }
 
   void _initializeFoodSelections() {
-    foodSelections.assignAll(List.generate(yuckOrYumList.length, (index) => 0));
+    foodSelections.assignAll(List.generate(yumYuckItems.length, (index) => 0));
   }
 
   // Updated Method to trigger UI update properly
@@ -492,7 +559,7 @@ class ProfileController extends GetxController {
 
     for (int i = 0; i < foodSelections.length; i++) {
       int selection = foodSelections[i]; // 0, 1, or 2 (your logic)
-      String title = yuckOrYumList[i];   // <-- use i as index to get title
+      String title = yumYuckItems[i];   // <-- use i as index to get title
       String cleanTitle = title.split(' ').sublist(1).join(' ').toLowerCase();
 
       if (selection == 1) {
@@ -1042,6 +1109,8 @@ class ProfileController extends GetxController {
 
         // Show a success message
         Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
+        initializeMembers(); // <--- call it here
+
       } else {
         // Handle API errors
         Utils.showToast(response['message'] ?? "Failed to fetch profile", true);
@@ -1052,75 +1121,115 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> deleteMember(String memberId, int index) async {
-    final controller = Get.find<ProfileController>();
+  // Future<void> deleteMember(String memberId, int index) async {
+  //   final controller = Get.find<ProfileController>();
+  //
+  //   if (index < 0 || index >= controller.places.length) {
+  //     Utils.showToast("Invalid member index", true);
+  //     print("Faaaaaaaaaaaahhhhhhhh: ${index}");
+  //     print("Faaaaaaaaaaaahhhhhhhh: ${controller.places.length}");
+  //     return;
+  //   }
+  //
+  //   final members = controller.getMyProfileModel.value?.data?.members;
+  //
+  //   /// Backup data
+  //   final removedPlace = controller.places[index];
+  //   final removedNameController = controller.memberNameControllers[index];
+  //   final removedRelationController = controller.memberReleationControllers[index];
+  //   final removedAgeController = controller.memberAgeControllers[index];
+  //   final removedCompleted = controller.placeCompleted[index];
+  //   final removedMember = members != null && members.length > index
+  //       ? members[index]
+  //       : null;
+  //
+  //   /// 🔥 Remove instantly from UI
+  //   controller.places.removeAt(index);
+  //   controller.memberNameControllers.removeAt(index);
+  //   controller.memberReleationControllers.removeAt(index);
+  //   controller.memberAgeControllers.removeAt(index);
+  //   controller.placeCompleted.removeAt(index);
+  //
+  //   if (members != null && members.length > index) {
+  //     members.removeAt(index);
+  //   }
+  //
+  //   try {
+  //     final response = await baseService.baseDeleteAPI(
+  //       ApiEndPoints.deleteMember(memberId),
+  //     );
+  //
+  //     if (response['success'] == true) {
+  //       Utils.showToast("Member deleted successfully", false);
+  //     } else {
+  //       /// Restore everything if API fails
+  //       controller.places.insert(index, removedPlace);
+  //       controller.memberNameControllers.insert(index, removedNameController);
+  //       controller.memberReleationControllers.insert(index, removedRelationController);
+  //       controller.memberAgeControllers.insert(index, removedAgeController);
+  //       controller.placeCompleted.insert(index, removedCompleted);
+  //
+  //       if (members != null && removedMember != null) {
+  //         members.insert(index, removedMember);
+  //       }
+  //
+  //       Utils.showToast(response['message'] ?? "Failed to delete member", true);
+  //     }
+  //   } catch (e) {
+  //     /// Restore on error
+  //     controller.places.insert(index, removedPlace);
+  //     controller.memberNameControllers.insert(index, removedNameController);
+  //     controller.memberReleationControllers.insert(index, removedRelationController);
+  //     controller.memberAgeControllers.insert(index, removedAgeController);
+  //     controller.placeCompleted.insert(index, removedCompleted);
+  //
+  //     if (members != null && removedMember != null) {
+  //       members.insert(index, removedMember);
+  //     }
+  //
+  //     Utils.showToast("Something went wrong", true);
+  //   }
+  //
+  //   if (controller.places.isEmpty) {
+  //     controller.isPlaceExpanded.value = false;
+  //   }
+  // }
 
-    if (index < 0 || index >= controller.places.length) {
-      Utils.showToast("Invalid member index", true);
+  Future<void> deleteMember(String memberId, int index) async {
+    // 1. Safety Check
+    if (index < 0 || index >= memberNameControllers.length) {
+      print("Error: Index $index is out of bounds for list length ${memberNameControllers.length}");
       return;
     }
 
-    final members = controller.getMyProfileModel.value?.data?.members;
+    // 2. OPTIMISTIC UPDATE: Remove from UI immediately
+    // Since these are now .obs (RxLists), the UI will react instantly
+    memberNameControllers.removeAt(index);
+    memberReleationControllers.removeAt(index);
+    memberAgeControllers.removeAt(index);
 
-    /// Backup data
-    final removedPlace = controller.places[index];
-    final removedNameController = controller.memberNameControllers[index];
-    final removedRelationController = controller.memberReleationControllers[index];
-    final removedAgeController = controller.memberAgeControllers[index];
-    final removedCompleted = controller.placeCompleted[index];
-    final removedMember = members != null && members.length > index
-        ? members[index]
-        : null;
 
-    /// 🔥 Remove instantly from UI
-    controller.places.removeAt(index);
-    controller.memberNameControllers.removeAt(index);
-    controller.memberReleationControllers.removeAt(index);
-    controller.memberAgeControllers.removeAt(index);
-    controller.placeCompleted.removeAt(index);
-
-    if (members != null && members.length > index) {
-      members.removeAt(index);
-    }
+    if (index < placeCompleted.length) placeCompleted.removeAt(index);
+    if (index < places.length) places.removeAt(index);
 
     try {
       final response = await baseService.baseDeleteAPI(
         ApiEndPoints.deleteMember(memberId),
       );
 
-      if (response['success'] == true) {
+      if (response != null && response['success'] == true) {
         Utils.showToast("Member deleted successfully", false);
+        // Optional: Update your main profile model locally so it stays in sync
+        getMyProfileModel.value?.data?.members?.removeAt(index);
       } else {
-        /// Restore everything if API fails
-        controller.places.insert(index, removedPlace);
-        controller.memberNameControllers.insert(index, removedNameController);
-        controller.memberReleationControllers.insert(index, removedRelationController);
-        controller.memberAgeControllers.insert(index, removedAgeController);
-        controller.placeCompleted.insert(index, removedCompleted);
-
-        if (members != null && removedMember != null) {
-          members.insert(index, removedMember);
-        }
-
-        Utils.showToast(response['message'] ?? "Failed to delete member", true);
+        // ROLLBACK: If API fails, reload data to bring the member back to the UI
+        await fetchMyProfile();
+        Utils.showToast(response?['message'] ?? "Failed to delete", true);
       }
     } catch (e) {
-      /// Restore on error
-      controller.places.insert(index, removedPlace);
-      controller.memberNameControllers.insert(index, removedNameController);
-      controller.memberReleationControllers.insert(index, removedRelationController);
-      controller.memberAgeControllers.insert(index, removedAgeController);
-      controller.placeCompleted.insert(index, removedCompleted);
-
-      if (members != null && removedMember != null) {
-        members.insert(index, removedMember);
-      }
-
-      Utils.showToast("Something went wrong", true);
-    }
-
-    if (controller.places.isEmpty) {
-      controller.isPlaceExpanded.value = false;
+      // ROLLBACK on network error
+      await fetchMyProfile();
+      Utils.showToast("Connection error", true);
     }
   }
   void clearSetupProfileFields(){

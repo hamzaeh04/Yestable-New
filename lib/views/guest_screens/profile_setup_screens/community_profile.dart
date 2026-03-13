@@ -644,37 +644,40 @@ Widget yuckOrYumList({
   VoidCallback? onYumTap,
   VoidCallback? onYuckTap,
 }) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      customText(
-        text: title,
-        fontWeight: FontWeight.w500,
-        color: Colors.black,
-        fontSize: 14.5.sp
-      ),
-      SizedBox(height: 0.6.h),
-      Row(
-        children: [
-          // ✅ Yum button
-          _buildYuckYumButton(
-            label: '😋 Yum',
-            isSelected: isSelected,      // true → green
-            color: color,
-            onTap: onYumTap,
-          ),
-          SizedBox(width: 2.w),
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 0.5.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        customText(
+          text: title,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+          fontSize: 14.5.sp
+        ),
+        SizedBox(height: 0.6.h),
+        Row(
+          children: [
+            // ✅ Yum button
+            _buildYuckYumButton(
+              label: '😋 Yum',
+              isSelected: isSelected,      // true → green
+              color: color,
+              onTap: onYumTap,
+            ),
+            SizedBox(width: 2.w),
 
-          // ✅ Yuck button
-          _buildYuckYumButton(
-            label: '😝 Yuck',
-            isSelected: !isSelected,     // false → green
-            color: color,
-            onTap: onYuckTap,
-          ),
-        ],
-      ),
-    ],
+            // ✅ Yuck button
+            _buildYuckYumButton(
+              label: '😝 Yuck',
+              isSelected: !isSelected,     // false → green
+              color: color,
+              onTap: onYuckTap,
+            ),
+          ],
+        ),
+      ],
+    ),
   );
 }
 
