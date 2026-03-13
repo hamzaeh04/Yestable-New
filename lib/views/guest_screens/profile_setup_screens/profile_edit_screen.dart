@@ -525,35 +525,71 @@ class ProfileEditScreen extends StatelessWidget {
                                                             .start,
                                                     children: [
                                                       /// 🔹 DYNAMIC SET PLACE FORMS
-                                                      Obx(
-                                                            () {
-                                                          final controller = navigationController.controller;
+                                                      // Obx(
+                                                      //       () {
+                                                      //     final controller = navigationController.controller;
+                                                      //
+                                                      //     return ListView.builder(
+                                                      //       shrinkWrap: true,
+                                                      //       padding: EdgeInsets.zero,
+                                                      //       physics: NeverScrollableScrollPhysics(),
+                                                      //       itemCount: controller.places.length,
+                                                      //       itemBuilder: (context, index) {
+                                                      //
+                                                      //         /// Check if previous form is completed safely
+                                                      //         bool showForm = false;
+                                                      //
+                                                      //         if (index == 0) {
+                                                      //           showForm = true;
+                                                      //         } else if (controller.placeCompleted.length > index - 1) {
+                                                      //           showForm = controller.placeCompleted[index - 1];
+                                                      //         }
+                                                      //
+                                                      //         if (!showForm) {
+                                                      //           return const SizedBox.shrink();
+                                                      //         }
+                                                      //
+                                                      //         return setPlace(index);
+                                                      //       },
+                                                      //     );
+                                                      //   },
+                                                      // ),
 
-                                                          return ListView.builder(
-                                                            shrinkWrap: true,
-                                                            padding: EdgeInsets.zero,
-                                                            physics: NeverScrollableScrollPhysics(),
-                                                            itemCount: controller.places.length,
-                                                            itemBuilder: (context, index) {
+                                                      Obx(() {
+                                                        final controller = navigationController.controller;
+                                                        final members = controller.getMyProfileModel.value?.data?.members ?? [];
 
-                                                              /// Check if previous form is completed safely
-                                                              bool showForm = false;
+                                                        // Always show at least 1 place so user can add a member,
+                                                        // even when the backend returns an empty members list.
+                                                        int displayCount;
+                                                        if (members.isEmpty) {
+                                                          displayCount = 1;
+                                                        } else {
+                                                          displayCount = members.length >= 4 ? 4 : members.length;
+                                                        }
 
-                                                              if (index == 0) {
-                                                                showForm = true;
-                                                              } else if (controller.placeCompleted.length > index - 1) {
-                                                                showForm = controller.placeCompleted[index - 1];
-                                                              }
+                                                        // Also respect any extra "places" the user has added,
+                                                        // capped at 4 total.
+                                                        if (controller.places.length > displayCount) {
+                                                          displayCount = controller.places.length;
+                                                        }
+                                                        if (displayCount > 4) {
+                                                          displayCount = 4;
+                                                        }
 
-                                                              if (!showForm) {
-                                                                return const SizedBox.shrink();
-                                                              }
+                                                        // Ensure places list is at least displayCount long so
+                                                        // the "Add more" logic (which relies on places indices)
+                                                        // stays consistent.
+                                                        while (controller.places.length < displayCount) {
+                                                          controller.places.add(controller.places.length);
+                                                        }
 
-                                                              return setPlace(index);
-                                                            },
-                                                          );
-                                                        },
-                                                      ),
+                                                        return Column(
+                                                          children: List.generate(displayCount, (index) {
+                                                            return setPlace(index);
+                                                          }),
+                                                        );
+                                                      }),
                                                       SizedBox(height: 1.5.h),
 
                                                       /// 🔹 ADD MORE BUTTON
@@ -929,175 +965,341 @@ Widget pronounItem(String title, int index) {
   );
 }
 
+// Widget setPlace(int index, {String? title}) {
+//   final ProfileController controller = Get.find<ProfileController>();
+//
+//   final members = controller.getMyProfileModel.value?.data?.members;
+//   final isCompleted =
+//       controller.placeCompleted.length > index
+//           ? controller.placeCompleted[index]
+//           : false;
+//
+//   // Ensure controller lists are big enough
+//   while (controller.memberNameControllers.length <= index) {
+//     controller.memberNameControllers.add(TextEditingController());
+//     controller.memberReleationControllers.add(TextEditingController());
+//     controller.memberAgeControllers.add(TextEditingController());
+//   }
+//
+//   while (controller.placeCompleted.length <= index) {
+//     controller.placeCompleted.add(false);
+//   }
+//   // Get memberId for this index
+//   final memberId =
+//       (members != null && members.length > index) ? members[index].id : null;
+//
+//   // 🔹 Update controllers AFTER build to avoid setState/build conflicts
+//   if (isCompleted && members != null && members.length > index) {
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       controller.memberNameControllers[index].text = members[index].name ?? "";
+//       controller.memberReleationControllers[index].text =
+//           members[index].relation ?? "";
+//       controller.memberAgeControllers[index].text =
+//           members[index].age != null ? members[index].age.toString() : "";
+//     });
+//   }
+//
+//   return Padding(
+//     padding: EdgeInsets.only(bottom: 1.5.h),
+//     child: Column(
+//       children: [
+//         if (index > 0) ...[
+//           SizedBox(height: 1.h),
+//           Divider(thickness: 0.4),
+//           SizedBox(height: 1.h),
+//         ],
+//
+//         /// ================= NAME =================
+//         Row(
+//           children: [
+//             customText(text: 'Name', fontSize: 15.5.sp),
+//             SizedBox(width: 13.w),
+//             Expanded(
+//               child: TextField(
+//                 controller: controller.memberNameControllers[index],
+//                 readOnly: isCompleted,
+//                 decoration: InputDecoration(
+//                   hintText: 'Robert Elbert',
+//                   isDense: true,
+//                   contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
+//                   enabledBorder: UnderlineInputBorder(
+//                     borderSide: BorderSide(color: Colors.grey, width: 0.6),
+//                   ),
+//                   focusedBorder: UnderlineInputBorder(
+//                     borderSide: BorderSide(color: Colors.grey, width: 0.6),
+//                   ),
+//                   suffixIcon: InkWell(
+//                     onTap: () async {
+//                       if (memberId != null) {
+//                         await controller.deleteMember(memberId, index);
+//                         // No need to remove controllers here; the API already does it
+//                       }
+//                     },
+//                     child: Icon(Icons.delete, size: 18.sp),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         SizedBox(height: 0.8.h),
+//
+//         /// ================= RELATION =================
+//         Row(
+//           children: [
+//             customText(text: 'Relation', fontSize: 15.5.sp),
+//             SizedBox(width: 8.w),
+//             Expanded(
+//               child: TextField(
+//                 controller: controller.memberReleationControllers[index],
+//                 readOnly: isCompleted,
+//                 decoration: InputDecoration(
+//                   hintText: 'Son',
+//                   isDense: true,
+//                   contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
+//                   enabledBorder: UnderlineInputBorder(
+//                     borderSide: BorderSide(color: Colors.grey, width: 0.6),
+//                   ),
+//                   focusedBorder: UnderlineInputBorder(
+//                     borderSide: BorderSide(color: Colors.grey, width: 0.6),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         SizedBox(height: 0.8.h),
+//
+//         /// ================= AGE =================
+//         Row(
+//           children: [
+//             customText(text: 'Age', fontSize: 15.5.sp),
+//             SizedBox(width: 16.w),
+//             Expanded(
+//               child: TextField(
+//                 controller: controller.memberAgeControllers[index],
+//                 keyboardType: TextInputType.number,
+//                 readOnly: isCompleted,
+//                 decoration: InputDecoration(
+//                   hintText: '15',
+//                   isDense: true,
+//                   contentPadding: EdgeInsets.symmetric(vertical: 0.8.h),
+//                   enabledBorder: UnderlineInputBorder(
+//                     borderSide: BorderSide(color: Colors.grey, width: 0.6),
+//                   ),
+//                   focusedBorder: UnderlineInputBorder(
+//                     borderSide: BorderSide(color: Colors.grey, width: 0.6),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         SizedBox(height: 2.h),
+//
+//         /// ================= SET PREFERENCES =================
+//         InkWell(
+//           onTap: () {
+//             controller.setData(index: index, screenTitle: title ?? "Robert");
+//
+//             while (controller.placeCompleted.length <= index) {
+//               controller.placeCompleted.add(false);
+//             }
+//             controller.placeCompleted[index] = true;
+//             controller.isPreferences.value = true;
+//             Get.toNamed('allergiesdietryscreen');
+//           },
+//           child: Container(
+//             decoration: BoxDecoration(
+//               color: greenColor,
+//               borderRadius: BorderRadius.circular(20.sp),
+//               border: Border.all(width: 0.1.w, color: greenColor),
+//             ),
+//             child: Padding(
+//               padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.3.h),
+//               child: customText(
+//                 text: "Set Preferences",
+//                 fontSize: 15.sp,
+//                 fontWeight: FontWeight.w500,
+//                 color: whiteColor,
+//               ),
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 Widget setPlace(int index, {String? title}) {
-  final ProfileController controller = Get.find<ProfileController>();
+  final controller = Get.find<ProfileController>();
 
-  final members = controller.getMyProfileModel.value?.data?.members;
-  final isCompleted =
-      controller.placeCompleted.length > index
-          ? controller.placeCompleted[index]
-          : false;
+    final members = controller.getMyProfileModel.value?.data?.members ?? [];
 
-  // Ensure controller lists are big enough
-  while (controller.memberNameControllers.length <= index) {
-    controller.memberNameControllers.add(TextEditingController());
-    controller.memberReleationControllers.add(TextEditingController());
-    controller.memberAgeControllers.add(TextEditingController());
-  }
+    // Ensure controllers are long enough for the index
+    while (controller.memberNameControllers.length <= index) {
+      controller.memberNameControllers.add(TextEditingController());
+      controller.memberReleationControllers.add(TextEditingController());
+      controller.memberAgeControllers.add(TextEditingController());
+      controller.placeCompleted.add(false);
+    }
 
-  while (controller.placeCompleted.length <= index) {
-    controller.placeCompleted.add(false);
-  }
-  // Get memberId for this index
-  final memberId =
-      (members != null && members.length > index) ? members[index].id : null;
-
-  // 🔹 Update controllers AFTER build to avoid setState/build conflicts
-  if (isCompleted && members != null && members.length > index) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.memberNameControllers[index].text = members[index].name ?? "";
-      controller.memberReleationControllers[index].text =
-          members[index].relation ?? "";
+    // If API has members, use their data; otherwise keep fields empty
+    if (index < members.length && members.isNotEmpty) {
+      final member = members[index];
+      controller.memberNameControllers[index].text = member.name ?? '';
+      controller.memberReleationControllers[index].text = member.relation ?? '';
       controller.memberAgeControllers[index].text =
-          members[index].age != null ? members[index].age.toString() : "";
-    });
-  }
+      member.age != null ? member.age.toString() : '';
+    } else {
+      controller.memberNameControllers[index].text = '';
+      controller.memberReleationControllers[index].text = '';
+      controller.memberAgeControllers[index].text = '';
+    }
 
-  return Padding(
-    padding: EdgeInsets.only(bottom: 1.5.h),
-    child: Column(
-      children: [
-        if (index > 0) ...[
-          SizedBox(height: 1.h),
-          Divider(thickness: 0.4),
-          SizedBox(height: 1.h),
-        ],
+    final isCompleted = controller.placeCompleted.length > index
+        ? controller.placeCompleted[index]
+        : false;
 
-        /// ================= NAME =================
-        Row(
-          children: [
-            customText(text: 'Name', fontSize: 15.5.sp),
-            SizedBox(width: 13.w),
-            Expanded(
-              child: TextField(
-                controller: controller.memberNameControllers[index],
-                readOnly: isCompleted,
-                decoration: InputDecoration(
-                  hintText: 'Robert Elbert',
-                  isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                  ),
-                  suffixIcon: InkWell(
-                    onTap: () async {
-                      if (memberId != null) {
+    final memberId = (index < members.length && members.isNotEmpty)
+        ? members[index].id
+        : null;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: 1.5.h),
+      child: Column(
+        children: [
+          if (index > 0) ...[
+            SizedBox(height: 1.h),
+            Divider(thickness: 0.4),
+            SizedBox(height: 1.h),
+          ],
+
+          /// NAME
+          Row(
+            children: [
+              customText(text: 'Name', fontSize: 15.5.sp),
+              SizedBox(width: 13.w),
+              Expanded(
+                child: TextField(
+                  controller: controller.memberNameControllers[index],
+                  readOnly: isCompleted,
+                  decoration: InputDecoration(
+                    hintText: 'Robert Elbert',
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                    ),
+                    suffixIcon: memberId != null
+                        ? InkWell(
+                      onTap: () async {
                         await controller.deleteMember(memberId, index);
-                        // No need to remove controllers here; the API already does it
-                      }
-                    },
-                    child: Icon(Icons.delete, size: 18.sp),
+                      },
+                      child: Icon(Icons.delete, size: 18.sp),
+                    )
+                        : null,
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
 
-        SizedBox(height: 0.8.h),
+          SizedBox(height: 0.8.h),
 
-        /// ================= RELATION =================
-        Row(
-          children: [
-            customText(text: 'Relation', fontSize: 15.5.sp),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: TextField(
-                controller: controller.memberReleationControllers[index],
-                readOnly: isCompleted,
-                decoration: InputDecoration(
-                  hintText: 'Son',
-                  isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        SizedBox(height: 0.8.h),
-
-        /// ================= AGE =================
-        Row(
-          children: [
-            customText(text: 'Age', fontSize: 15.5.sp),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: TextField(
-                controller: controller.memberAgeControllers[index],
-                keyboardType: TextInputType.number,
-                readOnly: isCompleted,
-                decoration: InputDecoration(
-                  hintText: '15',
-                  isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 0.8.h),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+          /// RELATION
+          Row(
+            children: [
+              customText(text: 'Relation', fontSize: 15.5.sp),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: TextField(
+                  controller: controller.memberReleationControllers[index],
+                  readOnly: isCompleted,
+                  decoration: InputDecoration(
+                    hintText: 'Son',
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
 
-        SizedBox(height: 2.h),
+          SizedBox(height: 0.8.h),
 
-        /// ================= SET PREFERENCES =================
-        InkWell(
-          onTap: () {
-            controller.setData(index: index, screenTitle: title ?? "Robert");
+          /// AGE
+          Row(
+            children: [
+              customText(text: 'Age', fontSize: 15.5.sp),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: TextField(
+                  controller: controller.memberAgeControllers[index],
+                  keyboardType: TextInputType.number,
+                  readOnly: isCompleted,
+                  decoration: InputDecoration(
+                    hintText: '15',
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 0.8.h),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
 
-            while (controller.placeCompleted.length <= index) {
-              controller.placeCompleted.add(false);
-            }
-            controller.placeCompleted[index] = true;
-            controller.isPreferences.value = true;
-            Get.toNamed('allergiesdietryscreen');
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: greenColor,
-              borderRadius: BorderRadius.circular(20.sp),
-              border: Border.all(width: 0.1.w, color: greenColor),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.3.h),
-              child: customText(
-                text: "Set Preferences",
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w500,
-                color: whiteColor,
+          SizedBox(height: 2.h),
+
+          /// SET PREFERENCES BUTTON
+          InkWell(
+            onTap: () {
+              controller.setData(index: index, screenTitle: title ?? "Robert");
+
+              while (controller.placeCompleted.length <= index) {
+                controller.placeCompleted.add(false);
+              }
+              controller.placeCompleted[index] = true;
+              controller.isPreferences.value = true;
+              Get.toNamed('allergiesdietryscreen');
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: greenColor,
+                borderRadius: BorderRadius.circular(20.sp),
+                border: Border.all(width: 0.1.w, color: greenColor),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.3.h),
+                child: customText(
+                  text: "Set Preferences",
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                  color: whiteColor,
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
 }
-
 Widget customProfileField({
   required String hint,
   TextEditingController? controller,
