@@ -1118,14 +1118,13 @@ class ProfileController extends GetxController {
   Future<void> fetchMyProfile() async {
     try {
       // Optional: show loading
-
       final response = await baseService.baseGetAPI(ApiEndPoints.getMyProfile);
 
       // Check if the response is successful
       if (response['success'] == true && response['data'] != null) {
         // Update your reactive model
         getMyProfileModel.value = GetMyProfile.fromJson(response);
-
+        print('Responseeee: ${getMyProfileModel.value}');
         // Show a success message
         Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
         initializeMembers(); // <--- call it here
