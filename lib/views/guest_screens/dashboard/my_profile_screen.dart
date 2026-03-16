@@ -449,16 +449,9 @@ class MyProfileScreen extends StatelessWidget {
                                                       .allergens
                                                       .length,
                                                   (index) {
-                                                    final key = controller
-                                                        .controller
-                                                        .allergensMap
-                                                        .keys
-                                                        .elementAt(index);
-                                                    final rawValue =
-                                                        controller
-                                                            .controller
-                                                            .allergensMap[key] ??
-                                                        '';
+                                                    const keys = ["peanut", "treeNuts", "sesame", "gluten", "eggs", "soy", "fish", "shellFish", "dairy"];
+                                                    final key = keys.length > index ? keys[index] : '';
+                                                    final rawValue = controller.controller.allergensMap.isNotEmpty ? (controller.controller.allergensMap[key] ?? '') : '';
 
                                                     // Use the new function to get simplified severity
                                                     final severity = controller

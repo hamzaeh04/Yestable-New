@@ -13,14 +13,15 @@ class WelcomeController extends GetxController {
   void onInit() {
     super.onInit();
     Future.delayed(const Duration(seconds: 3), () async{
-      var token = await prefs.getString(LocalDBKeys.TOKEN);
-      print("jdjddjdj: ${token}");
-
-      if (token == null || token.isEmpty) {
-        Get.offNamed(nextRoute);
-      } else {
-        Get.offNamed("bottomnavigationbar");
-      }
+      Get.offNamed(nextRoute);
+      // var token = await prefs.getString(LocalDBKeys.TOKEN);
+      // print("jdjddjdj: ${token}");
+      //
+      // if (token == null || token.isEmpty) {
+      //   Get.offNamed(nextRoute);
+      // } else {
+      //   Get.offNamed("bottomnavigationbar");
+      // }
     });
   }
 }

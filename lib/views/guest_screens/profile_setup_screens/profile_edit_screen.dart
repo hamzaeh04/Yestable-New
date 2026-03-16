@@ -557,35 +557,8 @@ class ProfileEditScreen extends StatelessWidget {
 
                                                       Obx(() {
                                                         final controller = navigationController.controller;
-                                                        final members = controller.getMyProfileModel.value?.data?.members ?? [];
-
-                                                        // Always show at least 1 place so user can add a member,
-                                                        // even when the backend returns an empty members list.
-                                                        int displayCount;
-                                                        if (members.isEmpty) {
-                                                          displayCount = 1;
-                                                        } else {
-                                                          displayCount = members.length >= 4 ? 4 : members.length;
-                                                        }
-
-                                                        // Also respect any extra "places" the user has added,
-                                                        // capped at 4 total.
-                                                        if (controller.places.length > displayCount) {
-                                                          displayCount = controller.places.length;
-                                                        }
-                                                        if (displayCount > 4) {
-                                                          displayCount = 4;
-                                                        }
-
-                                                        // Ensure places list is at least displayCount long so
-                                                        // the "Add more" logic (which relies on places indices)
-                                                        // stays consistent.
-                                                        while (controller.places.length < displayCount) {
-                                                          controller.places.add(controller.places.length);
-                                                        }
-
                                                         return Column(
-                                                          children: List.generate(displayCount, (index) {
+                                                          children: List.generate(controller.places.length, (index) {
                                                             return setPlace(index);
                                                           }),
                                                         );
@@ -1135,37 +1108,16 @@ Widget pronounItem(String title, int index) {
 // }
 Widget setPlace(int index, {String? title}) {
   final controller = Get.find<ProfileController>();
+  final members = controller.getMyProfileModel.value?.data?.members ?? [];
 
-    final members = controller.getMyProfileModel.value?.data?.members ?? [];
+  // Controllers are now securely maintained by ProfileController.
+  final isMemberCompleted = (index < members.length && members.isNotEmpty)
+      ? (members[index].profileCompleted ?? false)
+      : false;
 
-    // Ensure controllers are long enough for the index
-    while (controller.memberNameControllers.length <= index) {
-      controller.memberNameControllers.add(TextEditingController());
-      controller.memberReleationControllers.add(TextEditingController());
-      controller.memberAgeControllers.add(TextEditingController());
-      controller.placeCompleted.add(false);
-    }
-
-    // If API has members, use their data; otherwise keep fields empty
-    if (index < members.length && members.isNotEmpty) {
-      final member = members[index];
-      controller.memberNameControllers[index].text = member.name ?? '';
-      controller.memberReleationControllers[index].text = member.relation ?? '';
-      controller.memberAgeControllers[index].text =
-      member.age != null ? member.age.toString() : '';
-    } else {
-      controller.memberNameControllers[index].text = '';
-      controller.memberReleationControllers[index].text = '';
-      controller.memberAgeControllers[index].text = '';
-    }
-
-    final isCompleted = controller.placeCompleted.length > index
-        ? controller.placeCompleted[index]
-        : false;
-
-    final memberId = (index < members.length && members.isNotEmpty)
-        ? members[index].id
-        : null;
+  final memberId = (index < members.length && members.isNotEmpty)
+      ? members[index].id
+      : null;
 
     return Padding(
       padding: EdgeInsets.only(bottom: 1.5.h),
@@ -1185,7 +1137,7 @@ Widget setPlace(int index, {String? title}) {
               Expanded(
                 child: TextField(
                   controller: controller.memberNameControllers[index],
-                  readOnly: isCompleted,
+                  readOnly: isMemberCompleted,
                   decoration: InputDecoration(
                     hintText: 'Robert Elbert',
                     isDense: true,
@@ -1220,7 +1172,7 @@ Widget setPlace(int index, {String? title}) {
               Expanded(
                 child: TextField(
                   controller: controller.memberReleationControllers[index],
-                  readOnly: isCompleted,
+                  readOnly: isMemberCompleted,
                   decoration: InputDecoration(
                     hintText: 'Son',
                     isDense: true,
@@ -1248,7 +1200,7 @@ Widget setPlace(int index, {String? title}) {
                 child: TextField(
                   controller: controller.memberAgeControllers[index],
                   keyboardType: TextInputType.number,
-                  readOnly: isCompleted,
+                  readOnly: isMemberCompleted,
                   decoration: InputDecoration(
                     hintText: '15',
                     isDense: true,
@@ -1269,21 +1221,26 @@ Widget setPlace(int index, {String? title}) {
 
           /// SET PREFERENCES BUTTON
           InkWell(
-            onTap: () {
+            onTap: isMemberCompleted ? null : () async {
               controller.setData(index: index, screenTitle: title ?? "Robert");
 
-              while (controller.placeCompleted.length <= index) {
-                controller.placeCompleted.add(false);
+              // If member is not yet in the DB, add them first
+              if (memberId == null) {
+                bool success = await controller.addMember(activeIndex: index);
+                if (!success) return;
+                // If they already exist, we should still ensure the controller knows their ID
+                controller.memberId = memberId ?? '';
               }
-              controller.placeCompleted[index] = true;
+
               controller.isPreferences.value = true;
               Get.toNamed('allergiesdietryscreen');
+
             },
             child: Container(
               decoration: BoxDecoration(
-                color: greenColor,
+                color: isMemberCompleted ? Colors.grey : greenColor,
                 borderRadius: BorderRadius.circular(20.sp),
-                border: Border.all(width: 0.1.w, color: greenColor),
+                border: Border.all(width: 0.1.w, color: isMemberCompleted ? Colors.grey : greenColor),
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.3.h),

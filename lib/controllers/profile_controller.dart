@@ -34,24 +34,44 @@ class ProfileController extends GetxController {
   void initializeMembers() {
     final membersFromApi = getMyProfileModel.value?.data?.members ?? [];
 
+    // Clear existing to avoid duplicates
+    memberNameControllers.clear();
+    memberReleationControllers.clear();
+    memberAgeControllers.clear();
+    placeCompleted.clear();
+    places.clear();
+
     if (membersFromApi.isEmpty) {
       // Add **at least one empty row** so UI has fields
       addMemberList();
+      places.add(0);
     } else {
-      for (var member in membersFromApi) {
-        addMemberList(member as Map<String, dynamic>?);
+      for (int i = 0; i < membersFromApi.length; i++) {
+        final member = membersFromApi[i];
+        memberNameControllers.add(TextEditingController(text: member.name ?? ''));
+        memberReleationControllers.add(TextEditingController(text: member.relation ?? ''));
+        memberAgeControllers.add(TextEditingController(text: member.age != null ? member.age.toString() : ''));
+        placeCompleted.add(true); // Since it's from API, we consider the basic details filled.
+        places.add(i);
+      }
+      
+      // Auto-open next empty form if less than 4 members
+      if (membersFromApi.length < 4) {
+        addMemberList();
+        places.add(membersFromApi.length);
       }
     }
   }
 
-  void addMemberList([Map<String, dynamic>? member]) {
-    memberNameControllers.add(TextEditingController(text: member?['name'] ?? ''));
-    memberReleationControllers.add(TextEditingController(text: member?['relation'] ?? ''));
-    memberAgeControllers.add(TextEditingController(text: member?['age']?.toString() ?? ''));
+  void addMemberList() {
+    memberNameControllers.add(TextEditingController());
+    memberReleationControllers.add(TextEditingController());
+    memberAgeControllers.add(TextEditingController());
     placeCompleted.add(false);
   }
 
   void setData({required int index, String? screenTitle}) {
+    selectedIndex.value = index;
     // Save data or open next screen
     // Example: print data
     print('Member ${index + 1}: '
@@ -59,8 +79,6 @@ class ProfileController extends GetxController {
         '${memberReleationControllers[index].text}, '
         '${memberAgeControllers[index].text}');
   }
-
-
 
   var profilePicture = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
@@ -348,9 +366,17 @@ class ProfileController extends GetxController {
 
   var foodMoodOptionList = <Map<String, String>>[].obs; // reactive list
 // ✅ Call this after every select/deselect
+//   void updateFoodMoodList() {
+//     foodMoodOptionList.value =
+//         foodNationality.map((i) => {"mood": foodOptions[i]["name"]!}).toList();
+//
+//     print("🔥 Selected FoodMoodOptionList: $foodMoodOptionList");
+//   }
   void updateFoodMoodList() {
-    foodMoodOptionList.value =
-        foodNationality.map((i) => {"mood": foodOptions[i]["name"]!}).toList();
+    foodMoodOptionList.value = foodNationality
+        .where((i) => i >= 0 && i < foodOptions.length) // ✅ filter invalid indexes
+        .map((i) => {"mood": foodOptions[i]["name"]!})
+        .toList();
 
     print("🔥 Selected FoodMoodOptionList: $foodMoodOptionList");
   }
@@ -936,7 +962,7 @@ class ProfileController extends GetxController {
       }
     } catch (e) {
       print("Unexpected error: $e");
-      Utils.showToast("Something went wrong", true);
+      Utils.showToast("Something went wrong${e}", true);
     }
   }
 
@@ -1002,7 +1028,7 @@ class ProfileController extends GetxController {
         showAssistanceOther.value = !showAssistanceOther.value;
         final index = selectedIndex.value;
         print(isPreferences.value);
-        if (isPreferences.value == true) {
+        if (isPreferences.value == true && index >= 0 && index < placeCompleted.length) {
           print(isPreferences.value);
           placeCompleted[index] = true;
           // Show dialog
@@ -1011,8 +1037,9 @@ class ProfileController extends GetxController {
           // Delay + navigation
           Future.delayed(Duration(seconds: 3), () {
             if(isPreferences.value == true) { // check again
+              fetchMyProfile(); // Refresh to update profileCompleted status
               Get.toNamed('profileeditscreen');
-             isPreferences.value = false;
+              isPreferences.value = false;
             }
             print(isPreferences.value);
           });
@@ -1030,70 +1057,56 @@ class ProfileController extends GetxController {
   }
 
 
-  Future<void> addMember({int activeIndex = 0}) async {
+  Future<bool> addMember({required int activeIndex}) async {
     try {
-      final controller = Get.find<ProfileController>();
-
       // Safety check: make sure lists are long enough
-      if (activeIndex >= controller.memberNameControllers.length ||
-          activeIndex >= controller.memberReleationControllers.length ||
-          activeIndex >= controller.memberAgeControllers.length) {
+      if (activeIndex < 0 ||
+          activeIndex >= memberNameControllers.length ||
+          activeIndex >= memberReleationControllers.length ||
+          activeIndex >= memberAgeControllers.length) {
         Utils.showToast("Invalid member index", true);
-        return;
+        return false;
       }
 
-      // Construct member payload only for completed members up to activeIndex
-      List<Map<String, dynamic>> membersPayload = [];
-
-      for (int i = 0; i <= activeIndex; i++) {
-        if (controller.placeCompleted[i]) {
-          membersPayload.add({
-            "name": controller.memberNameControllers[i].text.trim(),
-            "relation": controller.memberReleationControllers[i].text.trim(),
-            "age": int.tryParse(controller.memberAgeControllers[i].text.trim()) ?? 0,
-          });
-        } else if (i == activeIndex) {
-          // Include the active member even if not completed yet
-          membersPayload.add({
-            "name": controller.memberNameControllers[i].text.trim(),
-            "relation": controller.memberReleationControllers[i].text.trim(),
-            "age": int.tryParse(controller.memberAgeControllers[i].text.trim()) ?? 0,
-          });
-        }
-      }
-
-      // Final API body
-      Map<String, dynamic> body = {"members": membersPayload};
+      // Construct member payload ONLY for the member at activeIndex
+      Map<String, dynamic> body = {
+        "members": [
+          {
+            "name": memberNameControllers[activeIndex].text.trim(),
+            "relation": memberReleationControllers[activeIndex].text.trim(),
+            "age": int.tryParse(memberAgeControllers[activeIndex].text.trim()) ?? 0,
+          }
+        ]
+      };
 
       print("Payload to send: $body");
 
-      // Make PATCH API call
+      // Make POST API call
       final response = await baseService.basePostAPI(
         ApiEndPoints.addMember,
         body,
-        loading: true, // show loading if needed
+        loading: true,
       );
 
-      if (response["success"] == true) {
+      if (response != null && response["success"] == true) {
         Utils.showToast("Member Added Successfully", false);
         print("Response: $response");
 
-        // Navigate wherever you want
-        Get.toNamed("yourrootandrules");
-
         // Save the last added member ID
-        if (response["data"] != null && response["data"].isNotEmpty) {
+        if (response["data"] != null && response["data"] is List && response["data"].isNotEmpty) {
           memberId = response["data"][0]["_id"];
           print("Member ID: $memberId");
         }
+        return true;
       } else {
-        // API returned error
-        print("Error: ${response["message"]}");
-        Utils.showToast('${response['message']}', true);
+        print("Error: ${response?["message"]}");
+        Utils.showToast('${response?['message'] ?? "Failed to add member"}', true);
+        return false;
       }
     } catch (e) {
       print("Unexpected error: $e");
       Utils.showToast("Something went wrong", true);
+      return false;
     }
   }
   Future<void> fetchMyProfile() async {
@@ -1211,6 +1224,12 @@ class ProfileController extends GetxController {
 
     if (index < placeCompleted.length) placeCompleted.removeAt(index);
     if (index < places.length) places.removeAt(index);
+
+    // If the list is now empty, ensure we add one blank place
+    if (places.isEmpty) {
+      addMemberList();
+      places.add(0);
+    }
 
     try {
       final response = await baseService.baseDeleteAPI(
