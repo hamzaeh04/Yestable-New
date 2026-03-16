@@ -33,7 +33,7 @@ class AllergiesDietryScreen extends StatelessWidget {
                 Obx(() =>
                   controller.isPreferences.value == true ?
                   customText(
-                    text: "${controller.memberNameControllers.isNotEmpty ? controller.memberNameControllers.last.text : ""} Food Boundaries & Beliefs",                    fontSize: 23.sp,
+                    text: "${(controller.selectedIndex.value != -1 && controller.memberNameControllers.length > controller.selectedIndex.value) ? controller.memberNameControllers[controller.selectedIndex.value].text : ""} Food Boundaries & Beliefs",                    fontSize: 23.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
                     height: 0.12.h,
@@ -298,17 +298,8 @@ class AllergiesDietryScreen extends StatelessWidget {
                 // ),
                 SizedBox(height: 2.h),
 
-                /// Continue Button
                 animatedButton((){
-
-                  if( controller.isPreferences.value == true){
-                    controller.addMember();
-                  }
-                 else{
-                    Get.toNamed("yourrootandrules");
-                  }
-
-
+                  Get.toNamed("yourrootandrules");
                 }, "Continue")
               ],
             ),

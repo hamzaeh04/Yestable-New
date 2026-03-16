@@ -49,6 +49,10 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      style: TextStyle(
+          fontFamily : 'WorkSans',
+        fontSize: 15.sp
+      ),
       controller: controller,
       obscureText: obscureText ?? false,
       keyboardType: keyboardType,

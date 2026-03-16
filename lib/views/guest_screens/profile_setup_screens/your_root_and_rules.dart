@@ -212,6 +212,7 @@ class YourRootAndRules extends StatelessWidget {
                             index,
                             foodType,
                             imgpath: controller.foodOptions[index]['imgPath'],
+                            isSelectable: true
                           );
                         },
                       ),

@@ -454,7 +454,8 @@ class CreateNewEventScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5.w),
                       child: buttonWidget("Continue", whiteColor, colors: greenColor, onTap: () {
-                        Get.toNamed("guestlistscreen");
+                        // Get.toNamed("guestlistscreen");
+                        Get.toNamed("foodmenuscreen");
                       }),
                     ),
                     SizedBox(height: 3.h),

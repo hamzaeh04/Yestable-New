@@ -89,55 +89,55 @@ class FoodMenuScreen extends StatelessWidget {
                                       color: blackColor,
                                       height: 0.13.h
                                     ),
-                                    customText(
-                                      text: "Your guests' safety, visualized.",
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: darkGreyColor,
-                                    ),
+                                    // customText(
+                                    //   text: "Your guests' safety, visualized.",
+                                    //   fontSize: 14.sp,
+                                    //   fontWeight: FontWeight.w400,
+                                    //   color: darkGreyColor,
+                                    // ),
                                   ],
                                 ),
                               ),
+                              // SizedBox(height: 2.h),
+                              // Padding(
+                              //   padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              //   child: Container(
+                              //     width: double.infinity,
+                              //     decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.circular(20.sp),
+                              //       color: whiteColor,
+                              //     ),
+                              //     child: Padding(
+                              //       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                              //       child: Column(
+                              //         mainAxisAlignment: MainAxisAlignment.center,
+                              //         children: [
+                              //           Row(
+                              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //             children: [
+                              //               customText(
+                              //                 text: "Guest Taste preferences",
+                              //                 fontSize: 17.sp,
+                              //                 fontWeight: FontWeight.w600,
+                              //                 fontFamily: "CormorantGaramond",
+                              //                 color: blackColor,
+                              //               ),
+                              //               customText(
+                              //                 text: "18 Guest",
+                              //                 fontSize: 13.sp,
+                              //                 fontWeight: FontWeight.w400,
+                              //                 color: darkGreyColor,
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           SizedBox(height: 2.h),
+                              //           Image.asset("assets/png/pie_chart.png", fit: BoxFit.contain),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                               SizedBox(height: 2.h),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.sp),
-                                    color: whiteColor,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            customText(
-                                              text: "Guest Taste preferences",
-                                              fontSize: 17.sp,
-                                              fontWeight: FontWeight.w600,
-                                              fontFamily: "CormorantGaramond",
-                                              color: blackColor,
-                                            ),
-                                            customText(
-                                              text: "18 Guest",
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: darkGreyColor,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 2.h),
-                                        Image.asset("assets/png/pie_chart.png", fit: BoxFit.contain),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 3.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 5.w),
                                 // child: Row(

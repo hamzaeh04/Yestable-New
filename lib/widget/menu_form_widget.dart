@@ -112,15 +112,14 @@ Future<void> menuFormDialog(BuildContext context) {
                           () => DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
                           value: authController.selectedCategory.value,
-                          hint: Text("Select Type"),
+                          hint: customText(text: "Select Type", fontSize: 15.sp
+                          ),
 
                           items: authController.categories
                               .map(
                                 (category) => DropdownMenuItem<String>(
                               value: category,
-                              child: Text(category, style: TextStyle(
-                                fontWeight: FontWeight.w400
-                              ),),
+                              child: customText(text: category,fontSize: 15.sp),
                             ),
                           )
                               .toList(),

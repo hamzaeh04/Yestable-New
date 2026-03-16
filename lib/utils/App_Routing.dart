@@ -68,7 +68,7 @@ class AppRoutes {
     GetPage(name: '/createneweventscreen', page: () => CreateNewEventScreen()),
     GetPage(name: '/eventpublishscreen', page: () => EventPublishScreen()),
     GetPage(name: '/newguestlistscreen', page: () => NewGuestListScreen()),
-    GetPage(name: '/guestlistscreen', page: () => GuestListScreen()),
+    // GetPage(name: '/guestlistscreen', page: () => GuestListScreen()),
     GetPage(name: '/eventcomfortone', page: () => EventComfortOne()),
     GetPage(name: '/eventcomforttwo', page: () => EventComfortTwo()),
     GetPage(name: '/eventcomfortthree', page: () => EventComfortThree()),
