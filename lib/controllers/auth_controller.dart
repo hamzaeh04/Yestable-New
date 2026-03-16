@@ -79,13 +79,13 @@ class AuthController extends GetxController {
     print("SharedPreferences: ${prefs.getBool(LocalDBKeys.PROFILECOMPLETED)}");
     print(profileCompleted);
     // 🚀 AB DASHBOARD PE JAO
-    // if(profileCompleted == true){
-    //   Get.offAllNamed('bottomnavigationbar');
-    // }
-    // else{
-    //   Get.offAllNamed('/addprofilepicture');
-    // }
-    Get.offAllNamed('/addprofilepicture');
+    if(profileCompleted == true){
+      Get.offAllNamed('bottomnavigationbar');
+    }
+    else{
+      Get.offAllNamed('/addprofilepicture');
+    }
+    // Get.offAllNamed('/addprofilepicture');
     // print("🎉 SIGNUP SUCCESS → ${data["email"]}");
   }
 }

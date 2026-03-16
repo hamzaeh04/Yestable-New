@@ -17,19 +17,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // SIRF YEH SIMPLE CHECK: Kya dialog pehle dikha chuke hain?
-      if (controller.hasShownInvitedDialog.value == false) {
-
-        // 1. Foran lock kar dein taake dobara na chale
-        controller.hasShownInvitedDialog.value = true;
-
-        // 2. Dialog dikha dein
-        youAreInvitedDialog(context);
-
-        print("Dialog shown for the first time.");
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   // SIRF YEH SIMPLE CHECK: Kya dialog pehle dikha chuke hain?
+    //   if (controller.hasShownInvitedDialog.value == false) {
+    //
+    //     // 1. Foran lock kar dein taake dobara na chale
+    //     controller.hasShownInvitedDialog.value = true;
+    //
+    //     // 2. Dialog dikha dein
+    //     youAreInvitedDialog(context);
+    //
+    //     print("Dialog shown for the first time.");
+    //   }
+    // });
     return Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(
@@ -181,75 +181,75 @@ class HomeScreen extends StatelessWidget {
                               },
                                 child: Image.asset("assets/png/calender.png")),
                           ),
-                          SizedBox(height: 3.h),
-
-                          // Invitations
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                customText(
-                                  text: "Invitations",
-                                  fontSize: 19.sp,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "CormorantGaramond",
-                                  color: blackColor,
-                                ),
-                                InkWell(
-                                  onTap: () => controller.goToSeeAllPage(),
-                                  child: Row(
-                                    children: [
-                                      customText(
-                                        text: "View All",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: blackColor,
-                                      ),
-                                      SizedBox(width: 1.w),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        color: blackColor,
-                                        size: 16.sp,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                           SizedBox(height: 1.h),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: Row(
-                              children: [
-                                invitationWidget(
-                                  "Jenera Dinner Event",
-                                  "20+ Attendees",
-                                  "In New York",
-                                  "May 12, 2025",
-                                  "assets/png/dinner_event.png",
-                                ),
-                                SizedBox(width: 4.w),
-                                invitationWidget(
-                                  "Parkinson Dinner Event",
-                                  "35+ Attendees",
-                                  "Los Angeles",
-                                  "May 18, 2025",
-                                  "assets/png/dinner_event.png",
-                                ),
-                                SizedBox(width: 4.w),
-                                invitationWidget(
-                                  "Scorpio Dinner Event",
-                                  "50+ Attendees",
-                                  "Miami Beach",
-                                  "May 25, 2025",
-                                  "assets/png/dinner_event.png",
-                                ),
-                              ],
-                            ),
-                          ),
+
+                          // // Invitations
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: [
+                          //       customText(
+                          //         text: "Invitations",
+                          //         fontSize: 19.sp,
+                          //         fontWeight: FontWeight.w600,
+                          //         fontFamily: "CormorantGaramond",
+                          //         color: blackColor,
+                          //       ),
+                          //       InkWell(
+                          //         onTap: () => controller.goToSeeAllPage(),
+                          //         child: Row(
+                          //           children: [
+                          //             customText(
+                          //               text: "View All",
+                          //               fontSize: 14.sp,
+                          //               fontWeight: FontWeight.w400,
+                          //               color: blackColor,
+                          //             ),
+                          //             SizedBox(width: 1.w),
+                          //             Icon(
+                          //               Icons.arrow_forward,
+                          //               color: blackColor,
+                          //               size: 16.sp,
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // SizedBox(height: 1.h),
+                          // SingleChildScrollView(
+                          //   scrollDirection: Axis.horizontal,
+                          //   padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          //   child: Row(
+                          //     children: [
+                          //       invitationWidget(
+                          //         "Jenera Dinner Event",
+                          //         "20+ Attendees",
+                          //         "In New York",
+                          //         "May 12, 2025",
+                          //         "assets/png/dinner_event.png",
+                          //       ),
+                          //       SizedBox(width: 4.w),
+                          //       invitationWidget(
+                          //         "Parkinson Dinner Event",
+                          //         "35+ Attendees",
+                          //         "Los Angeles",
+                          //         "May 18, 2025",
+                          //         "assets/png/dinner_event.png",
+                          //       ),
+                          //       SizedBox(width: 4.w),
+                          //       invitationWidget(
+                          //         "Scorpio Dinner Event",
+                          //         "50+ Attendees",
+                          //         "Miami Beach",
+                          //         "May 25, 2025",
+                          //         "assets/png/dinner_event.png",
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           SizedBox(height: 3.h),
 
                           // Upcoming Events

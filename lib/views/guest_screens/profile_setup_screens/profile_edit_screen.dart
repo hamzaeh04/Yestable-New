@@ -1259,35 +1259,36 @@ Widget setPlace(int index, {String? title}) {
 }
 Widget customProfileField({
   required String hint,
+  double? size,
   TextEditingController? controller,
   bool? readonly = false,
+  Widget? suffixIcon,
+  VoidCallback? onSuffixTap
 }) {
   return TextField(
     readOnly: readonly ?? false,
     controller: controller,
     cursorColor: greenColor,
     textAlignVertical: TextAlignVertical.center,
-    // centers text, removes vertical padding
     decoration: InputDecoration(
       hintText: hint,
       border: InputBorder.none,
       enabledBorder: InputBorder.none,
       focusedBorder: InputBorder.none,
       isDense: true,
-      // removes extra vertical space
       contentPadding: EdgeInsets.zero,
-      // ZERO padding
+      suffixIcon: suffixIcon, // 👈 added here
       hintStyle: TextStyle(
         fontFamily: 'WorkSans',
         fontWeight: FontWeight.w400,
-        fontSize: 15.sp,
+        fontSize: size ?? 15.sp,
         overflow: TextOverflow.visible,
       ),
     ),
     style: TextStyle(
       fontFamily: 'WorkSans',
       fontWeight: FontWeight.w400,
-      fontSize: 15.sp,
+      fontSize: size ?? 15.sp,
       overflow: TextOverflow.visible,
     ),
   );

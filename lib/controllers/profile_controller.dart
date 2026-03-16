@@ -108,6 +108,8 @@ class ProfileController extends GetxController {
   final RxBool isPreferences = false.obs;
   final RxBool isProfilePublic = true.obs;
 
+
+
   // Set Your Table Controllers
   final TextEditingController otherController = TextEditingController();
   final TextEditingController otherRootRuleController = TextEditingController();
@@ -693,6 +695,10 @@ class ProfileController extends GetxController {
     if (file == null) return;
     profilePicture.value = File(file.path);
     print(profilePicture.value);
+  }
+
+  void removeImage() {
+    profilePicture.value = null;
   }
 
   /// Allergens
