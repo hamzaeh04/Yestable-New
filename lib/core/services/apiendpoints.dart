@@ -24,5 +24,11 @@ class ApiEndPoints{
   static String deleteMember(String memberId){
     return '/users/members/$memberId';
   }
-
+  static String updateEventComfort(String eventId){
+    return '/events/$eventId/comfort';
+  }
+  
+  static String updatedGuestAware(String eventId) {
+    return '/events/$eventId/guest-aware';
+  }
 }

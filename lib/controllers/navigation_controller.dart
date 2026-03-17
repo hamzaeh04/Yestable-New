@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
 import '../widget/complete_guest_dialog.dart';
@@ -36,6 +37,21 @@ class NavigationController extends GetxController {
   var expandedNotes = <int, bool>{}.obs;
   var isNotesClicked = <int, bool>{}.obs;
 
+
+
+  onGuestClick() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    isUser.value = true;
+    await prefs.setBool('isUser', true);
+  }
+
+  onHostClick() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    isUser.value = false;
+    await prefs.setBool('isUser', false);
+  }
   RxBool isSelected = false.obs;
 
   RxBool isYesTableSelected = true.obs;
