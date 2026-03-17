@@ -1262,8 +1262,8 @@ Widget customProfileField({
   double? size,
   TextEditingController? controller,
   bool? readonly = false,
-  Widget? suffixIcon,
-  VoidCallback? onSuffixTap
+  Icon? suffixIcon,
+  VoidCallback? onSuffixTap,
 }) {
   return TextField(
     readOnly: readonly ?? false,
@@ -1277,7 +1277,23 @@ Widget customProfileField({
       focusedBorder: InputBorder.none,
       isDense: true,
       contentPadding: EdgeInsets.zero,
-      suffixIcon: suffixIcon, // 👈 added here
+
+      // 👇 remove default 48px constraint
+      suffixIconConstraints: const BoxConstraints(
+        minHeight: 20,
+        minWidth: 45,
+      ),
+
+      suffixIcon: suffixIcon != null
+          ? GestureDetector(
+        onTap: onSuffixTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: suffixIcon,
+        ),
+      )
+          : null,
+
       hintStyle: TextStyle(
         fontFamily: 'WorkSans',
         fontWeight: FontWeight.w400,

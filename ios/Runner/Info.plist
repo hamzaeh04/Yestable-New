@@ -58,5 +58,11 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need permission to save photos to your library</string>
 
+	<!-- ✅ iOS Location Permissions for Geolocator -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show nearby events.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to show nearby events even in background.</string>
+
 </dict>
 </plist>

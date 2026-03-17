@@ -28,10 +28,7 @@ class AuthController extends GetxController {
     super.onClose();
   }
 
-  var selectedCategory = RxnString();
 
-  // List of categories
-  final categories = ["Appetizers", "Main Course", "Drinks"];
 
   Future<void> passwordLessLogin() async {
     final body = {"email": emailController.text.trim()};
