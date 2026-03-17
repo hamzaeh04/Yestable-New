@@ -74,69 +74,6 @@ class CreateNewEventScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20.sp),
                           color: Colors.transparent,
                         ),
-                        // child: ClipRRect(
-                        //   borderRadius: BorderRadius.circular(16.sp),
-                        //   child: Stack(
-                        //     children: [
-                        //       Image.asset(
-                        //         "assets/png/event_widget_icon/event.png",
-                        //         fit: BoxFit.cover,
-                        //         width: double.infinity,
-                        //         height: double.infinity,
-                        //       ),
-                        //       Align(
-                        //         alignment: Alignment.topCenter,
-                        //         child: InkWell(
-                        //           onTap: (){
-                        //             print('kkk');
-                        //             controller.pickFromGallery();
-                        //           },
-                        //           child: Container(
-                        //             margin: EdgeInsets.only(top: 10.h),
-                        //             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-                        //             decoration: BoxDecoration(
-                        //               color: lightgreenColor.withAlpha(250),
-                        //               borderRadius: BorderRadius.circular(30.sp),
-                        //             ),
-                        //             child: Row(
-                        //               mainAxisSize: MainAxisSize.min,
-                        //               children: [
-                        //                 Image.asset(
-                        //                   "assets/png/icons/gallery.png",
-                        //                   height: 18.sp,
-                        //                   width: 18.sp,
-                        //                   color: Colors.white,
-                        //                 ),
-                        //                 SizedBox(width: 2.w),
-                        //                 customText(
-                        //                   text: "Select a cover photo",
-                        //                   fontSize: 14.sp,
-                        //                   fontWeight: FontWeight.w500,
-                        //                   color: Colors.white,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       Positioned(
-                        //           top: 1.3.h,
-                        //           right: 2.5.w,
-                        //           child: Container(
-                        //             padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 0.7.h),
-                        //             decoration: BoxDecoration(
-                        //               color: const Color(0xFF5D8783).withOpacity(0.75),
-                        //               shape: BoxShape.circle,
-                        //             ),
-                        //             child: InkWell(
-                        //                 onTap: (){
-                        //                   print('delete');
-                        //                 },
-                        //                 child: Icon(Icons.delete_outline_sharp, color: whiteColor, size: 5.w)),
-                        //           ))
-                        //     ],
-                        //   ),
-                        // ),
                         child: Obx(() {
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(16.sp),
@@ -314,48 +251,16 @@ class CreateNewEventScreen extends StatelessWidget {
                               // customText(text: "May 03, 2025", fontWeight: FontWeight.w400, fontSize: 15.sp),
                               customProfileField(
                                 hint: 'May 03, 2025',
-                                controller: eventController.eventDate
+                                controller: eventController.eventDate,
+                                  suffixIcon: Icon(Icons.date_range), onSuffixTap: (){
+                                eventController.pickDateOrTime(context: context, controller: eventController.eventDate, type: "date");
+                              }
                               ),
                               SizedBox(height: 0.25.h),
                               const Divider(),
-                              // --- EVENT TIME DROPDOWN ---
-                              // DropdownButtonHideUnderline(
-                              //   child: DropdownButton2<String>(
-                              //     customButton: Row(
-                              //       children: [
-                              //         customText(text: "07 : 00 AM", fontWeight: FontWeight.w400, fontSize: 15.sp),
-                              //         SizedBox(width: 2.w),
-                              //         Icon(Icons.keyboard_arrow_down_rounded, size: 18.sp),
-                              //       ],
-                              //     ),
-                              //     items: ["07 : 00 AM", "08 : 00 AM", "09 : 00 AM", "10 : 00 AM"]
-                              //         .map((item) => DropdownMenuItem<String>(
-                              //       value: item,
-                              //       child: customText(
-                              //         text:
-                              //         item,
-                              //       ),
-                              //     ))
-                              //         .toList(),
-                              //     onChanged: (value) {
-                              //       // Handle change
-                              //     },
-                              //     dropdownStyleData: DropdownStyleData(
-                              //       width: 35.w,
-                              //       padding: EdgeInsets.symmetric(vertical: 6),
-                              //       decoration: BoxDecoration(
-                              //         borderRadius: BorderRadius.circular(12),
-                              //         color: whiteColor, // Background color of the dropdown sheet
-                              //       ),
-                              //       elevation: 8, // Optional: gives a shadow effect to the sheet
-                              //     ),
-                              //     menuItemStyleData: const MenuItemStyleData(
-                              //       height: 40, // Adjust the height of each item in the list
-                              //       padding: EdgeInsets.only(left: 14, right: 14),
-                              //     ),
-                              //   )
-                              // ),
-                              customProfileField(hint: "07:00 AM", controller: eventController.eventTime, suffixIcon: Icon(Icons.access_time_outlined)),
+                              customProfileField(hint: "07:00 AM", controller: eventController.eventTime, suffixIcon: Icon(Icons.access_time_outlined), onSuffixTap: (){
+                                eventController.pickDateOrTime(context: context, controller: eventController.eventTime, type: "time");
+                              }),
                               SizedBox(height: 0.25.h),
                               const Divider(),
                               // --- EVENT TYPE DROPDOWN ---
@@ -405,19 +310,31 @@ class CreateNewEventScreen extends StatelessWidget {
                               const Divider(),
                               SizedBox(height: 0.25.h),
 
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: customProfileField(hint: "132 My Street, Pasadena, CA 91101",
-                                        controller: eventController.eventLocation
-                                    )
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 3.w),
-                                    child: Image.asset('assets/png/icons/location_pointer.png', width: 6.w),
-                                  ),
-                                ],
-                              ),
+                                  Obx(() {
+                                    if (eventController.locationController.isLoading.value) {
+                                      return const Center(child: CircularProgressIndicator(color: greenColor,));
+                                    }
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                            child: customProfileField(hint: "132 My Street, Pasadena, CA 91101",
+                                                controller: eventController.locationController.addressController,
+                                            )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 3.w),
+                                          child: InkWell(
+                                              onTap: () async{
+                                                await eventController.locationController.getUserLocation();
+                                                eventController.locationController.addressController.text =
+                                                    eventController.locationController.address.value;
+                                    },
+                                              child: Image.asset('assets/png/icons/location_pointer.png', width: 6.w)),
+                                        ),
+
+                                      ],
+                                    );
+                                  }),
                               const Divider(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -446,34 +363,12 @@ class CreateNewEventScreen extends StatelessWidget {
                               customProfileField(hint: 'Street parking after 6pm; Lot behind venue.', size: 14.8.sp,
                                   controller: eventController.parkingDetails
                               ),
-                              // TextField(
-                              //   decoration: InputDecoration(
-                              //     hintText: 'Street parking after 6pm; Lot behind venue.',
-                              //     hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp, fontFamily: "WorkSans"),
-                              //     border: InputBorder.none,
-                              //     isDense: true,
-                              //     contentPadding: EdgeInsets.zero,
-                              //   ),
-                              //   style: TextStyle(color: Colors.black, fontSize: 14.sp, fontFamily: "WorkSans"),
-                              //   maxLines: null,
-                              // ),
                               SizedBox(height: 1.25.h),
                               const Divider(),
                               SizedBox(height: 1.25.h),
                               customProfileField(hint: 'Add extra details for your guests.', size: 14.8.sp,
                                   controller: eventController.addNote
                               ),
-                              // TextField(
-                              //   decoration: InputDecoration(
-                              //     hintText: 'Add extra details for your guests.',
-                              //     hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp, fontFamily: "WorkSans"),
-                              //     border: InputBorder.none,
-                              //     isDense: true,
-                              //     contentPadding: EdgeInsets.zero,
-                              //   ),
-                              //   style: TextStyle(color: Colors.black, fontSize: 14.sp, fontFamily: "WorkSans"),
-                              //   maxLines: null,
-                              // ),
                               SizedBox(height: 1.25.h),
                               const Divider(),
                               SizedBox(height: 1.25.h),

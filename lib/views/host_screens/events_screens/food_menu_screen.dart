@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
+import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/core/services/base_services.dart';
+import 'package:yestable/model/get_menu_model.dart';
 import 'package:yestable/widget/ai_menu_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
@@ -12,10 +15,22 @@ import 'package:yestable/widget/redirecting_dialog.dart';
 import 'package:yestable/widget/selected_menu_bottomsheet.dart';
 import '../../../widget/home_screen_widget.dart';
 
-class FoodMenuScreen extends StatelessWidget {
-  FoodMenuScreen({super.key});
+class FoodMenuScreen extends StatefulWidget {
+  const FoodMenuScreen({super.key});
 
+  @override
+  State<FoodMenuScreen> createState() => _FoodMenuScreenState();
+}
+
+class _FoodMenuScreenState extends State<FoodMenuScreen> {
   final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
+
+  @override
+  void initState() {
+    super.initState();
+    eventController.getMenus(loading: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,36 +344,12 @@ class FoodMenuScreen extends StatelessWidget {
                                                   SizedBox(height: 0.7.h,),
                                                   SizedBox(
                                                     height: 32.h,
-                                                    child: SingleChildScrollView(
-                                                      scrollDirection: Axis.horizontal,
-                                                      physics: const BouncingScrollPhysics(),
-                                                      child: Row(
-                                                        children: [
-                                                          SizedBox(width: 2.w),
-                                                          menuItem(
-                                                            title: "Caprese Skewers",
-                                                            subtitle:
-                                                            "Cherry Tomatoes, Fresh Mozzarella, Basil, Balsamic Glaze",
-                                                            imagePath: "assets/png/event_detail_img/event1.png",
-                                                            text1: "Vegetarian",
-                                                            text2: "Containt Dairy",
-                                                            boximg1: "assets/png/event_food_image/brocolli.png",
-                                                            boximg2: "assets/png/event_food_image/milk.png",
-                                                          ),
-                                                          SizedBox(width: 3.w),
-                                                          menuItem(
-                                                            title: "Avocado Shrimp Ceviche",
-                                                            subtitle:
-                                                            "Shrimp, Avocado, Lime, Red Onion, Cilantro, Tomato",
-                                                            imagePath: "assets/png/event_detail_img/event2.png",
-                                                            text1: "Gluten Free",
-                                                            text2: "Shellfish",
-                                                            boximg1: "assets/png/event_food_image/glutenfree.png",
-                                                            boximg2: "assets/png/event_food_image/shell.png",
-                                                          ),
-                                                          SizedBox(width: 2.w),
-                                                        ],
-                                                      ),
+                                                    child: TabBarView(
+                                                      children: [
+                                                        _menusHorizontalList(type: "Appetizers"),
+                                                        _menusHorizontalList(type: "Main Course"),
+                                                        _menusHorizontalList(type: "Drinks"),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
@@ -438,7 +429,7 @@ class FoodMenuScreen extends StatelessWidget {
                       height: 5.h,
                       fontsize: 16.sp,
                       onTap: () {
-                        Get.toNamed("eventcomfortone");
+                        eventController.createEvent();
                       },
                     ),
                     SizedBox(height: 1.h),
@@ -461,6 +452,213 @@ class FoodMenuScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _menusHorizontalList({required String type}) {
+  final EventController eventController = Get.find<EventController>();
+  final baseUrl = BaseService().baseURL;
+
+  return Obx(() {
+    if (eventController.isMenusLoading.value) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (eventController.menusError.value.isNotEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 6.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              customText(
+                text: eventController.menusError.value,
+                fontSize: 12.sp,
+                color: darkGreyColor,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 1.2.h),
+              InkWell(
+                onTap: () => eventController.getMenus(loading: false),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18.sp),
+                    border: Border.all(color: lightgreenColor),
+                  ),
+                  child: customText(
+                    text: "Retry",
+                    fontSize: 12.sp,
+                    color: blackColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final filtered = eventController.menus
+        .where((m) => (m.type ?? "").toLowerCase() == type.toLowerCase())
+        .toList();
+
+    if (filtered.isEmpty) {
+      return Center(
+        child: customText(
+          text: "No menus found",
+          fontSize: 12.sp,
+          color: darkGreyColor,
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
+        children: [
+          SizedBox(width: 2.w),
+          for (final menu in filtered) ...[
+            _menuApiCard(menu: menu, baseUrl: baseUrl),
+            SizedBox(width: 3.w),
+          ],
+          SizedBox(width: 2.w),
+        ],
+      ),
+    );
+  });
+}
+
+Widget _menuApiCard({required MenuItem menu, required String baseUrl}) {
+  final EventController eventController = Get.find<EventController>();
+  final img = (menu.menuImage ?? "").trim();
+  final imgUrl =
+      img.isEmpty ? null : (img.startsWith("http") ? img : "$baseUrl$img");
+
+  final categories = (menu.mealCategory ?? <String>[])
+      .where((e) => e.trim().isNotEmpty)
+      .toList();
+  final c1 = categories.isNotEmpty ? categories[0] : null;
+  final c2 = categories.length > 1 ? categories[1] : null;
+
+  final icon1 = eventController.mealCategoryIcon(c1);
+  final icon2 = eventController.mealCategoryIcon(c2);
+
+  return Container(
+    width: 53.w,
+    margin: EdgeInsets.symmetric(vertical: 0.5.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2.w),
+              child: imgUrl == null
+                  ? Image.asset(
+                      "assets/png/event_detail_img/event1.png",
+                      height: 15.h,
+                      width: 53.w,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      imgUrl,
+                      height: 15.h,
+                      width: 53.w,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Image.asset(
+                        "assets/png/event_detail_img/event1.png",
+                        height: 15.h,
+                        width: 53.w,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+            ),
+            Positioned(
+              bottom: 0.5.h,
+              right: 0.5.h,
+              child: Obx(() {
+                final isSelected = eventController.isMenuSelected(menu.id);
+                return InkWell(
+                  onTap: () {
+                    final added = eventController.addSelectedMenu(menu);
+                    if (!added) {
+                      Get.snackbar(
+                        "Already added",
+                        "This menu is already in your selected list",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.black.withValues(alpha: 0.8),
+                        colorText: Colors.white,
+                        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                      );
+                    } else {
+                      Get.snackbar(
+                        "Added",
+                        "Menu added to your selected list",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.black.withValues(alpha: 0.8),
+                        colorText: Colors.white,
+                        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(1.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                    ),
+                    child: Icon(
+                      isSelected ? Icons.check : Icons.add,
+                      size: 17.sp,
+                      color: Colors.black,
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+        SizedBox(height: 0.5.h),
+        customText(
+          text: (menu.title ?? "").trim().isEmpty ? "Untitled Menu" : menu.title!,
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          fontFamily: "CormorantGaramond",
+          color: blackColor,
+        ),
+        SizedBox(height: 0.3.h),
+        customText(
+          text: (menu.description ?? "").trim(),
+          fontSize: 14.sp,
+          color: darkGreyColor,
+        ),
+        SizedBox(height: 1.h),
+        Row(
+          children: [
+            if (c1 != null)
+              foodPreferenceBox(
+                text: c1,
+                imgPath: icon1 ?? "assets/png/event_food_image/brocolli.png",
+              ),
+            if (c1 != null && c2 != null) SizedBox(width: 2.w),
+            if (c2 != null)
+              foodPreferenceBox(
+                text: c2,
+                imgPath: icon2 ?? "assets/png/event_food_image/brocolli.png",
+              ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 

@@ -6,6 +6,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/event_controller.dart';
+import 'package:yestable/controllers/location_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/notification_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   Get.put<SharedPreferences>(prefs, permanent: true);
   Get.put(ProfileController());
+  Get.put(LocationController());
   Get.put(EventController());
   Get.put(NavigationController());
   Get.put(AuthController());
