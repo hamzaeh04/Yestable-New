@@ -135,8 +135,9 @@ class MyProfileScreen extends StatelessWidget {
           children: [
             // Top Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Row(
+                
                 children: [
                   Expanded(
                     child: Column(
