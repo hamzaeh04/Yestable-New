@@ -136,7 +136,7 @@ class MyProfileScreen extends StatelessWidget {
           children: [
             // Top Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 0.h),
               child: Row(
                 children: [
                   Expanded(
@@ -315,10 +315,10 @@ class MyProfileScreen extends StatelessWidget {
                                                         width: 27.w,
                                                         fontsize: 14.sp,
                                                         onTap: () {
-                                                          // Get.toNamed(
-                                                          //   "profileeditscreen",
-                                                          // );
-                                                          print("faaaahhhh: ${data}");
+                                                          Get.toNamed(
+                                                            "profileeditscreen",
+                                                          );
+                                                          // print("faaaahhhh: ${data}");
                                                         },
                                                       ),
                                                       SizedBox(width: 2.w),

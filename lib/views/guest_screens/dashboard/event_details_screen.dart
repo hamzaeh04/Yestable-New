@@ -732,9 +732,9 @@ Widget menuItem({
               SizedBox(height: 1.5.h),
               Row(
                 children: [
-                  foodPreferenceBox(text: text1, imgPath: boximg1,bgColor: containerColor),
-                  SizedBox(width: 3.w),
-                  foodPreferenceBox(text: text2, imgPath: boximg2,bgColor: containerColor),
+                  if (text1.isNotEmpty) foodPreferenceBox(text: text1, imgPath: boximg1, bgColor: containerColor),
+                  if (text1.isNotEmpty && text2.isNotEmpty) SizedBox(width: 3.w),
+                  if (text2.isNotEmpty) foodPreferenceBox(text: text2, imgPath: boximg2, bgColor: containerColor),
                 ],
               )
             ],
@@ -746,12 +746,25 @@ Widget menuItem({
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(2.w),
-              child: Image.asset(
-                imagePath,
-                height: 13.h,
-                width: 12.h,
-                fit: BoxFit.cover,
-              ),
+              child: imagePath.startsWith('http')
+                  ? Image.network(
+                      imagePath,
+                      height: 13.h,
+                      width: 12.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 13.h, width: 12.h, color: Colors.grey[200], child: Icon(Icons.error)
+                      ),
+                    )
+                  : Image.asset(
+                      imagePath.isNotEmpty ? imagePath : 'assets/png/event_detail_img/event1.png',
+                      height: 13.h,
+                      width: 12.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 13.h, width: 12.h, color: Colors.grey[200], child: Icon(Icons.error)
+                      ),
+                    ),
             ),
             if (cheaque == true)
               Positioned(
@@ -805,13 +818,14 @@ Widget foodPreferenceBox({
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            imgPath,
-            height: 16.sp,
-            width: 16.sp,
-            fit: BoxFit.contain,
-          ),
-          SizedBox(width: 2.w),
+          if (imgPath.isNotEmpty)
+            Image.asset(
+              imgPath,
+              height: 16.sp,
+              width: 16.sp,
+              fit: BoxFit.contain,
+            ),
+          if (imgPath.isNotEmpty) SizedBox(width: 2.w),
           Flexible(
             child: customText(
               text: text,

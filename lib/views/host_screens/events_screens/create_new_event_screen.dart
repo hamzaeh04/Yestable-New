@@ -93,6 +93,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                   height: double.infinity,
                                 ),
 
+                                if(controller.profilePicture.value == null)
                                 Align(
                                   alignment: Alignment.topCenter,
                                   child: InkWell(
@@ -128,6 +129,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                   ),
                                 ),
 
+                                if(controller.profilePicture.value != null)
                                 Positioned(
                                   top: 1.3.h,
                                   right: 2.5.w,
@@ -205,16 +207,16 @@ class CreateNewEventScreen extends StatelessWidget {
                                   customText(text: '*', color: redColor)
                                 ],
                               ),
-                              SizedBox(height: 2.2.h),
+                              SizedBox(height: 2.4.h),
                               Row(
                                 children: [
                                   customText(text: "Location", fontWeight: FontWeight.w500, fontSize: 15.sp),
                                   customText(text: '*', color: redColor)
                                 ],
                               ),
-                              SizedBox(height: 2.h),
+                              SizedBox(height: 2.3.h),
                               customText(text: "Check Guest\nNeeds Automatically.", fontWeight: FontWeight.w500, fontSize: 15.sp),
-                              SizedBox(height: 2.h),
+                              SizedBox(height: 2.4.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -251,6 +253,7 @@ class CreateNewEventScreen extends StatelessWidget {
                               // customText(text: "May 03, 2025", fontWeight: FontWeight.w400, fontSize: 15.sp),
                               customProfileField(
                                 hint: 'May 03, 2025',
+                                readonly: true,
                                 controller: eventController.eventDate,
                                   suffixIcon: Icon(Icons.date_range), onSuffixTap: (){
                                 eventController.pickDateOrTime(context: context, controller: eventController.eventDate, type: "date");
@@ -258,7 +261,7 @@ class CreateNewEventScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 0.25.h),
                               const Divider(),
-                              customProfileField(hint: "07:00 AM", controller: eventController.eventTime, suffixIcon: Icon(Icons.access_time_outlined), onSuffixTap: (){
+                              customProfileField(readonly: true, hint: "07:00 AM", controller: eventController.eventTime, suffixIcon: Icon(Icons.access_time_outlined), onSuffixTap: (){
                                 eventController.pickDateOrTime(context: context, controller: eventController.eventTime, type: "time");
                               }),
                               SizedBox(height: 0.25.h),
@@ -266,10 +269,11 @@ class CreateNewEventScreen extends StatelessWidget {
                               // --- EVENT TYPE DROPDOWN ---
                               DropdownButtonHideUnderline(
                                 child: DropdownButton2<String>(
-                                  customButton: Row(
+
+                                  customButton: Obx(() => Row(
                                     children: [
                                       customText(
-                                        text: "🍽️ Dinner Party",
+                                        text: eventController.selectedEventType.value ?? "🍽️ Dinner Party",
                                         fontWeight: FontWeight.w400,
                                         fontSize: 15.sp,
                                       ),
@@ -279,17 +283,23 @@ class CreateNewEventScreen extends StatelessWidget {
                                         size: 18.sp,
                                       ),
                                     ],
-                                  ),
+                                  )),
                                   items: ["🍽️ Dinner Party", "🎂 Birthday Celebration", "🍸 Cocktail", "⭐ Holiday","🥞 Brunch"]
                                       .map((item) => DropdownMenuItem<String>(
                                     value: item,
                                     child: customText(
                                       text: item,
+                                      fontSize: 14.sp,         // Customize font size
+                                      fontFamily: "WorkSans",
                                     ),
                                   ))
                                       .toList(),
+
                                   onChanged: (value) {
-                                    // Handle selection logic here
+                                    if(value != null) {
+                                      eventController.selectedEventType.value = value;
+                                      eventController.eventType.text = value;
+                                    }
                                   },
                                   dropdownStyleData: DropdownStyleData(
                                     width: 50.w,
@@ -317,7 +327,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                     return Row(
                                       children: [
                                         Expanded(
-                                            child: customProfileField(hint: "132 My Street, Pasadena, CA 91101",
+                                            child: customProfileField(readonly: true, hint: "132 My Street, Pasadena, CA 91101",
                                                 controller: eventController.locationController.addressController,
                                             )
                                         ),
@@ -375,13 +385,13 @@ class CreateNewEventScreen extends StatelessWidget {
                               // --- REMINDER DROPDOWN ---
                               DropdownButtonHideUnderline(
                                 child: DropdownButton2<String>(
-                                  customButton: Row(
+                                  customButton: Obx(() => Row(
                                     children: [
                                       customText(
-                                        text: "Select time",
+                                        text: eventController.selectedReminderTime.value ?? "Select time",
                                         fontWeight: FontWeight.w400,
                                         fontSize: 15.sp,
-                                        color: Colors.grey,
+                                        color: eventController.selectedReminderTime.value == null ? Colors.grey : blackColor,
                                       ),
                                       SizedBox(width: 2.w),
                                       Icon(
@@ -389,24 +399,26 @@ class CreateNewEventScreen extends StatelessWidget {
                                         size: 18.sp,
                                       ),
                                     ],
-                                  ),
+                                  )),
                                   items: ["15 mins before", "1 hour before", "1 day before"]
                                       .map((item) => DropdownMenuItem<String>(
                                     value: item,
-                                    child: Text(
-                                      item,
-                                      style: TextStyle(
+                                    child: customText(
+                                      text: item,
+
                                         color: blackColor,       // Customize item text color
                                         fontSize: 14.sp,         // Customize font size
                                         fontFamily: "WorkSans",  // Customize font family
                                         fontWeight: FontWeight.w400,
-                                      ),
                                     ),
                                   ))
                                       .toList(),
-                                  onChanged: (value) {
-                                    // Logic for selection
-                                  },
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          eventController.selectedReminderTime.value = value;
+                                          eventController.eventReminder.text = value;
+                                        }
+                                        },
                                   dropdownStyleData: DropdownStyleData(
                                     width: 45.w,
                                     padding: EdgeInsets.symmetric(vertical: 6),

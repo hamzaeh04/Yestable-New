@@ -73,6 +73,7 @@ Future<void> menuFormDialog(BuildContext context) {
                                   ),
 
                                   // 👇 Top label / select button
+                                  if (eventController.itemPic.value == null)
                                   Align(
                                     alignment: Alignment.topCenter,
                                     child: InkWell(
@@ -186,10 +187,11 @@ Future<void> menuFormDialog(BuildContext context) {
                     CustomTextField(
                       hintText: 'Enter title',
                       controller: eventController.menuTitle,
-
+                      height: 5.h,
                     ),
                     SizedBox(height: 1.h,),
                     CustomTextField(
+                      height: 5.h,
                       hintText: 'Enter description',
                       controller: eventController.menuDescription,
                     ),

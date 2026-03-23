@@ -114,6 +114,16 @@ class NavigationController extends GetxController {
     }
   }
 
+  String formatDate2(DateTime? dateTime) {
+    try {
+      if (dateTime == null) return "";
+
+      return DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
+    } catch (e) {
+      return "";
+    }
+  }
+
   /// Formats the time part: "2026-02-20T16:46:23.956Z" -> "04:46 PM"
   String formatTime(String isoDate) {
     try {
@@ -123,6 +133,16 @@ class NavigationController extends GetxController {
       return isoDate;
     }
   }
+  String formatTime2(DateTime? dateTime) {
+    try {
+      if (dateTime == null) return "";
+
+      return DateFormat('hh:mm a').format(dateTime.toLocal());
+    } catch (e) {
+      return "";
+    }
+  }
+
 
   final List<String> tabs = [
     "All",

@@ -24,6 +24,7 @@ class EventComfortOne extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    final eventId = Get.arguments;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -138,8 +139,8 @@ class EventComfortOne extends StatelessWidget {
                 colors: greenColor,
                 onTap: () async {
                   // Currently assuming a specific event ID for testing
-                  await controller.updateEventComfortMethod("699496353537f38ca2070c41");
-                  Get.toNamed("eventcomforttwo");
+                  await controller.updateEventComfortMethod(eventId);
+                  // Get.toNamed("eventcomforttwo");
                 },
               ),
             ),

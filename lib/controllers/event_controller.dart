@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/model/get_event_review_model.dart';
 
 import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
@@ -15,6 +16,7 @@ import '../utils/shared_prefrences_methods.dart';
 import '../utils/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import '../widget/event_posted_dialog.dart';
 import 'location_controller.dart';
 import 'navigation_controller.dart';
 
@@ -30,6 +32,11 @@ class EventController extends GetxController{
   final TextEditingController addNote = TextEditingController();
   final TextEditingController eventReminder = TextEditingController();
   final TextEditingController otherComfortController = TextEditingController();
+
+  var selectedEventType = RxnString();
+  var selectedReminderTime = RxnString();
+  Rxn<EventReviewModel> eventReviewModel = Rxn<EventReviewModel>();
+
 
   // Guest Aware Controllers
   final TextEditingController swimmingPoolController = TextEditingController();
@@ -66,6 +73,115 @@ class EventController extends GetxController{
     itemPic.value = null;
   }
 
+  final List<String> eventAccesibilityList = [
+    "Quiet Space Available",
+    "Larger Seating",
+    "Wheelchair Accessible",
+    "ASL Interpreter",
+    "Vegan Option",
+    "Rest Room",
+    "Pets Allowed",
+    "Childrens Allowed",
+    "For Adults Only",
+    "Smoke Present",
+    "Smoke Free",
+    "Alcohol",
+    "Alcohol Free",
+    "There Are Steps To Climb",
+    "Swimming Pool Is Present",
+    "Firearms Are Present",
+    "Shellfish Will Be Served",
+    "Peanuts Present",
+    "Event Ends At A Time",
+  ];
+  RxList<String> eventComfortAccessibility = <String>[].obs;
+  void mapEventComfortAccessibility(
+      EventComfort? eventComfort,
+      GuestAware? guestAware,
+      ) {
+    eventComfortAccessibility.clear();
+
+    // Event Comfort
+    if (eventComfort?.quietSpace == true) {
+      eventComfortAccessibility.add("Quiet Space");
+    }
+
+    if (eventComfort?.largerSeating == true) {
+      eventComfortAccessibility.add("Larger Seating");
+    }
+
+    if (eventComfort?.wheelChairAccess == true) {
+      eventComfortAccessibility.add("Wheelchair Accessible");
+    }
+
+    if (eventComfort?.aslInterpreter == true) {
+      eventComfortAccessibility.add("ASL Interpreter");
+    }
+
+    if (eventComfort?.veganMenu == true) {
+      eventComfortAccessibility.add("Vegan Option");
+    }
+
+    if (eventComfort?.restroom == true) {
+      eventComfortAccessibility.add("Rest Room");
+    }
+
+    // Guest Aware
+    if (guestAware?.petsPresent == true) {
+      eventComfortAccessibility.add("Pets Allowed");
+    }
+
+    if (guestAware?.childrenPresent == true) {
+      eventComfortAccessibility.add("Childrens Allowed");
+    }
+
+    if (guestAware?.forAdultOnly == true) {
+      eventComfortAccessibility.add("For Adults Only");
+    }
+
+    if (guestAware?.smokePresent == true) {
+      eventComfortAccessibility.add("Smoke Present");
+    }
+
+    if (guestAware?.smokeFree == true) {
+      eventComfortAccessibility.add("Smoke Free");
+    }
+
+    if (guestAware?.alcohol == true) {
+      eventComfortAccessibility.add("Alcohol");
+    }
+
+    if (guestAware?.alcoholFree == true) {
+      eventComfortAccessibility.add("Alcohol Free");
+    }
+
+    if (guestAware?.stepsToClimb == true) {
+      eventComfortAccessibility.add("There Are Steps To Climb");
+    }
+
+    if (guestAware?.swimmingPool == "pool_present") {
+      eventComfortAccessibility.add("Swimming Pool Is Present");
+    }
+
+    if (guestAware?.fireArms == true) {
+      eventComfortAccessibility.add("Firearms Are Present");
+    }
+
+    if (guestAware?.shellFish == true) {
+      eventComfortAccessibility.add("Shellfish Will Be Served");
+    }
+
+    if (guestAware?.peanuts == true) {
+      eventComfortAccessibility.add("Peanuts Present");
+    }
+
+    if (guestAware?.endsInFirmTime == true) {
+      eventComfortAccessibility.add("Event Ends At A Time");
+    }
+  }
+
+
+
   var selectedType = RxnString();
   RxList<Map<String, String>> selectedMealCategory = <Map<String, String>>[].obs;  // List of categories
   final type = ["Appetizers", "Main Course", "Drinks"];
@@ -74,7 +190,7 @@ class EventController extends GetxController{
     {"name": "Dairy-Free", "imgPath": "assets/png/event_food_image/milk.png"},
     {"name": "Gluten-Free", "imgPath": "assets/png/event_food_image/glutenfree.png"},
     {"name": "Selfish", "imgPath": "assets/png/event_food_image/shell.png"},
-    {"name": "Vegan", "imgPath": "assets/png/event_food_image/shell.png"},
+    {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
     {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
   ];
 
@@ -541,6 +657,7 @@ class EventController extends GetxController{
 
         // ✅ RESET ONLY SELECTED OPTIONS
         profileController.selectedOptions.clear();
+        Get.toNamed("eventcomforttwo", arguments: eventId);
         otherComfortController.clear();
         print("✅ selectedOptions cleared after success");
 
@@ -579,19 +696,19 @@ class EventController extends GetxController{
 
     bool displayMenu = navCtrl.isSelected.value;
 
-    bool? mayGuestsContact = getBoolOption(profileController, 1);
-    bool? petsPresent = getBoolOption(profileController, 2);
-    bool? childrenPresent = getBoolOption(profileController, 3);
-    bool? forAdultOnly = getBoolOption(profileController, 4);
-    bool? smokePresent = getBoolOption(profileController, 5);
-    bool? smokeFree = getBoolOption(profileController, 6);
-    bool? alcohol = getBoolOption(profileController, 7);
-    bool? alcoholFree = getBoolOption(profileController, 8);
-    bool? stepsToClimb = getBoolOption(profileController, 9);
+    bool? petsPresent = getBoolOption(profileController, 1);
+    bool? childrenPresent = getBoolOption(profileController, 2);
+    bool? forAdultOnly = getBoolOption(profileController, 3);
+    bool? smokePresent = getBoolOption(profileController, 4);
+    bool? smokeFree = getBoolOption(profileController, 5);
+    bool? alcohol = getBoolOption(profileController, 6);
+    bool? alcoholFree = getBoolOption(profileController, 7);
+    bool? stepsToClimb = getBoolOption(profileController, 8);
     bool? fireArms = getBoolOption(profileController, 10);
     bool? shellFish = getBoolOption(profileController, 11);
     bool? peanuts = getBoolOption(profileController, 12);
     bool? endsInFirmTime = getBoolOption(profileController, 13);
+    bool? mayGuestsContact = getBoolOption(profileController, 14);
 
     print("displayMenu: $displayMenu");
     print("mayGuestsContact: $mayGuestsContact");
@@ -666,7 +783,8 @@ class EventController extends GetxController{
           response['message'] ?? "Guest aware details updated successfully",
           false,
         );
-
+        // Get.toNamed("eventcomfortthree", arguments: eventId);
+        Get.toNamed("eventpublishscreen", arguments: eventId);
       } else {
 
         Utils.showToast(
@@ -686,7 +804,65 @@ class EventController extends GetxController{
       );
 
     }
-
     print("============= GUEST AWARE DEBUG END =============");
   }
+
+  Future<void> eventReview(String eventId) async {
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.eventReview(eventId),
+      );
+
+      if (response != null && response['success'] == true) {
+        eventReviewModel.value = EventReviewModel.fromJson(response);
+        Utils.showToast(response['message'], false);
+      } else {
+        // Handle API failure
+        final message = response?['message'] ?? "Something went wrong";
+        print("API Error: $message");
+        Utils.showToast(response['message'], true);
+      }
+    } catch (e, stackTrace) {
+      // Handle exception
+      print("Exception in eventReview: $e");
+      print(stackTrace);
+      Utils.showToast("Something went wrong ${e}", true);
+    }
+  }
+
+  Future<void> publishEvent(String eventId, BuildContext context) async {
+    isMenusLoading.value = true;
+
+    try {
+      final response = await baseService.basePatchAPI(
+        ApiEndPoints.publishEvent(eventId),
+        body: {},
+      );
+
+      if (response != null && response['success'] == true) {
+        // Success
+        Utils.showToast(
+            response?['message'], false
+        );
+        eventPostedDialog(context);
+        // Optional: navigate or refresh
+        // Get.back();
+        // eventReview(eventId);
+
+      } else {
+        // API returned failure
+        Utils.showToast(
+            response?['message'], true
+        );
+      }
+    } catch (e) {
+      Utils.showToast(
+        "Error ${e}", true
+      );
+    } finally {
+      isMenusLoading.value = false;
+    }
+  }
+
+
 }

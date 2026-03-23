@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final Color? borderColor;
   final double? borderWidth;
   final EdgeInsetsGeometry? contentPadding;
+  final double? height; // 👈 NEW
 
   const CustomTextField({
     Key? key,
@@ -44,56 +45,59 @@ class CustomTextField extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.contentPadding,
+    this.height, // 👈 NEW
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      style: TextStyle(
-          fontFamily : 'WorkSans',
-        fontSize: 15.sp
-      ),
-      controller: controller,
-      obscureText: obscureText ?? false,
-      keyboardType: keyboardType,
-      maxLines: maxLines ?? 1,
-      minLines: minLines,
-      readOnly: readOnly ?? false,
-      textInputAction: textInputAction ?? TextInputAction.done,
-      onChanged: onChanged,
-      onTap: onTap,
-      decoration: InputDecoration(
-        hintText: hintText,
-        labelText: labelText,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        filled: filled ?? true,
-        fillColor: fillColor ?? whiteColor,
-        contentPadding: contentPadding ??
-            EdgeInsets.symmetric(horizontal: 3.5.w, vertical: 0.8.h),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
-          borderSide: BorderSide(
-            color: borderColor ?? greyBorderColor,
-            width: borderWidth ?? 1,
-          ),
+    return SizedBox(
+      height: height, // 👈 APPLY HEIGHT HERE
+      child: TextField(
+        style: TextStyle(
+          fontFamily: 'WorkSans',
+          fontSize: 15.sp,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
-          borderSide: BorderSide(
-            color: borderColor ?? greyBorderColor,
-            width: borderWidth ?? 1,
+        controller: controller,
+        obscureText: obscureText ?? false,
+        keyboardType: keyboardType,
+        maxLines: maxLines ?? 1,
+        minLines: minLines,
+        readOnly: readOnly ?? false,
+        textInputAction: textInputAction ?? TextInputAction.done,
+        onChanged: onChanged,
+        onTap: onTap,
+        decoration: InputDecoration(
+          hintText: hintText,
+          labelText: labelText,
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          filled: filled ?? true,
+          fillColor: fillColor ?? whiteColor,
+          contentPadding: contentPadding ??
+              EdgeInsets.symmetric(horizontal: 3.5.w, vertical: 0.8.h),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
+            borderSide: BorderSide(
+              color: borderColor ?? greyBorderColor,
+              width: borderWidth ?? 1,
+            ),
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
-          borderSide: BorderSide(
-            color: borderColor ?? greyBorderColor,
-            width: borderWidth ?? 1.5,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
+            borderSide: BorderSide(
+              color: borderColor ?? greyBorderColor,
+              width: borderWidth ?? 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
+            borderSide: BorderSide(
+              color: borderColor ?? greyBorderColor,
+              width: borderWidth ?? 1.5,
+            ),
           ),
         ),
       ),
     );
   }
 }
-

@@ -19,6 +19,7 @@ class EventComfortThree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final eventId = Get.arguments;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -62,7 +63,7 @@ class EventComfortThree extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                yesNoWidget(7),
+                yesNoWidget(14),
                 SizedBox(height: 1.h),
                 Divider(thickness: 1, color: Colors.grey.shade400, height: 3.h),
                 SizedBox(height: 1.h),
@@ -104,10 +105,8 @@ class EventComfortThree extends StatelessWidget {
                     whiteColor,
                     colors: greenColor,
                     onTap: () async {
-                      eventController.updateGuestAwareMethod(
-                        "699496353537f38ca2070c41",
-                      );
-                      Get.toNamed("eventpublishscreen");
+                      eventController.updateGuestAwareMethod(eventId);
+                      // Get.toNamed("eventpublishscreen");
                     },
                   ),
                 ),

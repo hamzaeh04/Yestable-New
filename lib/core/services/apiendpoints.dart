@@ -34,4 +34,12 @@ class ApiEndPoints{
   static String updatedGuestAware(String eventId) {
     return '/events/$eventId/guest-aware';
   }
+
+  static String eventReview(String eventId) {
+    return '/events/${eventId}/review';
+  }
+
+  static String publishEvent(String eventId) {
+    return '/events/${eventId}/publish';
+  }
 }

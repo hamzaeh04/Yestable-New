@@ -113,6 +113,13 @@ class Utils{
     return formattedDate;
   }
 
+  static String getFormatedDate3(String date){
+    print(date);
+    DateTime dateTime = DateFormat("dd-MM-yyyy").parse(date);
+    String formattedDate = DateFormat('MM dd, yyyy').format(dateTime);
+    return formattedDate;
+  }
+
   static String getFormatedDate2(String date){
     print('arso $date');
     DateTime dateTime = DateTime.parse(date);
