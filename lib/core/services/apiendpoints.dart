@@ -27,5 +27,31 @@ class ApiEndPoints{
   static String deleteMember(String memberId){
     return '/users/members/$memberId';
   }
+  static String updateEventComfort(String eventId){
+    return '/events/$eventId/comfort';
+  }
+  
+  static String updatedGuestAware(String eventId) {
+    return '/events/$eventId/guest-aware';
+  }
 
+  static String eventReview(String eventId) {
+    return '/events/${eventId}/review';
+  }
+
+  static String publishEvent(String eventId) {
+    return '/events/${eventId}/publish';
+  }
+
+  static String getAllEvent(int page) {
+    return '/events/upcoming?page=${page}&limit=10';
+  }
+
+  static String editEvent(String eventId) {
+    return '/events/${eventId}';
+  }
+
+  static String myEvents(int page) {
+    return '/events/my-events?page=${page}&limit=10';
+  }
 }

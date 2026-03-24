@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
 import '../widget/complete_guest_dialog.dart';
@@ -36,6 +38,21 @@ class NavigationController extends GetxController {
   var expandedNotes = <int, bool>{}.obs;
   var isNotesClicked = <int, bool>{}.obs;
 
+
+
+  onGuestClick() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    isUser.value = true;
+    await prefs.setBool('isUser', true);
+  }
+
+  onHostClick() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    isUser.value = false;
+    await prefs.setBool('isUser', false);
+  }
   RxBool isSelected = false.obs;
 
   RxBool isYesTableSelected = true.obs;
@@ -98,6 +115,16 @@ class NavigationController extends GetxController {
     }
   }
 
+  String formatDate2(DateTime? dateTime) {
+    try {
+      if (dateTime == null) return "";
+
+      return DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
+    } catch (e) {
+      return "";
+    }
+  }
+
   /// Formats the time part: "2026-02-20T16:46:23.956Z" -> "04:46 PM"
   String formatTime(String isoDate) {
     try {
@@ -107,6 +134,32 @@ class NavigationController extends GetxController {
       return isoDate;
     }
   }
+  String formatTime2(DateTime? dateTime) {
+    try {
+      if (dateTime == null) return "";
+
+      return DateFormat('hh:mm a').format(dateTime.toLocal());
+    } catch (e) {
+      return "";
+    }
+  }
+
+// Example function
+  Future<String> getAddressFromCoordinates(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        return "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+      } else {
+        return "Unknown Location";
+      }
+    } catch (e) {
+      print("Reverse geocoding error: $e");
+      return "Unknown Location";
+    }
+  }
+
 
   final List<String> tabs = [
     "All",

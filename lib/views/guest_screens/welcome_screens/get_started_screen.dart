@@ -66,6 +66,7 @@ class GetStartedScreen extends StatelessWidget {
                   Get.toNamed('signupscreen');
                   authController.emailController.clear();
                   authController.verificationCode.value = '';
+                  controller.onGuestClick();
                 },
               ),
             ),
@@ -80,6 +81,7 @@ class GetStartedScreen extends StatelessWidget {
                   Get.toNamed('signupscreen');
                   authController.emailController.clear();
                   authController.verificationCode.value = '';
+                  controller.onHostClick();
                 },
               ),
             ),

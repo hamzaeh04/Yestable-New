@@ -8,9 +8,12 @@ import 'package:yestable/widget/loading_step_indicator.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
+import '../../../controllers/event_controller.dart';
 
 class EventComfortTwo extends StatelessWidget {
   EventComfortTwo({super.key});
+
+  final EventController controller = Get.find<EventController>();
 
   final List<String> checkList = [
     "Pets Will Present",
@@ -30,6 +33,7 @@ class EventComfortTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final eventId = Get.arguments;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -59,7 +63,7 @@ class EventComfortTwo extends StatelessWidget {
                   SizedBox(height: 1.h),
                   customText(
                     text:
-                    "2. Make your guests aware of (check all that apply).",
+                        "2. Make your guests aware of (check all that apply).",
                     fontFamily: "CormorantGaramond",
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -82,7 +86,10 @@ class EventComfortTwo extends StatelessWidget {
                     // ✅ Agar index 8 hai to yesNoWidget nahi, sirf container
                     if (index == 8)
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 6.w, vertical: 0.h),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 0.h,
+                        ),
                         // padding: EdgeInsets.all(16.sp),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF4ECE6),
@@ -93,24 +100,64 @@ class EventComfortTwo extends StatelessWidget {
                           children: [
                             customText(
                               text: "Swimming Pool",
-                                fontSize: 15.5.sp, fontWeight: FontWeight.w400,color: blackColor
+                              fontSize: 15.5.sp,
+                              fontWeight: FontWeight.w400,
+                              color: blackColor,
                             ),
                             SizedBox(height: 1.5.h),
-                            selectedPill(text: "Pool Or Body Of Water Is Present"),
+                            Obx(
+                              () => selectablePill(
+                                text: "Pool Or Body Of Water Is Present",
+                                isSelected:
+                                    controller.poolSelection.value ==
+                                    'pool_present',
+                                onTap:
+                                    () =>
+                                        controller.poolSelection.value =
+                                            'pool_present',
+                              ),
+                            ),
                             SizedBox(height: 1.h),
-                            selectedPill(text: "Non-Swimming Event"),
+                            Obx(
+                              () => selectablePill(
+                                text: "Non-Swimming Event",
+                                isSelected:
+                                    controller.poolSelection.value ==
+                                    'non_swimming',
+                                onTap: () {
+                                  controller.poolSelection.value =
+                                      'non_swimming';
+                                  controller.guestsWelcomeToSwim.value =
+                                      false; // Reset sub-option
+                                },
+                              ),
+                            ),
                             SizedBox(height: 1.h),
                             customText(
                               text: "Optional",
-                                fontSize: 15.5.sp, fontWeight: FontWeight.w400,color: blackColor
+                              fontSize: 15.5.sp,
+                              fontWeight: FontWeight.w400,
+                              color: blackColor,
                             ),
                             SizedBox(height: 1.h),
-                            unselectedOption(text: "Guests Are Welcome To Swim"),
+                            Obx(
+                                  () => selectableOption(
+                                text: "Guests Are Welcome To Swim",
+                                isSelected: controller.guestsWelcomeToSwim.value,
+                                onTap: () {
+                                  controller.guestsWelcomeToSwim.value =
+                                  !controller.guestsWelcomeToSwim.value;
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       )
                     else
-                      yesNoWidget(title: checkList[index], index + 1), // baki sab normal
+                      yesNoWidget(
+                        title: checkList[index],
+                        index + 1,
+                      ), // baki sab normal
 
                     Divider(
                       thickness: 1,
@@ -121,7 +168,6 @@ class EventComfortTwo extends StatelessWidget {
                 );
               },
             ),
-
 
             /// Others
             Column(
@@ -138,16 +184,18 @@ class EventComfortTwo extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                       TextField(
+                        controller: controller.itemContainingController,
                         decoration: InputDecoration(
                           hintText: "Type Here",
-                          hintStyle: const TextStyle(color: Colors.grey,fontFamily: "WorkSans"),
+                          hintStyle: const TextStyle(
+                            color: Colors.grey,
+                            fontFamily: "WorkSans",
+                          ),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.grey.shade300),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.grey.shade500),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
                           ),
                         ),
                       ),
@@ -168,16 +216,18 @@ class EventComfortTwo extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                       TextField(
+                        controller: controller.guestAwareOthersController,
                         decoration: InputDecoration(
                           hintText: "Type Here",
-                          hintStyle: const TextStyle(color: Colors.grey,fontFamily: "WorkSans"),
+                          hintStyle: const TextStyle(
+                            color: Colors.grey,
+                            fontFamily: "WorkSans",
+                          ),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.grey.shade300),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.grey.shade500),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
                           ),
                         ),
                       ),
@@ -192,8 +242,10 @@ class EventComfortTwo extends StatelessWidget {
                     "Continue",
                     whiteColor,
                     colors: greenColor,
-                    onTap: () {
-                      Get.toNamed("eventcomfortthree");
+                    onTap: () async {
+                      // await controller.updateGuestAwareMethod(eventId);
+                      Get.toNamed("eventcomfortthree", arguments: eventId);
+
                     },
                   ),
                 ),
@@ -206,62 +258,77 @@ class EventComfortTwo extends StatelessWidget {
     );
   }
 }
-Widget selectedPill({required String text}) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
-    decoration: BoxDecoration(
-      color: const Color(0xFF2F4F4F),
-      borderRadius: BorderRadius.circular(30.sp),
+
+Widget selectablePill({
+  required String text,
+  required bool isSelected,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
+      decoration: BoxDecoration(
+        color: isSelected ? const Color(0xFF2F4F4F) : Colors.transparent,
+        borderRadius: BorderRadius.circular(30.sp),
+        border: isSelected ? null : Border.all(color: greyBorderColor),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 20.sp,
+            width: 20.sp,
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.white : Colors.transparent,
+              shape: BoxShape.circle,
+              border: isSelected ? null : Border.all(color: greyBorderColor),
+            ),
+            child: Icon(
+              Icons.check,
+              size: 16.sp,
+              color: isSelected ? greenColor : Colors.transparent,
+            ),
+          ),
+          SizedBox(width: 2.w),
+          customText(
+            text: text,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w500,
+            color: isSelected ? Colors.white : Colors.black,
+          ),
+        ],
+      ),
     ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: 20.sp,
-          width: 20.sp,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+  );
+}
+
+Widget selectableOption({
+  required String text,
+  required bool isSelected,
+  required VoidCallback onTap,
+}) {
+  return Row(
+    children: [
+      GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 22.sp,
+          width: 22.sp,
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
+            color: isSelected ? greenColor : Colors.transparent,
+            border: Border.all(color: greyBorderColor),
           ),
           child: Icon(
             Icons.check,
             size: 16.sp,
-            color: greenColor,
+            color: isSelected ? Colors.white : Colors.transparent,
           ),
-        ),
-        SizedBox(width: 2.w),
-        customText(
-          text: text,
-          fontSize: 13.sp,
-          fontWeight: FontWeight.w500,
-          color: Colors.white,
-        ),
-      ],
-    ),
-  );
-}
-Widget unselectedOption({required String text}) {
-  return Row(
-    children: [
-      Container(
-        height: 22.sp,
-        width: 22.sp,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: greyBorderColor),
-        ),
-        child: Icon(
-          Icons.check,
-          size: 16.sp,
-          color: Colors.black,
         ),
       ),
       SizedBox(width: 3.w),
-      customText(
-        text: text,
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w400,
-      ),
+      customText(text: text, fontSize: 14.sp, fontWeight: FontWeight.w400),
     ],
   );
 }

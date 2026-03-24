@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
+import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
@@ -14,6 +15,7 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
 
   @override
   Widget build(BuildContext context) {
@@ -288,20 +290,44 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 2.h),
-                          SizedBox(
-                            height: 41.h,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 4.w),
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(right: 3.w),
-                                  child: upComingEventWidget(),
-                                );
-                              },
-                            ),
-                          ),
+                          Obx((){
+                            final eventData = eventController.getAllEventsModel.value?.data?.data;
+                            if(eventController.isLoadingAllEvents.value == true)
+                              return Padding(
+                                padding: EdgeInsets.only(top: 7.h),
+                                child: SizedBox(
+                                    child: Center(child: CircularProgressIndicator(color: greenColor,))),
+                              );
+                            if(eventData == null || eventData.isEmpty)
+                              return Padding(
+                                  padding: EdgeInsets.only(top: 7.h),
+                                  child: Center(child: customText(text: 'No events found!', fontSize: 14.5.sp))
+                              );
+                            return SizedBox(
+                              height: 41.h,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                itemCount: eventData?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  final data = eventData?[index];
+                                  String displayLocation = (data?.location?.coordinates != null)
+                                      ? "${data!.location!.coordinates![1]}, ${data.location!.coordinates![0]}"
+                                      : "132 My Street, Kingston, New York 12486";
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 3.w),
+                                    child: upComingEventWidget(
+                                        eventName: data?.eventName  ?? "Sophia Dinner Event",
+                                        eventDate: controller.formatDate2(data?.eventTime),
+                                        eventTime: controller.formatTime2(data?.eventTime),
+                                        eventHost: data?.host?.name ?? "Sophia Andreas",
+                                        eventLocation: displayLocation
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
@@ -12,6 +13,7 @@ import '../../../constants/constants_widgets.dart';
 
 class EventComfortOne extends StatelessWidget {
   EventComfortOne({super.key});
+  final EventController controller = Get.find<EventController>();
 
   final List<String> titles = [
     "Access To Quiet Space Away From Main Event",
@@ -22,6 +24,7 @@ class EventComfortOne extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    final eventId = Get.arguments;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -108,6 +111,7 @@ class EventComfortOne extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: TextField(
+                controller: controller.otherComfortController,
                 decoration: InputDecoration(
                   hintText: "Type Here", // 💬 Your hint text
                   hintStyle: TextStyle(color: Colors.grey), // optional: customize hint text color
@@ -125,7 +129,7 @@ class EventComfortOne extends StatelessWidget {
               color: Colors.grey.shade400,
               height: 3.h,
             ),
-            yesNoWidget(title: "Restroom", 6),
+            yesNoWidget(6, title: "Restroom"),
             SizedBox(height: 3.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -133,8 +137,10 @@ class EventComfortOne extends StatelessWidget {
                 "Continue",
                 whiteColor,
                 colors: greenColor,
-                onTap: () {
-                  Get.toNamed("eventcomforttwo");
+                onTap: () async {
+                  // Currently assuming a specific event ID for testing
+                  await controller.updateEventComfortMethod(eventId);
+                  // Get.toNamed("eventcomforttwo");
                 },
               ),
             ),

@@ -98,7 +98,7 @@ Widget _selectedMenusTab(EventController eventController, String type) {
       return Center(
         child: customText(
           text: "No menu selected",
-          fontSize: 12.sp,
+          fontSize: 14.sp,
           color: darkGreyColor,
         ),
       );

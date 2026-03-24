@@ -87,7 +87,7 @@ void eventPostedDialog(BuildContext context) {
                     // 3. Sabse zaroori: Controller ko update karne ke liye chota sa delay dein
                     // Isse "Build scheduled during frame" wala error khatam ho jayega
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      controller.changePage(2);
+                      controller.changePage(0);
                     });
                   },
                 ),

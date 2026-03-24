@@ -3,31 +3,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-import 'package:yestable/constants/color_constants.dart';
-import 'package:yestable/controllers/location_controller.dart';
-import 'package:yestable/core/services/apiendpoints.dart';
-import 'package:yestable/core/services/base_services.dart';
-import 'package:yestable/model/get_menu_model.dart';
+import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/model/get_event_review_model.dart';
+import 'package:yestable/model/get_my_event_model.dart';
 
-import '../core/services/multipart_request.dart';
+import '../core/services/apiendpoints.dart';
+import '../core/services/base_services.dart';
+import '../model/get_all_event_model.dart';
+import '../model/get_menu_model.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
 import '../utils/utility.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import '../widget/event_posted_dialog.dart';
+import 'location_controller.dart';
+import 'navigation_controller.dart';
 
 class EventController extends GetxController{
- final LocationController locationController = Get.find<LocationController>();
-  BaseService baseService = BaseService();
-  final prefs = SharedPreferencesMethod.storage;
-
-  final RxBool isMenusLoading = false.obs;
-  final RxString menusError = ''.obs;
-  final RxList<MenuItem> menus = <MenuItem>[].obs;
-  final RxList<MenuItem> selectedMenus = <MenuItem>[].obs;
-
   // Event Controllers
   final TextEditingController eventName = TextEditingController();
   final TextEditingController eventDate = TextEditingController();
@@ -38,6 +33,33 @@ class EventController extends GetxController{
   final TextEditingController parkingDetails = TextEditingController();
   final TextEditingController addNote = TextEditingController();
   final TextEditingController eventReminder = TextEditingController();
+  final TextEditingController otherComfortController = TextEditingController();
+
+  var selectedEventType = RxnString();
+  var selectedReminderTime = RxnString();
+  Rxn<EventReviewModel> eventReviewModel = Rxn<EventReviewModel>();
+  Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
+  Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
+
+  // Guest Aware Controllers
+  final TextEditingController swimmingPoolController = TextEditingController();
+  final TextEditingController itemContainingController = TextEditingController();
+  final TextEditingController guestAwareOthersController = TextEditingController();
+  final TextEditingController guestContactController = TextEditingController();
+
+  var poolSelection = ''.obs;
+  var guestsWelcomeToSwim = false.obs;
+  final LocationController locationController = Get.find<LocationController>();
+  BaseService baseService = BaseService();
+  final prefs = SharedPreferencesMethod.storage;
+
+  final RxBool isMenusLoading = false.obs;
+  final RxBool isLoadingMyEvents = false.obs;
+  final RxBool isLoadingAllEvents = false.obs;
+  final RxString menusError = ''.obs;
+  final RxList<MenuItem> menus = <MenuItem>[].obs;
+  final RxList<MenuItem> selectedMenus = <MenuItem>[].obs;
+
   final TextEditingController menuTitle = TextEditingController();
   final TextEditingController menuDescription = TextEditingController();
 
@@ -55,6 +77,116 @@ class EventController extends GetxController{
   void removeImage() {
     itemPic.value = null;
   }
+  final List<String> eventMenuList = ["Vegetarian", "Contain Dairy","Gluten-Free","Shelfish","Vegan","Nut-Free"];
+
+  final List<String> eventAccesibilityList = [
+    "Quiet Space Available",
+    "Larger Seating",
+    "Wheelchair Accessible",
+    "ASL Interpreter",
+    "Vegan Option",
+    "Rest Room",
+    "Pets Allowed",
+    "Childrens Allowed",
+    "For Adults Only",
+    "Smoke Present",
+    "Smoke Free",
+    "Alcohol",
+    "Alcohol Free",
+    "There Are Steps To Climb",
+    "Swimming Pool Is Present",
+    "Firearms Are Present",
+    "Shellfish Will Be Served",
+    "Peanuts Present",
+    "Event Ends At A Time",
+  ];
+  RxList<String> eventComfortAccessibility = <String>[].obs;
+  void mapEventComfortAccessibility(
+      EventComfort? eventComfort,
+      GuestAware? guestAware,
+      ) {
+    eventComfortAccessibility.clear();
+
+    // Event Comfort
+    if (eventComfort?.quietSpace == true) {
+      eventComfortAccessibility.add("Quiet Space");
+    }
+
+    if (eventComfort?.largerSeating == true) {
+      eventComfortAccessibility.add("Larger Seating");
+    }
+
+    if (eventComfort?.wheelChairAccess == true) {
+      eventComfortAccessibility.add("Wheelchair Accessible");
+    }
+
+    if (eventComfort?.aslInterpreter == true) {
+      eventComfortAccessibility.add("ASL Interpreter");
+    }
+
+    if (eventComfort?.veganMenu == true) {
+      eventComfortAccessibility.add("Vegan Option");
+    }
+
+    if (eventComfort?.restroom == true) {
+      eventComfortAccessibility.add("Rest Room");
+    }
+
+    // Guest Aware
+    if (guestAware?.petsPresent == true) {
+      eventComfortAccessibility.add("Pets Allowed");
+    }
+
+    if (guestAware?.childrenPresent == true) {
+      eventComfortAccessibility.add("Childrens Allowed");
+    }
+
+    if (guestAware?.forAdultOnly == true) {
+      eventComfortAccessibility.add("For Adults Only");
+    }
+
+    if (guestAware?.smokePresent == true) {
+      eventComfortAccessibility.add("Smoke Present");
+    }
+
+    if (guestAware?.smokeFree == true) {
+      eventComfortAccessibility.add("Smoke Free");
+    }
+
+    if (guestAware?.alcohol == true) {
+      eventComfortAccessibility.add("Alcohol");
+    }
+
+    if (guestAware?.alcoholFree == true) {
+      eventComfortAccessibility.add("Alcohol Free");
+    }
+
+    if (guestAware?.stepsToClimb == true) {
+      eventComfortAccessibility.add("There Are Steps To Climb");
+    }
+
+    if (guestAware?.swimmingPool == "pool_present") {
+      eventComfortAccessibility.add("Swimming Pool Is Present");
+    }
+
+    if (guestAware?.fireArms == true) {
+      eventComfortAccessibility.add("Firearms Are Present");
+    }
+
+    if (guestAware?.shellFish == true) {
+      eventComfortAccessibility.add("Shellfish Will Be Served");
+    }
+
+    if (guestAware?.peanuts == true) {
+      eventComfortAccessibility.add("Peanuts Present");
+    }
+
+    if (guestAware?.endsInFirmTime == true) {
+      eventComfortAccessibility.add("Event Ends At A Time");
+    }
+  }
+
+
 
   var selectedType = RxnString();
   RxList<Map<String, String>> selectedMealCategory = <Map<String, String>>[].obs;  // List of categories
@@ -64,11 +196,11 @@ class EventController extends GetxController{
     {"name": "Dairy-Free", "imgPath": "assets/png/event_food_image/milk.png"},
     {"name": "Gluten-Free", "imgPath": "assets/png/event_food_image/glutenfree.png"},
     {"name": "Selfish", "imgPath": "assets/png/event_food_image/shell.png"},
-    {"name": "Vegan", "imgPath": "assets/png/event_food_image/shell.png"},
+    {"name": "Vegan", "imgPath": "assets/png/profile_food_images/vegan.png"},
     {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
   ];
 
-  Future<void> createEvent() async {
+  Future<void> createEvent({File? image}) async {
     try {
       final lat = locationController.latitude.value;
       final lng = locationController.longitude.value;
@@ -112,7 +244,7 @@ class EventController extends GetxController{
           : eventType.text.trim();
 
       final body = {
-        "image": "",
+        "image": image,
         "eventName": eventName.text.trim(),
         "eventTime": isoEventTime,
         "eventType": typeValue,
@@ -120,6 +252,7 @@ class EventController extends GetxController{
           "type": "Point",
           "coordinates": [lng, lat],
         },
+        "address": locationController.addressController.text.trim(),
         "invitationMessage": inviteMsg.text.trim(),
         "parkingDetails": parkingDetails.text.trim(),
         "addNote": addNote.text.trim(),
@@ -141,6 +274,90 @@ class EventController extends GetxController{
       }
     } catch (e) {
       Utils.showToast("Failed to create event", true);
+    }
+  }
+
+  Future<void> editEvent({
+    required String eventId,
+    File? image,
+  }) async {
+    try {
+      final lat = locationController.latitude.value;
+      final lng = locationController.longitude.value;
+
+      // Build ISO 8601 event time
+      String? isoEventTime;
+      final dateStr = eventDate.text.trim();
+      final timeStr = eventTime.text.trim();
+
+      if (dateStr.isNotEmpty && timeStr.isNotEmpty) {
+        try {
+          final dateParts = dateStr.split('-');
+          final day = int.parse(dateParts[0]);
+          final month = int.parse(dateParts[1]);
+          final year = int.parse(dateParts[2]);
+
+          final timeParts = timeStr.split(' ');
+          final hm = timeParts[0].split(':');
+          var hour = int.parse(hm[0]);
+          final minute = int.parse(hm[1]);
+          final period =
+          timeParts.length > 1 ? timeParts[1].toUpperCase() : 'AM';
+
+          if (period == 'PM' && hour != 12) {
+            hour += 12;
+          } else if (period == 'AM' && hour == 12) {
+            hour = 0;
+          }
+
+          final dt = DateTime(year, month, day, hour, minute);
+          isoEventTime = dt.toUtc().toIso8601String();
+        } catch (_) {
+          isoEventTime = null;
+        }
+      }
+
+      final typeValue = eventType.text.trim().isEmpty
+          ? "Private"
+          : eventType.text.trim();
+
+      /// 🔹 Build body
+      final body = {
+        if (image != null) "image": image, // only send if updated
+        "eventName": eventName.text.trim(),
+        "eventTime": isoEventTime,
+        "eventType": typeValue,
+        "location": {
+          "type": "Point",
+          "coordinates": [lng, lat],
+        },
+        "invitationMessage": inviteMsg.text.trim(),
+        "parkingDetails": parkingDetails.text.trim(),
+        "addNote": addNote.text.trim(),
+        "reminderNotification": true,
+        "members": [],
+        "menus": selectedMenus
+            .map((m) => m.id)
+            .whereType<String>()
+            .toList(),
+        "displayMenu": selectedMenus.isNotEmpty,
+      };
+
+      final res = await baseService.basePatchAPI( // or basePatchAPI depending on backend
+        ApiEndPoints.editEvent(eventId),
+        body: {},
+      );
+
+      if (res["success"] == true) {
+        Utils.showToast(res["message"] ?? "Event updated", false);
+
+        // You can go back OR navigate
+        Get.back();
+        // OR
+        // Get.toNamed("eventdetailsscreen", arguments: eventId);
+      }
+    } catch (e) {
+      Utils.showToast("Failed to update event", true);
     }
   }
 
@@ -167,7 +384,7 @@ class EventController extends GetxController{
   String? mealCategoryIcon(String? name) {
     if (name == null) return null;
     final match = mealCategory.firstWhereOrNull(
-      (e) => (e["name"] ?? "").toLowerCase() == name.toLowerCase(),
+          (e) => (e["name"] ?? "").toLowerCase() == name.toLowerCase(),
     );
     return match?["imgPath"];
   }
@@ -365,94 +582,470 @@ class EventController extends GetxController{
   //     Utils.showToast("Check Internet Connection", false);
   //   }
   // }
- Future<void> uploadMenu() async {
-   // Remove jsonEncode
-   final fields = {
-     "title": menuTitle.text.trim(),
-     "type": selectedType.value ?? "",
-     "description": menuDescription.text.trim(),
-   };
+  Future<void> uploadMenu() async {
+    // Remove jsonEncode
+    final fields = {
+      "title": menuTitle.text.trim(),
+      "type": selectedType.value ?? "",
+      "description": menuDescription.text.trim(),
+    };
 
-   // Prepare list of meal categories
-   List<String> mealCategories =
-   selectedMealCategory.map((e) => e["name"] ?? "").toList();
+    // Prepare list of meal categories
+    List<String> mealCategories =
+    selectedMealCategory.map((e) => e["name"] ?? "").toList();
 
-   // Send request
-   await _sendMultipartMenuRequest(
-     ApiEndPoints.addMenu,
-     fields,
-     mealCategories,
-     itemPic.value,
-   );
- }
+    // Send request
+    await _sendMultipartMenuRequest(
+      ApiEndPoints.addMenu,
+      fields,
+      mealCategories,
+      itemPic.value,
+    );
+  }
 
- Future<void> _sendMultipartMenuRequest(
-     String endpoint,
-     Map<String, String> fields,
-     List<String> mealCategories,
-     File? menuImage,
-     ) async {
-   try {
-     final url = "${baseService.baseURL}$endpoint";
-     final uri = Uri.parse(url);
+  Future<void> _sendMultipartMenuRequest(
+      String endpoint,
+      Map<String, String> fields,
+      List<String> mealCategories,
+      File? menuImage,
+      ) async {
+    try {
+      final url = "${baseService.baseURL}$endpoint";
+      final uri = Uri.parse(url);
 
-     var request = http.MultipartRequest('POST', uri);
-     final token = prefs.getString(LocalDBKeys.TOKEN);
+      var request = http.MultipartRequest('POST', uri);
+      final token = prefs.getString(LocalDBKeys.TOKEN);
 
-     request.headers.addAll({
-       "Accept": "application/json",
-       "Authorization": "Bearer $token",
-     });
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      });
 
-     // Add normal fields
-     request.fields.addAll(fields);
+      // Add normal fields
+      request.fields.addAll(fields);
 
-     // Add mealCategory as array
-     for (var category in mealCategories) {
-       request.fields['mealCategory[]'] = category;
-     }
+      // Add mealCategory as array
+      for (var category in mealCategories) {
+        request.fields['mealCategory[]'] = category;
+      }
 
-     // Add image
-     if (menuImage != null) {
-       String ext = path.extension(menuImage.path).toLowerCase();
-       String mimeType = 'image/jpeg';
-       if (ext == '.png') mimeType = 'image/png';
-       else if (ext == '.jpg' || ext == '.jpeg') mimeType = 'image/jpeg';
-       else if (ext == '.gif') mimeType = 'image/gif';
+      // Add image
+      if (menuImage != null) {
+        String ext = path.extension(menuImage.path).toLowerCase();
+        String mimeType = 'image/jpeg';
+        if (ext == '.png') mimeType = 'image/png';
+        else if (ext == '.jpg' || ext == '.jpeg') mimeType = 'image/jpeg';
+        else if (ext == '.gif') mimeType = 'image/gif';
 
-       request.files.add(await http.MultipartFile.fromPath(
-         'menuImage',
-         menuImage.path,
-         contentType: MediaType('image', mimeType.split('/')[1]),
-       ));
-     }
+        request.files.add(await http.MultipartFile.fromPath(
+          'menuImage',
+          menuImage.path,
+          contentType: MediaType('image', mimeType.split('/')[1]),
+        ));
+      }
 
-     final streamedResponse = await request.send();
-     final response = await http.Response.fromStream(streamedResponse);
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
-     print("📦 Status: ${response.statusCode}");
-     print("📦 Body: ${response.body}");
+      print("📦 Status: ${response.statusCode}");
+      print("📦 Body: ${response.body}");
 
-     final jsonResponse = jsonDecode(response.body);
+      final jsonResponse = jsonDecode(response.body);
 
-     if (response.statusCode == 200 || response.statusCode == 201) {
-       Utils.showToast("${jsonResponse['message']}", false);
-       // Get.toNamed('menuSuccessScreen');
-       Get.back();
-       clearItemFields();
-     } else {
-       Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
-     }
-   } catch (e) {
-     print("❌ Error: $e");
-     Utils.showToast("Check Internet Connection", false);
-   }
- }
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Utils.showToast("${jsonResponse['message']}", false);
+        // Get.toNamed('menuSuccessScreen');
+        Get.back();
+        clearItemFields();
+      } else {
+        Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
+      }
+    } catch (e) {
+      print("❌ Error: $e");
+      Utils.showToast("Check Internet Connection", false);
+    }
+  }
   void clearItemFields(){
     itemPic.value = null;
     menuTitle.clear();
     menuDescription.clear();
     selectedType.value = null;
     selectedMealCategory.value = [];
+  }
+
+  /// SAFE BOOL OPTION GETTER
+  bool? getBoolOption(ProfileController profileController, int index) {
+    if (index >= profileController.selectedOptions.length) {
+      print("⚠️ Index $index OUT OF RANGE");
+      return null;
+    }
+
+    final value = profileController.selectedOptions[index];
+    print("Index $index value: $value");
+
+    if (value == 'yes') return true;
+    if (value == 'no') return false;
+
+    return null;
+  }
+
+  /// EVENT COMFORT API
+  Future<void> updateEventComfortMethod(String eventId) async {
+    final ProfileController profileController = Get.find<ProfileController>();
+
+    print("============= EVENT COMFORT DEBUG START =============");
+    print("EventId: $eventId");
+
+    print("selectedOptions length: ${profileController.selectedOptions.length}");
+    print("selectedOptions: ${profileController.selectedOptions}");
+
+    Map<String, dynamic> comfortData = {};
+
+    bool? quietSpace = getBoolOption(profileController, 1);
+    bool? largerSeating = getBoolOption(profileController, 2);
+    bool? wheelChairAccess = getBoolOption(profileController, 3);
+    bool? aslInterpreter = getBoolOption(profileController, 4);
+    bool? veganMenu = getBoolOption(profileController, 5);
+    bool? restroom = getBoolOption(profileController, 6);
+
+    print("quietSpace: $quietSpace");
+    print("largerSeating: $largerSeating");
+    print("wheelChairAccess: $wheelChairAccess");
+    print("aslInterpreter: $aslInterpreter");
+    print("veganMenu: $veganMenu");
+    print("restroom: $restroom");
+
+    if (quietSpace != null) comfortData['quietSpace'] = quietSpace;
+    if (largerSeating != null) comfortData['largerSeating'] = largerSeating;
+    if (wheelChairAccess != null) comfortData['wheelChairAccess'] = wheelChairAccess;
+    if (aslInterpreter != null) comfortData['aslInterpreter'] = aslInterpreter;
+    if (veganMenu != null) comfortData['veganMenu'] = veganMenu;
+    if (restroom != null) comfortData['restroom'] = restroom;
+
+    String otherText = otherComfortController.text.trim();
+    print("Other Comfort Text: $otherText");
+
+    if (otherText.isNotEmpty) {
+      comfortData['other'] = otherText;
+    }
+
+    print("Final comfortData Payload → $comfortData");
+
+    try {
+      final response = await baseService.basePatchAPI(
+        ApiEndPoints.updateEventComfort(eventId),
+        body: comfortData,
+      );
+
+      print("API Response → $response");
+
+      if (response['success'] == true) {
+        // ✅ Show success toast
+        Utils.showToast(
+          response['message'] ?? "Event comfort updated successfully",
+          false,
+        );
+
+        // ✅ RESET ONLY SELECTED OPTIONS
+        profileController.selectedOptions.clear();
+        Get.toNamed("eventcomforttwo", arguments: eventId);
+        otherComfortController.clear();
+        print("✅ selectedOptions cleared after success");
+
+      } else {
+        Utils.showToast(
+          response['message'] ?? "Failed to update event comfort",
+          true,
+        );
+      }
+
+    } catch (e) {
+      print("❌ Error in updateEventComfortMethod: $e");
+
+      Utils.showToast(
+        "Something went wrong: $e",
+        true,
+      );
+    }
+
+    print("============= EVENT COMFORT DEBUG END =============");
+  }
+
+  /// GUEST AWARE API
+  Future<void> updateGuestAwareMethod(String eventId) async {
+
+    final ProfileController profileController = Get.find<ProfileController>();
+    final NavigationController navCtrl = Get.find<NavigationController>();
+
+    print("============= GUEST AWARE DEBUG START =============");
+    print("EventId: $eventId");
+
+    print("selectedOptions length: ${profileController.selectedOptions.length}");
+    print("selectedOptions: ${profileController.selectedOptions}");
+
+    Map<String, dynamic> guestAwareData = {};
+
+    bool displayMenu = navCtrl.isSelected.value;
+
+    bool? petsPresent = getBoolOption(profileController, 1);
+    bool? childrenPresent = getBoolOption(profileController, 2);
+    bool? forAdultOnly = getBoolOption(profileController, 3);
+    bool? smokePresent = getBoolOption(profileController, 4);
+    bool? smokeFree = getBoolOption(profileController, 5);
+    bool? alcohol = getBoolOption(profileController, 6);
+    bool? alcoholFree = getBoolOption(profileController, 7);
+    bool? stepsToClimb = getBoolOption(profileController, 8);
+    bool? fireArms = getBoolOption(profileController, 10);
+    bool? shellFish = getBoolOption(profileController, 11);
+    bool? peanuts = getBoolOption(profileController, 12);
+    bool? endsInFirmTime = getBoolOption(profileController, 13);
+    bool? mayGuestsContact = getBoolOption(profileController, 14);
+
+    print("displayMenu: $displayMenu");
+    print("mayGuestsContact: $mayGuestsContact");
+    print("petsPresent: $petsPresent");
+    print("childrenPresent: $childrenPresent");
+    print("forAdultOnly: $forAdultOnly");
+    print("smokePresent: $smokePresent");
+    print("smokeFree: $smokeFree");
+    print("alcohol: $alcohol");
+    print("alcoholFree: $alcoholFree");
+    print("stepsToClimb: $stepsToClimb");
+    print("fireArms: $fireArms");
+    print("shellFish: $shellFish");
+    print("peanuts: $peanuts");
+    print("endsInFirmTime: $endsInFirmTime");
+
+    guestAwareData['displayMenu'] = displayMenu;
+
+    if (mayGuestsContact != null) guestAwareData['mayGuestsContact'] = mayGuestsContact;
+    if (petsPresent != null) guestAwareData['petsPresent'] = petsPresent;
+    if (childrenPresent != null) guestAwareData['childrenPresent'] = childrenPresent;
+    if (forAdultOnly != null) guestAwareData['forAdultOnly'] = forAdultOnly;
+    if (smokePresent != null) guestAwareData['smokePresent'] = smokePresent;
+    if (smokeFree != null) guestAwareData['smokeFree'] = smokeFree;
+    if (alcohol != null) guestAwareData['alcohol'] = alcohol;
+    if (alcoholFree != null) guestAwareData['alcoholFree'] = alcoholFree;
+    if (stepsToClimb != null) guestAwareData['stepsToClimb'] = stepsToClimb;
+    if (fireArms != null) guestAwareData['fireArms'] = fireArms;
+    if (shellFish != null) guestAwareData['shellFish'] = shellFish;
+    if (peanuts != null) guestAwareData['peanuts'] = peanuts;
+    if (endsInFirmTime != null) guestAwareData['endsInFirmTime'] = endsInFirmTime;
+
+    print("poolSelection: ${poolSelection.value}");
+    print("guestsWelcomeToSwim: ${guestsWelcomeToSwim.value}");
+
+    if (poolSelection.value.isNotEmpty) {
+
+      guestAwareData['swimmingPool'] = poolSelection.value;
+
+      if (poolSelection.value == 'pool_present') {
+        guestAwareData['guestsWelcomeToSwim'] = guestsWelcomeToSwim.value;
+      }
+
+    }
+
+    String itemContaining = itemContainingController.text.trim();
+    String others = guestAwareOthersController.text.trim();
+    String guestContact = guestContactController.text.trim();
+
+    print("itemContaining: $itemContaining");
+    print("others: $others");
+    print("guestContact: $guestContact");
+
+    if (itemContaining.isNotEmpty) guestAwareData['itemContaining'] = itemContaining;
+    if (others.isNotEmpty) guestAwareData['others'] = others;
+    if (guestContact.isNotEmpty) guestAwareData['guestContact'] = guestContact;
+
+    print("Final guestAwareData Payload → $guestAwareData");
+
+    try {
+
+      final response = await baseService.basePatchAPI(
+        ApiEndPoints.updatedGuestAware(eventId),
+        body: guestAwareData,
+      );
+
+      print("API Response → $response");
+
+      if (response['success'] == true) {
+
+        Utils.showToast(
+          response['message'] ?? "Guest aware details updated successfully",
+          false,
+        );
+        // Get.toNamed("eventcomfortthree", arguments: eventId);
+        Get.toNamed("eventpublishscreen", arguments: eventId);
+      } else {
+
+        Utils.showToast(
+          response['message'] ?? "Failed to update guest aware details",
+          true,
+        );
+
+      }
+
+    } catch (e) {
+
+      print("❌ Error in updateGuestAwareMethod: $e");
+
+      Utils.showToast(
+        "Something went wrong: $e",
+        true,
+      );
+
+    }
+    print("============= GUEST AWARE DEBUG END =============");
+  }
+
+  Future<void> eventReview(String eventId) async {
+    isMenusLoading.value = true;
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.eventReview(eventId),
+      );
+
+      if (response != null && response['success'] == true) {
+        eventReviewModel.value = EventReviewModel.fromJson(response);
+        Utils.showToast(response['message'], false);
+      } else {
+        // Handle API failure
+        final message = response?['message'] ?? "Something went wrong";
+        print("API Error: $message");
+        Utils.showToast(response['message'], true);
+      }
+    } catch (e, stackTrace) {
+      // Handle exception
+      print("Exception in eventReview: $e");
+      print(stackTrace);
+      Utils.showToast("Something went wrong ${e}", true);
+    } finally{
+      isMenusLoading.value = false;
+    }
+  }
+
+  Future<void> publishEvent(String eventId, BuildContext context) async {
+    isMenusLoading.value = true;
+
+    try {
+      final response = await baseService.basePatchAPI(
+        ApiEndPoints.publishEvent(eventId),
+        body: {},
+      );
+
+      if (response != null && response['success'] == true) {
+        // Success
+        Utils.showToast(
+            response?['message'], false
+        );
+        eventPostedDialog(context);
+        // Optional: navigate or refresh
+        // Get.back();
+        // eventReview(eventId);
+
+      } else {
+        // API returned failure
+        Utils.showToast(
+            response?['message'], true
+        );
+      }
+    } catch (e) {
+      Utils.showToast(
+        "Error ${e}", true
+      );
+    } finally {
+      isMenusLoading.value = false;
+    }
+  }
+
+  Future<void> getAllEvents({bool loadMore = false}) async {
+    if (loadMore) {
+      if (currentPage >= totalPages) return; // no more pages
+      isLoadingMore.value = true;
+      currentPage += 1;
+    } else {
+      currentPage = 1;
+      isLoadingAllEvents.value = true;
+    }
+
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.getAllEvent(currentPage),
+      );
+
+      if (response != null && response['success'] == true) {
+        final newData = GetAllEventsModel.fromJson(response);
+
+        totalPages = newData.data?.totalPages ?? 1;
+
+        if (loadMore) {
+          // Append new events
+          getAllEventsModel.update((val) {
+            val?.data?.data?.addAll(newData.data?.data ?? []);
+          });
+        } else {
+          getAllEventsModel.value = newData;
+        }
+
+        Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+      } else {
+        Utils.showToast(response['message'] ?? "Failed to fetch events", true);
+      }
+    } catch (e, stackTrace) {
+      Utils.showToast("Something went wrong: $e", true);
+      print("Error in getAllEvents(): $e");
+      print(stackTrace);
+    } finally {
+      isLoadingAllEvents.value = false;
+      isLoadingMore.value = false;
+    }
+  }
+
+  var isLoadingMore = false.obs;
+  int currentPage = 1;
+  int totalPages = 1; // Update after API response
+
+  Future<void> getMyEvents({bool loadMore = false}) async {
+    if (loadMore) {
+      if (currentPage >= totalPages) return; // No more pages
+      isLoadingMore.value = true;
+      currentPage += 1;
+    } else {
+      currentPage = 1; // Reset for fresh load
+      isLoadingMyEvents.value = true;
+    }
+
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.myEvents(currentPage),
+        loading: true,
+      );
+
+      if (response != null && response['success'] == true) {
+        final newData = GetMyEventModel.fromJson(response);
+
+        totalPages = newData.data?.totalPages ?? 1;
+
+        if (loadMore) {
+          // Append new events to existing list
+          myEventsModel.update((val) {
+            val?.data?.data?.addAll(newData.data?.data ?? []);
+          });
+        } else {
+          myEventsModel.value = newData;
+        }
+
+        Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+      } else {
+        Utils.showToast(response['message'] ?? "Failed to fetch events", true);
+      }
+    } catch (e, stackTrace) {
+      Utils.showToast("Something went wrong: $e", true);
+      print("Error in getMyEvents(): $e");
+      print(stackTrace);
+    } finally {
+      isLoadingMyEvents.value = false;
+      isLoadingMore.value = false;
+    }
   }
 }

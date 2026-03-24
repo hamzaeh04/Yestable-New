@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
@@ -14,9 +15,11 @@ import '../../../constants/constants_widgets.dart';
 class EventComfortThree extends StatelessWidget {
   EventComfortThree({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
 
   @override
   Widget build(BuildContext context) {
+    final eventId = Get.arguments;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -44,7 +47,6 @@ class EventComfortThree extends StatelessWidget {
                   loadingStepIndicator("3/3", 0.90),
                   backButton(),
                   SizedBox(height: 2.h),
-
                 ],
               ),
             ),
@@ -52,21 +54,18 @@ class EventComfortThree extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding:EdgeInsets.symmetric(horizontal: 6.w),
+                  padding: EdgeInsets.symmetric(horizontal: 6.w),
                   child: customText(
-                    text: "3. May guests contact you about dietary or access concerns",
+                    text:
+                        "3. May guests contact you about dietary or access concerns",
                     fontFamily: "CormorantGaramond",
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                yesNoWidget(7),
+                yesNoWidget(14),
                 SizedBox(height: 1.h),
-                Divider(
-                  thickness: 1,
-                  color: Colors.grey.shade400,
-                  height: 3.h,
-                ),
+                Divider(thickness: 1, color: Colors.grey.shade400, height: 3.h),
                 SizedBox(height: 1.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -75,20 +74,23 @@ class EventComfortThree extends StatelessWidget {
                     children: [
                       Expanded(
                         child: customText(
-                          text: "Display Menu Items on the Event\nScreen for Guest Preview.",
+                          text:
+                              "Display Menu Items on the Event\nScreen for Guest Preview.",
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Row(
                         children: [
-                          Obx(() => CupertinoSwitch(
-                            value: controller.isSelected.value,
-                            activeTrackColor: Colors.black,
-                            onChanged: (value) {
-                              controller.isSelected.value = value;
-                            },
-                          )),
+                          Obx(
+                            () => CupertinoSwitch(
+                              value: controller.isSelected.value,
+                              activeTrackColor: Colors.black,
+                              onChanged: (value) {
+                                controller.isSelected.value = value;
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -102,8 +104,9 @@ class EventComfortThree extends StatelessWidget {
                     "Continue",
                     whiteColor,
                     colors: greenColor,
-                    onTap: () {
-                      Get.toNamed("eventpublishscreen");
+                    onTap: () async {
+                      eventController.updateGuestAwareMethod(eventId);
+                      // Get.toNamed("eventpublishscreen");
                     },
                   ),
                 ),

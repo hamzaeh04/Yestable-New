@@ -155,36 +155,7 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
                               SizedBox(height: 2.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                // child: Row(
-                                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                //   children: [
-                                //     Row(
-                                //       children: [
-                                //         buttonWidget(
-                                //           "YesTable Menu (AI)",
-                                //           image: Image.asset('assets/png/chat_images/yesGPT.png', width: 5.w,),
-                                //           whiteColor,
-                                //           colors: greenColor,
-                                //           width: 43.w,
-                                //           height: 4.5.h,
-                                //           fontsize: 14.sp,
-                                //           onTap: (){
-                                //
-                                //           }
-                                //         ),
-                                //       ],
-                                //     ),
-                                //     buttonWidget(
-                                //       "Manually Picked",
-                                //       blackColor,
-                                //       colors: backgroundColor,
-                                //       width: 43.w,
-                                //       height: 4.5.h,
-                                //       borderColor: greenColor,
-                                //       fontsize: 14.sp,
-                                //     ),
-                                //   ],
-                                // ),
+
                                 child: Obx(() => Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -429,7 +400,7 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
                       height: 5.h,
                       fontsize: 16.sp,
                       onTap: () {
-                        eventController.createEvent();
+                        eventController.createEvent(image: controller.controller.profilePicture.value);
                       },
                     ),
                     SizedBox(height: 1.h),
@@ -456,11 +427,10 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
 
 Widget _menusHorizontalList({required String type}) {
   final EventController eventController = Get.find<EventController>();
-  final baseUrl = BaseService().baseURL;
 
   return Obx(() {
     if (eventController.isMenusLoading.value) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: greenColor,));
     }
 
     if (eventController.menusError.value.isNotEmpty) {
@@ -472,7 +442,7 @@ Widget _menusHorizontalList({required String type}) {
             children: [
               customText(
                 text: eventController.menusError.value,
-                fontSize: 12.sp,
+                fontSize: 14.sp,
                 color: darkGreyColor,
                 textAlign: TextAlign.center,
               ),
@@ -480,14 +450,14 @@ Widget _menusHorizontalList({required String type}) {
               InkWell(
                 onTap: () => eventController.getMenus(loading: false),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.8.h),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(18.sp),
                     border: Border.all(color: lightgreenColor),
                   ),
                   child: customText(
                     text: "Retry",
-                    fontSize: 12.sp,
+                    fontSize: 14.sp,
                     color: blackColor,
                   ),
                 ),
@@ -506,7 +476,7 @@ Widget _menusHorizontalList({required String type}) {
       return Center(
         child: customText(
           text: "No menus found",
-          fontSize: 12.sp,
+          fontSize: 14.sp,
           color: darkGreyColor,
         ),
       );
@@ -519,7 +489,7 @@ Widget _menusHorizontalList({required String type}) {
         children: [
           SizedBox(width: 2.w),
           for (final menu in filtered) ...[
-            _menuApiCard(menu: menu, baseUrl: baseUrl),
+            _menuApiCard(menu: menu),
             SizedBox(width: 3.w),
           ],
           SizedBox(width: 2.w),
@@ -529,11 +499,13 @@ Widget _menusHorizontalList({required String type}) {
   });
 }
 
-Widget _menuApiCard({required MenuItem menu, required String baseUrl}) {
+Widget _menuApiCard({required MenuItem menu}) {
   final EventController eventController = Get.find<EventController>();
+  BaseService baseService = BaseService();
+
   final img = (menu.menuImage ?? "").trim();
   final imgUrl =
-      img.isEmpty ? null : (img.startsWith("http") ? img : "$baseUrl$img");
+      img.isEmpty ? null : (img.startsWith("http") ? img : "${baseService.baseURL}$img");
 
   final categories = (menu.mealCategory ?? <String>[])
       .where((e) => e.trim().isNotEmpty)
@@ -720,7 +692,7 @@ Widget menuItem({
           fontFamily: "CormorantGaramond",
           color: blackColor,
         ),
-        SizedBox(height: 0.3.h),
+        SizedBox(height: 0.25.h),
         customText(
           text: subtitle,
           fontSize: 14.sp,
@@ -744,7 +716,7 @@ Widget foodPreferenceBox({
   required String imgPath,
 }) {
   return Container(
-    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.8.h),
+    padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.5.h),
     decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(30.w),
@@ -758,20 +730,18 @@ Widget foodPreferenceBox({
       children: [
         Image.asset(
           imgPath,
-          height: 14.sp,
-          width: 14.sp,
+          height: 14.5.sp,
+          width: 14.5.sp,
           fit: BoxFit.contain,
         ),
         SizedBox(width: 1.5.w),
         Flexible(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 12.sp,
+          child: customText(
+            text: text,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.w500,
               color: Colors.black,
-            ),
-            overflow: TextOverflow.ellipsis,
+            overFlow: TextOverflow.ellipsis,
           ),
         ),
       ],

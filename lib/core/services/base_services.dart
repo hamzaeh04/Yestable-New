@@ -9,7 +9,7 @@ import '../../utils/shared_prefrences_methods.dart';
 import '../../utils/utility.dart';
 
 class BaseService {
-  late String baseURL = "http://192.168.83.123:8000";
+  late String baseURL = "http://192.168.83.98:8000/yestable-backend";
   late String endPoint;
   late String Url = '$baseURL$endPoint';
   late String baseURLStripe = "";

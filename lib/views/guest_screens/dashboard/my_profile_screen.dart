@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/bar_chart.dart';
@@ -135,9 +136,8 @@ class MyProfileScreen extends StatelessWidget {
           children: [
             // Top Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 0.h),
               child: Row(
-                
                 children: [
                   Expanded(
                     child: Column(
@@ -175,7 +175,8 @@ class MyProfileScreen extends StatelessWidget {
                   Spacer(),
                   homeIconWidget(
                     icon: Icons.logout,
-                    onTap: () {
+                    onTap: () async {
+                      final prefs = await SharedPreferences.getInstance();
                       // 1. Pehle flag ko true kar dein taake dialog block ho jaye
                       controller.hasCheckedProfile.value = true;
 
@@ -184,7 +185,7 @@ class MyProfileScreen extends StatelessWidget {
                       // 3. User status set karein
                       controller.isUser.value = true;
                       // controller.isLoggedIn.value = false; // Isko bhi false karna zaroori hai
-
+                      await prefs.clear();
                       // 4. offAllNamed use karein taake stack saaf ho jaye aur black screen ya dialog issue na aaye
                       Get.offAllNamed("getstarted");
                     },
@@ -314,10 +315,10 @@ class MyProfileScreen extends StatelessWidget {
                                                         width: 27.w,
                                                         fontsize: 14.sp,
                                                         onTap: () {
-                                                          // Get.toNamed(
-                                                          //   "profileeditscreen",
-                                                          // );
-                                                          print("faaaahhhh: ${data}");
+                                                          Get.toNamed(
+                                                            "profileeditscreen",
+                                                          );
+                                                          // print("faaaahhhh: ${data}");
                                                         },
                                                       ),
                                                       SizedBox(width: 2.w),
