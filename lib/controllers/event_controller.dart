@@ -299,8 +299,6 @@ class EventController extends GetxController{
 
         );
 
-
-
       }
 
     } catch (e) {
