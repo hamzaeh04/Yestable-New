@@ -5,9 +5,11 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/outh_file/local_db_key.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/home_screen_widget.dart';
 import '../../../widget/you_are_invited_dialog.dart';
 
@@ -16,6 +18,7 @@ class HomeScreen extends StatelessWidget {
 
   final NavigationController controller = Get.find<NavigationController>();
   final EventController eventController = Get.find<EventController>();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, Sarah Scarnio!",
+                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
@@ -53,7 +56,7 @@ class HomeScreen extends StatelessWidget {
                         height: 0.1.h
                       ),
                       customText(
-                        text: "May 01, 2025",
+                        text: controller.formatDate2(DateTime.now()) ?? "May 01, 2025",
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         color: whiteColor,
@@ -304,7 +307,7 @@ class HomeScreen extends StatelessWidget {
                                   child: Center(child: customText(text: 'No events found!', fontSize: 14.5.sp))
                               );
                             return SizedBox(
-                              height: 41.h,
+                              height: 42.h,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -321,7 +324,8 @@ class HomeScreen extends StatelessWidget {
                                         eventDate: controller.formatDate2(data?.eventTime),
                                         eventTime: controller.formatTime2(data?.eventTime),
                                         eventHost: data?.host?.name ?? "Sophia Andreas",
-                                        eventLocation: displayLocation
+                                        eventLocation: displayLocation,
+                                      image: data?.image
                                     ),
                                   );
                                 },

@@ -1126,7 +1126,7 @@ class ProfileController extends GetxController {
         getMyProfileModel.value = GetMyProfile.fromJson(response);
         print('Responseeee: ${getMyProfileModel.value}');
         // Show a success message
-        Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
+        // Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
         initializeMembers(); // <--- call it here
 
       } else {

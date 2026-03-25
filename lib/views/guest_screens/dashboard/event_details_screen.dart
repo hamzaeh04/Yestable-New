@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/widget/custom_image_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
 import '../../../constants/constants_widgets.dart';
@@ -15,64 +16,11 @@ class EventDetailsScreen extends StatelessWidget {
   EventDetailsScreen({super.key});
 final NavigationController controller = Get.find<NavigationController>();
 final EventController eventController = Get.find<EventController>();
-
-
-  final List<Map<String, String>> eventMenu = [
-    {"name": "Vegetarian", "imgPath": "assets/png/event_food_image/brocolli.png"},
-    {"name": "Contain Dairy", "imgPath": "assets/png/event_food_image/milk.png"},
-    {"name": "Gluten-Free", "imgPath": "assets/png/event_food_image/glutenfree.png"},
-    {"name": "Shelfish", "imgPath": "assets/png/event_food_image/shell.png"},
-    {"name": "Vegan", "imgPath": "assets/png/event_food_image/shell.png"},
-    {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
-  ];
-
-  final List<String> notAllowedItem = ["Bubble gum", "Drug"];
   BaseService baseService = BaseService();
 
-  List<String> eventAccesibilityList = [];
   @override
   Widget build(BuildContext context) {
-    if (controller.isUser.value == false) {
-      eventAccesibilityList = [
-        "Quiet Space Available",
-        "Larger Seating",
-        "Wheelchair Accessible",
-        "ASL Interpreter",
-        "Vegan Option",
-        "Halal",
-        "Kosher",
-        "Keto",
-        "Family Restroom",
-        "Pets Allowed",
-        "Gluten-Free",
-        "Smoke Present",
-        "There Are Steps To Climb",
-        "Swimming Pool Is Present",
-        "Firearms Are Present",
-        "Shellfish Will Be Served",
-        "Peanuts Present",
-        "Event Ends At A Time",
-      ];
-    } else {
-      eventAccesibilityList = [
-        "Quiet Space Available",
-        "Larger Seating",
-        "Wheelchair Accessible",
-        "ASL Interpreter",
-        "Vegan Option",
-        "Halal",
-        "Kosher",
-        "Keto",
-        "Family Restroom",
-        "Pets Allowed",
-        "Gluten-Free",
-        "Smoke Present",
-        "There Are Steps To Climb",
-        "Swimming Pool Is Present",
-        "Firearms Are Present",
-        "Peanuts Present",
-      ];
-    }
+
     final eventId = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((_){
       eventController.eventReview(eventId);
@@ -83,11 +31,11 @@ final EventController eventController = Get.find<EventController>();
           SingleChildScrollView(
             child: Obx((){
               final data = eventController.eventReviewModel.value?.data;
-              eventController.mapEventComfortAccessibility(
-                data?.eventComfort,
-                data?.guestAware,
-              );
-
+              // eventController.mapEventComfortAccessibility(
+              //   data?.eventComfort,
+              //   data?.guestAware,
+              // );
+              //
               final notAllowedItem = data?.guestAware?.itemContaining?.split(',')
                   .map((e) => e.trim())
                   .where((e) => e.isNotEmpty)
@@ -110,12 +58,13 @@ final EventController eventController = Get.find<EventController>();
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  (data!.image == null || data!.image!.isEmpty) ?
                   Image.asset(
                     'assets/png/event_screen_banner.png',
                     height: 35.h,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                  ),
+                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h),
 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
@@ -640,7 +589,7 @@ final EventController eventController = Get.find<EventController>();
     ? FloatingActionButton(
     backgroundColor: blueColor,
     onPressed: () {
-    Get.toNamed("createneweventscreen");
+    Get.toNamed("createneweventscreen", arguments: eventId);
     },
     child: Image.asset("assets/png/icons/event_floating_icon.png",height: 17.sp),
     )

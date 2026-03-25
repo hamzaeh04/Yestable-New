@@ -18,6 +18,7 @@ class CreateNewEventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final eventId = Get.arguments;
     return Scaffold(
       backgroundColor: greenColor,
       body: Column(
@@ -39,9 +40,9 @@ class CreateNewEventScreen extends StatelessWidget {
                       color: whiteColor,
                     ),
                   ),
-                  SizedBox(width: 10.w),
+                  SizedBox(width: eventId == null ? 10.w: 17.w),
                   customText(
-                    text: "Create an Event",
+                    text: eventId == null ? "Create an Event": "Edit Event",
                     fontWeight: FontWeight.w500,
                     fontSize: 20.sp,
                     fontFamily: "CormorantGaramond",
@@ -446,7 +447,7 @@ class CreateNewEventScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 5.w),
                       child: buttonWidget("Continue", whiteColor, colors: greenColor, onTap: () {
                         // Get.toNamed("guestlistscreen");
-                        Get.toNamed("foodmenuscreen");
+                        Get.toNamed("foodmenuscreen", arguments: eventId);
                       }),
                     ),
                     SizedBox(height: 3.h),

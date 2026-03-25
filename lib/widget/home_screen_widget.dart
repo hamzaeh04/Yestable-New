@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/custom_image_widget.dart';
 
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
@@ -195,7 +196,7 @@ Widget invitationWidget(
   );
 }
 
-Widget upComingEventWidget({double? width,double? height, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost}) {
+Widget upComingEventWidget({double? width,double? height, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost, String? image}) {
   return Container(
     height: height!=null ? height : 41.h,
     width: width!=null ? width : 65.w,
@@ -216,10 +217,11 @@ Widget upComingEventWidget({double? width,double? height, required String eventN
           child: Container(
             width: double.infinity,
             height: 16.h,
-            child: Image.asset(
+            child: (image == null || image.isEmpty) ?
+            Image.asset(
               "assets/png/upcoming_event_banner.png",
               fit: BoxFit.cover,
-            ),
+            ): customImageWidget(imagePath: image),
           ),
         ),
         Padding(
@@ -240,7 +242,7 @@ Widget upComingEventWidget({double? width,double? height, required String eventN
                 color: Colors.grey[800],
               ),
               Divider(),
-              buildEventRow("Name:", eventDate),
+              buildEventRow("Date:", eventDate),
               Divider(),
               buildEventRow("Time:", eventTime),
               Divider(),

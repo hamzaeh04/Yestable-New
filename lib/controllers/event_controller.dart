@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -401,8 +402,13 @@ class EventController extends GetxController{
       ) async {
     isLoadingCreateEvent.value = true;
     try {
+      EasyLoading.show(
+        status: 'Please wait...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final url = "${baseService.baseURL}$endpoint";
       final uri = Uri.parse(url);
+      print(url);
 
       var request = http.MultipartRequest('POST', uri);
       final token = prefs.getString(LocalDBKeys.TOKEN);
@@ -470,7 +476,7 @@ class EventController extends GetxController{
       print("❌ Error: $e");
       Utils.showToast("Check Internet Connection", false);
     } finally{
-      isLoadingCreateEvent.value = false;
+      EasyLoading.dismiss(); // ✅ MUST
     }
   }
 
@@ -480,6 +486,10 @@ class EventController extends GetxController{
     File? image,
   }) async {
     try {
+      EasyLoading.show(
+        status: 'Please wait...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final lat = locationController.latitude.value;
       final lng = locationController.longitude.value;
 
@@ -525,6 +535,7 @@ class EventController extends GetxController{
         "eventName": eventName.text.trim(),
         "eventTime": isoEventTime ?? "",
         "eventType": typeValue,
+        "address": locationController.addressController.text.trim(),
         "invitationMessage": inviteMsg.text.trim(),
         "parkingDetails": parkingDetails.text.trim(),
         "addNote": addNote.text.trim(),
@@ -536,7 +547,7 @@ class EventController extends GetxController{
         "location[coordinates][0]": lng.toString(),
         "location[coordinates][1]": lat.toString(),
       };
-
+      print("📤 API Fields: $fields");
       // menus array
       List<String> menus = selectedMenus
           .map((m) => m.id)
@@ -548,9 +559,12 @@ class EventController extends GetxController{
         fields,
         menus,
         image,
+        eventId,
       );
     } catch (e) {
       Utils.showToast("Failed to update event", true);
+    } finally {
+      EasyLoading.dismiss();
     }
   }
   Future<void> _sendMultipartEditRequest(
@@ -558,10 +572,12 @@ class EventController extends GetxController{
       Map<String, String> fields,
       List<String> menus,
       File? image,
+      String eventId,
       ) async {
     try {
       final url = "${baseService.baseURL}$endpoint";
       final uri = Uri.parse(url);
+      print(url);
 
       var request = http.MultipartRequest('PATCH', uri);
       final token = prefs.getString(LocalDBKeys.TOKEN);
@@ -576,7 +592,7 @@ class EventController extends GetxController{
 
       // Add menus array
       for (var menu in menus) {
-        request.fields['menus[]'] = menu;
+        request.fields.addAll({'menus[]': menu});
       }
 
       // Add image
@@ -605,7 +621,10 @@ class EventController extends GetxController{
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.showToast(jsonResponse['message'] ?? "Event updated", false);
-        Get.back();
+        eventReviewModel.refresh();
+        // Get.toNamed('eventdetailsscreen', arguments: eventId);
+        Get.toNamed("eventcomfortone", arguments: eventId);
+
       } else {
         Utils.showToast(
             jsonResponse['message'] ?? "Something went wrong", false);
@@ -618,11 +637,11 @@ class EventController extends GetxController{
 
 
 
-  Future<void> getMenus({bool loading = false}) async {
+  Future<void> getMenus() async {
     isMenusLoading.value = true;
     menusError.value = '';
     try {
-      final response = await baseService.baseGetAPI(ApiEndPoints.getMenus, loading: loading);
+      final response = await baseService.baseGetAPI(ApiEndPoints.getMenus);
       if (response["success"] == true) {
         final model = GetMenuModel.fromJson(Map<String, dynamic>.from(response));
         menus.assignAll(model.data?.data ?? <MenuItem>[]);
@@ -1164,7 +1183,14 @@ class EventController extends GetxController{
 
       if (response != null && response['success'] == true) {
         eventReviewModel.value = EventReviewModel.fromJson(response);
-        Utils.showToast(response['message'], false);
+        // Utils.showToast(response['message'], false);
+        final data = eventReviewModel.value?.data;
+
+        mapEventComfortAccessibility(
+          data?.eventComfort,
+          data?.guestAware,
+        );
+
       } else {
         // Handle API failure
         final message = response?['message'] ?? "Something went wrong";
@@ -1192,9 +1218,9 @@ class EventController extends GetxController{
 
       if (response != null && response['success'] == true) {
         // Success
-        Utils.showToast(
-            response?['message'], false
-        );
+        // Utils.showToast(
+        //     response?['message'], false
+        // );
         eventPostedDialog(context);
         // Optional: navigate or refresh
         // Get.back();
@@ -1244,7 +1270,7 @@ class EventController extends GetxController{
           getAllEventsModel.value = newData;
         }
 
-        Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+        // Utils.showToast(response['message'] ?? "Events fetched successfully", false);
       } else {
         Utils.showToast(response['message'] ?? "Failed to fetch events", true);
       }
@@ -1292,7 +1318,7 @@ class EventController extends GetxController{
           myEventsModel.value = newData;
         }
 
-        Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+        // Utils.showToast(response['message'] ?? "Events fetched successfully", false);
       } else {
         Utils.showToast(response['message'] ?? "Failed to fetch events", true);
       }

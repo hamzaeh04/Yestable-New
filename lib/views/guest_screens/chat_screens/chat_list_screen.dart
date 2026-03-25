@@ -5,12 +5,15 @@ import 'package:sizer/sizer.dart';
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../controllers/navigation_controller.dart';
+import '../../../outh_file/local_db_key.dart';
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/chat_list_widget.dart';
 import '../../../widget/home_screen_widget.dart';
 
 class ChatListScreen extends StatelessWidget {
   ChatListScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +30,15 @@ class ChatListScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, Sarah Scarnio!",
+                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
                         color: whiteColor,
-                        height: 0.1.h
+                        height: 0.1.h,
                       ),
                       customText(
-                        text: "May 01, 2025",
+                        text: controller.formatDate2(DateTime.now()) ?? "May 01, 2025",
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         color: whiteColor,

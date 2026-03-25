@@ -6,6 +6,8 @@ import 'package:yestable/controllers/navigation_controller.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
+import '../../../outh_file/local_db_key.dart';
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/custom_app_bar.dart';
 import '../../../widget/event_widget.dart';
 import '../../../widget/home_screen_widget.dart';
@@ -14,6 +16,7 @@ class EventScreen extends StatelessWidget {
   EventScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
   final EventController eventController = Get.find<EventController>();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class EventScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, Sarah Scarnio!",
+                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
@@ -38,7 +41,7 @@ class EventScreen extends StatelessWidget {
                         height: 0.1.h,
                       ),
                       customText(
-                        text: "May 01, 2025",
+                        text: controller.formatDate2(DateTime.now()) ?? "May 01, 2025",
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         color: whiteColor,
@@ -152,7 +155,7 @@ class EventScreen extends StatelessWidget {
                                                 vertical: 0.5.h,
                                               ),
                                               child: customText(
-                                                text: "In 4 Hrs",
+                                                text: "In ${controller.getRemainingHours(data?.eventTime?? DateTime.now())} Hrs",
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.w500,
                                                 color: whiteColor,
@@ -168,11 +171,12 @@ class EventScreen extends StatelessWidget {
                                           },
                                           child: eventScreenWidget(
                                             bgcolor: backgroundColor,
+                                            image: data!.image,
                                             eventName: data?.eventName ?? "Sophia Dinner Event",
                                             eventDate: controller.formatDate2(data?.eventTime),
                                             eventTime: controller.formatTime2(data?.eventTime),
                                             eventHost: data?.host?.name ?? "Sophia Andreas",
-                                            eventLocation: displayLocation,
+                                            eventLocation: data?.address ?? "12 Mississippi, USA",
                                           ),
                                         ),
                                       ],
