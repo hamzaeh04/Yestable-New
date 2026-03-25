@@ -140,6 +140,7 @@ class EventComfortOne extends StatelessWidget {
                 onTap: () async {
                   // Currently assuming a specific event ID for testing
                   await controller.updateEventComfortMethod(eventId);
+                  print(eventId);
                   // Get.toNamed("eventcomforttwo");
                 },
               ),

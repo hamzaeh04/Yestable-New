@@ -58,6 +58,7 @@ class EventController extends GetxController{
   final RxBool isMenusLoading = false.obs;
   final RxBool isLoadingMyEvents = false.obs;
   final RxBool isLoadingAllEvents = false.obs;
+  final RxBool isLoadingCreateEvent = false.obs;
   final RxString menusError = ''.obs;
   final RxList<MenuItem> menus = <MenuItem>[].obs;
   final RxList<MenuItem> selectedMenus = <MenuItem>[].obs;
@@ -208,21 +209,123 @@ class EventController extends GetxController{
     {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
   ];
 
-  Future<void> createEvent(BuildContext context,{File? image}) async {
+//   Future<void> createEvent(BuildContext context,{File? image}) async {
+//     try {
+//       final lat = locationController.latitude.value;
+//       final lng = locationController.longitude.value;
+//
+//       // Build ISO 8601 event time from separate date & time controllers
+//       String? isoEventTime;
+//       final dateStr = eventDate.text.trim();
+//       final timeStr = eventTime.text.trim();
+//
+//       if (dateStr.isNotEmpty && timeStr.isNotEmpty) {
+//         try {
+//           // Expected formats:
+//           // date: "dd-MM-yyyy"
+//           // time: "hh:mm AM/PM"
+//           final dateParts = dateStr.split('-');
+//           final day = int.parse(dateParts[0]);
+//           final month = int.parse(dateParts[1]);
+//           final year = int.parse(dateParts[2]);
+//
+//           final timeParts = timeStr.split(' ');
+//           final hm = timeParts[0].split(':');
+//           var hour = int.parse(hm[0]);
+//           final minute = int.parse(hm[1]);
+//           final period = timeParts.length > 1 ? timeParts[1].toUpperCase() : 'AM';
+//
+//           if (period == 'PM' && hour != 12) {
+//             hour += 12;
+//           } else if (period == 'AM' && hour == 12) {
+//             hour = 0;
+//           }
+//
+//           final dt = DateTime(year, month, day, hour, minute);
+//           isoEventTime = dt.toUtc().toIso8601String();
+//         } catch (_) {
+//           isoEventTime = null;
+//         }
+//       }
+//
+//       final typeValue = eventType.text.trim().isEmpty
+//           ? "Private"
+//           : eventType.text.trim();
+//
+//       final body = {
+//         "image": image,
+//         "eventName": eventName.text.trim(),
+//         "eventTime": isoEventTime,
+//         "eventType": typeValue,
+//         "location": {
+//           "type": "Point",
+//           "coordinates": [lng, lat],
+//         },
+//         "address": locationController.addressController.text.trim(),
+//         "invitationMessage": inviteMsg.text.trim(),
+//         "parkingDetails": parkingDetails.text.trim(),
+//         "addNote": addNote.text.trim(),
+//         "reminderNotification": true,
+//         "members": [],
+//         "menus": selectedMenus.map((m) => m.id).whereType<String>().toList(),
+//         "displayMenu": selectedMenus.isNotEmpty,
+//       };
+//
+//       final res = await baseService.basePostAPI(
+//         ApiEndPoints.createEvent,
+//         body,
+//         loading: true,
+//       );
+//
+//       if (res["success"] == true) {
+//         Utils.showToast(res["message"] ?? "Event created", false);
+//         String eventId = res["data"]["_id"];
+//         String link = generateEventLink(eventId);
+//
+//         print("Generated Link: $link");
+//
+// // // 🚀 SHOW DIALOG
+// // Get.defaultDialog(
+// //   title: "Event Created Successfully 🎉",
+// //   middleText: link,
+// //   textConfirm: "Copy Link",
+// //   textCancel: "Close",
+// //   confirmTextColor: Colors.white,
+// //   onConfirm: () {
+// //     // 👉 Copy to clipboard
+// //     Get.back();
+// //     Clipboard.setData(ClipboardData(text: link));
+// //     Utils.showToast("Link copied!", false);
+// //   },
+// // );
+//         showShareProfileDialog(context,title: "Share Event Link",link:link,onTap: (){
+//           Clipboard.setData(ClipboardData(text: link));
+//           Utils.showToast("Link copied!", false);
+//         },
+//             onCancel: (){
+//               Navigator.pop(context); // ✅ close dialog
+//               Get.toNamed("eventcomfortone", arguments: eventId);
+//             }
+//
+//         );
+//
+//       }
+//     } catch (e) {
+//       Utils.showToast("Failed to create event", true);
+//     }
+//   }
+  Future<void> createEvent(BuildContext context, {File? image}) async {
     try {
       final lat = locationController.latitude.value;
       final lng = locationController.longitude.value;
 
-      // Build ISO 8601 event time from separate date & time controllers
+      // Convert date + time → ISO
       String? isoEventTime;
       final dateStr = eventDate.text.trim();
       final timeStr = eventTime.text.trim();
 
       if (dateStr.isNotEmpty && timeStr.isNotEmpty) {
         try {
-          // Expected formats:
-          // date: "dd-MM-yyyy"
-          // time: "hh:mm AM/PM"
           final dateParts = dateStr.split('-');
           final day = int.parse(dateParts[0]);
           final month = int.parse(dateParts[1]);
@@ -251,68 +354,126 @@ class EventController extends GetxController{
           ? "Private"
           : eventType.text.trim();
 
-      final body = {
-        "image": image,
+      // ---------------------------
+      // Multipart Fields
+      // ---------------------------
+      final fields = {
         "eventName": eventName.text.trim(),
-        "eventTime": isoEventTime,
+        "eventTime": isoEventTime ?? "",
         "eventType": typeValue,
-        "location": {
-          "type": "Point",
-          "coordinates": [lng, lat],
-        },
         "address": locationController.addressController.text.trim(),
         "invitationMessage": inviteMsg.text.trim(),
         "parkingDetails": parkingDetails.text.trim(),
         "addNote": addNote.text.trim(),
-        "reminderNotification": true,
-        "members": [],
-        "menus": selectedMenus.map((m) => m.id).whereType<String>().toList(),
-        "displayMenu": selectedMenus.isNotEmpty,
+        "reminderNotification": "true",
+        "displayMenu": (selectedMenus.isNotEmpty).toString(),
+
+        // ✅ Proper nested object format
+        "location[type]": "Point",
+        "location[coordinates][0]": lng.toString(),
+        "location[coordinates][1]": lat.toString(),
       };
 
-      final res = await baseService.basePostAPI(
+
+      // menus array
+      List<String> menus = selectedMenus
+          .map((m) => m.id)
+          .whereType<String>()
+          .toList();
+
+      await _sendMultipartEventRequest(
         ApiEndPoints.createEvent,
-        body,
-        loading: true,
+        fields,
+        menus,
+        image,
+        context,
       );
-
-      if (res["success"] == true) {
-        Utils.showToast(res["message"] ?? "Event created", false);
-        String eventId = res["data"]["_id"];
-        String link = generateEventLink(eventId);
-
-        print("Generated Link: $link");
-
-// // 🚀 SHOW DIALOG
-// Get.defaultDialog(
-//   title: "Event Created Successfully 🎉",
-//   middleText: link,
-//   textConfirm: "Copy Link",
-//   textCancel: "Close",
-//   confirmTextColor: Colors.white,
-//   onConfirm: () {
-//     // 👉 Copy to clipboard
-//     Get.back();
-//     Clipboard.setData(ClipboardData(text: link));
-//     Utils.showToast("Link copied!", false);
-//   },
-// );
-        showShareProfileDialog(context,title: "Share Event Link",link:link,onTap: (){
-          Clipboard.setData(ClipboardData(text: link));
-          Utils.showToast("Link copied!", false);
-        },
-            onCancel: (){
-              Navigator.pop(context); // ✅ close dialog
-              Get.toNamed("eventcomfortone", arguments: eventId);
-            }
-
-        );
-
-      }
     } catch (e) {
       Utils.showToast("Failed to create event", true);
     }
   }
+  Future<void> _sendMultipartEventRequest(
+      String endpoint,
+      Map<String, String> fields,
+      List<String> menus,
+      File? image,
+      BuildContext context,
+      ) async {
+    isLoadingCreateEvent.value = true;
+    try {
+      final url = "${baseService.baseURL}$endpoint";
+      final uri = Uri.parse(url);
+
+      var request = http.MultipartRequest('POST', uri);
+      final token = prefs.getString(LocalDBKeys.TOKEN);
+
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      });
+
+      // Add fields
+      request.fields.addAll(fields);
+
+      // Add menus array
+      for (var menu in menus) {
+        request.fields['menus[]'] = menu;
+      }
+
+      // Add image
+      if (image != null) {
+        String ext = path.extension(image.path).toLowerCase();
+        String mimeType = 'image/jpeg';
+
+        if (ext == '.png') mimeType = 'image/png';
+        else if (ext == '.jpg' || ext == '.jpeg') mimeType = 'image/jpeg';
+        else if (ext == '.gif') mimeType = 'image/gif';
+
+        request.files.add(await http.MultipartFile.fromPath(
+          'image', // make sure backend expects this key
+          image.path,
+          contentType: MediaType('image', mimeType.split('/')[1]),
+        ));
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print("📦 Status: ${response.statusCode}");
+      print("📦 Body: ${response.body}");
+
+      final jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Utils.showToast(jsonResponse['message'] ?? "Event created", false);
+
+        String eventId = jsonResponse["data"]["_id"];
+        String link = generateEventLink(eventId);
+
+        showShareProfileDialog(
+          context,
+          title: "Share Event Link",
+          link: link,
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: link));
+            Utils.showToast("Link copied!", false);
+          },
+          onCancel: () {
+            Navigator.pop(context);
+            Get.toNamed("eventcomfortone", arguments: eventId);
+          },
+        );
+      } else {
+        Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
+      }
+    } catch (e) {
+      print("❌ Error: $e");
+      Utils.showToast("Check Internet Connection", false);
+    } finally{
+      isLoadingCreateEvent.value = false;
+    }
+  }
+
 
   Future<void> editEvent({
     required String eventId,
@@ -322,7 +483,7 @@ class EventController extends GetxController{
       final lat = locationController.latitude.value;
       final lng = locationController.longitude.value;
 
-      // Build ISO 8601 event time
+      // ISO time
       String? isoEventTime;
       final dateStr = eventDate.text.trim();
       final timeStr = eventTime.text.trim();
@@ -354,49 +515,108 @@ class EventController extends GetxController{
         }
       }
 
-      final typeValue = eventType.text.trim().isEmpty
-          ? "Private"
-          : eventType.text.trim();
+      final typeValue =
+      eventType.text.trim().isEmpty ? "Private" : eventType.text.trim();
 
-      /// 🔹 Build body
-      final body = {
-        if (image != null) "image": image, // only send if updated
+      /// ---------------------------
+      /// Multipart Fields
+      /// ---------------------------
+      final fields = {
         "eventName": eventName.text.trim(),
-        "eventTime": isoEventTime,
+        "eventTime": isoEventTime ?? "",
         "eventType": typeValue,
-        "location": {
-          "type": "Point",
-          "coordinates": [lng, lat],
-        },
         "invitationMessage": inviteMsg.text.trim(),
         "parkingDetails": parkingDetails.text.trim(),
         "addNote": addNote.text.trim(),
-        "reminderNotification": true,
-        "members": [],
-        "menus": selectedMenus
-            .map((m) => m.id)
-            .whereType<String>()
-            .toList(),
-        "displayMenu": selectedMenus.isNotEmpty,
+        "reminderNotification": "true",
+        "displayMenu": (selectedMenus.isNotEmpty).toString(),
+
+        // ✅ Nested location (IMPORTANT FIX)
+        "location[type]": "Point",
+        "location[coordinates][0]": lng.toString(),
+        "location[coordinates][1]": lat.toString(),
       };
 
-      final res = await baseService.basePatchAPI( // or basePatchAPI depending on backend
+      // menus array
+      List<String> menus = selectedMenus
+          .map((m) => m.id)
+          .whereType<String>()
+          .toList();
+
+      await _sendMultipartEditRequest(
         ApiEndPoints.editEvent(eventId),
-        body: {},
+        fields,
+        menus,
+        image,
       );
-
-      if (res["success"] == true) {
-        Utils.showToast(res["message"] ?? "Event updated", false);
-
-        // You can go back OR navigate
-        Get.back();
-        // OR
-        // Get.toNamed("eventdetailsscreen", arguments: eventId);
-      }
     } catch (e) {
       Utils.showToast("Failed to update event", true);
     }
   }
+  Future<void> _sendMultipartEditRequest(
+      String endpoint,
+      Map<String, String> fields,
+      List<String> menus,
+      File? image,
+      ) async {
+    try {
+      final url = "${baseService.baseURL}$endpoint";
+      final uri = Uri.parse(url);
+
+      var request = http.MultipartRequest('PATCH', uri);
+      final token = prefs.getString(LocalDBKeys.TOKEN);
+
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      });
+
+      // Add fields
+      request.fields.addAll(fields);
+
+      // Add menus array
+      for (var menu in menus) {
+        request.fields['menus[]'] = menu;
+      }
+
+      // Add image
+      if (image != null) {
+        String ext = path.extension(image.path).toLowerCase();
+        String mimeType = 'image/jpeg';
+
+        if (ext == '.png') mimeType = 'image/png';
+        else if (ext == '.jpg' || ext == '.jpeg') mimeType = 'image/jpeg';
+        else if (ext == '.gif') mimeType = 'image/gif';
+
+        request.files.add(await http.MultipartFile.fromPath(
+          'image',
+          image.path,
+          contentType: MediaType('image', mimeType.split('/')[1]),
+        ));
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print("📦 Status: ${response.statusCode}");
+      print("📦 Body: ${response.body}");
+
+      final jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Utils.showToast(jsonResponse['message'] ?? "Event updated", false);
+        Get.back();
+      } else {
+        Utils.showToast(
+            jsonResponse['message'] ?? "Something went wrong", false);
+      }
+    } catch (e) {
+      print("❌ Error: $e");
+      Utils.showToast("Check Internet Connection", true);
+    }
+  }
+
+
 
   Future<void> getMenus({bool loading = false}) async {
     isMenusLoading.value = true;

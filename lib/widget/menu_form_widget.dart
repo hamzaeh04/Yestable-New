@@ -318,7 +318,6 @@ Future<void> menuFormDialog(BuildContext context) {
                         SizedBox(width: 3.w),
                         Expanded(
                           child: buttonWidget("Save", whiteColor, colors: greenColor, height: 4.h, fontsize: 15.5.sp, onTap: (){
-                            Get.back();
 
                             eventController.uploadMenu();
                           })

@@ -245,7 +245,7 @@ class EventComfortTwo extends StatelessWidget {
                     onTap: () async {
                       // await controller.updateGuestAwareMethod(eventId);
                       Get.toNamed("eventcomfortthree", arguments: eventId);
-
+                      print(eventId);
                     },
                   ),
                 ),

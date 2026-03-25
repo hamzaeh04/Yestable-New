@@ -106,6 +106,7 @@ class EventComfortThree extends StatelessWidget {
                     colors: greenColor,
                     onTap: () async {
                       eventController.updateGuestAwareMethod(eventId);
+                      print(eventId);
                       // Get.toNamed("eventpublishscreen");
                     },
                   ),
