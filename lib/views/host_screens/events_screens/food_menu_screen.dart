@@ -29,7 +29,9 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
   @override
   void initState() {
     super.initState();
-    eventController.getMenus(loading: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      eventController.getMenus(loading: false);
+    });
   }
 
   @override
@@ -68,8 +70,7 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
                 SizedBox(height: 2.h),
 
                 // Main Scrollable Body with Rounded Corners
-                SizedBox(
-                  height: 80.h,
+                Expanded(
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(

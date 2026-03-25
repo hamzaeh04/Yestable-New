@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/core/services/multipart_request.dart';
@@ -22,6 +23,9 @@ import '../widget/update_sent_sucessfull_dialog.dart';
 class ProfileController extends GetxController {
   // --- Existing Variables (No changes here) ---
   BaseService baseService = BaseService();
+
+  // final String url =
+  //     "https://yes-table-web.vercel.app/userId=$userId";
   final prefs = SharedPreferencesMethod.storage;
   Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
 // Change these in your ProfileController

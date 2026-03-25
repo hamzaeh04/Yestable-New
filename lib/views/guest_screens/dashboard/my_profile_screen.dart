@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/outh_file/local_db_key.dart';
+import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/bar_chart.dart';
 import 'package:yestable/widget/guest_update_received.dart';
 import 'package:yestable/widget/showShareDialogBox_widget.dart';
@@ -23,7 +26,6 @@ import '../profile_setup_screens/host_profile_reviews.dart';
 class MyProfileScreen extends StatelessWidget {
   MyProfileScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
-  // final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -322,19 +324,33 @@ class MyProfileScreen extends StatelessWidget {
                                                         },
                                                       ),
                                                       SizedBox(width: 2.w),
-                                                      buttonWidget(
-                                                        "Share Profile",
-                                                        whiteColor,
-                                                        colors: blueColor
-                                                            .withAlpha(140),
-                                                        height: 3.25.h,
-                                                        width: 27.w,
-                                                        fontsize: 14.sp,
-                                                        onTap: () {
-                                                          showShareProfileDialog(
-                                                            context,
+                                                      Builder(
+                                                        builder: (buttonContext) {
+                                                          return buttonWidget(
+                                                            "Share Profile",
+                                                            whiteColor,
+                                                            colors: blueColor.withAlpha(140),
+                                                            height: 3.25.h,
+                                                            width: 27.w,
+                                                            fontsize: 14.sp,
+                                                            onTap: () async {
+                                                              final prefs = await SharedPreferencesMethod.storage;
+                                                              final userId = prefs.getString(LocalDBKeys.USERID);
+
+                                                              final String url =
+                                                                  "https://yes-table-web.vercel.app/userId=$userId";
+
+                                                              final box = buttonContext.findRenderObject() as RenderBox?;
+                                                              Share.share(
+                                                                url,
+                                                                subject: "Check out my profile",
+                                                                sharePositionOrigin: box != null
+                                                                    ? box.localToGlobal(Offset.zero) & box.size
+                                                                    : null,
+                                                              );
+                                                            },
                                                           );
-                                                        },
+                                                        }
                                                       ),
                                                     ],
                                                   ),

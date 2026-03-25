@@ -59,13 +59,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       }
     });
 
-    controller.controller.fetchMyProfile();
-    eventController.getAllEvents();
-    controller.isUser.value == false ? eventController.getMyEvents(): null;
-
-
     // 🔥 Show dialog after UI ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.controller.fetchMyProfile();
+      eventController.getAllEvents();
+      controller.isUser.value == false ? eventController.getMyEvents(): null;
       controller.checkDeepLinkAndShowDialog();
     });
   }

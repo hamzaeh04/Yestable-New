@@ -1305,4 +1305,26 @@ class EventController extends GetxController{
       isLoadingMore.value = false;
     }
   }
+
+  Future<Map<String, dynamic>?> eventJoin(String eventId) async {
+    final body = {};
+
+    final responseMap = await baseService.basePostAPI(
+      ApiEndPoints.joinEvent(eventId),
+      body,
+      loading: true,
+    );
+
+    if (responseMap["success"] != true) {
+      return responseMap;
+    }
+
+    final data = responseMap["data"]; // user object
+    final msg = responseMap["message"];
+
+    if (data == null) return responseMap;
+
+    return responseMap; // ✅ full response return
+  }
+
 }

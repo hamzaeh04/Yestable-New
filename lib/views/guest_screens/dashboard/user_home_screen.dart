@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/event_controller.dart';
@@ -177,11 +178,127 @@ class HomeScreen extends StatelessWidget {
                           // Calendar Image
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 5.w),
-                            child: GestureDetector(
-                              onTap: (){
-                                showEventDialog(context);
-                              },
-                                child: Image.asset("assets/png/calender.png")),
+                            child: Container(
+
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius: BorderRadius.circular(16.sp),
+
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    showEventDialog(context);
+                                  },
+                                  child: AbsorbPointer(
+                                    child: Column(
+                                      children: [
+                                        TableCalendar(
+                                          firstDay: DateTime.utc(2010, 10, 16),
+                                          lastDay: DateTime.utc(2030, 3, 14),
+                                          focusedDay: DateTime.now(),
+
+                                        /// 🔥 EVENTS SOURCE
+                                        eventLoader: (day) {
+                                          Map<DateTime, List> events = {
+                                            DateTime.utc(2026, 3, 26): ['event1', 'event2'],
+                                            DateTime.utc(2026, 3, 27): ['event1'],
+                                          };
+
+                                          return events[DateTime.utc(day.year, day.month, day.day)] ?? [];
+                                        },
+
+                                        headerVisible: false,
+
+                                        daysOfWeekHeight: 4.h,
+                                        rowHeight: 4.8.h,
+
+                                        daysOfWeekStyle: DaysOfWeekStyle(
+                                          weekdayStyle: TextStyle(
+                                            color: foodBoundariesBorderGreenColor,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          weekendStyle: TextStyle(
+                                            color: foodBoundariesBorderGreenColor,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+
+                                        calendarStyle: CalendarStyle(
+                                          defaultTextStyle: TextStyle(
+                                            color: blackColor,
+                                            fontSize: 14.5.sp,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          weekendTextStyle: TextStyle(
+                                            color: blackColor,
+                                            fontSize: 14.5.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          outsideTextStyle: TextStyle(
+                                            color: Colors.grey.shade400,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+
+                                          todayDecoration: BoxDecoration(
+                                            color: foodBoundariesBorderGreenColor.withAlpha(160),
+                                            borderRadius: BorderRadius.circular(12.sp),
+                                          ),
+                                          todayTextStyle: TextStyle(
+                                            color: whiteColor,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+
+                                          selectedDecoration: BoxDecoration(
+                                            color: foodBoundariesBorderGreenColor,
+                                            borderRadius: BorderRadius.circular(12.sp),
+                                          ),
+                                          selectedTextStyle: TextStyle(
+                                            color: whiteColor,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+
+                                          cellMargin: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w),
+                                        ),
+
+                                        /// 🔥 MULTIPLE MARKERS (2 dots: green + blue)
+                                        calendarBuilders: CalendarBuilders(
+                                          markerBuilder: (context, date, events) {
+                                            if (events.isEmpty) return SizedBox();
+
+                                            return Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: events.take(2).toList().asMap().entries.map((entry) {
+                                                int index = entry.key;
+
+                                                return Container(
+                                                  margin: EdgeInsets.symmetric(horizontal: 1, vertical: 0.6.h),
+                                                  width: 1.w,
+                                                  height: 1.h,
+                                                  decoration: BoxDecoration(
+                                                    color: index == 0 ? greenColor : blueColor,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                            ),
                           ),
                           SizedBox(height: 1.h),
 

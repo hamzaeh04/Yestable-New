@@ -72,7 +72,9 @@ class AuthController extends GetxController {
     await prefs.setString(LocalDBKeys.TOKEN, data["access_token"]);
     await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
     await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, profileCompleted);
+    await prefs.setString(LocalDBKeys.USERID, data["user"]["_id"]);
     print("Faaaaahhhh: ${data["access_token"]}");
+    print("userId: ${prefs.getString(LocalDBKeys.USERID)}");
     print("SharedPreferences: ${prefs.getBool(LocalDBKeys.PROFILECOMPLETED)}");
     print(profileCompleted);
     // 🚀 AB DASHBOARD PE JAO
