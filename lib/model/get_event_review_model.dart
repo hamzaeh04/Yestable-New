@@ -11,14 +11,12 @@ class EventReviewModel {
     this.data,
   });
 
-  factory EventReviewModel.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return EventReviewModel();
-
+  factory EventReviewModel.fromJson(Map<String, dynamic> json) {
     return EventReviewModel(
       success: json['success'],
       statusCode: json['statusCode'],
       message: json['message'],
-      data: EventData.fromJson(json['data']),
+      data: json['data'] != null ? EventData.fromJson(json['data']) : null,
     );
   }
 }
@@ -28,6 +26,7 @@ class EventData {
   final String? id;
   final String? image;
   final String? eventName;
+  final String? address;
   final DateTime? eventTime;
   final String? eventType;
   final String? invitationMessage;
@@ -52,6 +51,7 @@ class EventData {
     this.id,
     this.image,
     this.eventName,
+    this.address,
     this.eventTime,
     this.eventType,
     this.invitationMessage,
@@ -72,35 +72,31 @@ class EventData {
     this.guestAware,
   });
 
-  factory EventData.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return EventData();
-
+  factory EventData.fromJson(Map<String, dynamic> json) {
     return EventData(
-      location: Location.fromJson(json['location']),
+      location: json['location'] != null ? Location.fromJson(json['location']) : null,
       id: json['_id'],
       image: json['image'],
       eventName: json['eventName'],
-      eventTime: DateTime.tryParse(json['eventTime'] ?? ""),
+      address: json['address'],
+      eventTime: json['eventTime'] != null ? DateTime.tryParse(json['eventTime']) : null,
       eventType: json['eventType'],
       invitationMessage: json['invitationMessage'],
       parkingDetails: json['parkingDetails'],
       addNote: json['addNote'],
       reminderNotification: json['reminderNotification'],
-      members: json['members'] ?? [],
-      menus: (json['menus'] as List?)
-          ?.map((e) => Menu.fromJson(e))
-          .toList() ??
-          [],
-      host: Host.fromJson(json['host']),
+      members: json['members'],
+      menus: (json['menus'] as List?)?.map((e) => Menu.fromJson(e)).toList(),
+      host: json['host'] != null ? Host.fromJson(json['host']) : null,
       reminderSent: json['reminderSent'],
       isDeleted: json['isDeleted'],
       isCompleted: json['isCompleted'],
       isCancelled: json['isCancelled'],
       displayMenu: json['displayMenu'],
-      createdAt: DateTime.tryParse(json['createdAt'] ?? ""),
-      updatedAt: DateTime.tryParse(json['updatedAt'] ?? ""),
-      eventComfort: EventComfort.fromJson(json['eventComfort']),
-      guestAware: GuestAware.fromJson(json['guestAware']),
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt']) : null,
+      eventComfort: json['eventComfort'] != null ? EventComfort.fromJson(json['eventComfort']) : null,
+      guestAware: json['guestAware'] != null ? GuestAware.fromJson(json['guestAware']) : null,
     );
   }
 }
@@ -111,15 +107,12 @@ class Location {
 
   Location({this.type, this.coordinates});
 
-  factory Location.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Location();
-
+  factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       type: json['type'],
       coordinates: (json['coordinates'] as List?)
           ?.map((e) => (e as num).toDouble())
-          .toList() ??
-          [],
+          .toList(),
     );
   }
 }
@@ -131,6 +124,9 @@ class Menu {
   final String? menuImage;
   final String? title;
   final String? description;
+  final String? userId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   Menu({
     this.id,
@@ -139,20 +135,22 @@ class Menu {
     this.menuImage,
     this.title,
     this.description,
+    this.userId,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  factory Menu.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Menu();
-
+  factory Menu.fromJson(Map<String, dynamic> json) {
     return Menu(
       id: json['_id'],
       type: json['type'],
-      mealCategory:
-      (json['mealCategory'] as List?)?.map((e) => e.toString()).toList() ??
-          [],
+      mealCategory: (json['mealCategory'] as List?)?.map((e) => e.toString()).toList(),
       menuImage: json['menuImage'],
       title: json['title'],
       description: json['description'],
+      userId: json['userId'],
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt']) : null,
     );
   }
 }
@@ -161,209 +159,27 @@ class Host {
   final String? id;
   final String? email;
   final String? name;
-  final String? profilePic;
   final String? username;
-  final String? bio;
+  final String? profilePic;
   final String? location;
-  final String? pronoun;
-
-  final bool? iAmHosting;
-  final bool? notificationOpen;
-  final bool? profileCompleted;
-  final bool? isOnboarding;
-  final bool? isNotificationAllowed;
-
-  final int? onboardingStep;
-
-  final List<Member>? members;
-  final Preferences? preferences;
 
   Host({
     this.id,
     this.email,
     this.name,
-    this.profilePic,
     this.username,
-    this.bio,
-    this.location,
-    this.pronoun,
-    this.iAmHosting,
-    this.notificationOpen,
-    this.profileCompleted,
-    this.isOnboarding,
-    this.isNotificationAllowed,
-    this.onboardingStep,
-    this.members,
-    this.preferences,
+    this.profilePic,
+    this.location
   });
 
-  factory Host.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Host();
-
+  factory Host.fromJson(Map<String, dynamic> json) {
     return Host(
       id: json['_id'],
       email: json['email'],
       name: json['name'],
-      profilePic: json['profilePic'],
       username: json['username'],
-      bio: json['bio'],
+      profilePic: json['profilePic'],
       location: json['location'],
-      pronoun: json['pronoun'],
-      iAmHosting: json['iAmHosting'],
-      notificationOpen: json['notificationOpen'],
-      profileCompleted: json['profileCompleted'],
-      isOnboarding: json['isOnboarding'],
-      isNotificationAllowed: json['isNotificationAllowed'],
-      onboardingStep: json['onboardingStep'],
-      members: (json['members'] as List?)
-          ?.map((e) => Member.fromJson(e))
-          .toList() ??
-          [],
-      preferences: Preferences.fromJson(json['preferences']),
-    );
-  }
-}
-
-class Member {
-  final String? id;
-  final String? name;
-  final String? relation;
-  final int? age;
-  final Preferences? preferences;
-
-  Member({
-    this.id,
-    this.name,
-    this.relation,
-    this.age,
-    this.preferences,
-  });
-
-  factory Member.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Member();
-
-    return Member(
-      id: json['_id'],
-      name: json['name'],
-      relation: json['relation'],
-      age: json['age'],
-      preferences: Preferences.fromJson(json['preferences']),
-    );
-  }
-}
-
-class Preferences {
-  final Plate? plate;
-  final bool? quietArea;
-  final bool? hostingAnEvent;
-  final CommonAllergens? commonAllergens;
-  final YumYuck? yumYuck;
-
-  Preferences({
-    this.plate,
-    this.quietArea,
-    this.hostingAnEvent,
-    this.commonAllergens,
-    this.yumYuck,
-  });
-
-  factory Preferences.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Preferences();
-
-    return Preferences(
-      plate: Plate.fromJson(json['plate']),
-      quietArea: json['quietArea'],
-      hostingAnEvent: json['hostingAnEvent'],
-      commonAllergens:
-      CommonAllergens.fromJson(json['commonAllergens']),
-      yumYuck: YumYuck.fromJson(json['yumYuck']),
-    );
-  }
-}
-
-class Plate {
-  final bool? vegan;
-  final bool? vegetarian;
-  final bool? halal;
-  final bool? kosher;
-  final bool? keto;
-  final String? other;
-
-  Plate({
-    this.vegan,
-    this.vegetarian,
-    this.halal,
-    this.kosher,
-    this.keto,
-    this.other,
-  });
-
-  factory Plate.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Plate();
-
-    return Plate(
-      vegan: json['vegan'],
-      vegetarian: json['vegetarian'],
-      halal: json['halal'],
-      kosher: json['kosher'],
-      keto: json['keto'],
-      other: json['other'],
-    );
-  }
-}
-
-class CommonAllergens {
-  final String? peanut;
-  final String? treeNuts;
-  final String? sesame;
-  final String? gluten;
-  final String? eggs;
-  final String? soy;
-  final String? fish;
-  final String? shellFish;
-  final String? dairy;
-
-  CommonAllergens({
-    this.peanut,
-    this.treeNuts,
-    this.sesame,
-    this.gluten,
-    this.eggs,
-    this.soy,
-    this.fish,
-    this.shellFish,
-    this.dairy,
-  });
-
-  factory CommonAllergens.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return CommonAllergens();
-
-    return CommonAllergens(
-      peanut: json['peanut'],
-      treeNuts: json['treeNuts'],
-      sesame: json['sesame'],
-      gluten: json['gluten'],
-      eggs: json['eggs'],
-      soy: json['soy'],
-      fish: json['fish'],
-      shellFish: json['shellFish'],
-      dairy: json['dairy'],
-    );
-  }
-}
-
-class YumYuck {
-  final List<String>? yum;
-  final List<String>? yuck;
-
-  YumYuck({this.yum, this.yuck});
-
-  factory YumYuck.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return YumYuck();
-
-    return YumYuck(
-      yum: (json['yum'] as List?)?.map((e) => e.toString()).toList() ?? [],
-      yuck: (json['yuck'] as List?)?.map((e) => e.toString()).toList() ?? [],
     );
   }
 }
@@ -387,9 +203,7 @@ class EventComfort {
     this.other,
   });
 
-  factory EventComfort.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return EventComfort();
-
+  factory EventComfort.fromJson(Map<String, dynamic> json) {
     return EventComfort(
       quietSpace: json['quietSpace'],
       largerSeating: json['largerSeating'],
@@ -417,8 +231,6 @@ class GuestAware {
   final bool? peanuts;
   final bool? endsInFirmTime;
   final String? itemContaining;
-  final String? others;
-  final String? guestContact;
 
   GuestAware({
     this.petsPresent,
@@ -435,13 +247,9 @@ class GuestAware {
     this.peanuts,
     this.endsInFirmTime,
     this.itemContaining,
-    this.others,
-    this.guestContact,
   });
 
-  factory GuestAware.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return GuestAware();
-
+  factory GuestAware.fromJson(Map<String, dynamic> json) {
     return GuestAware(
       petsPresent: json['petsPresent'],
       childrenPresent: json['childrenPresent'],
@@ -457,8 +265,6 @@ class GuestAware {
       peanuts: json['peanuts'],
       endsInFirmTime: json['endsInFirmTime'],
       itemContaining: json['itemContaining'],
-      others: json['others'],
-      guestContact: json['guestContact'],
     );
   }
 }

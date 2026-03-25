@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -20,34 +21,47 @@ class EventPublishScreen extends StatelessWidget {
   final EventController eventController = Get.find<EventController>();
   BaseService baseService = BaseService();
 
-
-  final List<String> eventMenuList = ["Vegetarian", "Contain Dairy","Gluten-Free","Shelfish","Vegan","Nut-Free"];
-
   @override
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       eventController.eventReview(eventId);
-
-
     });
 
     return Scaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
-            child: Obx((){
+            child: Obx(() {
               final data = eventController.eventReviewModel.value?.data;
               eventController.mapEventComfortAccessibility(
                 data?.eventComfort,
                 data?.guestAware,
               );
-              
-              final notAllowedItem = data?.guestAware?.itemContaining?.split(',')
-                  .map((e) => e.trim())
-                  .where((e) => e.isNotEmpty)
-                  .toList() ?? [];
-                  
+
+              final notAllowedItem =
+                  data?.guestAware?.itemContaining
+                      ?.split(',')
+                      .map((e) => e.trim())
+                      .where((e) => e.isNotEmpty)
+                      .toList() ??
+                  [];
+
+              if (eventController.isMenusLoading.value == true)
+                return Column(
+                  children: [
+                    SizedBox(height: 45.h),
+                    Center(child: CircularProgressIndicator(color: greenColor)),
+                  ],
+                );
+              if (eventController.eventReviewModel.value == null)
+                return Column(
+                  children: [
+                    SizedBox(height: 45.h),
+                    Center(child: customText(text: "Details not found")),
+                  ],
+                );
+
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +73,10 @@ class EventPublishScreen extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 1.h,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -73,7 +90,8 @@ class EventPublishScreen extends StatelessWidget {
 
                         SizedBox(height: 0.5.h),
                         customText(
-                          text: data?.addNote ??
+                          text:
+                              data?.addNote ??
                               "Lorem ipsum dolor sit amet consectetur. Viverra tellus\neget magna sapien. Faucibus nibh mauris mattis aliquam\nproin pellentesque sed done.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
@@ -85,7 +103,10 @@ class EventPublishScreen extends StatelessWidget {
                   ),
                   Divider(),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 1.h,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -99,7 +120,8 @@ class EventPublishScreen extends StatelessWidget {
 
                         SizedBox(height: 0.5.h),
                         customText(
-                          text: data?.invitationMessage ??
+                          text:
+                              data?.invitationMessage ??
                               "With hearts full of joy, we invite you to join us in celebrating the first birthday of our beloved [Baby’s Name]. This special milestone means so much to us, and your presence will make the day even more memorable.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
@@ -115,7 +137,9 @@ class EventPublishScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: Theme(
-                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      data: Theme.of(
+                        context,
+                      ).copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         tilePadding: EdgeInsets.zero,
                         childrenPadding: EdgeInsets.only(bottom: 1.h),
@@ -142,8 +166,9 @@ class EventPublishScreen extends StatelessWidget {
                             runSpacing: 1,
                             children: List.generate(
                               eventController.eventComfortAccessibility.length,
-                                  (index) => eventAccesibillityWidget(
-                                eventController.eventComfortAccessibility[index],
+                              (index) => eventAccesibillityWidget(
+                                eventController
+                                    .eventComfortAccessibility[index],
                               ),
                             ),
                           ),
@@ -157,7 +182,8 @@ class EventPublishScreen extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       customText(
                                         text: "Items Are Not Allowed",
@@ -175,7 +201,7 @@ class EventPublishScreen extends StatelessWidget {
                                         alignment: WrapAlignment.start,
                                         children: List.generate(
                                           notAllowedItem.length,
-                                              (index) => eventAccesibillityWidget(
+                                          (index) => eventAccesibillityWidget(
                                             notAllowedItem[index],
                                           ),
                                         ),
@@ -195,28 +221,35 @@ class EventPublishScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         Get.toNamed("hostprofilepcreen");
                       },
                       child: Row(
                         children: [
-                          // (data?.host?.profilePic == null || data!.host!.profilePic!.isEmpty)
-                          //     ? Image.asset(
+                          (data?.host?.profilePic == null ||
+                                  data!.host!.profilePic!.isEmpty)
+                              ? Image.asset(
+                                "assets/png/chat_images/user1.png",
+                                height: 6.h,
+                                width: 14.w,
+                              )
+                              : ClipRRect(
+                            borderRadius: BorderRadius.circular(12.sp),
+                            child: Container(
+                              height: 5.5.h,
+                              width: 14.w,
+                              color: Colors.yellow,
+                              child: Image.network(
+                                "${baseService.baseURL}${data.host?.profilePic}",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          // Image.asset(
                           //   "assets/png/chat_images/user1.png",
                           //   height: 9.h,
                           //   width: 14.w,
-                          // )
-                          //     : Image.network(
-                          //   "${baseService.baseURL}${data.host?.profilePic}",
-                          //   height: 9.h,
-                          //   width: 14.w,
-                          //   fit: BoxFit.cover,
                           // ),
-                          Image.asset(
-                            "assets/png/chat_images/user1.png",
-                            height: 9.h,
-                            width: 14.w,
-                          ),
                           SizedBox(width: 3.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,10 +273,9 @@ class EventPublishScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 0.5.h,),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.w,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -257,31 +289,34 @@ class EventPublishScreen extends StatelessWidget {
                         ),
                         SizedBox(width: 3.w),
                         Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              customText(
-                                text: controller.formatDate2(data?.eventTime) ?? "May 02, 2025",
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w500,
-                                color: blackColor,
-                                height: 0.1.h,
-                              ),
-                              SizedBox(height: 0.5.h),
-                              customText(
-                                text: controller.formatTime2(data?.eventTime) ?? "7:30 PM - 9:00 PM",
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: darkGreyColor,
-                              ),
-                            ]),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            customText(
+                              text:
+                                  controller.formatDate2(data?.eventTime) ??
+                                  "May 02, 2025",
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
+                              color: blackColor,
+                              height: 0.1.h,
+                            ),
+                            SizedBox(height: 0.5.h),
+                            customText(
+                              text:
+                                  controller.formatTime2(data?.eventTime) ??
+                                  "7:30 PM - 9:00 PM",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: darkGreyColor,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                   SizedBox(height: 1.h),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.w,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -305,7 +340,7 @@ class EventPublishScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 0.5.h),
                               customText(
-                                text: "New York, USA",
+                                text: data?.host?.location ?? "New York, USA",
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
                                 color: darkGreyColor,
@@ -394,15 +429,19 @@ class EventPublishScreen extends StatelessWidget {
                           color: blackColor,
                         ),
                         customText(
-                          text: "132 My Street, Kingston, New York 12486.",
+                          text:
+                              data?.address ??
+                              "132 My Street, Kingston, New York 12486.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
                         ),
                         SizedBox(height: 1.h),
                         Container(
-                          child: Image.asset("assets/png/event_detail_img/event_detial_map.png"),
-                        )
+                          child: Image.asset(
+                            "assets/png/event_detail_img/event_detial_map.png",
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -422,7 +461,8 @@ class EventPublishScreen extends StatelessWidget {
                           color: blackColor,
                         ),
                         customText(
-                          text: "See dishes made for you - no stress, just great food",
+                          text:
+                              "See dishes made for you - no stress, just great food",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
@@ -448,95 +488,145 @@ class EventPublishScreen extends StatelessWidget {
                         SizedBox(height: 1.h),
                         LinearProgressIndicator(
                           backgroundColor: whiteColor, // Track color
-                          color: greenColor,            // Progress color
+                          color: greenColor, // Progress color
                           value: 0.95,
                           minHeight: 0.7.h,
                           borderRadius: BorderRadius.circular(10.sp),
                         ),
                         SizedBox(height: 1.5.h),
-                        controller.isUser.value ?
-                        Wrap(
-                          spacing: 4,
-                          runSpacing: 0,
-                          children: List.generate(
-                            eventMenuList.length,
+                        controller.isUser.value
+                            ? Wrap(
+                              spacing: 4,
+                              runSpacing: 0,
+                              children: List.generate(
+                                eventController.eventMenuList.length,
                                 (index) => eventAccesibillityWidget(
-                              eventMenuList[index],
-                            ),
-                          ),
-                        )
-                            :
-                        DefaultTabController(
-                          length: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TabBar(
-                                labelColor: Colors.black,
-                                unselectedLabelColor: Colors.grey,
-                                indicatorColor: Colors.black,
-                                indicatorWeight: 2,
-                                tabs: const [
-                                  Tab(text: "Appetizers"),
-                                  Tab(text: "Main Course"),
-                                  Tab(text: "Drinks"),
+                                  eventController.eventMenuList[index],
+                                ),
+                              ),
+                            )
+                            : DefaultTabController(
+                              length: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TabBar(
+                                    labelColor: Colors.black,
+                                    unselectedLabelColor: Colors.grey,
+                                    indicatorColor: Colors.black,
+                                    indicatorWeight: 2,
+                                    tabs: const [
+                                      Tab(text: "Appetizers"),
+                                      Tab(text: "Main Course"),
+                                      Tab(text: "Drinks"),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Builder(
+                                    builder: (context) {
+                                      final tabController =
+                                          DefaultTabController.of(context);
+                                      return AnimatedBuilder(
+                                        animation: tabController,
+                                        builder: (context, _) {
+                                          final currentTabName =
+                                              [
+                                                "Appetizers",
+                                                "Main Course",
+                                                "Drinks",
+                                              ][tabController.index];
+                                          final filteredMenus =
+                                              data?.menus
+                                                  ?.where(
+                                                    (m) =>
+                                                        m.type ==
+                                                        currentTabName,
+                                                  )
+                                                  .toList() ??
+                                              [];
+
+                                          if (filteredMenus.isEmpty) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 2.h,
+                                              ),
+                                              child: Center(
+                                                child: customText(
+                                                  text:
+                                                      "No $currentTabName added yet",
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            );
+                                          }
+
+                                          return Column(
+                                            children:
+                                                filteredMenus.map((menu) {
+                                                  String cat1 = "";
+                                                  String cat2 = "";
+                                                  if (menu.mealCategory !=
+                                                          null &&
+                                                      menu
+                                                          .mealCategory!
+                                                          .isNotEmpty) {
+                                                    cat1 =
+                                                        menu.mealCategory![0];
+                                                  }
+                                                  if (menu.mealCategory !=
+                                                          null &&
+                                                      menu
+                                                              .mealCategory!
+                                                              .length >
+                                                          1) {
+                                                    cat2 =
+                                                        menu.mealCategory![1];
+                                                  }
+
+                                                  return Column(
+                                                    children: [
+                                                      menuItem(
+                                                        title: menu.title ?? "",
+                                                        subtitle:
+                                                            menu.description ??
+                                                            "",
+                                                        imagePath:
+                                                            menu.menuImage !=
+                                                                        null &&
+                                                                    menu
+                                                                        .menuImage!
+                                                                        .isNotEmpty
+                                                                ? "${baseService.baseURL}${menu.menuImage}"
+                                                                : "",
+                                                        text1: cat1,
+                                                        text2: cat2,
+                                                        boximg1:
+                                                            eventController
+                                                                .mealCategoryIcon(
+                                                                  cat1,
+                                                                ) ??
+                                                            "",
+                                                        boximg2:
+                                                            eventController
+                                                                .mealCategoryIcon(
+                                                                  cat2,
+                                                                ) ??
+                                                            "",
+                                                        containerColor:
+                                                            backgroundColor,
+                                                      ),
+                                                      Divider(),
+                                                    ],
+                                                  );
+                                                }).toList(),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
-                              SizedBox(height: 1.h),
-                              Builder(builder: (context) {
-                                final tabController = DefaultTabController.of(context);
-                                return AnimatedBuilder(
-                                  animation: tabController,
-                                  builder: (context, _) {
-                                    final currentTabName = ["Appetizers", "Main Course", "Drinks"][tabController.index];
-                                    final filteredMenus = data?.menus?.where((m) => m.type == currentTabName).toList() ?? [];
-
-                                    if (filteredMenus.isEmpty) {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 2.h),
-                                        child: Center(
-                                          child: customText(
-                                              text: "No $currentTabName added yet",
-                                              fontSize: 14.sp),
-                                        ),
-                                      );
-                                    }
-
-                                    return Column(
-                                      children: filteredMenus.map((menu) {
-                                        String cat1 = "";
-                                        String cat2 = "";
-                                        if (menu.mealCategory != null && menu.mealCategory!.isNotEmpty) {
-                                          cat1 = menu.mealCategory![0];
-                                        }
-                                        if (menu.mealCategory != null && menu.mealCategory!.length > 1) {
-                                          cat2 = menu.mealCategory![1];
-                                        }
-
-                                        return Column(
-                                          children: [
-                                            menuItem(
-                                                title: menu.title ?? "",
-                                                subtitle: menu.description ?? "",
-                                                imagePath: menu.menuImage != null && menu.menuImage!.isNotEmpty
-                                                    ? "${baseService.baseURL}${menu.menuImage}"
-                                                    : "",
-                                                text1: cat1,
-                                                text2: cat2,
-                                                boximg1: eventController.mealCategoryIcon(cat1) ?? "",
-                                                boximg2: eventController.mealCategoryIcon(cat2) ?? "",
-                                                containerColor: backgroundColor),
-                                            Divider(),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    );
-                                  },
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
+                            ),
                       ],
                     ),
                   ),
@@ -572,14 +662,25 @@ class EventPublishScreen extends StatelessWidget {
                           // ),
                           if (controller.isUser.value == false) ...[
                             SizedBox(height: 2.h),
-                            buttonWidget("Publish Now", whiteColor, colors: greenColor,onTap: (){
-                              eventController.publishEvent(eventId, context);
-                              // eventPostedDialog(context);
-                            }),
+                            buttonWidget(
+                              "Publish Now",
+                              whiteColor,
+                              colors: greenColor,
+                              onTap: () {
+                                eventController.publishEvent(eventId, context);
+                                // eventPostedDialog(context);
+                              },
+                            ),
                             SizedBox(height: 1.h),
-                            buttonWidget("Back", blackColor, colors: backgroundColor, borderColor: backgroundColor,onTap: (){
-                              Get.back();
-                            }),
+                            buttonWidget(
+                              "Back",
+                              blackColor,
+                              colors: backgroundColor,
+                              borderColor: backgroundColor,
+                              onTap: () {
+                                Get.back();
+                              },
+                            ),
                           ],
                         ],
                       ),
@@ -589,8 +690,7 @@ class EventPublishScreen extends StatelessWidget {
                   SizedBox(height: 5.h),
                 ],
               );
-            }
-            ),
+            }),
           ),
 
           Positioned(
@@ -610,21 +710,21 @@ class EventPublishScreen extends StatelessWidget {
     );
   }
 }
+
 Widget reveiwWidget(BuildContext context) {
   return GestureDetector(
-    onTap: (){
-    },
+    onTap: () {},
     child: Container(
       decoration: BoxDecoration(
         color: whiteColor,
         border: Border.all(
           color: Colors.grey.shade300, // Slight grey border
-          width: 1,                     // Thin border
+          width: 1, // Thin border
         ),
         borderRadius: BorderRadius.circular(15.sp), // Optional: rounded corners
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -635,10 +735,8 @@ Widget reveiwWidget(BuildContext context) {
                   itemCount: 5,
                   itemSize: 18.sp,
                   physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, _) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
+                  itemBuilder:
+                      (context, _) => Icon(Icons.star, color: Colors.amber),
                 ),
                 SizedBox(width: 2.w),
                 customText(
@@ -661,7 +759,9 @@ Widget reveiwWidget(BuildContext context) {
               children: [
                 CircleAvatar(
                   radius: 18.sp, // Adjust size as needed
-                  backgroundImage: AssetImage('assets/png/chat_images/user1.png'), // Replace with your image path
+                  backgroundImage: AssetImage(
+                    'assets/png/chat_images/user1.png',
+                  ), // Replace with your image path
                   backgroundColor: Colors.grey[200], // Optional: fallback color
                 ),
                 SizedBox(width: 2.w),
@@ -680,4 +780,3 @@ Widget reveiwWidget(BuildContext context) {
     ),
   );
 }
-

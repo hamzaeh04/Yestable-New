@@ -400,7 +400,7 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
                       height: 5.h,
                       fontsize: 16.sp,
                       onTap: () {
-                        eventController.createEvent(context);
+                        eventController.createEvent(context,image: controller.controller.profilePicture.value);
                       },
                     ),
                     SizedBox(height: 1.h),

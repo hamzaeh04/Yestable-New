@@ -42,4 +42,16 @@ class ApiEndPoints{
   static String publishEvent(String eventId) {
     return '/events/${eventId}/publish';
   }
+
+  static String getAllEvent(int page) {
+    return '/events/upcoming?page=${page}&limit=10';
+  }
+
+  static String editEvent(String eventId) {
+    return '/events/${eventId}';
+  }
+
+  static String myEvents(int page) {
+    return '/events/my-events?page=${page}&limit=10';
+  }
 }

@@ -195,7 +195,7 @@ Widget invitationWidget(
   );
 }
 
-Widget upComingEventWidget({double? width,double? height}) {
+Widget upComingEventWidget({double? width,double? height, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost}) {
   return Container(
     height: height!=null ? height : 41.h,
     width: width!=null ? width : 65.w,
@@ -228,23 +228,23 @@ Widget upComingEventWidget({double? width,double? height}) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               customText(
-                text: "Sophia Dinner Event",
+                text: eventName,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: blackColor,
               ),
               customText(
-                text: "132 My Street, Kingston, New York124",
+                text: eventLocation,
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w400,
                 color: Colors.grey[800],
               ),
               Divider(),
-              buildEventRow("Name:", "April 30, 2025"),
+              buildEventRow("Name:", eventDate),
               Divider(),
-              buildEventRow("Time:", "7:30pm"),
+              buildEventRow("Time:", eventTime),
               Divider(),
-              buildEventRow("Host Name:", "Sophia Andreas"),
+              buildEventRow("Host Name:", eventHost),
               Divider(),
               SizedBox(height: 1.h),
               Row(

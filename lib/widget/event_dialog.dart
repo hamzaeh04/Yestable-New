@@ -4,10 +4,14 @@ import 'package:sizer/sizer.dart';
 
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
+import '../controllers/event_controller.dart';
+import '../controllers/navigation_controller.dart';
 import 'event_widget.dart';
 import 'home_screen_widget.dart';
 
 void showEventDialog(BuildContext context) {
+  final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -58,68 +62,87 @@ void showEventDialog(BuildContext context) {
                     ),
                     SizedBox(height: 1.h),
                     // Event 1
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.sp),
-                            color: blueColor,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
-                            child: customText(
-                              text: "In 13 Hrs",
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w500,
-                              color: whiteColor,
-                              fontFamily: "CormorantGaramond",
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 4.w),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              Get.toNamed("eventdetailsscreen");
-                            },
-                            child: eventScreenWidget(bgcolor: backgroundColor),
-                          ),
-                        ),
-                      ],
+                    SizedBox(
+                      height: 40.h, // or any max height you want
+                      child: ListView.builder(
+                        itemCount: eventController.getAllEventsModel.value?.data?.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final eventData = eventController.getAllEventsModel.value?.data?.data;
+                          final data = eventData?[index];
+                          String displayLocation = (data?.location?.coordinates != null)
+                              ? "${data!.location!.coordinates![1]}, ${data.location!.coordinates![0]}"
+                              : "132 My Street, Kingston, New York 12486";
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.sp),
+                                  color: blueColor,
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
+                                  child: customText(
+                                    text: "In 13 Hrs",
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: whiteColor,
+                                    fontFamily: "CormorantGaramond",
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 4.w),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    Get.toNamed("eventdetailsscreen");
+                                  },
+                                  child: eventScreenWidget(
+                                      bgcolor: backgroundColor,
+                                      eventName: data?.eventName ?? "Sophia Dinner Event",
+                                      eventDate: controller.formatDate2(data?.eventTime),
+                                      eventTime: controller.formatTime2(data?.eventTime),
+                                      eventHost: data?.host?.name ?? "Sophia Andreas",
+                                      eventLocation: displayLocation),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                    SizedBox(height: 1.h),
-                    // Event 2
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.sp),
-                            color: blueColor,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
-                            child: customText(
-                              text: "In 20 Hrs",
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w500,
-                              color: whiteColor,
-                              fontFamily: "CormorantGaramond",
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 4.w),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              Get.toNamed("eventdetailsscreen");
-                            },
-                            child: eventScreenWidget(bgcolor: backgroundColor),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // SizedBox(height: 1.h),
+                    // // Event 2
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Container(
+                    //       decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(25.sp),
+                    //         color: blueColor,
+                    //       ),
+                    //       child: Padding(
+                    //         padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
+                    //         child: customText(
+                    //           text: "In 20 Hrs",
+                    //           fontSize: 13.sp,
+                    //           fontWeight: FontWeight.w500,
+                    //           color: whiteColor,
+                    //           fontFamily: "CormorantGaramond",
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     SizedBox(width: 4.w),
+                    //     Expanded(
+                    //       child: InkWell(
+                    //         onTap: () {
+                    //           Get.toNamed("eventdetailsscreen");
+                    //         },
+                    //         child: eventScreenWidget(bgcolor: backgroundColor),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

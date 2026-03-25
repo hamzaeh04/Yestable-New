@@ -8,7 +8,7 @@ import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 import 'home_screen_widget.dart';
 
-Widget eventScreenWidget({Color? bgcolor}) {
+Widget eventScreenWidget({Color? bgcolor, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost}) {
   final NavigationController controller = Get.find<NavigationController>();
   return Container(
     width: 65.w,
@@ -43,7 +43,7 @@ Widget eventScreenWidget({Color? bgcolor}) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   customText(
-                    text: "Sophia Dinner Event",
+                    text: eventName,
                     fontSize: 17.sp,
                     fontWeight: FontWeight.w600,
                      fontFamily: "CormorantGaramond",
@@ -56,7 +56,7 @@ Widget eventScreenWidget({Color? bgcolor}) {
                           ,height: 12.sp,fit: BoxFit.cover),
                       SizedBox(width: 2.w),
                       customText(
-                        text: "132 My Street, Kingston, New York 12486",
+                        text: eventLocation,
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                         color: blackColor,
@@ -65,11 +65,11 @@ Widget eventScreenWidget({Color? bgcolor}) {
                   ),
 
                   SizedBox(height: 1.h),
-                  buildEventRow("Name:", "April 30, 2025",path: "assets/png/event_widget_icon/calender_icon.png",),
+                  buildEventRow("Date:", eventDate, path: "assets/png/event_widget_icon/calender_icon.png",),
                   SizedBox(height: 1.h),
-                  buildEventRow("Time:", "7:30pm",path: "assets/png/event_widget_icon/clock_icon.png",),
+                  buildEventRow("Time:", eventTime, path: "assets/png/event_widget_icon/clock_icon.png",),
                   SizedBox(height: 1.h),
-                  buildEventRow("Host Name:", "Sophia Andreas",path: "assets/png/event_widget_icon/profile_icon.png",),
+                  buildEventRow("Host Name:", eventHost, path: "assets/png/event_widget_icon/profile_icon.png",),
                   SizedBox(height: 1.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -212,6 +213,22 @@ class NavigationController extends GetxController {
     });
   }
 
+
+// Example function
+  Future<String> getAddressFromCoordinates(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        return "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+      } else {
+        return "Unknown Location";
+      }
+    } catch (e) {
+      print("Reverse geocoding error: $e");
+      return "Unknown Location";
+    }
+  }
 
 
   final List<String> tabs = [

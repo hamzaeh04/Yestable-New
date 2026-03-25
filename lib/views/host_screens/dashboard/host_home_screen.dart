@@ -6,6 +6,7 @@ import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/views/guest_screens/dashboard/event_screen.dart';
 import 'package:yestable/widget/guest_update_received.dart';
+import '../../../controllers/event_controller.dart';
 import '../../../widget/complete_guest_dialog.dart';
 import '../../../widget/home_screen_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -15,6 +16,7 @@ class AdminHomeScreen extends StatelessWidget {
   AdminHomeScreen({super.key});
 
   final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
   List<Map<String, String>> guestAllergyData = [
     {
       "path": "assets/png/guest_list_images/allergies1.png",
@@ -755,35 +757,71 @@ class AdminHomeScreen extends StatelessWidget {
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 4.w,
                                           ),
-                                          child: Column(
-                                            children: [
-                                              adminHomeWidget(
-                                                eventname:
-                                                    "Gizelle Dinner Event",
-                                                confirmedamount:
-                                                    "25 Guest Confirmed",
-                                                value: 0.85,
-                                              ),
-                                              adminHomeWidget(
-                                                eventname:
-                                                    "Gizelle Lunch Event",
-                                                confirmedamount:
-                                                    "24 Guest Confirmed",
-                                                progress: "(25/24)",
-                                                value: 0.95,
-                                              ),
-                                              adminHomeWidget(
-                                                eventname:
-                                                    "Thanksgiving Dinner Event",
-                                                confirmedamount:
-                                                    "08 Guest Confirmed",
-                                                progress: "(15/08)",
-                                                value: 0.65,
-                                              ),
-                                            ],
-                                          ),
+                                          child: Obx(() {
+                                            final eventData = eventController.myEventsModel.value?.data?.data;
+
+                                            // Show loader while fetching first page
+                                            if (eventController.isLoadingMyEvents.value)
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 6.h),
+                                                child: Center(child: CircularProgressIndicator(color: greenColor)),
+                                              );
+
+                                            // No data found
+                                            if (eventData == null || eventData.isEmpty)
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 7.h),
+                                                child: Center(
+                                                  child: customText(text: 'No RSVP found!', fontSize: 14.5.sp),
+                                                ),
+                                              );
+
+                                            return Column(
+                                              children: [
+                                                // Event list
+                                                ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: NeverScrollableScrollPhysics(),
+                                                  padding: EdgeInsets.zero,
+                                                  itemCount: eventData.length,
+                                                  itemBuilder: (context, index) {
+                                                    final data = eventData[index];
+                                                    return adminHomeWidget(
+                                                      eventname: data?.eventName,
+                                                      confirmedamount: "08 Guest Confirmed",
+                                                      value: 0.65,
+                                                      ontap: () {
+                                                        Get.toNamed("eventdetailsscreen", arguments: data?.id);
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+
+                                                SizedBox(height: 2.h),
+
+                                                // Load More Button
+                                                if (eventController.currentPage < eventController.totalPages)
+                                                  ElevatedButton(
+                                                    onPressed: eventController.isLoadingMore.value
+                                                        ? null
+                                                        : () => eventController.getMyEvents(loadMore: true),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: greenColor,
+                                                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.5.h),
+                                                    ),
+                                                    child: eventController.isLoadingMore.value
+                                                        ? SizedBox(
+                                                      height: 2.h,
+                                                      width: 2.h,
+                                                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                                    )
+                                                        : customText(text: "Load More", color: Colors.white, fontSize: 14.sp),
+                                                  ),
+                                              ],
+                                            );
+                                          })
                                         ),
-                                        SizedBox(height: 3.h),
+                                        SizedBox(height: 5.h),
                                       ],
                                     ),
                           ),
@@ -807,13 +845,12 @@ class AdminHomeScreen extends StatelessWidget {
     String? confirmedamount,
     String? progress,
     double? value,
+    VoidCallback? ontap
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 1.h),
       child: GestureDetector(
-        onTap: () {
-          Get.toNamed("eventdetailsscreen");
-        },
+        onTap: ontap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

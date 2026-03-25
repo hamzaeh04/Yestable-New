@@ -216,7 +216,7 @@ class CreateNewEventScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 2.3.h),
                               customText(text: "Check Guest\nNeeds Automatically.", fontWeight: FontWeight.w500, fontSize: 15.sp),
-                              SizedBox(height: 2.4.h),
+                              SizedBox(height: 2.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -362,7 +362,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                 ],
                               ),
                               const Divider(),
-                              SizedBox(height: 4.4.h),
+                              SizedBox(height: 4.8.h),
 
                               customProfileField(hint: 'You\'re invited to a dinner party', size: 14.8.sp,
                                   controller: eventController.inviteMsg

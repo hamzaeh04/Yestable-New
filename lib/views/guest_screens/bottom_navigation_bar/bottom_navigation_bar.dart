@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/views/guest_screens/chat_screens/chat_list_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/add_freind_screen.dart';
@@ -35,6 +36,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     with WidgetsBindingObserver {
 
   final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
   late PageController _pageController;
 
   bool _dialogShown = false;
@@ -58,6 +60,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     });
 
     controller.controller.fetchMyProfile();
+    eventController.getAllEvents();
+    controller.isUser.value == false ? eventController.getMyEvents(): null;
+
 
     // 🔥 Show dialog after UI ready
     WidgetsBinding.instance.addPostFrameCallback((_) {

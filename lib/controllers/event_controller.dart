@@ -8,10 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/model/get_event_review_model.dart';
-import 'package:yestable/widget/showShareDialogBox_widget.dart';
+import 'package:yestable/model/get_my_event_model.dart';
 
 import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
+import '../model/get_all_event_model.dart';
 import '../model/get_menu_model.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
@@ -19,6 +20,7 @@ import '../utils/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import '../widget/event_posted_dialog.dart';
+import '../widget/showShareDialogBox_widget.dart';
 import 'location_controller.dart';
 import 'navigation_controller.dart';
 
@@ -38,7 +40,8 @@ class EventController extends GetxController{
   var selectedEventType = RxnString();
   var selectedReminderTime = RxnString();
   Rxn<EventReviewModel> eventReviewModel = Rxn<EventReviewModel>();
-
+  Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
+  Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
 
   // Guest Aware Controllers
   final TextEditingController swimmingPoolController = TextEditingController();
@@ -53,6 +56,8 @@ class EventController extends GetxController{
   final prefs = SharedPreferencesMethod.storage;
 
   final RxBool isMenusLoading = false.obs;
+  final RxBool isLoadingMyEvents = false.obs;
+  final RxBool isLoadingAllEvents = false.obs;
   final RxString menusError = ''.obs;
   final RxList<MenuItem> menus = <MenuItem>[].obs;
   final RxList<MenuItem> selectedMenus = <MenuItem>[].obs;
@@ -74,9 +79,7 @@ class EventController extends GetxController{
   void removeImage() {
     itemPic.value = null;
   }
-  String generateEventLink(String eventId) {
-    return "https://yestable-107c6.web.app/event/$eventId";
-  }
+  final List<String> eventMenuList = ["Vegetarian", "Contain Dairy","Gluten-Free","Shelfish","Vegan","Nut-Free"];
 
   final List<String> eventAccesibilityList = [
     "Quiet Space Available",
@@ -100,6 +103,12 @@ class EventController extends GetxController{
     "Event Ends At A Time",
   ];
   RxList<String> eventComfortAccessibility = <String>[].obs;
+
+
+  String generateEventLink(String eventId) {
+    return "https://yestable-107c6.web.app/event/$eventId";
+  }
+
   void mapEventComfortAccessibility(
       EventComfort? eventComfort,
       GuestAware? guestAware,
@@ -199,7 +208,7 @@ class EventController extends GetxController{
     {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
   ];
 
-  Future<void> createEvent(BuildContext context) async {
+  Future<void> createEvent(BuildContext context,{File? image}) async {
     try {
       final lat = locationController.latitude.value;
       final lng = locationController.longitude.value;
@@ -243,7 +252,7 @@ class EventController extends GetxController{
           : eventType.text.trim();
 
       final body = {
-        "image": "",
+        "image": image,
         "eventName": eventName.text.trim(),
         "eventTime": isoEventTime,
         "eventType": typeValue,
@@ -251,6 +260,7 @@ class EventController extends GetxController{
           "type": "Point",
           "coordinates": [lng, lat],
         },
+        "address": locationController.addressController.text.trim(),
         "invitationMessage": inviteMsg.text.trim(),
         "parkingDetails": parkingDetails.text.trim(),
         "addNote": addNote.text.trim(),
@@ -268,29 +278,28 @@ class EventController extends GetxController{
 
       if (res["success"] == true) {
         Utils.showToast(res["message"] ?? "Event created", false);
-
         String eventId = res["data"]["_id"];
         String link = generateEventLink(eventId);
 
         print("Generated Link: $link");
 
-        // // 🚀 SHOW DIALOG
-        // Get.defaultDialog(
-        //   title: "Event Created Successfully 🎉",
-        //   middleText: link,
-        //   textConfirm: "Copy Link",
-        //   textCancel: "Close",
-        //   confirmTextColor: Colors.white,
-        //   onConfirm: () {
-        //     // 👉 Copy to clipboard
-        //     Get.back();
-        //     Clipboard.setData(ClipboardData(text: link));
-        //     Utils.showToast("Link copied!", false);
-        //   },
-        // );
+// // 🚀 SHOW DIALOG
+// Get.defaultDialog(
+//   title: "Event Created Successfully 🎉",
+//   middleText: link,
+//   textConfirm: "Copy Link",
+//   textCancel: "Close",
+//   confirmTextColor: Colors.white,
+//   onConfirm: () {
+//     // 👉 Copy to clipboard
+//     Get.back();
+//     Clipboard.setData(ClipboardData(text: link));
+//     Utils.showToast("Link copied!", false);
+//   },
+// );
         showShareProfileDialog(context,title: "Share Event Link",link:link,onTap: (){
           Clipboard.setData(ClipboardData(text: link));
-              Utils.showToast("Link copied!", false);
+          Utils.showToast("Link copied!", false);
         },
             onCancel: (){
               Navigator.pop(context); // ✅ close dialog
@@ -299,12 +308,93 @@ class EventController extends GetxController{
 
         );
 
-
-
       }
-
     } catch (e) {
       Utils.showToast("Failed to create event", true);
+    }
+  }
+
+  Future<void> editEvent({
+    required String eventId,
+    File? image,
+  }) async {
+    try {
+      final lat = locationController.latitude.value;
+      final lng = locationController.longitude.value;
+
+      // Build ISO 8601 event time
+      String? isoEventTime;
+      final dateStr = eventDate.text.trim();
+      final timeStr = eventTime.text.trim();
+
+      if (dateStr.isNotEmpty && timeStr.isNotEmpty) {
+        try {
+          final dateParts = dateStr.split('-');
+          final day = int.parse(dateParts[0]);
+          final month = int.parse(dateParts[1]);
+          final year = int.parse(dateParts[2]);
+
+          final timeParts = timeStr.split(' ');
+          final hm = timeParts[0].split(':');
+          var hour = int.parse(hm[0]);
+          final minute = int.parse(hm[1]);
+          final period =
+          timeParts.length > 1 ? timeParts[1].toUpperCase() : 'AM';
+
+          if (period == 'PM' && hour != 12) {
+            hour += 12;
+          } else if (period == 'AM' && hour == 12) {
+            hour = 0;
+          }
+
+          final dt = DateTime(year, month, day, hour, minute);
+          isoEventTime = dt.toUtc().toIso8601String();
+        } catch (_) {
+          isoEventTime = null;
+        }
+      }
+
+      final typeValue = eventType.text.trim().isEmpty
+          ? "Private"
+          : eventType.text.trim();
+
+      /// 🔹 Build body
+      final body = {
+        if (image != null) "image": image, // only send if updated
+        "eventName": eventName.text.trim(),
+        "eventTime": isoEventTime,
+        "eventType": typeValue,
+        "location": {
+          "type": "Point",
+          "coordinates": [lng, lat],
+        },
+        "invitationMessage": inviteMsg.text.trim(),
+        "parkingDetails": parkingDetails.text.trim(),
+        "addNote": addNote.text.trim(),
+        "reminderNotification": true,
+        "members": [],
+        "menus": selectedMenus
+            .map((m) => m.id)
+            .whereType<String>()
+            .toList(),
+        "displayMenu": selectedMenus.isNotEmpty,
+      };
+
+      final res = await baseService.basePatchAPI( // or basePatchAPI depending on backend
+        ApiEndPoints.editEvent(eventId),
+        body: {},
+      );
+
+      if (res["success"] == true) {
+        Utils.showToast(res["message"] ?? "Event updated", false);
+
+        // You can go back OR navigate
+        Get.back();
+        // OR
+        // Get.toNamed("eventdetailsscreen", arguments: eventId);
+      }
+    } catch (e) {
+      Utils.showToast("Failed to update event", true);
     }
   }
 
@@ -846,6 +936,7 @@ class EventController extends GetxController{
   }
 
   Future<void> eventReview(String eventId) async {
+    isMenusLoading.value = true;
     try {
       final response = await baseService.baseGetAPI(
         ApiEndPoints.eventReview(eventId),
@@ -865,6 +956,8 @@ class EventController extends GetxController{
       print("Exception in eventReview: $e");
       print(stackTrace);
       Utils.showToast("Something went wrong ${e}", true);
+    } finally{
+      isMenusLoading.value = false;
     }
   }
 
@@ -902,5 +995,94 @@ class EventController extends GetxController{
     }
   }
 
+  Future<void> getAllEvents({bool loadMore = false}) async {
+    if (loadMore) {
+      if (currentPage >= totalPages) return; // no more pages
+      isLoadingMore.value = true;
+      currentPage += 1;
+    } else {
+      currentPage = 1;
+      isLoadingAllEvents.value = true;
+    }
 
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.getAllEvent(currentPage),
+      );
+
+      if (response != null && response['success'] == true) {
+        final newData = GetAllEventsModel.fromJson(response);
+
+        totalPages = newData.data?.totalPages ?? 1;
+
+        if (loadMore) {
+          // Append new events
+          getAllEventsModel.update((val) {
+            val?.data?.data?.addAll(newData.data?.data ?? []);
+          });
+        } else {
+          getAllEventsModel.value = newData;
+        }
+
+        Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+      } else {
+        Utils.showToast(response['message'] ?? "Failed to fetch events", true);
+      }
+    } catch (e, stackTrace) {
+      Utils.showToast("Something went wrong: $e", true);
+      print("Error in getAllEvents(): $e");
+      print(stackTrace);
+    } finally {
+      isLoadingAllEvents.value = false;
+      isLoadingMore.value = false;
+    }
+  }
+
+  var isLoadingMore = false.obs;
+  int currentPage = 1;
+  int totalPages = 1; // Update after API response
+
+  Future<void> getMyEvents({bool loadMore = false}) async {
+    if (loadMore) {
+      if (currentPage >= totalPages) return; // No more pages
+      isLoadingMore.value = true;
+      currentPage += 1;
+    } else {
+      currentPage = 1; // Reset for fresh load
+      isLoadingMyEvents.value = true;
+    }
+
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.myEvents(currentPage),
+        loading: true,
+      );
+
+      if (response != null && response['success'] == true) {
+        final newData = GetMyEventModel.fromJson(response);
+
+        totalPages = newData.data?.totalPages ?? 1;
+
+        if (loadMore) {
+          // Append new events to existing list
+          myEventsModel.update((val) {
+            val?.data?.data?.addAll(newData.data?.data ?? []);
+          });
+        } else {
+          myEventsModel.value = newData;
+        }
+
+        Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+      } else {
+        Utils.showToast(response['message'] ?? "Failed to fetch events", true);
+      }
+    } catch (e, stackTrace) {
+      Utils.showToast("Something went wrong: $e", true);
+      print("Error in getMyEvents(): $e");
+      print(stackTrace);
+    } finally {
+      isLoadingMyEvents.value = false;
+      isLoadingMore.value = false;
+    }
+  }
 }
