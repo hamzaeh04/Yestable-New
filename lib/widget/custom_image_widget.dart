@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sizer/sizer.dart';
+import 'package:yestable/core/services/base_services.dart';
+BaseService baseService = BaseService();
 
 class CustomProfileWidget extends StatelessWidget {
   final String imageUrl;
@@ -58,4 +61,27 @@ class CustomProfileWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget customImageWidget({required String imagePath, double? height, double? width}){
+  return Image.network(
+    "${baseService.baseURL}${imagePath}",
+    fit: BoxFit.cover,
+    height: height ?? 35.h,
+    loadingBuilder: (context, child, loadingProgress) {
+      if (loadingProgress == null) return child;
+
+      return Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(color: Colors.white),
+      );
+    },
+    errorBuilder: (context, error, stackTrace) {
+      return Container(
+        color: Colors.grey[300],
+        child: Icon(Icons.error),
+      );
+    },
+  );
 }

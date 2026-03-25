@@ -164,9 +164,7 @@ class MyProfileScreen extends StatelessWidget {
                         ),
                         controller.isUser.value
                             ? customText(
-                          text: controller.formatDate(
-                            data?.createdAt ?? "May 01, 2025",
-                          ),
+                          text: controller.formatDate2(DateTime.now()) ?? "May 01, 2025",
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                           color: whiteColor,

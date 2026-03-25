@@ -12,6 +12,7 @@ import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_posted_dialog.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
 import '../../../constants/constants_widgets.dart';
+import '../../../widget/custom_image_widget.dart';
 import '../../../widget/event_accesibility_widget.dart';
 import '../../guest_screens/dashboard/event_details_screen.dart';
 
@@ -66,12 +67,13 @@ class EventPublishScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  (data!.image == null || data!.image!.isEmpty) ?
                   Image.asset(
                     'assets/png/event_screen_banner.png',
                     height: 35.h,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                  ),
+                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 5.w,

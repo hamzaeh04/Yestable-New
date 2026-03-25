@@ -72,6 +72,7 @@ class Event {
   final String? id;
   final Location? location;
   final String? image;
+  final String? address;
   final String? eventName;
   final DateTime? eventTime;
   final String? eventType;
@@ -95,6 +96,7 @@ class Event {
     this.id,
     this.location,
     this.image,
+    this.address,
     this.eventName,
     this.eventTime,
     this.eventType,
@@ -121,6 +123,7 @@ class Event {
       location:
       json['location'] != null ? Location.fromJson(json['location']) : null,
       image: json['image'],
+      address: json['address'],
       eventName: json['eventName'],
       eventTime:
       json['eventTime'] != null ? DateTime.parse(json['eventTime']) : null,
@@ -149,6 +152,7 @@ class Event {
     '_id': id,
     'location': location?.toJson(),
     'image': image,
+    'address': address,
     'eventName': eventName,
     'eventTime': eventTime?.toIso8601String(),
     'eventType': eventType,

@@ -7,6 +7,8 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/views/guest_screens/dashboard/event_screen.dart';
 import 'package:yestable/widget/guest_update_received.dart';
 import '../../../controllers/event_controller.dart';
+import '../../../outh_file/local_db_key.dart';
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/complete_guest_dialog.dart';
 import '../../../widget/home_screen_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -59,6 +61,8 @@ class AdminHomeScreen extends StatelessWidget {
       "allergen": "Dairy",
     },
   ];
+  final prefs = SharedPreferencesMethod.storage;
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,21 +110,22 @@ class AdminHomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, Gizelle Jekronia",
-                        fontSize: 20.sp,
-                        fontFamily: "CormorantGaramond",
-                        fontWeight: FontWeight.w500,
-                        color: whiteColor,
-                        height: 0.1.h,
+                          text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
+                          fontSize: 20.sp,
+                          fontFamily: "CormorantGaramond",
+                          fontWeight: FontWeight.w500,
+                          color: whiteColor,
+                          height: 0.1.h
                       ),
                       customText(
-                        text: "May 01, 2025",
+                        text: controller.formatDate2(DateTime.now()) ?? "May 01, 2025",
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         color: whiteColor,
                       ),
                     ],
                   ),
+
                   const Spacer(),
                   InkWell(
                     onTap: () {
@@ -930,7 +935,7 @@ Widget buildCreateNewEventButton(BuildContext context) {
     height: 27.sp, // 🔁 Adjust height here
     child: FloatingActionButton.extended(
       onPressed: () {
-        Get.toNamed("createneweventscreen");
+        Get.toNamed("createneweventscreen", arguments: null);
       },
       label: Row(
         children: [

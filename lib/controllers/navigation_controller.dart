@@ -209,6 +209,18 @@ class NavigationController extends GetxController {
     });
   }
 
+  int getRemainingHours(DateTime eventTime) {
+    final now = DateTime.now();
+
+    final difference = eventTime.difference(now);
+
+    // If time already passed, return 0 (or you can return negative if you want)
+    if (difference.isNegative) {
+      return 0;
+    }
+
+    return difference.inHours;
+  }
 
 // Example function
   Future<String> getAddressFromCoordinates(double lat, double lng) async {

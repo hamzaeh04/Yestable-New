@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
@@ -9,33 +10,26 @@ import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/model/get_menu_model.dart';
 import 'package:yestable/widget/ai_menu_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/custom_image_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
 import 'package:yestable/widget/menu_form_widget.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
 import 'package:yestable/widget/selected_menu_bottomsheet.dart';
 import '../../../widget/home_screen_widget.dart';
 
-class FoodMenuScreen extends StatefulWidget {
-  const FoodMenuScreen({super.key});
+class FoodMenuScreen extends StatelessWidget {
+  FoodMenuScreen({super.key});
 
-  @override
-  State<FoodMenuScreen> createState() => _FoodMenuScreenState();
-}
-
-class _FoodMenuScreenState extends State<FoodMenuScreen> {
   final NavigationController controller = Get.find<NavigationController>();
+
   final EventController eventController = Get.find<EventController>();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      eventController.getMenus(loading: false);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      eventController.getMenus();
+    });
+    final eventId = Get.arguments;
     return Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(
@@ -70,7 +64,8 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
                 SizedBox(height: 2.h),
 
                 // Main Scrollable Body with Rounded Corners
-                Expanded(
+                SizedBox(
+                  height: 80.h,
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -401,7 +396,9 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
                       height: 5.h,
                       fontsize: 16.sp,
                       onTap: () {
-                        eventController.createEvent(context,image: controller.controller.profilePicture.value);
+                        eventId == null ?
+                        eventController.createEvent(context,image: controller.controller.profilePicture.value):
+                        eventController.editEvent(eventId: eventId,image: controller.controller.profilePicture.value);
                       },
                     ),
                     SizedBox(height: 1.h),
@@ -413,7 +410,7 @@ class _FoodMenuScreenState extends State<FoodMenuScreen> {
         ),
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.only(bottom: 14.h),
         child: FloatingActionButton(
           backgroundColor: greenColor,
           shape: CircleBorder(),
@@ -449,7 +446,7 @@ Widget _menusHorizontalList({required String type}) {
               ),
               SizedBox(height: 1.2.h),
               InkWell(
-                onTap: () => eventController.getMenus(loading: false),
+                onTap: () => eventController.getMenus(),
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.8.h),
                   decoration: BoxDecoration(
@@ -539,6 +536,7 @@ Widget _menuApiCard({required MenuItem menu}) {
                       height: 15.h,
                       width: 53.w,
                       fit: BoxFit.cover,
+
                       errorBuilder: (_, __, ___) => Image.asset(
                         "assets/png/event_detail_img/event1.png",
                         height: 15.h,
