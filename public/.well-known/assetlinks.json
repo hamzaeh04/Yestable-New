@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.yestable",
+      "sha256_cert_fingerprints": [
+        "15:BF:16:8C:7E:C0:5A:B4:D1:14:B2:5D:7D:92:A0:E3:84:CC:04:90:57:F6:0A:91:53:12:EA:0C:35:DA:09:51"
+      ]
+    }
+  }
+]

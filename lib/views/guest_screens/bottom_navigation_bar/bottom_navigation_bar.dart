@@ -17,6 +17,13 @@ import '../dashboard/my_profile_screen.dart';
 import '../dashboard/viewall_invitation_screen.dart';
 import '../profile_setup_screens/community_profile.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
+import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/utils/shared_prefrences_methods.dart';
+
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
 
@@ -24,46 +31,62 @@ class CustomBottomNavBar extends StatefulWidget {
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
 }
 
-class _CustomBottomNavBarState extends State<CustomBottomNavBar>     {
+class _CustomBottomNavBarState extends State<CustomBottomNavBar>
+    with WidgetsBindingObserver {
+
   final NavigationController controller = Get.find<NavigationController>();
   late PageController _pageController;
+
+  bool _dialogShown = false;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: controller.currentIndex.value);
 
+    WidgetsBinding.instance.addObserver(this);
 
-    // Expose this page controller to the controller manually
+    _pageController = PageController(
+      initialPage: controller.currentIndex.value,
+    );
+
     controller.setPageController(_pageController);
 
-    // Listen to current index and move page
     controller.currentIndex.listen((index) {
       if (_pageController.hasClients) {
         _pageController.jumpToPage(index);
       }
     });
+
     controller.controller.fetchMyProfile();
+
+    // 🔥 Show dialog after UI ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.checkDeepLinkAndShowDialog();
+    });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // ❌ Prevent dialog on resume
+      _dialogShown = true;
+    }
+  }
+
   final List<Widget> pages = [
-    Obx(() => Get.find<NavigationController>().isUser.value ? HomeScreen() : AdminHomeScreen()),
+    Obx(() => Get.find<NavigationController>().isUser.value
+        ? HomeScreen()
+        : AdminHomeScreen()),
     EventScreen(),
-    // CommunityScreen(),
     ChatListScreen(),
     MyProfileScreen(),
-    // Obx(() => Get.find<NavigationController>().isUser.value ? MyProfileScreen() : HostProfileScreen()),
-    ViewallInvitationScreen(),
-    MyNotificationScreen(),
-    SearchScreen(),
-    AddFreindScreen(),
-    CommunityProfile(),
   ];
 
   @override
@@ -97,25 +120,22 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>     {
     );
   }
 
-  Widget navItem(String iconPath, int index, String label) {
+  Widget navItem(String icon, int index, String label) {
     bool isSelected = controller.currentIndex.value == index;
+
     return GestureDetector(
       onTap: () => controller.changePage(index),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.8.h),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white.withOpacity(0.15) : Colors.transparent,
-          borderRadius: BorderRadius.circular(15.sp),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(iconPath, height: 20.sp, color: isSelected ? whiteColor : Colors.grey),
-            SizedBox(height: 0.5.h),
-            Text(label, style: TextStyle(fontSize: 12.sp, color: isSelected ? whiteColor : Colors.grey)),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(icon,
+              height: 20.sp, color: isSelected ? whiteColor : Colors.grey),
+          SizedBox(height: 0.5.h),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 12.sp,
+                  color: isSelected ? whiteColor : Colors.grey)),
+        ],
       ),
     );
   }

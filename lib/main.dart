@@ -13,7 +13,10 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/controllers/yes_gpt_controller.dart';
 import 'package:yestable/utils/App_Routing.dart';
 import 'package:yestable/utils/init_binding.dart';
+import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
+
+import 'outh_file/local_db_key.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,9 +34,11 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return Sizer(
       builder: (context, orientation, deviceType) {
         return GetMaterialApp(

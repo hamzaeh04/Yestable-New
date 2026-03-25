@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
+import '../constants/color_constants.dart';
+import '../constants/constants_widgets.dart';
+import '../utils/shared_prefrences_methods.dart';
 import '../widget/complete_guest_dialog.dart';
+import '../widget/update_sent_sucessfull_dialog.dart';
 
 class NavigationController extends GetxController {
   final ProfileController controller = Get.find<ProfileController>();
@@ -142,6 +147,71 @@ class NavigationController extends GetxController {
       return "";
     }
   }
+  Future<bool> checkIfAlreadyJoined(String eventId) async {
+    final prefs = SharedPreferencesMethod.storage;
+
+    // simple local check (temporary logic)
+    String? savedEvent = prefs.getString("joined_event_id");
+
+    if (savedEvent != null && savedEvent == eventId) {
+      return true;
+    }
+
+    // agar nahi mila to save kar do (simulate join)
+    await prefs.setString("joined_event_id", eventId);
+
+    return false;
+  }
+
+  void checkDeepLinkAndShowDialog() async {
+    final prefs = SharedPreferencesMethod.storage;
+
+    bool fromDeepLink = prefs.getBool("fromDeepLink") ?? false;
+
+    if (!fromDeepLink) return;
+
+    await prefs.remove("fromDeepLink");
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+      if (Get.context == null) return;
+
+      String eventId = prefs.getString("deepLinkEventId") ?? "";
+
+      // ✅ Now this will NOT give error
+      bool alreadyJoined = await checkIfAlreadyJoined(eventId);
+
+      String message = alreadyJoined
+          ? "You have already joined this event!"
+          : "Event joined successfully!";
+
+      showDialog(
+        context: Get.context!,
+        builder: (_) {
+          return Dialog(
+            backgroundColor: backgroundColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.sp),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_circle, size: 50, color: Colors.green),
+                  SizedBox(height: 10),
+                  Text("Success", style: TextStyle(fontSize: 20.sp)),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    });
+  }
+
 
 
   final List<String> tabs = [

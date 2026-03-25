@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/model/get_event_review_model.dart';
+import 'package:yestable/widget/showShareDialogBox_widget.dart';
 
 import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
@@ -71,6 +73,9 @@ class EventController extends GetxController{
 
   void removeImage() {
     itemPic.value = null;
+  }
+  String generateEventLink(String eventId) {
+    return "https://yestable-107c6.web.app/event/$eventId";
   }
 
   final List<String> eventAccesibilityList = [
@@ -194,7 +199,7 @@ class EventController extends GetxController{
     {"name": "Nut-Free", "imgPath": "assets/png/event_food_image/nutfree.png"},
   ];
 
-  Future<void> createEvent() async {
+  Future<void> createEvent(BuildContext context) async {
     try {
       final lat = locationController.latitude.value;
       final lng = locationController.longitude.value;
@@ -263,8 +268,41 @@ class EventController extends GetxController{
 
       if (res["success"] == true) {
         Utils.showToast(res["message"] ?? "Event created", false);
-        Get.toNamed("eventcomfortone", arguments: res["data"]["_id"]);
+
+        String eventId = res["data"]["_id"];
+        String link = generateEventLink(eventId);
+
+        print("Generated Link: $link");
+
+        // // 🚀 SHOW DIALOG
+        // Get.defaultDialog(
+        //   title: "Event Created Successfully 🎉",
+        //   middleText: link,
+        //   textConfirm: "Copy Link",
+        //   textCancel: "Close",
+        //   confirmTextColor: Colors.white,
+        //   onConfirm: () {
+        //     // 👉 Copy to clipboard
+        //     Get.back();
+        //     Clipboard.setData(ClipboardData(text: link));
+        //     Utils.showToast("Link copied!", false);
+        //   },
+        // );
+        showShareProfileDialog(context,title: "Share Event Link",link:link,onTap: (){
+          Clipboard.setData(ClipboardData(text: link));
+              Utils.showToast("Link copied!", false);
+        },
+            onCancel: (){
+              Navigator.pop(context); // ✅ close dialog
+              Get.toNamed("eventcomfortone", arguments: eventId);
+            }
+
+        );
+
+
+
       }
+
     } catch (e) {
       Utils.showToast("Failed to create event", true);
     }

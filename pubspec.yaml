@@ -54,6 +54,8 @@ dependencies:
   shimmer: ^3.0.0
   geolocator: ^14.0.2
   geocoding: ^4.0.0
+  firebase_core: ^4.6.0
+  app_links: ^6.4.1
 
 dev_dependencies:
   flutter_test:

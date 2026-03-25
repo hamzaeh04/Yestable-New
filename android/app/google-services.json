@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "669739754062",
+    "project_id": "yestable-107c6",
+    "storage_bucket": "yestable-107c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669739754062:android:780681de7ad6352f40591f",
+        "android_client_info": {
+          "package_name": "com.example.yestable"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGWl1tcYJ1zVd7dCZoflTk2S0S2MuaNss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
