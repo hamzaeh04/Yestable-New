@@ -90,6 +90,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     EventScreen(),
     ChatListScreen(),
     MyProfileScreen(),
+    ViewallInvitationScreen(),
+    MyNotificationScreen(),
+    // SearchScreen(),
+    // AddFreindScreen(),
+    // CommunityProfile(),
   ];
 
   @override

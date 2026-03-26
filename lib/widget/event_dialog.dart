@@ -95,7 +95,7 @@ void showEventDialog(BuildContext context) {
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                    Get.toNamed("eventdetailsscreen");
+                                    Get.toNamed("eventdetailsscreen", arguments: data?.id);
                                   },
                                   child: eventScreenWidget(
                                       bgcolor: backgroundColor,
@@ -103,7 +103,9 @@ void showEventDialog(BuildContext context) {
                                       eventDate: controller.formatDate2(data?.eventTime),
                                       eventTime: controller.formatTime2(data?.eventTime),
                                       eventHost: data?.host?.name ?? "Sophia Andreas",
-                                      eventLocation: displayLocation),
+                                      eventLocation: displayLocation,
+                                    image: data?.image
+                                  ),
                                 ),
                               ),
                             ],

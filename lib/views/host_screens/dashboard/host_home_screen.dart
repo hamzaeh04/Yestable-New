@@ -129,7 +129,7 @@ class AdminHomeScreen extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                     onTap: () {
-                      controller.goTSearchScreen();
+                      // controller.goTSearchScreen();
                     },
                     child: homeIconWidget(
                       imagePath: "assets/png/icons/search_icon.png",
