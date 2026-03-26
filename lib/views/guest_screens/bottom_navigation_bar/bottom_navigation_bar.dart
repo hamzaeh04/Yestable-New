@@ -59,13 +59,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       }
     });
 
-    controller.controller.fetchMyProfile();
-    eventController.getAllEvents();
-    controller.isUser.value == false ? eventController.getMyEvents(): null;
-
-
     // 🔥 Show dialog after UI ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.controller.fetchMyProfile();
+      eventController.getAllEvents();
+      controller.isUser.value == false ? eventController.getMyEvents(): null;
       controller.checkDeepLinkAndShowDialog();
     });
   }
@@ -92,6 +90,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     EventScreen(),
     ChatListScreen(),
     MyProfileScreen(),
+    ViewallInvitationScreen(),
+    MyNotificationScreen(),
+    // SearchScreen(),
+    // AddFreindScreen(),
+    // CommunityProfile(),
   ];
 
   @override
@@ -125,22 +128,25 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     );
   }
 
-  Widget navItem(String icon, int index, String label) {
+  Widget navItem(String iconPath, int index, String label) {
     bool isSelected = controller.currentIndex.value == index;
-
     return GestureDetector(
       onTap: () => controller.changePage(index),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(icon,
-              height: 20.sp, color: isSelected ? whiteColor : Colors.grey),
-          SizedBox(height: 0.5.h),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 12.sp,
-                  color: isSelected ? whiteColor : Colors.grey)),
-        ],
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.8.h),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white.withOpacity(0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(15.sp),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(iconPath, height: 20.sp, color: isSelected ? whiteColor : Colors.grey),
+            SizedBox(height: 0.5.h),
+            Text(label, style: TextStyle(fontSize: 12.sp, color: isSelected ? whiteColor : Colors.grey)),
+          ],
+        ),
       ),
     );
   }

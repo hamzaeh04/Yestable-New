@@ -44,7 +44,7 @@ void showEventDialog(BuildContext context) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         customText(
-                          text: "May 02, 2025",
+                          text: controller.formatDate2(DateTime.now()),
                           fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
                           fontFamily: "CormorantGaramond",
@@ -62,55 +62,70 @@ void showEventDialog(BuildContext context) {
                     ),
                     SizedBox(height: 1.h),
                     // Event 1
-                    SizedBox(
-                      height: 40.h, // or any max height you want
-                      child: ListView.builder(
-                        itemCount: eventController.getAllEventsModel.value?.data?.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final eventData = eventController.getAllEventsModel.value?.data?.data;
-                          final data = eventData?[index];
-                          String displayLocation = (data?.location?.coordinates != null)
-                              ? "${data!.location!.coordinates![1]}, ${data.location!.coordinates![0]}"
-                              : "132 My Street, Kingston, New York 12486";
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.sp),
-                                  color: blueColor,
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
-                                  child: customText(
-                                    text: "In 13 Hrs",
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: whiteColor,
-                                    fontFamily: "CormorantGaramond",
+                    Obx((){
+                      final eventData = eventController.getAllEventsModel.value?.data?.data;
+                      if(eventController.isLoadingAllEvents.value == true)
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 7.h),
+                          child: SizedBox(
+                              child: Center(child: CircularProgressIndicator(color: greenColor,))),
+                        );
+                      if(eventData == null || eventData.isEmpty)
+                        return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 7.h),
+                            child: Center(child: customText(text: 'No events found!', fontSize: 14.5.sp))
+                        );
+                      return SizedBox(
+                        height: 40.h, // or any max height you want
+                        child: ListView.builder(
+                          itemCount: eventData?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final data = eventData?[index];
+                            String displayLocation = (data?.location?.coordinates != null)
+                                ? "${data!.location!.coordinates![1]}, ${data.location!.coordinates![0]}"
+                                : "132 My Street, Kingston, New York 12486";
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25.sp),
+                                    color: blueColor,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
+                                    child: customText(
+                                      text: "In 13 Hrs",
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: whiteColor,
+                                      fontFamily: "CormorantGaramond",
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: 4.w),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    Get.toNamed("eventdetailsscreen");
-                                  },
-                                  child: eventScreenWidget(
-                                      bgcolor: backgroundColor,
-                                      eventName: data?.eventName ?? "Sophia Dinner Event",
-                                      eventDate: controller.formatDate2(data?.eventTime),
-                                      eventTime: controller.formatTime2(data?.eventTime),
-                                      eventHost: data?.host?.name ?? "Sophia Andreas",
-                                      eventLocation: displayLocation),
+                                SizedBox(width: 4.w),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Get.toNamed("eventdetailsscreen", arguments: data?.id);
+                                    },
+                                    child: eventScreenWidget(
+                                        bgcolor: backgroundColor,
+                                        eventName: data?.eventName ?? "Sophia Dinner Event",
+                                        eventDate: controller.formatDate2(data?.eventTime),
+                                        eventTime: controller.formatTime2(data?.eventTime),
+                                        eventHost: data?.host?.name ?? "Sophia Andreas",
+                                        eventLocation: displayLocation,
+                                        image: data?.image
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    })
                     // SizedBox(height: 1.h),
                     // // Event 2
                     // Row(

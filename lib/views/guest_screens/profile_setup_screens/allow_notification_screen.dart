@@ -76,6 +76,7 @@ class AllowNotificationScreen extends StatelessWidget {
                     greenColor,
                     borderColor: greenColor,
                     onTap: () {
+                      Get.toNamed("profilecompletescreen");
                       authController.controller.controller.clearSetupProfileFields();
                     },
                   ),

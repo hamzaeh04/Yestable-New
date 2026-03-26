@@ -9,12 +9,14 @@ import 'package:yestable/widget/show_other_dialog_box.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
+import '../../../controllers/navigation_controller.dart';
 import '../../../widget/button_widget.dart';
 import '../../../widget/loading_step_indicator.dart';
 
 class AllergiesDietryScreen extends StatelessWidget {
   AllergiesDietryScreen({super.key});
   final ProfileController controller = Get.find<ProfileController>();
+  final NavigationController navigationController = Get.find<NavigationController>();
 
 
   @override
@@ -299,7 +301,8 @@ class AllergiesDietryScreen extends StatelessWidget {
                 SizedBox(height: 2.h),
 
                 animatedButton((){
-                  Get.toNamed("yourrootandrules");
+                  controller.setupProfile(navigationController.isUser.value, profilePic: navigationController.controller.profilePicture.value);
+                  // Get.toNamed("yourrootandrules");
                 }, "Continue")
               ],
             ),

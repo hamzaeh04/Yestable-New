@@ -10,6 +10,7 @@ import '../../../controllers/event_controller.dart';
 import '../../../outh_file/local_db_key.dart';
 import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/complete_guest_dialog.dart';
+import '../../../widget/event_floating_button.dart';
 import '../../../widget/home_screen_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:collection/collection.dart';
@@ -110,7 +111,7 @@ class AdminHomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                          text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
+                          text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? ""}!",
                           fontSize: 20.sp,
                           fontFamily: "CormorantGaramond",
                           fontWeight: FontWeight.w500,
@@ -129,7 +130,7 @@ class AdminHomeScreen extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                     onTap: () {
-                      controller.goTSearchScreen();
+                      // controller.goTSearchScreen();
                     },
                     child: homeIconWidget(
                       imagePath: "assets/png/icons/search_icon.png",
@@ -930,32 +931,6 @@ class AdminHomeScreen extends StatelessWidget {
   }
 }
 
-Widget buildCreateNewEventButton(BuildContext context) {
-  return SizedBox(
-    height: 27.sp, // 🔁 Adjust height here
-    child: FloatingActionButton.extended(
-      onPressed: () {
-        Get.toNamed("createneweventscreen", arguments: null);
-      },
-      label: Row(
-        children: [
-          Icon(Icons.add, size: 20.sp, color: Colors.white),
-          SizedBox(width: 2.w),
-          customText(
-            text: "Create an Event",
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ],
-      ),
-      backgroundColor: blueColor,
-      // ✅ use your desired color
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.sp)),
-      elevation: 5,
-    ),
-  );
-}
 
 Widget guestListAllergiesWidget({
   required String path,

@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
 
 import '../../../constants/color_constants.dart';
@@ -8,7 +10,8 @@ import '../../../constants/constants_widgets.dart'; // customText
 import '../../../widget/home_screen_widget.dart'; // homeIconWidget
 
 class ChatGroupSetting extends StatelessWidget {
-  const ChatGroupSetting({super.key});
+  ChatGroupSetting({super.key});
+  final ProfileController controller = ProfileController();
 
   @override
   Widget build(BuildContext context) {
@@ -208,6 +211,31 @@ class ChatGroupSetting extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
+                                  padding: EdgeInsets.only(left: 4.w, top: 0.5.h, bottom: 0.5.h),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      customText(
+                                        text: "Enable Group Conversation",
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: blueColor,
+                                      ),
+                                      Transform.scale(
+                                        scale: 8.w / 50,
+                                        child: Obx(
+                                              () => CupertinoSwitch(
+                                            activeTrackColor: blackColor,
+                                            value: controller.switchValue3.value,
+                                            onChanged: (val) => controller.toggleSwitch3(),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                              const Divider(height: 1), // Keeps it tight
+                              Container(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.2.h),
                                 child: customText(
                                   text: "Mute Group",
@@ -226,6 +254,7 @@ class ChatGroupSetting extends StatelessWidget {
                                   color: redColor,
                                 ),
                               ),
+
                             ],
                           ),
                         ),

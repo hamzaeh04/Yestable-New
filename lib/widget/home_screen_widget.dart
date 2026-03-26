@@ -198,7 +198,7 @@ Widget invitationWidget(
 
 Widget upComingEventWidget({double? width,double? height, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost, String? image}) {
   return Container(
-    height: height!=null ? height : 41.h,
+    // height: height!=null ? height : 50.h,
     width: width!=null ? width : 65.w,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(15.sp),

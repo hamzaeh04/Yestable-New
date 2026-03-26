@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 
 import '../constants/color_constants.dart';
@@ -14,6 +15,7 @@ import '../widget/update_sent_sucessfull_dialog.dart';
 
 class NavigationController extends GetxController {
   final ProfileController controller = Get.find<ProfileController>();
+  final EventController eventController = Get.find<EventController>();
   var currentIndex = 0.obs;
   RxInt allergenSelectedIndex = 0.obs;
   var showAllergicGuest = false.obs;
@@ -42,6 +44,7 @@ class NavigationController extends GetxController {
   var isFriendAdded = <int, bool>{}.obs;
   var expandedNotes = <int, bool>{}.obs;
   var isNotesClicked = <int, bool>{}.obs;
+
 
 
 
@@ -148,21 +151,16 @@ class NavigationController extends GetxController {
       return "";
     }
   }
-  Future<bool> checkIfAlreadyJoined(String eventId) async {
-    final prefs = SharedPreferencesMethod.storage;
+  Future<String?> checkIfAlreadyJoined(String eventId) async {
+    final response = await eventController.eventJoin(eventId);
 
-    // simple local check (temporary logic)
-    String? savedEvent = prefs.getString("joined_event_id");
+    if (response == null) return null;
 
-    if (savedEvent != null && savedEvent == eventId) {
-      return true;
-    }
+    final msg = response["message"];
 
-    // agar nahi mila to save kar do (simulate join)
-    await prefs.setString("joined_event_id", eventId);
-
-    return false;
+    return msg; // ✅ return message directly
   }
+
 
   void checkDeepLinkAndShowDialog() async {
     final prefs = SharedPreferencesMethod.storage;
@@ -179,12 +177,10 @@ class NavigationController extends GetxController {
 
       String eventId = prefs.getString("deepLinkEventId") ?? "";
 
-      // ✅ Now this will NOT give error
-      bool alreadyJoined = await checkIfAlreadyJoined(eventId);
+      // ✅ Now message comes from API
+      String? message = await checkIfAlreadyJoined(eventId);
 
-      String message = alreadyJoined
-          ? "You have already joined this event!"
-          : "Event joined successfully!";
+      if (message == null) return;
 
       showDialog(
         context: Get.context!,

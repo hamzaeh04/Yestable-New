@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/core/services/multipart_request.dart';
@@ -22,6 +24,9 @@ import '../widget/update_sent_sucessfull_dialog.dart';
 class ProfileController extends GetxController {
   // --- Existing Variables (No changes here) ---
   BaseService baseService = BaseService();
+
+  // final String url =
+  //     "https://yes-table-web.vercel.app/userId=$userId";
   final prefs = SharedPreferencesMethod.storage;
   Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
 // Change these in your ProfileController
@@ -83,7 +88,8 @@ class ProfileController extends GetxController {
   var profilePicture = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
   var switchValue = true.obs;
-  var switchValue2 = true.obs;
+  var switchValue2 = false.obs;
+  var switchValue3 = false.obs;
   RxString selectedValue = ''.obs;
   RxBool isSelected = false.obs;
   RxMap<int, String> selectedOptions = <int, String>{}.obs;
@@ -93,6 +99,7 @@ class ProfileController extends GetxController {
   var other2 = false.obs;
   var other3 = false.obs;
   var isChecked = false.obs;
+  var isEdit = false.obs;
   var isRadioChecked = false.obs;
   RxBool isYes = false.obs;
   String memberId = '';
@@ -652,7 +659,11 @@ class ProfileController extends GetxController {
   }
 
   void toggleSwitch2() {
-    switchValue2.value = true;
+    switchValue2.value = !switchValue2.value;
+  }
+
+  void toggleSwitch3() {
+    switchValue3.value = !switchValue3.value;
   }
 
   void switchOption(int index, String option) {
@@ -844,15 +855,23 @@ class ProfileController extends GetxController {
   }
 
 
-  Future<void> setupProfile(bool isUser, {File? profilePic}) async {
-    final fields = {
+  Future<void> setupProfile(
+      bool isUser, {
+        File? profilePic,
+        bool? isEdit,
+        bool? hosting,
+      }) async {
+    final fields = <String, String>{
       "name": nameController.text.trim(),
       "username": userName.text.trim(),
-      "pronoun": pronounsValue(),
+      "pronoun": pronounsValue() ?? "",
       "location": location.text.trim(),
       "bio": bio.text.trim(),
-      "iAmHosting": (isUser == true ? false: true).toString(),
-      "isProfilePublic": switchValue.value.toString(), // MUST be string
+      "iAmHosting": (isEdit == true
+          ? hosting
+          : (isUser == true ? false : true))
+          .toString(),
+      "isProfilePublic": switchValue.value.toString(),
     };
 
     await _sendMultipartRequest(
@@ -860,6 +879,7 @@ class ProfileController extends GetxController {
       ApiEndPoints.setupProfile,
       fields,
       profilePic,
+      isEdit
     );
   }
 
@@ -868,9 +888,14 @@ class ProfileController extends GetxController {
       String endpoint,
       Map<String, String> fields,
       File? profilePic,
+      bool? edit
       ) async {
     try {
-      final url = "${baseService.baseURL}$endpoint";
+      EasyLoading.show(
+        status: 'Please wait...',
+        maskType: EasyLoadingMaskType.black,
+      );
+      final url = "${baseService.baseURL}${ApiEndPoints.setupProfile}";
       final uri = Uri.parse(url);
 
       var request = http.MultipartRequest('POST', uri);
@@ -922,17 +947,33 @@ class ProfileController extends GetxController {
 
         // Example if backend returns user data
         // final userId = jsonResponse['data']['user']['id'];
-        isUser == true ? Get.toNamed('allergiesdietryscreen'): Get.toNamed('allownotificationscreen');
-        // clearSetupProfileFields();
+        //Get.toNamed('allergiesdietryscreen')
+        edit == true ? Get.back() :
+        isUser == true ? Get.toNamed("yourrootandrules"): Get.toNamed('allownotificationscreen');
+        getMyProfileModel.refresh();
+        if (jsonResponse["data"] != null &&
+            jsonResponse["data"]["name"] != null) {
+          prefs.setString(
+            LocalDBKeys.USERFULLNAME,
+            jsonResponse["data"]["name"],
+          );
+        }
+        if(edit == true){
+          clearSetupProfileFields();
+          getMyProfileModel.refresh();
+
+        }
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
-          false,
+          true,
         );
       }
     } catch (e) {
       print("❌ Error: $e");
-      Utils.showToast("Check Internet Connection", false);
+      Utils.showToast("Check Internet Connection", true);
+    } finally {
+      EasyLoading.dismiss();
     }
   }
 

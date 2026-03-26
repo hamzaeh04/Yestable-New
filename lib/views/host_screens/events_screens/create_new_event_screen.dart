@@ -217,7 +217,13 @@ class CreateNewEventScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 2.3.h),
                               customText(text: "Check Guest\nNeeds Automatically.", fontWeight: FontWeight.w500, fontSize: 15.sp),
-                              SizedBox(height: 2.h),
+                              SizedBox(height: 1.8.h,),
+                              customText(
+                                text: "Enable Group\nConversation",
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              SizedBox(height: 3.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -363,7 +369,23 @@ class CreateNewEventScreen extends StatelessWidget {
                                 ],
                               ),
                               const Divider(),
-                              SizedBox(height: 4.8.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Transform.scale(
+                                    scale: 8.w / 50,
+                                    child: Obx(
+                                          () => CupertinoSwitch(
+                                        activeTrackColor: blackColor,
+                                        value: controller.switchValue3.value,
+                                        onChanged: (val) => controller.toggleSwitch3(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Divider(),
+                              SizedBox(height: 6.h),
 
                               customProfileField(hint: 'You\'re invited to a dinner party', size: 14.8.sp,
                                   controller: eventController.inviteMsg

@@ -7,10 +7,12 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 
 import '../../../utils/shared_prefrences_methods.dart';
 import '../../../utils/utility.dart';
+import '../../../widget/button_widget.dart';
 import '../../../widget/loading_step_indicator.dart';
 import '../../../widget/privacy_dialog.dart';
 
@@ -189,34 +191,57 @@ class ProfileEditScreen extends StatelessWidget {
                               : loadingStepIndicator("2/3", 0.3),
                     ),
                     Obx(() {
-                      return navigationController
-                                  .controller
-                                  .profilePicture
-                                  .value !=
-                              null
-                          ? ClipRRect(
-                            borderRadius: BorderRadius.circular(15.sp),
-                            child: Image.file(
-                              navigationController
-                                  .controller
-                                  .profilePicture
-                                  .value!,
-                              height: 13.h,
-                              width: 26.w,
+                      BaseService baseService = BaseService();
+                      final controller = navigationController.controller;
+
+                      final localImage = controller.profilePicture.value;
+                      final profilePic =
+                          controller.getMyProfileModel.value?.data?.profilePic;
+
+                      if (localImage != null) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          child: Image.file(
+                            localImage,
+                            height: 13.h,
+                            width: 26.w,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+
+                      if ((profilePic ?? '').isNotEmpty) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          child: SizedBox(
+                            height: 13.h,
+                            width: 26.w,
+                            child: Image.network(
+                              "${baseService.baseURL}${profilePic!}",
                               fit: BoxFit.cover,
                             ),
-                          )
-                          : ClipRRect(
-                            borderRadius: BorderRadius.circular(15.sp),
-                            child: SizedBox(
-                              height: 13.h,
-                              width: 26.w,
-                              child: Image.asset(
-                                "assets/png/girl_profile.png",
-                                fit: BoxFit.cover,
-                              ),
+                          ),
+                        );
+                      }
+
+                      return InkWell(
+                        onTap: (){
+                          print('hello');
+                          navigationController.controller.pickFromGallery();
+
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15.sp),
+                          child: SizedBox(
+                            height: 13.h,
+                            width: 26.w,
+                            child: Image.asset(
+                              "assets/png/girl_profile.png",
+                              fit: BoxFit.cover,
                             ),
-                          );
+                          ),
+                        ),
+                      );
                     }),
                     SizedBox(height: 0.5.h),
                     customText(
@@ -554,13 +579,21 @@ class ProfileEditScreen extends StatelessWidget {
                                                       //     );
                                                       //   },
                                                       // ),
-
                                                       Obx(() {
-                                                        final controller = navigationController.controller;
+                                                        final controller =
+                                                            navigationController
+                                                                .controller;
                                                         return Column(
-                                                          children: List.generate(controller.places.length, (index) {
-                                                            return setPlace(index);
-                                                          }),
+                                                          children: List.generate(
+                                                            controller
+                                                                .places
+                                                                .length,
+                                                            (index) {
+                                                              return setPlace(
+                                                                index,
+                                                              );
+                                                            },
+                                                          ),
                                                         );
                                                       }),
                                                       SizedBox(height: 1.5.h),
@@ -718,9 +751,9 @@ class ProfileEditScreen extends StatelessWidget {
                         ),
 
                         SizedBox(height: 0.7.h),
-                        navigationController.isUser.value == true
-                            ? SizedBox.shrink()
-                            : Column(
+                        (navigationController.isUser.value == true && navigationController.controller.isEdit == true)
+                            ?
+                            Column(
                               children: [
                                 Divider(),
                                 Padding(
@@ -746,10 +779,12 @@ class ProfileEditScreen extends StatelessWidget {
                                                     .switchValue2
                                                     .value,
                                             onChanged:
-                                                (val) =>
-                                                    navigationController
-                                                        .controller
-                                                        .toggleSwitch2(),
+                                                (val) {
+                                                  navigationController
+                                                      .controller
+                                                      .toggleSwitch2();
+                                                  print("I'm Hosting: ${navigationController.controller.switchValue2.value}");
+                                                }
                                           ),
                                         ),
                                       ),
@@ -757,8 +792,8 @@ class ProfileEditScreen extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                            ),
-                        // Divider(),
+                            ):  SizedBox.shrink(),
+                        Divider(),
                         // SizedBox(height: 0.7.h),
                         // Padding(
                         //   padding: EdgeInsets.only(left: 5.w),
@@ -769,8 +804,8 @@ class ProfileEditScreen extends StatelessWidget {
                         //     color: greenColor,
                         //   ),
                         // ),
-                        SizedBox(height: 0.7.h),
-                        Divider(),
+                        // SizedBox(height: 0.7.h),
+                        // Divider(),
                         SizedBox(height: 0.7.h),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -843,7 +878,18 @@ class ProfileEditScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-
+                        SizedBox(height: 2.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h), // Adjust as needed
+                          child: buttonWidget(
+                            "Save",
+                            whiteColor,
+                            colors: greenColor,
+                            onTap: () {
+                              navigationController.controller.setupProfile(navigationController.isUser.value,profilePic: navigationController.controller.profilePicture.value, isEdit: true, hosting: navigationController.controller.switchValue2.value);
+                            },
+                          ),
+                        ),
                         SizedBox(height: 6.h),
                       ],
                     ),
@@ -1111,152 +1157,164 @@ Widget setPlace(int index, {String? title}) {
   final members = controller.getMyProfileModel.value?.data?.members ?? [];
 
   // Controllers are now securely maintained by ProfileController.
-  final isMemberCompleted = (index < members.length && members.isNotEmpty)
-      ? (members[index].profileCompleted ?? false)
-      : false;
+  final isMemberCompleted =
+      (index < members.length && members.isNotEmpty)
+          ? (members[index].profileCompleted ?? false)
+          : false;
 
-  final memberId = (index < members.length && members.isNotEmpty)
-      ? members[index].id
-      : null;
+  final memberId =
+      (index < members.length && members.isNotEmpty) ? members[index].id : null;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: 1.5.h),
-      child: Column(
-        children: [
-          if (index > 0) ...[
-            SizedBox(height: 1.h),
-            Divider(thickness: 0.4),
-            SizedBox(height: 1.h),
-          ],
+  return Padding(
+    padding: EdgeInsets.only(bottom: 1.5.h),
+    child: Column(
+      children: [
+        if (index > 0) ...[
+          SizedBox(height: 1.h),
+          Divider(thickness: 0.4),
+          SizedBox(height: 1.h),
+        ],
 
-          /// NAME
-          Row(
-            children: [
-              customText(text: 'Name', fontSize: 15.5.sp),
-              SizedBox(width: 13.w),
-              Expanded(
-                child: TextField(
-                  controller: controller.memberNameControllers[index],
-                  readOnly: isMemberCompleted,
-                  decoration: InputDecoration(
-                    hintText: 'Robert Elbert',
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                    ),
-                    suffixIcon: memberId != null
-                        ? InkWell(
-                      onTap: () async {
-                        await controller.deleteMember(memberId, index);
-                      },
-                      child: Icon(Icons.delete, size: 18.sp),
-                    )
-                        : null,
+        /// NAME
+        Row(
+          children: [
+            customText(text: 'Name', fontSize: 15.5.sp),
+            SizedBox(width: 13.w),
+            Expanded(
+              child: TextField(
+                controller: controller.memberNameControllers[index],
+                readOnly: isMemberCompleted,
+                decoration: InputDecoration(
+                  hintText: 'Robert Elbert',
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 1.3.h),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
                   ),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 0.8.h),
-
-          /// RELATION
-          Row(
-            children: [
-              customText(text: 'Relation', fontSize: 15.5.sp),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: TextField(
-                  controller: controller.memberReleationControllers[index],
-                  readOnly: isMemberCompleted,
-                  decoration: InputDecoration(
-                    hintText: 'Son',
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                    ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
                   ),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 0.8.h),
-
-          /// AGE
-          Row(
-            children: [
-              customText(text: 'Age', fontSize: 15.5.sp),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: TextField(
-                  controller: controller.memberAgeControllers[index],
-                  keyboardType: TextInputType.number,
-                  readOnly: isMemberCompleted,
-                  decoration: InputDecoration(
-                    hintText: '15',
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 0.8.h),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.6),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 2.h),
-
-          /// SET PREFERENCES BUTTON
-          InkWell(
-            onTap: isMemberCompleted ? null : () async {
-              controller.setData(index: index, screenTitle: title ?? "Robert");
-
-              // If member is not yet in the DB, add them first
-              if (memberId == null) {
-                bool success = await controller.addMember(activeIndex: index);
-                if (!success) return;
-                // If they already exist, we should still ensure the controller knows their ID
-                controller.memberId = memberId ?? '';
-              }
-
-              controller.isPreferences.value = true;
-              Get.toNamed('allergiesdietryscreen');
-
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: isMemberCompleted ? Colors.grey : greenColor,
-                borderRadius: BorderRadius.circular(20.sp),
-                border: Border.all(width: 0.1.w, color: isMemberCompleted ? Colors.grey : greenColor),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.3.h),
-                child: customText(
-                  text: "Set Preferences",
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
-                  color: whiteColor,
+                  suffixIcon:
+                      memberId != null
+                          ? InkWell(
+                            onTap: () async {
+                              await controller.deleteMember(memberId, index);
+                            },
+                            child: Icon(Icons.delete, size: 18.sp),
+                          )
+                          : null,
                 ),
               ),
             ),
+          ],
+        ),
+
+        SizedBox(height: 0.8.h),
+
+        /// RELATION
+        Row(
+          children: [
+            customText(text: 'Relation', fontSize: 15.5.sp),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: TextField(
+                controller: controller.memberReleationControllers[index],
+                readOnly: isMemberCompleted,
+                decoration: InputDecoration(
+                  hintText: 'Son',
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 1.2.h),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 0.8.h),
+
+        /// AGE
+        Row(
+          children: [
+            customText(text: 'Age', fontSize: 15.5.sp),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: TextField(
+                controller: controller.memberAgeControllers[index],
+                keyboardType: TextInputType.number,
+                readOnly: isMemberCompleted,
+                decoration: InputDecoration(
+                  hintText: '15',
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 0.8.h),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.6),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 2.h),
+
+        /// SET PREFERENCES BUTTON
+        InkWell(
+          onTap:
+              isMemberCompleted
+                  ? null
+                  : () async {
+                    controller.setData(
+                      index: index,
+                      screenTitle: title ?? "Robert",
+                    );
+
+                    // If member is not yet in the DB, add them first
+                    if (memberId == null) {
+                      bool success = await controller.addMember(
+                        activeIndex: index,
+                      );
+                      if (!success) return;
+                      // If they already exist, we should still ensure the controller knows their ID
+                      controller.memberId = memberId ?? '';
+                    }
+
+                    controller.isPreferences.value = true;
+                    Get.toNamed('allergiesdietryscreen');
+                  },
+          child: Container(
+            decoration: BoxDecoration(
+              color: isMemberCompleted ? Colors.grey : greenColor,
+              borderRadius: BorderRadius.circular(20.sp),
+              border: Border.all(
+                width: 0.1.w,
+                color: isMemberCompleted ? Colors.grey : greenColor,
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.3.h),
+              child: customText(
+                text: "Set Preferences",
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                color: whiteColor,
+              ),
+            ),
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
 }
+
 Widget customProfileField({
   required String hint,
   double? size,
@@ -1279,20 +1337,18 @@ Widget customProfileField({
       contentPadding: EdgeInsets.zero,
 
       // 👇 remove default 48px constraint
-      suffixIconConstraints: const BoxConstraints(
-        minHeight: 20,
-        minWidth: 45,
-      ),
+      suffixIconConstraints: const BoxConstraints(minHeight: 20, minWidth: 45),
 
-      suffixIcon: suffixIcon != null
-          ? GestureDetector(
-        onTap: onSuffixTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: suffixIcon,
-        ),
-      )
-          : null,
+      suffixIcon:
+          suffixIcon != null
+              ? GestureDetector(
+                onTap: onSuffixTap,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: suffixIcon,
+                ),
+              )
+              : null,
 
       hintStyle: TextStyle(
         fontFamily: 'WorkSans',

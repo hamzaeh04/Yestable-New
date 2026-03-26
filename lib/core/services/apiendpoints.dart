@@ -54,4 +54,7 @@ class ApiEndPoints{
   static String myEvents(int page) {
     return '/events/my-events?page=${page}&limit=10';
   }
+  static String joinEvent(String eventId) {
+    return '/events/${eventId}/join';
+  }
 }

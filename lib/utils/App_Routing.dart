@@ -73,7 +73,7 @@ class AppRoutes {
     GetPage(name: '/eventcomforttwo', page: () => EventComfortTwo()),
     GetPage(name: '/eventcomfortthree', page: () => EventComfortThree()),
     GetPage(name: '/foodmenuscreen', page: () => FoodMenuScreen()),
-    GetPage(name: '/addhostprofilepicture', page: () => AddHostProfilePicture()),
+    // GetPage(name: '/addhostprofilepicture', page: () => AddHostProfilePicture()),
     GetPage(name: '/hosteditprofilescreen', page: () => HostEditProfileScreen()),
     GetPage(name: '/allowhostnotificationscreen', page: () => AllowHostNotificationScreen()),
     // GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),

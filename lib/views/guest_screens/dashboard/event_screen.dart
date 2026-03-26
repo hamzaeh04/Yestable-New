@@ -33,7 +33,7 @@ class EventScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
+                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? ""}!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
@@ -51,7 +51,7 @@ class EventScreen extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                     onTap: () {
-                      controller.goTSearchScreen();
+                      // controller.goTSearchScreen();
                     },
                     child: homeIconWidget(
                       imagePath: "assets/png/icons/search_icon.png",

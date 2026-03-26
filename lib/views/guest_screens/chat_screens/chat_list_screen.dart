@@ -30,7 +30,7 @@ class ChatListScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? "Username"}!",
+                        text: "Hi, ${prefs.getString(LocalDBKeys.USERFULLNAME) ?? ""}!",
                         fontSize: 20.sp,
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
@@ -197,15 +197,15 @@ class ChatListScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: blueColor,
-          foregroundColor: whiteColor,
-          shape: const CircleBorder(),
-          onPressed: () {
-          Get.toNamed("newmessagescreen");
-          },
-          child: Icon(Icons.add,size: 20.sp,color: whiteColor,)
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //     backgroundColor: blueColor,
+      //     foregroundColor: whiteColor,
+      //     shape: const CircleBorder(),
+      //     onPressed: () {
+      //     Get.toNamed("newmessagescreen");
+      //     },
+      //     child: Icon(Icons.add,size: 20.sp,color: whiteColor,)
+      // ),
     );
   }
 }
