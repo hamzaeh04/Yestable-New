@@ -28,6 +28,7 @@ import '../views/guest_screens/profile_setup_screens/profile_complete_screen.dar
 import '../views/guest_screens/profile_setup_screens/profile_edit_screen.dart';
 import '../views/guest_screens/welcome_screens/get_started_screen.dart';
 import '../views/host_screens/dashboard/guest_list_screen.dart';
+import '../views/host_screens/dashboard/host_home_screen.dart';
 import '../views/host_screens/events_screens/event_comfort_one.dart';
 import '../views/host_screens/events_screens/event_comfort_three.dart';
 import '../views/host_screens/events_screens/event_comfort_two.dart';
@@ -74,12 +75,13 @@ class AppRoutes {
     GetPage(name: '/eventcomfortthree', page: () => EventComfortThree()),
     GetPage(name: '/foodmenuscreen', page: () => FoodMenuScreen()),
     // GetPage(name: '/addhostprofilepicture', page: () => AddHostProfilePicture()),
-    GetPage(name: '/hosteditprofilescreen', page: () => HostEditProfileScreen()),
+    // GetPage(name: '/hosteditprofilescreen', page: () => HostEditProfileScreen()),
     GetPage(name: '/allowhostnotificationscreen', page: () => AllowHostNotificationScreen()),
     // GetPage(name: '/allergieshostscreen', page: () => AllergiesHostScreen()),
     GetPage(name: '/disclaimerscreen', page: () => DisclaimerScreen()),
     GetPage(name: '/yesgptscreen', page: () => YesGptScreen()),
     GetPage(name: '/yourrootandrules', page: () => YourRootAndRules()),
+    GetPage(name: '/adminhomescreen', page: () => AdminHomeScreen()),
 
   ];
 }

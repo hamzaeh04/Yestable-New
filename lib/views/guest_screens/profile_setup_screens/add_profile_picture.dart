@@ -131,6 +131,8 @@ class AddProfilePicture extends StatelessWidget {
                       greenColor,
                       borderColor: greenColor,
                       onTap: () {
+                        navigationController.controller.clearSetupProfileFields();
+                        navigationController.controller.isEdit.value = false;
                         Get.toNamed("profileeditscreen");
                       },
                     ),

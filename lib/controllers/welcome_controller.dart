@@ -52,6 +52,7 @@ class WelcomeController extends GetxController {
 
     Future.delayed(const Duration(seconds: 3), () async {
       var token = await prefs.getString(LocalDBKeys.TOKEN);
+      var profileCompleted = prefs.getBool(LocalDBKeys.PROFILECOMPLETED) ?? false;
 
       bool? saved = prefs.getBool('isUser');
       if (saved != null) {
@@ -61,7 +62,8 @@ class WelcomeController extends GetxController {
       if (token == null || token.isEmpty) {
         Get.offNamed(nextRoute);
       } else {
-        Get.offNamed("bottomnavigationbar");
+        profileCompleted == true ?
+        Get.offNamed("bottomnavigationbar"): Get.toNamed("profileeditscreen");
       }
     });
   }

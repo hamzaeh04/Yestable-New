@@ -51,6 +51,7 @@ void pictureUpload(BuildContext context) {
                     child: InkWell(
                       onTap: (){
                        controller.pickFromCamera();
+                       Get.back();
                       },
                       child: customText(
                         text: "Choose From Camera Roll",
@@ -70,6 +71,7 @@ void pictureUpload(BuildContext context) {
                     child: InkWell(
                       onTap: (){
                         controller.pickFromGallery();
+                        Get.back();
                       },
                       child: customText(
                         text: "Add from Gallery",

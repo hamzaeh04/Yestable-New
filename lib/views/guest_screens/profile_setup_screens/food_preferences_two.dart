@@ -335,40 +335,40 @@ class FoodPreferencesTwo extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 1.5.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      customText(
-                        text: "Hosting An Event?",
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.w500,
-                        color: greenColor,
-                      ),
-                      Transform.scale(
-                        scale: 7.w / 50,
-                        child: Obx(
-                          () => CupertinoSwitch(
-                            activeTrackColor: blackColor,
-                            value: controller.switchValue.value,
-                            onChanged: (val) => controller.toggleSwitch(val),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 0.5.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  child: Divider(
-                    thickness: 1,
-                    color: Colors.grey.shade400,
-                    height: 2.h,
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 6.w),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       customText(
+                //         text: "Hosting An Event?",
+                //         fontSize: 17.sp,
+                //         fontWeight: FontWeight.w500,
+                //         color: greenColor,
+                //       ),
+                //       Transform.scale(
+                //         scale: 7.w / 50,
+                //         child: Obx(
+                //           () => CupertinoSwitch(
+                //             activeTrackColor: blackColor,
+                //             value: controller.switchValue.value,
+                //             onChanged: (val) => controller.toggleSwitch(val),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(height: 0.5.h),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 6.w),
+                //   child: Divider(
+                //     thickness: 1,
+                //     color: Colors.grey.shade400,
+                //     height: 2.h,
+                //   ),
+                // ),
                 SizedBox(height: 1.5.h),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

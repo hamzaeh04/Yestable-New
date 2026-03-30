@@ -78,25 +78,36 @@ class AdminHomeScreen extends StatelessWidget {
     //     completeGuestProfileDialog(context);
     //   }
     // });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   // SIRF EK LOCK: Kya humne check kar liya hai?
+    //   if (controller.hasCheckedProfile.value == false) {
+    //     // 1. Foran lock lagao taake ye block dobara execute na ho
+    //     controller.hasCheckedProfile.value = true;
+    //
+    //     // 2. Ab priority wise check karo konsa dialog dikhana hai
+    //     if (controller.isInvited.value == false) {
+    //       if (!controller.isProfileComplete.value) {
+    //         // Agar profile incomplete hai to ye dikhao
+    //         completeGuestProfileDialog(context);
+    //       } else if (controller.isGuestUpdateReceived.value) {
+    //         // Agar profile complete hai lekin koi update aayi hai to ye dikhao
+    //         controller.isGuestUpdateReceived.value = false;
+    //         guestUpdateReceived(context);
+    //       }
+    //     }
+    //   }
+    // });
+    final showDialog = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // SIRF EK LOCK: Kya humne check kar liya hai?
-      if (controller.hasCheckedProfile.value == false) {
-        // 1. Foran lock lagao taake ye block dobara execute na ho
+      if (!controller.isProfileComplete.value && !controller.hasCheckedProfile.value) {
         controller.hasCheckedProfile.value = true;
-
-        // 2. Ab priority wise check karo konsa dialog dikhana hai
-        if (controller.isInvited.value == false) {
-          if (!controller.isProfileComplete.value) {
-            // Agar profile incomplete hai to ye dikhao
-            completeGuestProfileDialog(context);
-          } else if (controller.isGuestUpdateReceived.value) {
-            // Agar profile complete hai lekin koi update aayi hai to ye dikhao
-            controller.isGuestUpdateReceived.value = false;
-            guestUpdateReceived(context);
-          }
-        }
+        completeGuestProfileDialog(context);
+      }
+      if(showDialog == true){
+        completeGuestProfileDialog(context);
       }
     });
+
 
     return Scaffold(
       backgroundColor: greenColor,

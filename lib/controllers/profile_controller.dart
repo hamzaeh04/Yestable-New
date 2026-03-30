@@ -854,12 +854,27 @@ class ProfileController extends GetxController {
         getAllergyType(newProgress);
   }
 
+  void populatePersonalInfo() {
+    final data = getMyProfileModel.value?.data;
 
-  Future<void> setupProfile(
+    if (data == null) return;
+
+    nameController.text = data.name ?? "";
+    userName.text = data.username ?? "";
+    bio.text = data.bio ?? "";
+    location.text = data.location ?? "";
+    customPronoun.text = data.pronoun ?? "";
+    switchValue2.value = data.iAmHosting ?? false;
+    switchValue.value = data.isProfilePublic ?? false;
+  }
+
+
+
+  Future<void> editProfile(
       bool isUser, {
         File? profilePic,
-        bool? isEdit,
         bool? hosting,
+        required NavigationController navController
       }) async {
     final fields = <String, String>{
       "name": nameController.text.trim(),
@@ -867,9 +882,128 @@ class ProfileController extends GetxController {
       "pronoun": pronounsValue() ?? "",
       "location": location.text.trim(),
       "bio": bio.text.trim(),
-      "iAmHosting": (isEdit == true
-          ? hosting
-          : (isUser == true ? false : true))
+      "iAmHosting": isUser == true ? hosting.toString(): true.toString(),
+      "isProfilePublic": switchValue.value.toString(),
+    };
+    await _sendMultipartRequestEdit(
+        isUser,
+        ApiEndPoints.setupProfile,
+        fields,
+        profilePic,
+      navController
+    );
+  }
+
+  Future<void> _sendMultipartRequestEdit(
+      bool isUser,
+      String endpoint,
+      Map<String, String> fields,
+      File? profilePic,
+      NavigationController navigationController
+      ) async {
+    try {
+      EasyLoading.show(
+        status: 'Please wait...',
+        maskType: EasyLoadingMaskType.black,
+      );
+      final url = "${baseService.baseURL}${ApiEndPoints.editProfile}";
+      final uri = Uri.parse(url);
+      print("Faaahhh ${url}");
+
+      var request = http.MultipartRequest('PATCH', uri);
+          final token = prefs.getString(LocalDBKeys.TOKEN);
+      print("Token: $token");
+
+      /// Add Headers if required
+      request.headers.addAll({
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",  // if needed
+      });
+
+      /// Add text fields
+      request.fields.addAll(fields);
+      print("📋 Fields: ${request.fields}");
+
+      /// Add profile image dynamically
+      if (profilePic != null) {
+        print("📸 Adding profilePic: ${profilePic.path}");
+
+        // Detect MIME type from file extension
+        String ext = path.extension(profilePic.path).toLowerCase(); // .jpg, .png, etc.
+        String mimeType = 'image/jpeg'; // default
+        if (ext == '.png') mimeType = 'image/png';
+        else if (ext == '.jpg' || ext == '.jpeg') mimeType = 'image/jpeg';
+        else if (ext == '.gif') mimeType = 'image/gif';
+
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profilePic', // ✅ MUST match Postman key
+            profilePic.path,
+            contentType: MediaType('image', mimeType.split('/')[1]),
+          ),
+        );
+      }
+
+      print("⏳ Sending request...");
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print("📦 Status: ${response.statusCode}");
+      print("📦 Body: ${response.body}");
+
+      final jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Utils.showToast("${jsonResponse['message']}", false);
+
+        // Example if backend returns user data
+        // final userId = jsonResponse['data']['user']['id'];
+        //Get.toNamed('allergiesdietryscreen')
+        if(isUser == true){
+          navigationController.changePage(0);
+          Get.toNamed("bottomnavigationbar");
+        } else {
+          navigationController.changePage(0);
+          Get.toNamed("bottomnavigationbar");
+        }
+        isEdit.value = false;
+        clearSetupProfileFields();
+        getMyProfileModel.refresh();
+        if (jsonResponse["data"] != null &&
+            jsonResponse["data"]["name"] != null) {
+          prefs.setString(
+            LocalDBKeys.USERFULLNAME,
+            jsonResponse["data"]["name"],
+          );
+        }
+      } else {
+        Utils.showToast(
+          jsonResponse['message'] ?? "Something went wrong",
+          true,
+        );
+      }
+    } catch (e) {
+      print("❌ Error: $e");
+      Utils.showToast("Check Internet Connection", true);
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
+
+  Future<void> setupProfile(
+      bool isUser, {
+        File? profilePic,
+        bool? isEdit,
+      }) async {
+    final fields = <String, String>{
+      "name": nameController.text.trim(),
+      "username": userName.text.trim(),
+      "pronoun": pronounsValue() ?? "",
+      "location": location.text.trim(),
+      "bio": bio.text.trim(),
+      "iAmHosting": (isUser == true ? false : true)
           .toString(),
       "isProfilePublic": switchValue.value.toString(),
     };
@@ -949,7 +1083,7 @@ class ProfileController extends GetxController {
         // final userId = jsonResponse['data']['user']['id'];
         //Get.toNamed('allergiesdietryscreen')
         edit == true ? Get.back() :
-        isUser == true ? Get.toNamed("yourrootandrules"): Get.toNamed('allownotificationscreen');
+        isUser == true ? Get.toNamed("yourrootandrules"): Get.toNamed('allownotificationscreen', arguments: 1);
         getMyProfileModel.refresh();
         if (jsonResponse["data"] != null &&
             jsonResponse["data"]["name"] != null) {
@@ -1091,7 +1225,10 @@ class ProfileController extends GetxController {
             print(isPreferences.value);
           });
         } else {
-          Get.toNamed("allownotificationscreen");
+          getMyProfileModel.refresh();
+          isEdit.value == true ? Get.toNamed('bottomnavigationbar'):
+          Get.toNamed("allownotificationscreen", arguments: 2);
+          isEdit.value == true ? clearSetupProfileFields(): null;
         }
       } else {
         print("Failed: ${response?['message']}");
@@ -1100,6 +1237,8 @@ class ProfileController extends GetxController {
     } catch (e) {
       print("Error updating seating assistance: $e");
       Utils.showToast("Something went wrong", true);
+    } finally{
+      isEdit.value = false;
     }
   }
 
@@ -1232,6 +1371,5 @@ class ProfileController extends GetxController {
     location.clear();
     customPronoun.clear();
     pronounIsSelected.value = 0;
-    profilePicture.value = null;
   }
 }

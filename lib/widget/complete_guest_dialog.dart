@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
-
 import '../constants/constants_widgets.dart';
 
 void completeGuestProfileDialog(BuildContext context) {
+  NavigationController navigationController = Get.find<NavigationController>();
   showDialog(
     context: context,
     builder: (context) {
@@ -56,6 +57,7 @@ void completeGuestProfileDialog(BuildContext context) {
                     colors: greenColor,
                     onTap: () {
                       Get.toNamed("allergiesdietryscreen");
+                      navigationController.controller.isEdit.value = true;
                     },
                   ),
                 ],
