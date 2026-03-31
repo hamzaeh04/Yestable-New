@@ -10,6 +10,7 @@ import 'package:yestable/outh_file/local_db_key.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_dialog.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
+import '../../../controllers/auth_controller.dart';
 import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/event_floating_button.dart';
 import '../../../widget/home_screen_widget.dart';
@@ -20,6 +21,7 @@ class HomeScreen extends StatelessWidget {
 
   final NavigationController controller = Get.find<NavigationController>();
   final EventController eventController = Get.find<EventController>();
+  final AuthController authController = Get.find<AuthController>();
   final prefs = SharedPreferencesMethod.storage;
 
   @override
@@ -465,7 +467,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: blueColor,
         foregroundColor: whiteColor,
         shape: const CircleBorder(),
-        onPressed: () {
+        onPressed: () async {
           showRedirectingDialog(context);
         },
         child: Image.asset(

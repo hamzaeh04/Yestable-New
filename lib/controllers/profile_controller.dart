@@ -874,7 +874,8 @@ class ProfileController extends GetxController {
       bool isUser, {
         File? profilePic,
         bool? hosting,
-        required NavigationController navController
+        required NavigationController navController,
+        bool? isPreference = false
       }) async {
     final fields = <String, String>{
       "name": nameController.text.trim(),
@@ -890,7 +891,8 @@ class ProfileController extends GetxController {
         ApiEndPoints.setupProfile,
         fields,
         profilePic,
-      navController
+      navController,
+      isPreference
     );
   }
 
@@ -899,7 +901,8 @@ class ProfileController extends GetxController {
       String endpoint,
       Map<String, String> fields,
       File? profilePic,
-      NavigationController navigationController
+      NavigationController navigationController,
+      bool? isPreference
       ) async {
     try {
       EasyLoading.show(
@@ -960,14 +963,18 @@ class ProfileController extends GetxController {
         // Example if backend returns user data
         // final userId = jsonResponse['data']['user']['id'];
         //Get.toNamed('allergiesdietryscreen')
-        if(isUser == true){
-          navigationController.changePage(0);
-          Get.toNamed("bottomnavigationbar");
-        } else {
-          navigationController.changePage(0);
-          Get.toNamed("bottomnavigationbar");
+        if(isPreference == false){
+          if(isUser == true){
+            navigationController.changePage(0);
+            Get.toNamed("bottomnavigationbar");
+          } else {
+            navigationController.changePage(0);
+            Get.toNamed("bottomnavigationbar");
+          }
+          isEdit.value = false;
+        } else{
+          Get.toNamed("allergiesdietryscreen");
         }
-        isEdit.value = false;
         clearSetupProfileFields();
         getMyProfileModel.refresh();
         if (jsonResponse["data"] != null &&
@@ -1083,7 +1090,7 @@ class ProfileController extends GetxController {
         // final userId = jsonResponse['data']['user']['id'];
         //Get.toNamed('allergiesdietryscreen')
         edit == true ? Get.back() :
-        isUser == true ? Get.toNamed("yourrootandrules"): Get.toNamed('allownotificationscreen', arguments: 1);
+        isUser == true ? Get.toNamed("allergiesdietryscreen"): Get.toNamed('allownotificationscreen', arguments: 1);
         getMyProfileModel.refresh();
         if (jsonResponse["data"] != null &&
             jsonResponse["data"]["name"] != null) {
@@ -1097,6 +1104,7 @@ class ProfileController extends GetxController {
           getMyProfileModel.refresh();
 
         }
+        prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${jsonResponse["data"]["onboardingStep"]}");
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
@@ -1136,6 +1144,8 @@ class ProfileController extends GetxController {
         Utils.showToast("Preferences updated successfully", false);
         print("Response: $response");
         Get.toNamed('foodpreferencesone');
+        prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${response["data"]["onboardingStep"]}");
+
       } else {
         // API returned error
         print("Error: ${response["message"]}");
@@ -1164,8 +1174,11 @@ class ProfileController extends GetxController {
         print('YumYuck updated successfully');
         Get.toNamed("foodpreferencestwo");
         Utils.showToast('${response['message']}', false);
+        prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${response["data"]["onboardingStep"]}");
+
         print("yum: ${yum}");
         print("yuck: ${yuck}");
+
       } else {
         print('Failed to update YumYuck: ${response?['message']}');
         Utils.showToast('${response?['message']}', true);
@@ -1226,10 +1239,11 @@ class ProfileController extends GetxController {
           });
         } else {
           getMyProfileModel.refresh();
-          isEdit.value == true ? Get.toNamed('bottomnavigationbar'):
+          isEdit.value == true ? Get.offNamed('bottomnavigationbar'):
           Get.toNamed("allownotificationscreen", arguments: 2);
           isEdit.value == true ? clearSetupProfileFields(): null;
         }
+        prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${response["data"]["onboardingStep"]}");
       } else {
         print("Failed: ${response?['message']}");
         Utils.showToast(response?['message'] ?? "Update failed", true);

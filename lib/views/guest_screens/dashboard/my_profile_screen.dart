@@ -126,7 +126,6 @@ class MyProfileScreen extends StatelessWidget {
     if (quietArea) {
       eventAccesibilityList.add("Quiet Area");
     }
-
     return Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
@@ -180,11 +179,11 @@ class MyProfileScreen extends StatelessWidget {
                       controller.hasCheckedProfile.value = true;
 
                       // 2. Index ko reset karein
-                      controller.currentIndex.value = 0;
                       // 3. User status set karein
                       controller.isUser.value = true;
                       // controller.isLoggedIn.value = false; // Isko bhi false karna zaroori hai
                       await prefs.clear();
+                      controller.currentIndex.value = 0;
                       // 4. offAllNamed use karein taake stack saaf ho jaye aur black screen ya dialog issue na aaye
                       Get.offAllNamed("getstarted");
                     },
@@ -256,23 +255,16 @@ class MyProfileScreen extends StatelessWidget {
                                                     radius: 40,
                                                     fit: BoxFit.cover,
                                                   )
-                                                      : Image.asset(
-                                                    "assets/png/girl_profile.png",
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder:
-                                                        (
-                                                        context,
-                                                        error,
-                                                        stackTrace,
-                                                        ) => Icon(
-                                                      Icons
-                                                          .person,
-                                                      size: 8.h,
-                                                      color:
-                                                      Colors
-                                                          .grey,
-                                                    ),
-                                                  ),
+                                                      : Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                height: 12.h,
+                                                width: 26.w,
+                                                color: greenColor,
+                                                child: Image.asset(
+                                                  "assets/png/profile_image_large.png",
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
                                                 ),
                                               ),
                                             ),
@@ -290,7 +282,7 @@ class MyProfileScreen extends StatelessWidget {
                                                     customText(
                                                       text:
                                                       data?.name ??
-                                                          "Sarah Scarnio",
+                                                          "Username",
                                                       fontSize: 20.sp,
                                                       fontWeight:
                                                       FontWeight.w600,
@@ -366,9 +358,7 @@ class MyProfileScreen extends StatelessWidget {
                                           data?.bio ??
                                               "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
                                                   "eget magna sapien. Faucibus nibh mauris mattis aliquam\n"
-                                                  "proin pellentesque sed done Nu lla sed cons memagnat\n"
-                                                  "consectetur. Viv emauris rra tellus eget magna sapieneget\n"
-                                                  "Faucibusequat scelerisque.",
+                                                  "proin pellentesque sed done Nu lla sed cons memagnat.",
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w400,
                                           color: darkGreyColor,

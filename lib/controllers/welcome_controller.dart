@@ -54,6 +54,7 @@ class WelcomeController extends GetxController {
       var token = await prefs.getString(LocalDBKeys.TOKEN);
       var profileCompleted = prefs.getBool(LocalDBKeys.PROFILECOMPLETED) ?? false;
 
+
       bool? saved = prefs.getBool('isUser');
       if (saved != null) {
         controller.isUser.value = saved;
@@ -62,10 +63,52 @@ class WelcomeController extends GetxController {
       if (token == null || token.isEmpty) {
         Get.offNamed(nextRoute);
       } else {
-        profileCompleted == true ?
-        Get.offNamed("bottomnavigationbar"): Get.toNamed("profileeditscreen");
+        // profileCompleted == true ?
+        // Get.offNamed("bottomnavigationbar"): Get.offNamed("profileeditscreen");
+        controller.isUser.value == true ?
+        onboardingStep(): onboardingStepHost();
       }
     });
+  }
+  Future<void> onboardingStep() async {
+    // final step = controller.controller.getMyProfileModel.value?.data?.onboardingStep;
+    var step = await prefs.getString(LocalDBKeys.ONBOARDINGSTEP);
+    print("Step Step Step: $step");
+
+    if (step == null) return;
+    int steps = int.tryParse(step) ?? 0; // convert safely
+    print("Steps: $steps");
+
+
+    if (steps == 0) {
+      Get.offNamed("addprofilepicture");
+    } else if (steps == 1) {
+      Get.offNamed("allergiesdietryscreen");
+    } else if (steps == 2) {
+      Get.offNamed("foodpreferencesone");
+    } else if (steps == 3) {
+      Get.offNamed("foodpreferencestwo");
+    } else {
+      Get.offNamed("bottomnavigationbar"); // fallback
+    }
+  }
+  Future<void> onboardingStepHost() async {
+    // final step = controller.controller.getMyProfileModel.value?.data?.onboardingStep;
+    var step = await prefs.getString(LocalDBKeys.ONBOARDINGSTEP);
+    print("Step Step Step: $step");
+
+    if (step == null) return;
+    int steps = int.tryParse(step) ?? 0; // convert safely
+    print("Steps: $steps");
+
+
+    if (steps == 0) {
+      Get.offNamed("addprofilepicture");
+    } else if (steps == 1) {
+      Get.offNamed("bottomnavigationbar"); // fallback
+    } else {
+      Get.offNamed("bottomnavigationbar"); // fallback
+    }
   }
 
   void initDeepLinks() async {

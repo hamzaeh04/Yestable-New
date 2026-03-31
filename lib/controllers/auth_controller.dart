@@ -16,6 +16,8 @@ class AuthController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   // final TextEditingController emailControllerHost = TextEditingController();
+  final prefs = SharedPreferencesMethod.storage;
+  int? step;
 
   void changeCountry(Country country) {
     selectedCountry.value = country;
@@ -67,13 +69,14 @@ class AuthController extends GetxController {
     }
     final data = responseMap["data"]; // user object
     final profileCompleted = responseMap["data"]["user"]["profileCompleted"];
+    step = data["user"]["onboardingStep"];
     if (data == null) return; // Safety guard
-    final prefs = SharedPreferencesMethod.storage;
     await prefs.setString(LocalDBKeys.TOKEN, data["access_token"]);
     await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
     await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, profileCompleted);
     await prefs.setString(LocalDBKeys.USERFULLNAME, data["user"]["name"] ?? "");
     await prefs.setString(LocalDBKeys.USERID, data["user"]["_id"]);
+    await prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${data["user"]["onboardingStep"]}");
     print("Faaaaahhhh: ${data["access_token"]}");
     print("userId: ${prefs.getString(LocalDBKeys.USERID)}");
     print("SharedPreferences: ${prefs.getBool(LocalDBKeys.PROFILECOMPLETED)}");
@@ -83,9 +86,43 @@ class AuthController extends GetxController {
       Get.offAllNamed('bottomnavigationbar');
     }
     else{
-      Get.offAllNamed('/addprofilepicture');
+      // Get.offAllNamed('/addprofilepicture');
+      controller.isUser.value == true ?
+      onboardingStep(): onboardingStepHost();
     }
     // Get.offAllNamed('/addprofilepicture');
     // print("🎉 SIGNUP SUCCESS → ${data["email"]}");
+  }
+  Future<void> onboardingStep() async {
+    // final step = controller.controller.getMyProfileModel.value?.data?.onboardingStep;
+    print("Step Step Step: $step");
+
+    if (step == null) return;
+
+    if (step == 0) {
+      Get.toNamed("addprofilepicture");
+    } else if (step == 1) {
+      Get.toNamed("allergiesdietryscreen");
+    } else if (step == 2) {
+      Get.toNamed("foodpreferencesone");
+    } else if (step == 3) {
+      Get.toNamed("foodpreferencestwo");
+    } else {
+      Get.toNamed("bottomnavigationbar"); // fallback
+    }
+  }
+  Future<void> onboardingStepHost() async {
+    // final step = controller.controller.getMyProfileModel.value?.data?.onboardingStep;
+    print("Step Step Step: $step");
+
+    if (step == null) return;
+
+    if (step == 0) {
+      Get.toNamed("addprofilepicture");
+    } else if (step == 1) {
+      Get.toNamed("bottomnavigationbar"); // fallback
+    } else {
+      Get.toNamed("bottomnavigationbar"); // fallback
+    }
   }
 }

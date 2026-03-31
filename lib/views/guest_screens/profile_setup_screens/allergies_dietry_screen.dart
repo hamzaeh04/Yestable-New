@@ -301,8 +301,7 @@ class AllergiesDietryScreen extends StatelessWidget {
                 SizedBox(height: 2.h),
 
                 animatedButton((){
-                  navigationController.isUser.value == true ?
-                  controller.setupProfile(navigationController.isUser.value, profilePic: navigationController.controller.profilePicture.value): Get.toNamed("yourrootandrules");
+                  Get.toNamed("yourrootandrules");
                   // Get.toNamed("yourrootandrules");
                 }, "Continue")
               ],
