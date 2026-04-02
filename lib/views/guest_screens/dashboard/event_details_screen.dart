@@ -64,7 +64,7 @@ final EventController eventController = Get.find<EventController>();
                     height: 35.h,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h),
+                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h, width: double.infinity),
 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),

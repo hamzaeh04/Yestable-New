@@ -68,6 +68,7 @@ Widget customImageWidget({required String imagePath, double? height, double? wid
     "${baseService.baseURL}${imagePath}",
     fit: BoxFit.cover,
     height: height ?? 35.h,
+    width: width != null ? width: null,
     loadingBuilder: (context, child, loadingProgress) {
       if (loadingProgress == null) return child;
 

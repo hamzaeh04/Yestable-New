@@ -26,6 +26,7 @@ import 'location_controller.dart';
 import 'navigation_controller.dart';
 
 class EventController extends GetxController{
+  ProfileController profileController = Get.find<ProfileController>();
   // Event Controllers
   final TextEditingController eventName = TextEditingController();
   final TextEditingController eventDate = TextEditingController();
@@ -43,6 +44,7 @@ class EventController extends GetxController{
   Rxn<EventReviewModel> eventReviewModel = Rxn<EventReviewModel>();
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
+  Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
 
   // Guest Aware Controllers
   final TextEditingController swimmingPoolController = TextEditingController();
@@ -644,6 +646,7 @@ class EventController extends GetxController{
       final response = await baseService.baseGetAPI(ApiEndPoints.getMenus);
       if (response["success"] == true) {
         final model = GetMenuModel.fromJson(Map<String, dynamic>.from(response));
+        getMenuModel.value = model;
         menus.assignAll(model.data?.data ?? <MenuItem>[]);
       } else {
         menus.clear();
@@ -767,97 +770,6 @@ class EventController extends GetxController{
     }
   }
 
-  // Future<void> uploadMenu() async {
-  //
-  //   final fields = {
-  //     "title": menuTitle.text.trim(),
-  //     "type": selectedType.value ?? "", // fallback to empty string
-  //     "mealCategory": jsonEncode(
-  //         selectedMealCategory.map((e) => e["name"] ?? "").toList()
-  //     ),
-  //     "description": menuDescription.text.trim(),
-  //   };
-  //
-  //   // Make sure itemPic.value is a File? type
-  //   File? menuImageFile = itemPic.value; // itemPic must be a File
-  //
-  //   await _sendMultipartMenuRequest(
-  //     ApiEndPoints.addMenu,
-  //     fields,
-  //     menuImageFile,
-  //   );
-  // }
-  //
-  // Future<void> _sendMultipartMenuRequest(
-  //     String endpoint,
-  //     Map<String, String> fields,
-  //     File? menuImage,
-  //     ) async {
-  //   try {
-  //     print("Meal Category: ${jsonEncode(
-  //         selectedMealCategory.map((e) => e["name"] ?? "").toList()
-  //     )}");
-  //     final url = "${baseService.baseURL}$endpoint";
-  //     final uri = Uri.parse(url);
-  //
-  //     var request = http.MultipartRequest('POST', uri);
-  //     final token = prefs.getString(LocalDBKeys.TOKEN);
-  //     print("Token: $token");
-  //
-  //     // Headers
-  //     request.headers.addAll({
-  //       "Accept": "application/json",
-  //       "Authorization": "Bearer $token",
-  //     });
-  //
-  //     // Text fields
-  //     request.fields.addAll(fields);
-  //     print("📋 Fields: ${request.fields}");
-  //
-  //     // File
-  //     if (menuImage != null) {
-  //       print("📸 Adding menuImage: ${menuImage.path}");
-  //
-  //       String ext = path.extension(menuImage.path).toLowerCase();
-  //       String mimeType = 'image/jpeg';
-  //       if (ext == '.png') mimeType = 'image/png';
-  //       else if (ext == '.jpg' || ext == '.jpeg') mimeType = 'image/jpeg';
-  //       else if (ext == '.gif') mimeType = 'image/gif';
-  //
-  //       request.files.add(
-  //         await http.MultipartFile.fromPath(
-  //           'menuImage', // must match backend key
-  //           menuImage.path,
-  //           contentType: MediaType('image', mimeType.split('/')[1]),
-  //         ),
-  //       );
-  //     }
-  //
-  //     print("⏳ Sending request...");
-  //
-  //     final streamedResponse = await request.send();
-  //     final response = await http.Response.fromStream(streamedResponse);
-  //
-  //     print("📦 Status: ${response.statusCode}");
-  //     print("📦 Body: ${response.body}");
-  //
-  //     final jsonResponse = jsonDecode(response.body);
-  //
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       Utils.showToast("${jsonResponse['message']}", false);
-  //       Get.toNamed('menuSuccessScreen'); // Navigate on success
-  //       clearItemFields();
-  //     } else {
-  //       Utils.showToast(
-  //         jsonResponse['message'] ?? "Something went wrong",
-  //         false,
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print("❌ Error: $e");
-  //     Utils.showToast("Check Internet Connection", false);
-  //   }
-  // }
   Future<void> uploadMenu() async {
     // Remove jsonEncode
     final fields = {
@@ -886,6 +798,10 @@ class EventController extends GetxController{
       File? menuImage,
       ) async {
     try {
+      EasyLoading.show(
+        status: 'Please wait...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final url = "${baseService.baseURL}$endpoint";
       final uri = Uri.parse(url);
 
@@ -931,14 +847,19 @@ class EventController extends GetxController{
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.showToast("${jsonResponse['message']}", false);
         // Get.toNamed('menuSuccessScreen');
-        Get.back();
         clearItemFields();
+        getMenus();
+        Get.back();
       } else {
         Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
       }
     } catch (e) {
       print("❌ Error: $e");
       Utils.showToast("Check Internet Connection", false);
+    } finally{
+      getMenuModel.refresh();
+      menus.refresh();
+      EasyLoading.dismiss();
     }
   }
   void clearItemFields(){
@@ -1222,6 +1143,7 @@ class EventController extends GetxController{
         //     response?['message'], false
         // );
         eventPostedDialog(context);
+        clearEventFields();
         // Optional: navigate or refresh
         // Get.back();
         // eventReview(eventId);
@@ -1353,4 +1275,20 @@ class EventController extends GetxController{
     return responseMap; // ✅ full response return
   }
 
+  void clearEventFields(){
+    eventName.clear();
+    eventDate.clear();
+    eventTime.clear();
+    eventType.clear();
+    eventLocation.clear();
+    inviteMsg.clear();
+    parkingDetails.clear();
+    addNote.clear();
+    eventReminder.clear();
+    otherComfortController.clear();
+    locationController.addressController.clear();
+    itemContainingController.clear();
+    guestAwareOthersController.clear();
+    profileController.profilePicture.value = null;
+  }
 }

@@ -208,22 +208,22 @@ class CreateNewEventScreen extends StatelessWidget {
                                   customText(text: '*', color: redColor)
                                 ],
                               ),
-                              SizedBox(height: 2.4.h),
+                              SizedBox(height: 2.8.h),
                               Row(
                                 children: [
                                   customText(text: "Location", fontWeight: FontWeight.w500, fontSize: 15.sp),
                                   customText(text: '*', color: redColor)
                                 ],
                               ),
-                              SizedBox(height: 2.3.h),
+                              SizedBox(height: 2.5.h),
                               customText(text: "Check Guest\nNeeds Automatically.", fontWeight: FontWeight.w500, fontSize: 15.sp),
-                              SizedBox(height: 1.8.h,),
+                              SizedBox(height: 2.h,),
                               customText(
                                 text: "Enable Group\nConversation",
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w500,
                               ),
-                              SizedBox(height: 3.h),
+                              SizedBox(height: 3.6.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [

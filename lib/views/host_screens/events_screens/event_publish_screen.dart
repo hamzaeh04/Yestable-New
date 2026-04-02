@@ -27,6 +27,11 @@ class EventPublishScreen extends StatelessWidget {
     final eventId = Get.arguments;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       eventController.eventReview(eventId);
+      final data = eventController.eventReviewModel.value?.data;
+      eventController.mapEventComfortAccessibility(
+          data?.eventComfort,
+          data?.guestAware,
+        );
     });
 
     return Scaffold(
@@ -35,10 +40,10 @@ class EventPublishScreen extends StatelessWidget {
           SingleChildScrollView(
             child: Obx(() {
               final data = eventController.eventReviewModel.value?.data;
-              eventController.mapEventComfortAccessibility(
-                data?.eventComfort,
-                data?.guestAware,
-              );
+              // eventController.mapEventComfortAccessibility(
+              //   data?.eventComfort,
+              //   data?.guestAware,
+              // );
 
               final notAllowedItem =
                   data?.guestAware?.itemContaining
@@ -73,7 +78,7 @@ class EventPublishScreen extends StatelessWidget {
                     height: 35.h,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h),
+                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h, width: double.infinity),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 5.w,
@@ -240,7 +245,6 @@ class EventPublishScreen extends StatelessWidget {
                             child: Container(
                               height: 5.5.h,
                               width: 14.w,
-                              color: Colors.yellow,
                               child: Image.network(
                                 "${baseService.baseURL}${data.host?.profilePic}",
                                 fit: BoxFit.cover,
