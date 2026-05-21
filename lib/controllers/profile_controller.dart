@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:yestable/controllers/auth_controller.dart';
@@ -89,7 +90,7 @@ class ProfileController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   var switchValue = true.obs;
   var switchValue2 = false.obs;
-  var switchValue3 = false.obs;
+
   RxString selectedValue = ''.obs;
   RxBool isSelected = false.obs;
   RxMap<int, String> selectedOptions = <int, String>{}.obs;
@@ -167,7 +168,6 @@ class ProfileController extends GetxController {
   List<String> seating = ['largerSeat', 'chairWithArms', 'nearRestroom', 'other'];
   List<String> assistance = [
     'helpCarryingPlate',
-    'nearRestroom',
     'nonVerbal',
     'bringingCareAide',
     'hearingLoss',
@@ -662,9 +662,7 @@ class ProfileController extends GetxController {
     switchValue2.value = !switchValue2.value;
   }
 
-  void toggleSwitch3() {
-    switchValue3.value = !switchValue3.value;
-  }
+
 
   void switchOption(int index, String option) {
     selectedOptions[index] = option;
@@ -694,9 +692,28 @@ class ProfileController extends GetxController {
     await _picker.pickImage(source: ImageSource.camera);
 
     if (file == null) return;
-    profilePicture.value = File(file.path);
-    print(profilePicture.value);
+
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: file.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: "Crop Image",
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+        )
+      ],
+    );
+
+    // ✅ Check if user didn't cancel cropping
+    if (croppedFile != null) {
+      profilePicture.value = File(croppedFile.path); // ✔️ correct
+      print(profilePicture.value);
+    }
   }
+
 
   // Pick from gallery
   Future<void> pickFromGallery() async {
@@ -704,9 +721,30 @@ class ProfileController extends GetxController {
     await _picker.pickImage(source: ImageSource.gallery);
 
     if (file == null) return;
-    profilePicture.value = File(file.path);
-    print(profilePicture.value);
+
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: file.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: "Crop Image",
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+        )
+      ],
+    );
+
+    // ✅ Important: check if user cancelled
+    if (croppedFile != null) {
+      profilePicture.value = File(croppedFile.path); // ✔️ cropped image
+      print(profilePicture.value);
+    } else {
+      print("User cancelled cropping");
+    }
   }
+
 
   void removeImage() {
     profilePicture.value = null;

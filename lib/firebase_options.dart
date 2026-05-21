@@ -52,6 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '669739754062',
     projectId: 'yestable-107c6',
     authDomain: 'yestable-107c6.firebaseapp.com',
+    databaseURL: 'https://yestable-107c6-default-rtdb.firebaseio.com',
     storageBucket: 'yestable-107c6.firebasestorage.app',
     measurementId: 'G-CW3VBYWNLV',
   );
@@ -61,6 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:669739754062:android:780681de7ad6352f40591f',
     messagingSenderId: '669739754062',
     projectId: 'yestable-107c6',
+    databaseURL: 'https://yestable-107c6-default-rtdb.firebaseio.com',
     storageBucket: 'yestable-107c6.firebasestorage.app',
   );
 
@@ -69,7 +71,9 @@ class DefaultFirebaseOptions {
     appId: '1:669739754062:ios:e94909e9e72d4e2b40591f',
     messagingSenderId: '669739754062',
     projectId: 'yestable-107c6',
+    databaseURL: 'https://yestable-107c6-default-rtdb.firebaseio.com',
     storageBucket: 'yestable-107c6.firebasestorage.app',
     iosBundleId: 'com.sirentheory.yestable',
   );
+
 }

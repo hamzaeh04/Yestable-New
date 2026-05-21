@@ -1,45 +1,56 @@
 plugins {
-    id("com.android.application")
-    // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
-    id("kotlin-android")
-    id("dev.flutter.flutter-gradle-plugin")
+  id("com.android.application")
+  id("com.google.gms.google-services")
+  id("kotlin-android")
+  id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
-    namespace = "com.example.yestable"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = "29.0.13113456"
+  namespace = "com.example.yestable"
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+  // Updated for image_cropper
+  compileSdk = 36
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
+  ndkVersion = "29.0.13113456"
 
-    defaultConfig {
-        applicationId = "com.example.yestable"
-        minSdk = 25
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
-    }
+  compileOptions {
 
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("debug")
-        }
+    // Required for flutter_local_notifications
+    isCoreLibraryDesugaringEnabled = true
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+  }
+
+  kotlinOptions {
+    jvmTarget = "11"
+  }
+
+  defaultConfig {
+    applicationId = "com.example.yestable"
+
+    minSdk = 25
+    targetSdk = 36
+
+    versionCode = flutter.versionCode
+    versionName = flutter.versionName
+  }
+
+  buildTypes {
+    release {
+      signingConfig = signingConfigs.getByName("debug")
     }
+  }
 }
 
 flutter {
-    source = "../.."
+  source = "../.."
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.4.0")
+
+  implementation("androidx.appcompat:appcompat:1.4.0")
+
+  // Required for desugaring
+  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

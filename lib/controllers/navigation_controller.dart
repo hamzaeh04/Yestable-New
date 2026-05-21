@@ -9,6 +9,8 @@ import 'package:yestable/controllers/profile_controller.dart';
 
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
+import '../core/services/firebase_messaging/messaging_service.dart';
+import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
 import '../widget/complete_guest_dialog.dart';
 import '../widget/update_sent_sucessfull_dialog.dart';
@@ -16,6 +18,14 @@ import '../widget/update_sent_sucessfull_dialog.dart';
 class NavigationController extends GetxController {
   final ProfileController controller = Get.find<ProfileController>();
   final EventController eventController = Get.find<EventController>();
+  final TextEditingController chatController = TextEditingController();
+  final SharedPreferences pref = SharedPreferencesMethod.storage;
+  final MessagingService messagingService = MessagingService();
+  String returnUserId()
+  {
+    return pref.getString(LocalDBKeys.USERID).toString();
+  }
+  var isHost = false.obs;
   var currentIndex = 0.obs;
   RxInt allergenSelectedIndex = 0.obs;
   var showAllergicGuest = false.obs;
@@ -206,6 +216,9 @@ class NavigationController extends GetxController {
           );
         },
       );
+      final userName = pref.getString(LocalDBKeys.USERFULLNAME);
+      final userId = pref.getString(LocalDBKeys.USERID);
+      messagingService.joinGroup(groupId: eventId, userName: userName.toString(), userId: userId.toString(),memberProfile: controller.getMyProfileModel.value?.data?.profilePic ?? '');
     });
   }
 

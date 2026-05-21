@@ -21,8 +21,8 @@
     <activity
       android:name=".MainActivity"
       android:exported="true"
-      android:launchMode="singleTop"
-      android:theme="@style/Theme.App.Transparent"
+      android:launchMode="singleTask"
+      android:theme="@style/LaunchTheme"
       android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
       android:hardwareAccelerated="true"
       android:windowSoftInputMode="adjustResize">
@@ -42,6 +42,14 @@
           android:scheme="https"
           android:host="yestable-107c6.web.app"
           android:pathPrefix="/event" />
+      </intent-filter>
+
+      <!-- 🔥 Custom URI Scheme for fallback deep links -->
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="yestable" android:host="event" />
       </intent-filter>
 
       <!-- 🚀 App Launcher -->

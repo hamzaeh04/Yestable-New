@@ -219,13 +219,13 @@ class FoodPreferencesTwo extends StatelessWidget {
                     spacing: 1.h,
                     children: [
                       seatingList('Help Carrying Plate', 4),
-                      seatingList('Seating Near A Restroom', 5),
-                      seatingList('Non Verbal', 6),
-                      seatingList('Bringing A Care Aide', 7),
-                      seatingList('Hearing Loss', 8),
-                      seatingList('Assistance Walking In', 9),
-                      seatingList('Other', 10),
+                      seatingList('Non Verbal', 5),
+                      seatingList('Bringing A Care Aide', 6),
+                      seatingList('Hearing Loss', 7),
+                      seatingList('Assistance Walking In', 8),
+                      seatingList('Other', 9),
                     ],
+
                   ),
                   Obx(
                     () =>

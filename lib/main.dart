@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/notification_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/controllers/yes_gpt_controller.dart';
+import 'package:yestable/firebase_options.dart';
 import 'package:yestable/utils/App_Routing.dart';
 import 'package:yestable/utils/init_binding.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
@@ -20,6 +22,9 @@ import 'outh_file/local_db_key.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   final prefs = await SharedPreferences.getInstance();
   Get.put<SharedPreferences>(prefs, permanent: true);
   Get.put(ProfileController());
@@ -60,5 +65,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 

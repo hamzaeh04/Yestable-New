@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -13,6 +15,7 @@ import '../../../widget/home_screen_widget.dart';
 class ChatListScreen extends StatelessWidget {
   ChatListScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+  final MessagingService messagingService = MessagingService();
   final prefs = SharedPreferencesMethod.storage;
 
   @override
@@ -122,71 +125,227 @@ class ChatListScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 1.5.h),
 
-                            // Expanded ListView for chat messages
 
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: chatListWidget(
-                          "assets/png/chat_images/chat_list_msg_one.png",
-                          "Gizelle Dinner Event",
-                          "Sophia: Thank You For Your Suggestions",
-                          "2hrs Ago",
-                          true, // just alternate unseen for example
-                          4,
+                      controller.isUser.value ?
+                      Expanded(
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection('group').snapshots(),
+                          builder: (context, snapshot) {
+
+                            if (!snapshot.hasData) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+
+                            final allGroups = snapshot.data!.docs;
+
+                            // filter groups where user exists in members
+                            final userGroups = allGroups.where((groupDoc) {
+                              final groupId = groupDoc.id;
+
+                              // We cannot check subcollection directly here,
+                              // so we move check into UI per group
+                              return true;
+                            }).toList();
+
+                            return ListView.builder(
+                              itemCount: userGroups.length,
+                              itemBuilder: (context, index) {
+
+                                final groupDoc = userGroups[index];
+
+                                return StreamBuilder<DocumentSnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('group')
+                                      .doc(groupDoc.id)
+                                      .collection('members')
+                                      .doc(controller.returnUserId())
+                                      .snapshots(),
+
+                                  builder: (context, memberSnap) {
+
+                                    if (!memberSnap.hasData || !memberSnap.data!.exists) {
+                                      return const SizedBox(); // user not in this group
+                                    }
+
+                                    final group = groupDoc.data() as Map<String, dynamic>;
+
+                                    Timestamp? lastMessageTime = group["lastMessageTime"];
+                                    DateTime date =
+                                        lastMessageTime?.toDate() ?? DateTime.now();
+
+                                    String getTimeAgo(DateTime date) {
+                                      final diff = DateTime.now().difference(date);
+
+                                      if (diff.inSeconds < 60) return "just now";
+                                      if (diff.inMinutes < 60) return "${diff.inMinutes} min ago";
+                                      if (diff.inHours < 24) return "${diff.inHours} hr ago";
+                                      return "${diff.inDays} days ago";
+                                    }
+
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w,
+                                        vertical: 0.h,
+                                      ),
+                                      child: StreamBuilder<int>(
+                                        stream: messagingService.getUnreadCount(
+                                          groupId: groupDoc.id,
+                                          userId: controller.returnUserId(),
+                                        ),
+                                        builder: (context, snap) {
+
+                                          final msgCount = snap.data ?? 0;
+
+                                          return chatListWidget(
+                                            "assets/png/admin_home_foodpic.png",
+                                            group["GroupName"] ?? "",
+                                            group["lastMessage"] ?? "No messages yet",
+                                            getTimeAgo(date),
+                                            msgCount != 0,
+                                            msgCount,
+                                            group["membersCount"].toString(),
+                                            groupId: groupDoc.id,
+                                            senderName: group["lastMessageSenderName"],
+                                            invitationMsg: group["groupDescription"] ?? "",
+                                              adminId: group["adminId"]
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ):Expanded(
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('group')
+                              .where('adminId', isEqualTo: controller.returnUserId())
+                              .orderBy('lastMessageTime', descending: true)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            print(controller.returnUserId());
+
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: customText(text: "No Groups Found"),
+                              );
+                            }
+
+                            final groups = snapshot.data!.docs;
+
+                            return ListView.builder(
+                              itemCount: groups.length,
+                              itemBuilder: (context, index) {
+
+                                final group =
+                                groups[index].data() as Map<String, dynamic>;
+
+                                Timestamp? lastMessageTime = group["lastMessageTime"];
+
+                                DateTime date = lastMessageTime?.toDate() ?? DateTime.now();
+                                String memberCount() {
+                                  if (group["membersCount"] < 10) {
+                                    return group["membersCount"].toString();
+                                  } else {
+                                    return "${group["membersCount"].toString()}+";
+                                  }
+                                }
+
+                                String getTimeAgo(DateTime date) {
+                                  final diff = DateTime.now().difference(date);
+
+                                  if (diff.inSeconds < 60) {
+                                    return "just now";
+                                  } else if (diff.inMinutes < 60) {
+                                    return "${diff.inMinutes} min ago";
+                                  } else if (diff.inHours < 24) {
+                                    return "${diff.inHours} hr ago";
+                                  } else {
+                                    return "${diff.inDays} days ago";
+                                  }
+                                }
+
+
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.w,
+                                    vertical: 0.h,
+                                  ),
+                                  child: StreamBuilder<int>(
+                                    stream: messagingService.getUnreadCount(
+                                      groupId: groups[index].id,
+                                      userId: controller.returnUserId(),
+                                    ),
+                                    builder: (context, snap) {
+
+                                      final msgCount = snap.data ?? 0;
+                                      bool msgCountBool (){
+                                        if(msgCount == 0){
+                                          return false;
+                                        }
+                                        else{
+                                          return true;
+                                        }
+                                      }
+
+                                      return chatListWidget(
+                                          "assets/png/admin_home_foodpic.png",
+                                          group["GroupName"] ?? "",
+                                          group["lastMessage"] ?? "No messages yet",
+                                          getTimeAgo(date),
+                                          msgCountBool(),
+                                          msgCount, // 🔥 UNREAD MESSAGE COUNT ADDED HERE
+                                          memberCount(),
+                                          groupId: group["groupId"],
+                                          senderName: group["lastMessageSenderName"],
+                                          invitationMsg: group["groupDescription"] ?? "",
+                                          adminId: group["adminId"]
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ),
-                      Divider(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: chatListWidget(
-                          "assets/png/chat_images/chat_list_msg_one.png",
-                          "Sophia Dinner Event",
-                          "Sophia: Thank You For Your Suggestions",
-                          "2hrs Ago",
-                          false, // just alternate unseen for example
-                          4,
-                        ),
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: chatListWidget(
-                          "assets/png/chat_images/chat_list_msg_one.png",
-                          "Sophia Dinner Event",
-                          "Sophia: Thank You For Your Suggestions",
-                          "2hrs Ago",
-                          false, // just alternate unseen for example
-                          4,
-                        ),
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: chatListWidget(
-                          "assets/png/chat_images/chat_list_msg_one.png",
-                          "Sophia Dinner Event",
-                          "Sophia: Thank You For Your Suggestions",
-                          "2hrs Ago",
-                          false, // just alternate unseen for example
-                          4,
-                        ),
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: chatListWidget(
-                          "assets/png/chat_images/chat_list_msg_one.png",
-                          "Sophia Dinner Event",
-                          "Sophia: Thank You For Your Suggestions",
-                          "2hrs Ago",
-                          false, // just alternate unseen for example
-                          4,
-                        ),
-                      ),
-                      Divider(),
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(horizontal: 5.w),
+                      //   child: chatListWidget(
+                      //     "assets/png/admin_home_foodpic.png",
+                      //     "Gizelle Dinner Event",
+                      //     "Sophia: Thank You For Your Suggestions",
+                      //     "2hrs Ago",
+                      //     true, // just alternate unseen for example
+                      //     4,
+                      //     "30+"
+                      //   ),
+                      // ),
+                      //
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(horizontal: 5.w),
+                      //   child: chatListWidget(
+                      //     "assets/png/admin_home_foodpic.png",
+                      //     "Sophia Dinner Event",
+                      //     "Sophia: Thank You For Your Suggestions",
+                      //     "2hrs Ago",
+                      //     false, // just alternate unseen for example
+                      //     4,
+                      //       "30+"
+                      //   ),
+                      // ),
 
                     ],
                   ),

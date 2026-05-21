@@ -7,6 +7,7 @@ import 'package:yestable/views/guest_screens/dashboard/add_freind_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/event_details_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/my_profile_screen.dart';
 import 'package:yestable/views/guest_screens/dashboard/search_screen.dart';
+import 'package:yestable/views/guest_screens/setting_screens/privacy_policy.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_two.dart';
 import 'package:yestable/views/host_screens/events_screens/create_new_event_screen.dart';
@@ -82,6 +83,7 @@ class AppRoutes {
     GetPage(name: '/yesgptscreen', page: () => YesGptScreen()),
     GetPage(name: '/yourrootandrules', page: () => YourRootAndRules()),
     GetPage(name: '/adminhomescreen', page: () => AdminHomeScreen()),
+    GetPage(name: '/privacypolicy', page: () => PrivacyPolicy()),
 
   ];
 }

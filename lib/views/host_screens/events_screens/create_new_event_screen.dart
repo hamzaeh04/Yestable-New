@@ -377,8 +377,8 @@ class CreateNewEventScreen extends StatelessWidget {
                                     child: Obx(
                                           () => CupertinoSwitch(
                                         activeTrackColor: blackColor,
-                                        value: controller.switchValue3.value,
-                                        onChanged: (val) => controller.toggleSwitch3(),
+                                        value: eventController.switchValue3.value,
+                                        onChanged: (val) => eventController.toggleSwitch3(),
                                       ),
                                     ),
                                   ),
@@ -470,6 +470,7 @@ class CreateNewEventScreen extends StatelessWidget {
                       child: buttonWidget("Continue", whiteColor, colors: greenColor, onTap: () {
                         // Get.toNamed("guestlistscreen");
                         Get.toNamed("foodmenuscreen", arguments: eventId);
+                        print(eventId);
                       }),
                     ),
                     SizedBox(height: 3.h),

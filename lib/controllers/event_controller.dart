@@ -7,12 +7,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/model/get_event_review_model.dart';
 import 'package:yestable/model/get_my_event_model.dart';
 
 import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
+import '../core/services/firebase_messaging/messaging_service.dart';
 import '../model/get_all_event_model.dart';
 import '../model/get_menu_model.dart';
 import '../outh_file/local_db_key.dart';
@@ -27,6 +29,10 @@ import 'navigation_controller.dart';
 
 class EventController extends GetxController{
   ProfileController profileController = Get.find<ProfileController>();
+
+  final SharedPreferences pref = SharedPreferencesMethod.storage;
+  final MessagingService messagingService = MessagingService();
+  var switchValue3 = false.obs;
   // Event Controllers
   final TextEditingController eventName = TextEditingController();
   final TextEditingController eventDate = TextEditingController();
@@ -52,6 +58,13 @@ class EventController extends GetxController{
   final TextEditingController guestAwareOthersController = TextEditingController();
   final TextEditingController guestContactController = TextEditingController();
 
+
+
+
+
+  void toggleSwitch3() {
+    switchValue3.value = !switchValue3.value;
+  }
   var poolSelection = ''.obs;
   var guestsWelcomeToSwim = false.obs;
   final LocationController locationController = Get.find<LocationController>();
@@ -457,7 +470,10 @@ class EventController extends GetxController{
 
         String eventId = jsonResponse["data"]["_id"];
         String link = generateEventLink(eventId);
-
+        final adminName = pref.getString(LocalDBKeys.USERFULLNAME);
+        final adminId = pref.getString(LocalDBKeys.USERID);
+        print("sjkfghigshdsdsasdbv : ${adminId}");
+        messagingService.createGroup(imagePath: "" ,name: eventName.text, createdBy: adminName ?? '', enableGroup: switchValue3.value,eventId:eventId.toString(),adminId: adminId!,invitationMsg: inviteMsg.text,adminProfilePic: profileController.getMyProfileModel.value?.data?.profilePic ?? "");
         showShareProfileDialog(
           context,
           title: "Share Event Link",

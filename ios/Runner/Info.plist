@@ -9,6 +9,22 @@
 		<string>applinks:yestable-107c6.web.app</string>
 	</array>
 
+	<!-- ✅ Custom URL Scheme -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>yestable</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>yestable</string>
+			</array>
+		</dict>
+	</array>
+
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 

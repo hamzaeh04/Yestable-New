@@ -48,7 +48,7 @@ class SignupScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 4.h),
                   customText(
-                    text: "Sign Up Now",
+                    text: "Login Now",
                     fontSize: 23.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,
@@ -157,11 +157,16 @@ class SignupScreen extends StatelessWidget {
                           thickness: 1,
                           width: 20,
                         ),
-                        customText(
-                          text: "PRIVACY POLICY",
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.5.sp,
-                          color: greenColor,
+                        InkWell(
+                          onTap: (){
+                            Get.toNamed("privacypolicy");
+                          },
+                          child: customText(
+                            text: "PRIVACY POLICY",
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12.5.sp,
+                            color: greenColor,
+                          ),
                         ),
                         VerticalDivider(
                           color: greenColor,

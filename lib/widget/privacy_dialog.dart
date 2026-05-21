@@ -20,16 +20,17 @@ Future privacyDialog(BuildContext context) {
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: 85.h, // caps height but allows shrink-to-fit
+            maxHeight: 85.h,
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.all(16.sp),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // 🔑 important
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 customText(
-                  text: 'Terms & Conditions',
+                  text: "YesTable Privacy Policy",
                   fontWeight: FontWeight.w600,
                   fontSize: 19.sp,
                 ),
@@ -38,58 +39,115 @@ Future privacyDialog(BuildContext context) {
 
                 customText(
                   text:
-                  "YesTable is a platform designed to assist users in gathering and organizing dietary preferences, restrictions, and allergy-related information for social events and gatherings. YesTable does not verify the accuracy of the information submitted by users and does not provide medical advice, food safety guidance, or nutritional counseling.",
+                  "Effective Date: April 20, 2026\nLast Updated: April 20, 2026",
                   fontSize: 13.5.sp,
                 ),
 
-                SizedBox(height: 0.5.h),
-
-                customText(
-                  text: "By using YesTable, you acknowledge and agree that:",
-                  fontSize: 13.5.sp,
-                ),
-
-                SizedBox(height: 0.4.h),
+                SizedBox(height: 1.h),
 
                 customText(
                   text:
-                  "• All hosts remain solely responsible for verifying ingredients, preventing cross-contact, and making final decisions regarding food preparation and service.",
+                  "Welcome to YesTable, a product of Siren Theory LLC (“YesTable,” “we,” “our,” or “us”). We believe thoughtful hosting starts with trust. This Privacy Policy explains how we collect, use, and protect your information when you use the YesTable app, website, and related services (collectively, the “Platform”).",
                   fontSize: 13.5.sp,
                 ),
 
-                SizedBox(height: 0.3.h),
+                SizedBox(height: 1.h),
 
                 customText(
                   text:
-                  "• All guests remain solely responsible for accurately and clearly disclosing their dietary needs and making informed decisions regarding the consumption of food.",
+                  "We collect information to help you create better, safer, and more inclusive gatherings. This includes information you provide directly, such as your name, username, email address, and profile details, as well as dietary preferences, allergies, restrictions, and event-related information like guest lists and responses. You may also choose to provide optional information, such as your location (at the city level), pronouns, Food Mood tracking data, and photos or profile images. In addition, we automatically collect certain technical information, including device type, browser, usage patterns, and log data such as IP address and timestamps.",
                   fontSize: 13.5.sp,
                 ),
 
-                SizedBox(height: 0.3.h),
+                SizedBox(height: 1.h),
 
                 customText(
                   text:
-                  "• YesTable shall not be held liable for any injury, illness, allergic reaction, or other adverse health outcome resulting from the preparation, serving, or consumption of food in connection with any event or gathering planned using this platform.",
+                  "We use your information to operate and improve the Platform. This includes facilitating communication between hosts and guests, matching preferences with accommodations, improving functionality, and providing insights such as Food Mood trends where applicable. We may also use your information to communicate with you about updates, support inquiries, and important notices. We do not sell your personal data.",
                   fontSize: 13.5.sp,
                 ),
 
-                SizedBox(height: 0.3.h),
+                SizedBox(height: 1.h),
 
                 customText(
                   text:
-                  "• YesTable does not guarantee the prevention of allergic reactions or other food-related incidents, and the platform is not a substitute for medical advice, professional judgment, or proper food safety protocols.",
+                  "We share your information only in limited and expected ways. For example, information you choose to provide may be visible to other users as necessary for event planning, such as when a host views guest preferences. We may also share information with trusted service providers who help us operate the Platform, such as hosting, analytics, and email services. In certain circumstances, we may disclose information if required by law or to protect the rights, safety, and integrity of YesTable and its users.",
                   fontSize: 13.5.sp,
                 ),
 
-                SizedBox(height: 0.3.h),
+                SizedBox(height: 1.h),
 
                 customText(
                   text:
-                  "• Use of this platform is at your own risk. Users are encouraged to communicate directly and clearly when food allergies or severe dietary restrictions are involved.",
+                  "YesTable may include information related to allergies, dietary restrictions, and food-related experiences. This information is provided by you at your discretion and is used solely to enhance the user experience and support better event planning. It is not intended as medical advice, diagnosis, or treatment. You are responsible for determining what information you choose to share and with whom.",
                   fontSize: 13.5.sp,
                 ),
 
-                SizedBox(height: 1.5.h),
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "We take reasonable administrative, technical, and physical measures to protect your information. However, no system is completely secure, and use of the Platform is at your own risk.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "You remain in control of your information. You can update your profile, adjust what you share with others, and request deletion of your account at any time, subject to legal obligations. To request access to or deletion of your data, please contact us at hello@yes-table.com.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "YesTable is not intended for children under the age of 13, and we do not knowingly collect personal information from children.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "If you are a California resident, you may have rights under the California Consumer Privacy Act (CCPA), including the right to know what personal information we collect, the right to request deletion, and the right to correct inaccurate information. To exercise these rights, please contact us at hello@yes-table.com.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "The Platform may include links to or integrations with third-party services. We are not responsible for the privacy practices of those third parties.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "We may update this Privacy Policy from time to time. When we do, we will update the “Last Updated” date and provide notice where appropriate.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "If you have any questions or concerns about this Privacy Policy, you may contact YesTable (Siren Theory LLC) at 3579 E. Foothill Blvd, Suite #709, Pasadena, CA 91107 or hello@yes-table.com.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 1.h),
+
+                customText(
+                  text:
+                  "YesTable is built around one simple idea: everyone deserves a seat at the table. Your information helps make that possible, but you remain in control of what you share.",
+                  fontSize: 13.5.sp,
+                ),
+
+                SizedBox(height: 2.h),
 
                 Align(
                   alignment: Alignment.center,
@@ -113,4 +171,3 @@ Future privacyDialog(BuildContext context) {
     },
   );
 }
-

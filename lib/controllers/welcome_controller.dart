@@ -41,6 +41,8 @@ class WelcomeController extends GetxController {
   final AppLinks _appLinks = AppLinks();
 
   bool _isDeepLinkInitialized = false;
+  static String _lastProcessedUri = "";
+  static int _lastProcessedTime = 0;
 
   WelcomeController(this.nextRoute);
 
@@ -51,6 +53,11 @@ class WelcomeController extends GetxController {
     initDeepLinks();
 
     Future.delayed(const Duration(seconds: 3), () async {
+      if (nextRoute == "splashtwo") {
+        Get.offNamed(nextRoute);
+        return;
+      }
+
       var token = await prefs.getString(LocalDBKeys.TOKEN);
       var profileCompleted = prefs.getBool(LocalDBKeys.PROFILECOMPLETED) ?? false;
 
@@ -75,7 +82,10 @@ class WelcomeController extends GetxController {
     var step = await prefs.getString(LocalDBKeys.ONBOARDINGSTEP);
     print("Step Step Step: $step");
 
-    if (step == null) return;
+    if (step == null) {
+      Get.offNamed("getstarted");
+      return;
+    }
     int steps = int.tryParse(step) ?? 0; // convert safely
     print("Steps: $steps");
 
@@ -97,7 +107,10 @@ class WelcomeController extends GetxController {
     var step = await prefs.getString(LocalDBKeys.ONBOARDINGSTEP);
     print("Step Step Step: $step");
 
-    if (step == null) return;
+    if (step == null) {
+      Get.offNamed("getstarted");
+      return;
+    }
     int steps = int.tryParse(step) ?? 0; // convert safely
     print("Steps: $steps");
 
@@ -130,9 +143,25 @@ class WelcomeController extends GetxController {
   }
 
   void handleUri(Uri uri, bool isColdStart) async {
-    if (!uri.pathSegments.contains('event')) return;
+    String eventId = "";
 
-    String eventId = uri.pathSegments.last;
+    if (uri.scheme == 'yestable' && uri.host == 'event') {
+      if (uri.pathSegments.isNotEmpty) {
+        eventId = uri.pathSegments.first;
+      }
+    } else if (uri.pathSegments.contains('event')) {
+      eventId = uri.pathSegments.last;
+    }
+
+    if (eventId.isEmpty) return;
+
+    // Prevent duplicate processing from app_links double-firing
+    int now = DateTime.now().millisecondsSinceEpoch;
+    if (_lastProcessedUri == uri.toString() && (now - _lastProcessedTime) < 3000) {
+      return;
+    }
+    _lastProcessedUri = uri.toString();
+    _lastProcessedTime = now;
 
     print("🔥 Deep Link Event ID: $eventId");
 
