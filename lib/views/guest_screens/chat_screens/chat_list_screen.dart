@@ -210,7 +210,7 @@ class ChatListScreen extends StatelessWidget {
                                             groupId: groupDoc.id,
                                             senderName: group["lastMessageSenderName"],
                                             invitationMsg: group["groupDescription"] ?? "",
-                                              adminId: group["adminId"]
+                                              adminId: group["adminId"],
                                           );
                                         },
                                       ),

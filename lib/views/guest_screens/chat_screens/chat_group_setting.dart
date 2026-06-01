@@ -249,7 +249,9 @@ class ChatGroupSetting extends StatelessWidget {
                                                     () => CupertinoSwitch(
                                                   activeTrackColor: blackColor,
                                                   value: eventController.switchValue3.value,
-                                                  onChanged: (val) => eventController.toggleSwitch3(),
+                                                  onChanged: (val) {
+                                                    eventController.toggleSwitch3();
+                                                    },
                                                 ),
                                               ),
                                             ),
