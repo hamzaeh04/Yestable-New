@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -33,6 +35,27 @@ class EventController extends GetxController{
   final SharedPreferences pref = SharedPreferencesMethod.storage;
   final MessagingService messagingService = MessagingService();
   var switchValue3 = false.obs;
+  StreamSubscription? groupSubscription;
+
+  void listenGroupStatus(String groupId) {
+    groupSubscription?.cancel();
+
+    groupSubscription = FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupId)
+        .snapshots()
+        .listen((doc) {
+      if (doc.exists) {
+        final bool isDisable = doc.data()?['disableGroup'] ?? false;
+        switchValue3.value = !isDisable;
+      }
+    });
+  }
+  @override
+  void onClose() {
+    groupSubscription?.cancel();
+    super.onClose();
+  }
   // Event Controllers
   final TextEditingController eventName = TextEditingController();
   final TextEditingController eventDate = TextEditingController();
@@ -469,11 +492,13 @@ class EventController extends GetxController{
         Utils.showToast(jsonResponse['message'] ?? "Event created", false);
 
         String eventId = jsonResponse["data"]["_id"];
+        String eventImage = jsonResponse["data"]["image"];
         String link = generateEventLink(eventId);
         final adminName = pref.getString(LocalDBKeys.USERFULLNAME);
         final adminId = pref.getString(LocalDBKeys.USERID);
         print("sjkfghigshdsdsasdbv : ${adminId}");
-        messagingService.createGroup(imagePath: "" ,name: eventName.text, createdBy: adminName ?? '', enableGroup: switchValue3.value,eventId:eventId.toString(),adminId: adminId!,invitationMsg: inviteMsg.text,adminProfilePic: profileController.getMyProfileModel.value?.data?.profilePic ?? "");
+        print("sjkfghigshdsdsasdbv : ${eventImage}");
+        messagingService.createGroup(imagePath: eventImage, name: eventName.text, createdBy: adminName ?? '', enableGroup: switchValue3.value,eventId:eventId.toString(),adminId: adminId!,invitationMsg: inviteMsg.text,adminProfilePic: profileController.getMyProfileModel.value?.data?.profilePic ?? "");
         showShareProfileDialog(
           context,
           title: "Share Event Link",

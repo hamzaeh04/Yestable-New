@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -18,6 +21,8 @@ import 'package:yestable/utils/init_binding.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/views/guest_screens/welcome_screens/splash_screen.dart';
 
+import 'core/services/login/google_auth_service.dart';
+import 'core/services/notification/notification_service.dart';
 import 'outh_file/local_db_key.dart';
 
 Future<void> main() async {
@@ -27,6 +32,21 @@ Future<void> main() async {
   );
   final prefs = await SharedPreferences.getInstance();
   Get.put<SharedPreferences>(prefs, permanent: true);
+
+  final googleAuthService = GoogleAuthService();
+  // googleAuthService.initService(
+  //     clientId: "813161449252-eq01riueph9mjsgnkkg17f9g2ci7mcqp.apps.googleusercontent.com",
+  //     serverClientId: "813161449252-d1kbnk7ct7q3a55g1parudfg23d7250h.apps.googleusercontent.com"
+  // );
+
+  if(Platform.isAndroid || Platform.isIOS){
+    FirebaseNotification notification = FirebaseNotification();
+    await notification.initLocalNotification();
+    await notification.initNotification();
+    notification.onTokenRefresh();
+    FirebaseMessaging.onBackgroundMessage(firebaseMessageBackgroundHandler);
+  }
+
   Get.put(ProfileController());
   Get.put(LocationController());
   Get.put(EventController());
@@ -35,6 +55,12 @@ Future<void> main() async {
   Get.put(YesGptController());
   Get.put(NotificationController());
   runApp(MyApp());
+}
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessageBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print(message.notification!.title.toString());
 }
 
 class MyApp extends StatelessWidget {

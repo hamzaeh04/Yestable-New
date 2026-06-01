@@ -7,6 +7,7 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/button_widget.dart';
 
 import '../../guest_screens/profile_setup_screens/profile_edit_screen.dart';
@@ -15,6 +16,7 @@ class CreateNewEventScreen extends StatelessWidget {
   CreateNewEventScreen({super.key});
   final ProfileController controller = Get.find<ProfileController>();
   final EventController eventController = Get.find<EventController>();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {

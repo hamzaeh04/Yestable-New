@@ -8,6 +8,7 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/custom_image_widget.dart';
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart'; // customText
 import '../../../widget/home_screen_widget.dart'; // homeIconWidget
@@ -28,7 +29,12 @@ class ChatGroupSetting extends StatelessWidget {
     final groupId = args["groupId"];
     final invitationMsg = args["invitationMsg"];
     final adminId = args["adminId"];
+    final isGroupEnable = args["isGroupEnable"];
     navigationController.isHost.value = (navigationController.returnUserId() == adminId);
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      eventController.listenGroupStatus(groupId);
+    });
     return Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
@@ -90,8 +96,8 @@ class ChatGroupSetting extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.grey.shade200,
                             ),
-                            child: Image.asset(
-                              imagePath,
+                            child: Image.network(
+                              "${baseService.baseURL}$imagePath",
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
                                   Icon(
@@ -249,9 +255,26 @@ class ChatGroupSetting extends StatelessWidget {
                                                     () => CupertinoSwitch(
                                                   activeTrackColor: blackColor,
                                                   value: eventController.switchValue3.value,
-                                                  onChanged: (val) => eventController.toggleSwitch3(),
+                                                  onChanged: (val) async {
+                                                    // Optimistic update
+                                                    eventController.switchValue3.value = val;
+                                                    try {
+                                                      await messagingService.updateEnableChat(
+                                                        enableChat: val,
+                                                        groupId: groupId,
+                                                      );
+                                                    } catch (e) {
+                                                      // Revert on error
+                                                      eventController.switchValue3.value = !val;
+                                                      Get.snackbar(
+                                                        "Error",
+                                                        "Failed to update group setting: ${e.toString()}",
+                                                        snackPosition: SnackPosition.BOTTOM,
+                                                      );
+                                                    }
+                                                  },
                                                 ),
-                                              ),
+                                              )
                                             ),
                                           ],
                                         )

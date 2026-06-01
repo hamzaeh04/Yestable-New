@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
+import 'package:yestable/widget/custom_image_widget.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -41,6 +42,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
     final groupId = args["groupId"];
     final invitationMsg = args["invitationMsg"];
     final adminId = args["adminId"];
+    final isGroupEnabled = args["isGroupEnable"];
     return Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true, // Important for keyboard handling
@@ -61,7 +63,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                       Navigator.pop(context);
                     },
                   ),
-                  SizedBox(width: 2.w),
+                  SizedBox(width: 3.w),
                   InkWell(
                     onTap: (){
                       Get.toNamed("chatgroupsetting",arguments: {
@@ -70,7 +72,8 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                         "imagePath": imagePath,
                         "groupId": groupId,
                         "invitationMsg" : invitationMsg,
-                        "adminId":adminId
+                        "adminId":adminId,
+                        "isGroupEnable": isGroupEnabled
                       });
 
                     },
@@ -78,10 +81,21 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                       children: [
                         Stack(
                           children: [
-                            Image.asset(
-                              imagePath ?? "assets/png/chat_images/chat_msg_image.png",
-                              height: 6.h,
-                              width: 15.w,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.sp), // adjust as needed
+                              child: imagePath != null && imagePath.isNotEmpty
+                                  ? Image.network(
+                                "${baseService.baseURL}$imagePath",
+                                height: 6.h,
+                                width: 14.w,
+                                fit: BoxFit.cover,
+                              )
+                                  : Image.asset(
+                                "assets/png/chat_images/chat_msg_image.png",
+                                height: 6.h,
+                                width: 15.w,
+                                fit: BoxFit.cover,
+                              ),
                             ),
 
                             Positioned(
@@ -95,12 +109,10 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                                   child: Stack(
                                     fit: StackFit.expand,
                                     children: [
-
                                       Image.asset(
                                         "assets/png/girl_profile.png",
                                         fit: BoxFit.cover,
                                       ),
-
                                       BackdropFilter(
                                         filter: ImageFilter.blur(
                                           sigmaX: 3,
@@ -118,7 +130,6 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                                           ),
                                         ),
                                       ),
-
                                       Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -135,7 +146,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                           ],
                         ),
 
-                        SizedBox(width: 2.w),
+                        SizedBox(width: 3.w),
 
                         /// FIX OVERFLOW
                         SizedBox(

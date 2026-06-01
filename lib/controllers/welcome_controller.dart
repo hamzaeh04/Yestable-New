@@ -59,6 +59,7 @@ class WelcomeController extends GetxController {
       }
 
       var token = await prefs.getString(LocalDBKeys.TOKEN);
+      print(token);
       var profileCompleted = prefs.getBool(LocalDBKeys.PROFILECOMPLETED) ?? false;
 
 

@@ -7,6 +7,7 @@ import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/widget/animated_button.dart';
 
 import '../../../constants/color_constants.dart';
+import '../../../core/services/login/google_auth_service.dart';
 import '../../../widget/button_widget.dart';
 import '../../../widget/custom_phone_feild.dart';
 import '../../../widget/social_icon_widget.dart';
@@ -14,6 +15,7 @@ import '../../../widget/social_icon_widget.dart';
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
   final AuthController controller = Get.find<AuthController>();
+  final GoogleAuthService _authService = GoogleAuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +130,15 @@ class SignupScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      socialIconWidget("Google", '$google',width: 40.w,borderColor: greenColor,borderWidth: 0.17.w),
+                      socialIconWidget("Google", '$google',width: 40.w,borderColor: greenColor,borderWidth: 0.17.w,
+                        ontap: () async {
+                          var user = await _authService.login();
+
+                          if (user != null) {
+                            controller.googleLogin(_authService);
+                          }
+                        },
+                      ),
                       socialIconWidget("Apple ID", '$apple',width: 40.w,borderColor: greenColor,borderWidth: 0.17.w),
                     ],
                   ),

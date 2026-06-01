@@ -33,7 +33,7 @@ class MessagingService {
       "lastMessageSenderName": "",
       "membersCount": 1,
       "lastMessageTime": FieldValue.serverTimestamp(),
-      "disableGroup": enableGroup,
+      "disableGroup": !enableGroup,
       "groupDescription": invitationMsg
     });
     /// 🔥 ADD ADMIN AS MEMBER
@@ -205,6 +205,17 @@ class MessagingService {
     await groupRef.delete();
   }
 
+  Future<void> updateEnableChat({
+    required bool enableChat,
+    required String groupId,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection("group")
+        .doc(groupId)
+        .update({
+      "disableGroup": !enableChat,
+    });
+  }
 }
 
 

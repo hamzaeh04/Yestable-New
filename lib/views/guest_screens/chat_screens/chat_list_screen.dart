@@ -134,9 +134,14 @@ class ChatListScreen extends StatelessWidget {
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance.collection('group').snapshots(),
                           builder: (context, snapshot) {
-
                             if (!snapshot.hasData) {
-                              return const Center(child: CircularProgressIndicator());
+                              return const Center(child: CircularProgressIndicator(color: greenColor,));
+                            }
+
+                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: customText(text: "No Groups Found"),
+                              );
                             }
 
                             final allGroups = snapshot.data!.docs;
@@ -165,10 +170,6 @@ class ChatListScreen extends StatelessWidget {
                                       .snapshots(),
 
                                   builder: (context, memberSnap) {
-
-                                    if (!memberSnap.hasData || !memberSnap.data!.exists) {
-                                      return const SizedBox(); // user not in this group
-                                    }
 
                                     final group = groupDoc.data() as Map<String, dynamic>;
 
@@ -199,19 +200,22 @@ class ChatListScreen extends StatelessWidget {
 
                                           final msgCount = snap.data ?? 0;
 
-                                          return chatListWidget(
-                                            "assets/png/admin_home_foodpic.png",
-                                            group["GroupName"] ?? "",
-                                            group["lastMessage"] ?? "No messages yet",
-                                            getTimeAgo(date),
-                                            msgCount != 0,
-                                            msgCount,
-                                            group["membersCount"].toString(),
-                                            groupId: groupDoc.id,
-                                            senderName: group["lastMessageSenderName"],
-                                            invitationMsg: group["groupDescription"] ?? "",
-                                              adminId: group["adminId"]
-                                          );
+                                            return chatListWidget(
+                                              // "assets/png/admin_home_foodpic.png",
+                                              group["imagePath"] ?? "assets/png/admin_home_foodpic.png",
+                                              group["GroupName"] ?? "",
+                                              group["lastMessage"] ?? "No messages yet",
+                                              getTimeAgo(date),
+                                              msgCount != 0,
+                                              msgCount,
+                                              group["membersCount"].toString(),
+                                              groupId: groupDoc.id,
+                                              senderName: group["lastMessageSenderName"],
+                                              invitationMsg: group["groupDescription"] ?? "",
+                                              adminId: group["adminId"],
+                                              isGroupEnabled: group["disableGroup"],
+                                              isAdmin: false,
+                                            );
                                         },
                                       ),
                                     );
@@ -233,7 +237,7 @@ class ChatListScreen extends StatelessWidget {
 
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Center(
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(color: greenColor,),
                               );
                             }
 
@@ -301,7 +305,8 @@ class ChatListScreen extends StatelessWidget {
                                       }
 
                                       return chatListWidget(
-                                          "assets/png/admin_home_foodpic.png",
+                                          // "assets/png/admin_home_foodpic.png",
+                                          group["imagePath"] ?? "assets/png/admin_home_foodpic.png",
                                           group["GroupName"] ?? "",
                                           group["lastMessage"] ?? "No messages yet",
                                           getTimeAgo(date),
@@ -311,7 +316,9 @@ class ChatListScreen extends StatelessWidget {
                                           groupId: group["groupId"],
                                           senderName: group["lastMessageSenderName"],
                                           invitationMsg: group["groupDescription"] ?? "",
-                                          adminId: group["adminId"]
+                                          adminId: group["adminId"],
+                                        isGroupEnabled: group["disableGroup"],
+                                        isAdmin: true
                                       );
                                     },
                                   ),
