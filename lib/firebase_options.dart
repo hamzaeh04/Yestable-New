@@ -73,6 +73,8 @@ class DefaultFirebaseOptions {
     projectId: 'yestable-107c6',
     databaseURL: 'https://yestable-107c6-default-rtdb.firebaseio.com',
     storageBucket: 'yestable-107c6.firebasestorage.app',
+    androidClientId: '669739754062-kb12ee40li96s5u5b1bkbcolrjjpb44f.apps.googleusercontent.com',
+    iosClientId: '669739754062-nnnt1d3k2c153j9g0vsugdq0tsq1fabb.apps.googleusercontent.com',
     iosBundleId: 'com.sirentheory.yestable',
   );
 

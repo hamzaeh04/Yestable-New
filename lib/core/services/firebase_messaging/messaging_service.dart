@@ -33,9 +33,10 @@ class MessagingService {
       "lastMessageSenderName": "",
       "membersCount": 1,
       "lastMessageTime": FieldValue.serverTimestamp(),
-      "disableGroup": !enableGroup,
+      "disableGroup": enableGroup,
       "groupDescription": invitationMsg
     });
+
     /// 🔥 ADD ADMIN AS MEMBER
     await groupRef
         .collection("members")
@@ -73,7 +74,8 @@ class MessagingService {
     await memberRef.set({
       "userId": userId,
       "userName": userName,
-      "memberProfile":memberProfile,
+      "memberProfile": memberProfile,
+
       /// ✔ keep join time only
       "joinedAt": FieldValue.serverTimestamp(),
 
@@ -174,7 +176,7 @@ class MessagingService {
   Future<void> exitGroup({
     required String groupId,
     required String userId
-  }) async{
+  }) async {
     final memberRef = _firestore
         .collection("group")
         .doc(groupId)
@@ -191,13 +193,14 @@ class MessagingService {
       debugPrint("exitGroup membersCount update failed: $e");
     }
   }
-/// -----------------------------
-/// Delede Group (FIXED)
-/// -----------------------------
-///
+
+  /// -----------------------------
+  /// Delede Group (FIXED)
+  /// -----------------------------
+  ///
   Future<void> deledeGroup({
     required String groupId,
-  }) async{
+  }) async {
     final groupRef = _firestore
         .collection("group")
         .doc(groupId);
@@ -207,18 +210,15 @@ class MessagingService {
 
   Future<void> updateEnableChat({
     required bool enableChat,
-    required String groupId,
+    required String groupId
   }) async {
-    await FirebaseFirestore.instance
-        .collection("group")
-        .doc(groupId)
-        .update({
-      "disableGroup": !enableChat,
-    });
+    try {
+
+      await _firestore.collection("group").doc(groupId).update({
+        "disableGroup": enableChat,
+      });
+    } catch (e) {
+      debugPrint("enable chat update failed: $e");
+    }
   }
 }
-
-
-
-
-
