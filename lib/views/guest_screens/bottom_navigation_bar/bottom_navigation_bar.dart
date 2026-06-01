@@ -91,7 +91,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     ChatListScreen(),
     MyProfileScreen(),
     ViewallInvitationScreen(),
-    MyNotificationScreen(),
+    // MyNotificationScreen(),
     // SearchScreen(),
     // AddFreindScreen(),
     // CommunityProfile(),

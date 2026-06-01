@@ -14,6 +14,7 @@ import '../../../outh_file/local_db_key.dart';
 import '../../../utils/shared_prefrences_methods.dart';
 import '../../../utils/utility.dart';
 import '../../../widget/button_widget.dart';
+import '../../../widget/share_profile_widget.dart';
 
 class AllowNotificationScreen extends StatelessWidget {
   AllowNotificationScreen({super.key});
@@ -81,6 +82,8 @@ class AllowNotificationScreen extends StatelessWidget {
                     animatedButton(() async {
                       if(navigationController.isUser.value == true){
                         if(steps == 2){
+                          await controller.enableNotification();
+
                           Get.toNamed("profilecompletescreen");
                           authController.controller.controller.clearSetupProfileFields();
                           await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, true);
@@ -89,7 +92,10 @@ class AllowNotificationScreen extends StatelessWidget {
                         }
                       } else{
                         if (steps == 1) {
-                          Get.toNamed('bottomnavigationbar', arguments: true);
+                          await controller.enableNotification();
+                          showShareProfileDialog(context, onCancelTap: (){
+                            Get.toNamed('bottomnavigationbar', arguments: true);
+                          });
                           authController.controller.controller.clearSetupProfileFields();
                           await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, true);
                         }
@@ -115,7 +121,9 @@ class AllowNotificationScreen extends StatelessWidget {
                           }
                         } else{
                           if (steps == 1) {
-                            Get.toNamed('bottomnavigationbar', arguments: true);
+                            showShareProfileDialog(context, onCancelTap: (){
+                              Get.toNamed('bottomnavigationbar', arguments: true);
+                            });
                             authController.controller.controller.clearSetupProfileFields();
                             await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, true);
                           }

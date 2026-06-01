@@ -7,6 +7,7 @@ import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
 import '../../../widget/button_widget.dart';
+import '../../../widget/share_profile_widget.dart';
 
 class AllowHostNotificationScreen extends StatelessWidget {
   const AllowHostNotificationScreen({super.key});
@@ -65,7 +66,8 @@ class AllowHostNotificationScreen extends StatelessWidget {
                       whiteColor,
                       colors: greenColor,
                       onTap: () {
-                        Get.toNamed("bottomnavigationbar");
+                        // Get.toNamed("bottomnavigationbar");
+                        showShareProfileDialog(context);
                       },
                     ),
                   ),
@@ -74,7 +76,8 @@ class AllowHostNotificationScreen extends StatelessWidget {
                     greenColor,
                     borderColor: greenColor,
                     onTap: () {
-                      Get.toNamed("bottomnavigationbar");
+                      // Get.toNamed("bottomnavigationbar");
+                      showShareProfileDialog(context);
                     },
                   ),
                 ],

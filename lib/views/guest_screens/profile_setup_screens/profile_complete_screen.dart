@@ -6,6 +6,7 @@ import 'package:yestable/widget/animated_button.dart';
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../widget/button_widget.dart';
+import '../../../widget/share_profile_widget.dart';
 
 class ProfileCompleteScreen extends StatelessWidget {
   const ProfileCompleteScreen({super.key});
@@ -64,7 +65,8 @@ class ProfileCompleteScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6.w), // Adjust as needed
                   child: animatedButton(() {
-                    Get.offAllNamed('bottomnavigationbar');
+                    showShareProfileDialog(context);
+                    // Get.offAllNamed('bottomnavigationbar');
                   }, "Get Started"),
                 ),
               ],

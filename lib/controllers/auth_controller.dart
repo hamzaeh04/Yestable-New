@@ -189,7 +189,7 @@ class AuthController extends GetxController {
       Utils.showToast(response['message'] ?? 'Login successful', false);
 
       // Navigate to bottom bar
-      Get.offAllNamed('/bottomnavbar');
+      Get.offAllNamed('/bottomnavigationbar');
 
     } catch (e, stackTrace) {
       print("Login error: $e\n$stackTrace");

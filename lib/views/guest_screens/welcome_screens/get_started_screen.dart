@@ -5,12 +5,16 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/button_widget.dart';
+
+import '../../../outh_file/local_db_key.dart';
 
 class GetStartedScreen extends StatelessWidget {
   GetStartedScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
   final AuthController authController = Get.find<AuthController>();
+  final pref = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +36,11 @@ class GetStartedScreen extends StatelessWidget {
             ),
             SizedBox(height: 2.h),
             customText(
-              text: "Welcome To YesTable",
-              fontSize: 23.sp,
-              fontFamily: "CormorantGaramond",
-              fontWeight: FontWeight.w600
-            ),
+                text: "Welcome To YesTable",
+                fontSize: 23.sp,
+                fontFamily: "CormorantGaramond",
+                fontWeight: FontWeight.w600
+              ),
             customText(
               text: "Got Allergies? Picky Eaters? Friends Who Go\nGluten-Free For Fun?",
               fontSize: 15.sp,

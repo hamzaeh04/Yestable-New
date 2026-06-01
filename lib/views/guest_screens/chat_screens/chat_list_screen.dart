@@ -51,14 +51,14 @@ class ChatListScreen extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                       onTap: (){
-                        controller.addtoFriendScreen();
+                        // controller.addtoFriendScreen();
                       },
                       child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
                       onTap: (){
-                        controller.goToNotificationPage();
+                        Get.toNamed("mynotificationscreen");
                       },
                       child: homeIconWidget(icon: Icons.notifications)),
                 ],

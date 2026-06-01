@@ -52,6 +52,7 @@ class EventScreen extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       // controller.goTSearchScreen();
+
                     },
                     child: homeIconWidget(
                       imagePath: "assets/png/icons/search_icon.png",
@@ -60,7 +61,7 @@ class EventScreen extends StatelessWidget {
                   SizedBox(width: 2.w),
                   InkWell(
                     onTap: () {
-                      controller.goToNotificationPage();
+                      Get.toNamed("mynotificationscreen");
                     },
                     child: homeIconWidget(icon: Icons.notifications),
                   ),

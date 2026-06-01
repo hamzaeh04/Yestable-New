@@ -13,6 +13,9 @@ class ApiEndPoints{
   static const String getMenus = '/menus';
   static const String createEvent = '/events';
   static const String editProfile = '/users/profile/update';
+  static const String getAllNotifications = '/notifications';
+  static const String notificationSetting = '/users/profile/notification-settings';
+  static const String registerFcm = '/notifications/register';
 
   static String updateMemberAllergensPlate(String memberId){
     return '/users/members/${memberId}/allergens-plate';

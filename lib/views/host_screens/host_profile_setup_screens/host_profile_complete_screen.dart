@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../widget/button_widget.dart';
+import '../../../widget/share_profile_widget.dart';
 
 class HostProfileCompleteScreen extends StatelessWidget {
   HostProfileCompleteScreen({super.key});
@@ -45,7 +46,8 @@ class HostProfileCompleteScreen extends StatelessWidget {
                 whiteColor,
                 colors: greenColor,
                 onTap: () {
-                  Get.toNamed('bottomnavigationbar');
+                  showShareProfileDialog(context);
+                  // Get.toNamed('bottomnavigationbar');
                 },
               ),
             ),

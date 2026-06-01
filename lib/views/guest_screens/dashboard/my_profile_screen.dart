@@ -191,7 +191,7 @@ class MyProfileScreen extends StatelessWidget {
                   SizedBox(width: 2.w),
                   homeIconWidget(
                     icon: Icons.notifications,
-                    onTap: () => controller.goToNotificationPage(),
+                    onTap: () =>  Get.toNamed("mynotificationscreen"),
                   ),
                 ],
               ),

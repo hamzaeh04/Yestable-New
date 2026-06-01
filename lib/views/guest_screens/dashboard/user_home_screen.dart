@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(width: 2.w),
                   InkWell(
                     onTap: (){
-                      controller.goToNotificationPage();
+                      Get.toNamed("mynotificationscreen");
                     },
                       child: homeIconWidget(icon: Icons.notifications)),
                 ],

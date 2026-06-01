@@ -34,10 +34,10 @@ Future<void> main() async {
   Get.put<SharedPreferences>(prefs, permanent: true);
 
   final googleAuthService = GoogleAuthService();
-  // googleAuthService.initService(
-  //     clientId: "813161449252-eq01riueph9mjsgnkkg17f9g2ci7mcqp.apps.googleusercontent.com",
-  //     serverClientId: "813161449252-d1kbnk7ct7q3a55g1parudfg23d7250h.apps.googleusercontent.com"
-  // );
+  await googleAuthService.initService(
+      // clientId: "669739754062-nnnt1d3k2c153j9g0vsugdq0tsq1fabb.apps.googleusercontent.com",
+      serverClientId: "669739754062-u53138chmveeqgt46l60a3atr54a02pe.apps.googleusercontent.com"
+  );
 
   if(Platform.isAndroid || Platform.isIOS){
     FirebaseNotification notification = FirebaseNotification();
