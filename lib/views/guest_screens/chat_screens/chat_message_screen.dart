@@ -366,7 +366,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                 //                 ),
                 //               ),
 
-
+SizedBox(height: 2.h,),
                               StreamBuilder<QuerySnapshot>(
                                 stream: FirebaseFirestore.instance
                                     .collection('group')

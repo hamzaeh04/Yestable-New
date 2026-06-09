@@ -14,6 +14,7 @@ import 'package:yestable/views/guest_screens/dashboard/search_screen.dart';
 import 'package:yestable/views/guest_screens/profile_setup_screens/host_profile_screen.dart';
 import 'package:yestable/views/host_screens/dashboard/host_home_screen.dart';
 
+import '../../../controllers/notification_controller.dart';
 import '../dashboard/my_profile_screen.dart';
 import '../dashboard/viewall_invitation_screen.dart';
 import '../profile_setup_screens/community_profile.dart';
@@ -36,6 +37,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     with WidgetsBindingObserver {
 
   final NavigationController controller = Get.find<NavigationController>();
+  final NotificationController notificationController = Get.find<NotificationController>();
   final EventController eventController = Get.find<EventController>();
   late PageController _pageController;
 
@@ -65,6 +67,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       eventController.getAllEvents();
       controller.isUser.value == false ? eventController.getMyEvents(): null;
       controller.checkDeepLinkAndShowDialog();
+
     });
   }
 

@@ -162,7 +162,14 @@ class AuthController extends GetxController {
       final date = "".obs;
       date.value = response['data']['user']['createdAt'];
       final user = data['user'];
-      final token = data['accessToken'];
+      final token = data['access_token'];
+      await prefs.setString(LocalDBKeys.TOKEN, token);
+      await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
+      await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, data["user"]["profileCompleted"]);
+      await prefs.setString(LocalDBKeys.USERFULLNAME, data["user"]["name"] ?? "");
+      await prefs.setString(LocalDBKeys.USERID, data["user"]["_id"]);
+      await prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${data["user"]["onboardingStep"]}");
+      await prefs.setString(LocalDBKeys.FCMTOKEN, "${data["user"]["fcmTokens"]}");
 
       if (user == null || token == null) {
         Utils.showToast(response['message'] ?? 'Invalid email or password', true);
@@ -173,7 +180,7 @@ class AuthController extends GetxController {
       // final prefs = SharedPreferencesMethod.storage;
       // await prefs.setString(LocalDBKeys.USERDETAIL, jsonEncode(user));
       // await prefs.setString(LocalDBKeys.USERID, user['id'] ?? "");
-      await prefs.setString(LocalDBKeys.USERFULLNAME, user['fullname'] ?? "");
+      await prefs.setString(LocalDBKeys.USERFULLNAME, user['name'] ?? "");
       await prefs.setString(LocalDBKeys.USEREMAIL, user['email'] ?? "");
       await prefs.setString(LocalDBKeys.PHONENUMBER, user['phone'] ?? "");
       await prefs.setString(LocalDBKeys.USERPROFILEPIC, user['profilePicture'] ?? "");
@@ -189,7 +196,20 @@ class AuthController extends GetxController {
       Utils.showToast(response['message'] ?? 'Login successful', false);
 
       // Navigate to bottom bar
-      Get.offAllNamed('/bottomnavigationbar');
+      if(controller.isUser.value == true){
+        if(data['user']['onboardingStep'] == 4 || data['user']['profileCompleted'] == true){
+          Get.offAllNamed('/bottomnavigationbar');
+        } else{
+          Get.offAllNamed('/profileeditscreen');
+        }
+      } else{
+        if(data['user']['onboardingStep'] == 1 || data['user']['profileCompleted'] == true){
+          Get.offAllNamed('/bottomnavigationbar');
+        } else{
+          Get.offAllNamed('/profileeditscreen');
+        }
+      }
+      // Get.offAllNamed('/profileeditscreen');
 
     } catch (e, stackTrace) {
       print("Login error: $e\n$stackTrace");

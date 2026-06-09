@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GoogleAuthService {
   // Naye version me 'instance' use hota hai
@@ -29,9 +30,19 @@ class GoogleAuthService {
           // Authentication details nikalne ka naya tareeka
           final GoogleSignInAuthentication auth = await user.authentication;
 
-          // print("Access Token: ${auth.}");
-          tokenId = auth.idToken ?? '';
-          print("ID Token: ${auth.idToken}");
+          // Authenticate with Firebase using Google credentials
+          final AuthCredential credential = GoogleAuthProvider.credential(
+            idToken: auth.idToken,
+          );
+
+          final UserCredential userCredential =
+              await FirebaseAuth.instance.signInWithCredential(credential);
+
+          final String? firebaseIdToken = await userCredential.user?.getIdToken();
+
+          tokenId = firebaseIdToken ?? '';
+          print("Google ID Token: ${auth.idToken}");
+          print("Firebase ID Token: $tokenId");
 
           return user;
         }

@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/core/services/login/google_auth_service.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/bar_chart.dart';
@@ -26,6 +27,7 @@ import '../profile_setup_screens/host_profile_reviews.dart';
 class MyProfileScreen extends StatelessWidget {
   MyProfileScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+  GoogleAuthService authService = GoogleAuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +179,7 @@ class MyProfileScreen extends StatelessWidget {
                       final prefs = await SharedPreferences.getInstance();
                       // 1. Pehle flag ko true kar dein taake dialog block ho jaye
                       controller.hasCheckedProfile.value = true;
+                      await authService.logout();
 
                       // 2. Index ko reset karein
                       // 3. User status set karein
@@ -230,6 +233,7 @@ class MyProfileScreen extends StatelessWidget {
                                       children: [
                                         Row(
                                           children: [
+
                                             ClipRRect(
                                               borderRadius:
                                               BorderRadius.circular(
@@ -248,7 +252,10 @@ class MyProfileScreen extends StatelessWidget {
                                                   child:
                                                   data?.profilePic != null
                                                       ? CustomProfileWidget(
-                                                    imageUrl:
+
+                                                    imageUrl: data!.profilePic!.startsWith("https")
+                                                        ? data!.profilePic!
+                                                        :
                                                     "${controller.controller.baseService.baseURL}${data?.profilePic ?? ""}",
                                                     width: 80,
                                                     height: 80,

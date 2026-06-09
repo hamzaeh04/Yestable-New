@@ -8,6 +8,7 @@ import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
+import 'package:yestable/core/services/login/google_auth_service.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 
 import '../../../utils/shared_prefrences_methods.dart';
@@ -24,6 +25,7 @@ class ProfileEditScreen extends StatelessWidget {
 
   // final ProfileController controller = Get.find<ProfileController>();
   final prefs = SharedPreferencesMethod.storage;
+  GoogleAuthService authService = GoogleAuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +152,8 @@ class ProfileEditScreen extends StatelessWidget {
                                 (navigationController.controller.getMyProfileModel.value?.data?.profileCompleted == true) ?
                                 Get.toNamed("bottomnavigationbar"): Utils.showToast("Complete your profile first", true);
                               }
-
+                              // authService.logout();
+                              // prefs.clear();
                             },
                             child: customText(
                               text: "Cancel",
@@ -262,17 +265,17 @@ class ProfileEditScreen extends StatelessWidget {
                           ],
                         );
                       }
+                      if (profilePic?.isNotEmpty ?? false) {
+                        final imageUrl = profilePic!.startsWith("https")
+                            ? profilePic!
+                            : "${baseService.baseURL}$profilePic";
 
-                      if ((profilePic ?? '').isNotEmpty) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(15.sp),
                           child: SizedBox(
                             height: 13.h,
                             width: 26.w,
-                            child: Image.network(
-                              "${baseService.baseURL}${profilePic!}",
-                              fit: BoxFit.cover,
-                            ),
+                            child: Image.network(imageUrl, fit: BoxFit.cover),
                           ),
                         );
                       }

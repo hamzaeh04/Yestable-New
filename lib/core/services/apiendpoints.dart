@@ -1,7 +1,7 @@
 class ApiEndPoints{
   // Auth
   static const String login = '/auth/login';
-  static const String googleLogin = '/auth/google';
+  static const String googleLogin = '/auth/google/firebase';
   static const String verifyOtp = '/auth/verify';
   static const String setupProfile = '/users/profile/setup';
   static const String updateAllergensPlate = '/users/profile/allergens-plate';
