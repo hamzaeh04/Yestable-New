@@ -10,7 +10,7 @@ class FirebaseNotification {
   final pref = SharedPreferencesMethod.storage;
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
   String? FCMToken;
 
 
@@ -45,28 +45,28 @@ class FirebaseNotification {
 
   Future<void> showNotification(RemoteMessage message) async {
     AndroidNotificationChannel androidNotificationChannel =
-        AndroidNotificationChannel(
-          "high_importance_channel",
-          "High Importance Notification",
-          importance: Importance.max,
-        );
+    AndroidNotificationChannel(
+      "high_importance_channel",
+      "High Importance Notification",
+      importance: Importance.max,
+    );
     AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-          androidNotificationChannel.id,
-          androidNotificationChannel.name,
-          channelDescription: "Your Channel Description",
-          importance: Importance.high,
-          priority: Priority.high,
-          ticker: "ticker",
-          icon: '@mipmap/ic_launcher',
-        );
+    AndroidNotificationDetails(
+      androidNotificationChannel.id,
+      androidNotificationChannel.name,
+      channelDescription: "Your Channel Description",
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: "ticker",
+      icon: '@mipmap/ic_launcher',
+    );
 
     DarwinNotificationDetails darwinNotificationDetails =
-        DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        );
+    DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
     NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
       iOS: darwinNotificationDetails,
@@ -83,7 +83,7 @@ class FirebaseNotification {
       );
     }
   }
- Future<void> initNotification() async{
+  Future<void> initNotification() async{
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -110,7 +110,7 @@ class FirebaseNotification {
     } catch (e) {
       print("Error getting FCM Token (APNs may not be configured): $e");
     }
- }
+  }
   void onTokenRefresh() {
     messaging.onTokenRefresh.listen((newToken) {
       FCMToken = newToken;

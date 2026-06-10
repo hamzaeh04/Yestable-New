@@ -35,17 +35,9 @@ Future<void> main() async {
 
   final googleAuthService = GoogleAuthService();
   await googleAuthService.initService(
-      // clientId: "669739754062-nnnt1d3k2c153j9g0vsugdq0tsq1fabb.apps.googleusercontent.com",
+      clientId: "669739754062-nnnt1d3k2c153j9g0vsugdq0tsq1fabb.apps.googleusercontent.com",
       serverClientId: "669739754062-u53138chmveeqgt46l60a3atr54a02pe.apps.googleusercontent.com"
   );
-
-  if(Platform.isAndroid || Platform.isIOS){
-    FirebaseNotification notification = FirebaseNotification();
-    await notification.initLocalNotification();
-    await notification.initNotification();
-    notification.onTokenRefresh();
-    FirebaseMessaging.onBackgroundMessage(firebaseMessageBackgroundHandler);
-  }
 
   Get.put(ProfileController());
   Get.put(LocationController());
@@ -54,6 +46,13 @@ Future<void> main() async {
   Get.put(AuthController());
   Get.put(YesGptController());
   Get.put(NotificationController());
+  if(Platform.isAndroid || Platform.isIOS){
+    FirebaseNotification notification = FirebaseNotification();
+    await notification.initLocalNotification();
+    await notification.initNotification();
+    notification.onTokenRefresh();
+    FirebaseMessaging.onBackgroundMessage(firebaseMessageBackgroundHandler);
+  }
   runApp(MyApp());
 }
 

@@ -492,7 +492,7 @@ class EventController extends GetxController{
         Utils.showToast(jsonResponse['message'] ?? "Event created", false);
 
         String eventId = jsonResponse["data"]["_id"];
-        String eventImage = jsonResponse["data"]["image"];
+        String eventImage = jsonResponse["data"]["image"] ?? "";
         String link = generateEventLink(eventId);
         final adminName = pref.getString(LocalDBKeys.USERFULLNAME);
         final adminId = pref.getString(LocalDBKeys.USERID);

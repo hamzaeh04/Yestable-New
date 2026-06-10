@@ -215,7 +215,7 @@ class MessagingService {
     try {
 
       await _firestore.collection("group").doc(groupId).update({
-        "disableGroup": enableChat,
+        "disableGroup": !enableChat,
       });
     } catch (e) {
       debugPrint("enable chat update failed: $e");

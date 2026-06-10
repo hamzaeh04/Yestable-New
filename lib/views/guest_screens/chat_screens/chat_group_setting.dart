@@ -30,6 +30,7 @@ class ChatGroupSetting extends StatelessWidget {
     final invitationMsg = args["invitationMsg"];
     final adminId = args["adminId"];
     final isGroupEnable = args["isGroupEnable"];
+    eventController.switchValue3.value = !(isGroupEnable ?? false);
     navigationController.isHost.value = (navigationController.returnUserId() == adminId);
 
     WidgetsBinding.instance.addPostFrameCallback((_){

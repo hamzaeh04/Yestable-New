@@ -21,6 +21,9 @@ class CreateNewEventScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
+    if (eventId == null) {
+      eventController.switchValue3.value = false;
+    }
     return Scaffold(
       backgroundColor: greenColor,
       body: Column(
@@ -221,7 +224,7 @@ class CreateNewEventScreen extends StatelessWidget {
                               customText(text: "Check Guest\nNeeds Automatically.", fontWeight: FontWeight.w500, fontSize: 15.sp),
                               SizedBox(height: 2.h,),
                               customText(
-                                text: "Enable Group\nConversation",
+                                text: "Disable Group\nConversation",
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w500,
                               ),
