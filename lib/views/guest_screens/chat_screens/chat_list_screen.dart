@@ -132,57 +132,90 @@ class ChatListScreen extends StatelessWidget {
                       controller.isUser.value ?
                       Expanded(
                         child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance.collection('group').snapshots(),
+                          stream: FirebaseFirestore.instance
+                              .collection('group')
+                              .snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
-                              return const Center(child: CircularProgressIndicator(color: greenColor,));
-                            }
-
-                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                              return Center(
-                                child: customText(text: "No Groups Found"),
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  color: greenColor,
+                                ),
                               );
                             }
 
                             final allGroups = snapshot.data!.docs;
 
-                            // filter groups where user exists in members
-                            final userGroups = allGroups.where((groupDoc) {
-                              final groupId = groupDoc.id;
+                            if (allGroups.isEmpty) {
+                              return Center(
+                                child: customText(text: "No Groups Found"),
+                              );
+                            }
 
-                              // We cannot check subcollection directly here,
-                              // so we move check into UI per group
-                              return true;
-                            }).toList();
+                            return FutureBuilder<List<QueryDocumentSnapshot>>(
+                              future: () async {
+                                List<QueryDocumentSnapshot> joinedGroups = [];
 
-                            return ListView.builder(
-                              itemCount: userGroups.length,
-                              itemBuilder: (context, index) {
-
-                                final groupDoc = userGroups[index];
-
-                                return StreamBuilder<DocumentSnapshot>(
-                                  stream: FirebaseFirestore.instance
+                                for (var group in allGroups) {
+                                  final memberDoc = await FirebaseFirestore.instance
                                       .collection('group')
-                                      .doc(groupDoc.id)
+                                      .doc(group.id)
                                       .collection('members')
                                       .doc(controller.returnUserId())
-                                      .snapshots(),
+                                      .get();
 
-                                  builder: (context, memberSnap) {
+                                  if (memberDoc.exists) {
+                                    joinedGroups.add(group);
+                                  }
+                                }
 
-                                    final group = groupDoc.data() as Map<String, dynamic>;
+                                return joinedGroups;
+                              }(),
+                              builder: (context, joinedSnapshot) {
+                                if (!joinedSnapshot.hasData) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: greenColor,
+                                    ),
+                                  );
+                                }
 
-                                    Timestamp? lastMessageTime = group["lastMessageTime"];
+                                final joinedGroups = joinedSnapshot.data!;
+
+                                if (joinedGroups.isEmpty) {
+                                  return Center(
+                                    child: customText(text: "No Groups Found"),
+                                  );
+                                }
+
+                                return ListView.builder(
+                                  itemCount: joinedGroups.length,
+                                  itemBuilder: (context, index) {
+                                    final groupDoc = joinedGroups[index];
+
+                                    final group =
+                                    groupDoc.data() as Map<String, dynamic>;
+
+                                    Timestamp? lastMessageTime =
+                                    group["lastMessageTime"];
+
                                     DateTime date =
-                                        lastMessageTime?.toDate() ?? DateTime.now();
+                                        lastMessageTime?.toDate() ??
+                                            DateTime.now();
 
                                     String getTimeAgo(DateTime date) {
-                                      final diff = DateTime.now().difference(date);
+                                      final diff =
+                                      DateTime.now().difference(date);
 
-                                      if (diff.inSeconds < 60) return "just now";
-                                      if (diff.inMinutes < 60) return "${diff.inMinutes} min ago";
-                                      if (diff.inHours < 24) return "${diff.inHours} hr ago";
+                                      if (diff.inSeconds < 60) {
+                                        return "just now";
+                                      }
+                                      if (diff.inMinutes < 60) {
+                                        return "${diff.inMinutes} min ago";
+                                      }
+                                      if (diff.inHours < 24) {
+                                        return "${diff.inHours} hr ago";
+                                      }
                                       return "${diff.inDays} days ago";
                                     }
 
@@ -197,25 +230,28 @@ class ChatListScreen extends StatelessWidget {
                                           userId: controller.returnUserId(),
                                         ),
                                         builder: (context, snap) {
-
                                           final msgCount = snap.data ?? 0;
 
-                                            return chatListWidget(
-                                              // "assets/png/admin_home_foodpic.png",
-                                              group["imagePath"] ?? "assets/png/admin_home_foodpic.png",
-                                              group["GroupName"] ?? "",
-                                              group["lastMessage"] ?? "No messages yet",
-                                              getTimeAgo(date),
-                                              msgCount != 0,
-                                              msgCount,
-                                              group["membersCount"].toString(),
-                                              groupId: groupDoc.id,
-                                              senderName: group["lastMessageSenderName"],
-                                              invitationMsg: group["groupDescription"] ?? "",
-                                              adminId: group["adminId"],
-                                              isGroupEnabled: group["disableGroup"],
-                                              isAdmin: false,
-                                            );
+                                          return chatListWidget(
+                                            group["imagePath"] ??
+                                                "assets/png/admin_home_foodpic.png",
+                                            group["GroupName"] ?? "",
+                                            group["lastMessage"] ??
+                                                "No messages yet",
+                                            getTimeAgo(date),
+                                            msgCount != 0,
+                                            msgCount,
+                                            group["membersCount"].toString(),
+                                            groupId: groupDoc.id,
+                                            senderName:
+                                            group["lastMessageSenderName"],
+                                            invitationMsg:
+                                            group["groupDescription"] ?? "",
+                                            adminId: group["adminId"],
+                                            isGroupEnabled:
+                                            group["disableGroup"],
+                                            isAdmin: false,
+                                          );
                                         },
                                       ),
                                     );

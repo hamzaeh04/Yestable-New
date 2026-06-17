@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
+import 'package:yestable/controllers/Allergen_controller.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/location_controller.dart';
@@ -38,7 +39,7 @@ Future<void> main() async {
       clientId: "669739754062-nnnt1d3k2c153j9g0vsugdq0tsq1fabb.apps.googleusercontent.com",
       serverClientId: "669739754062-u53138chmveeqgt46l60a3atr54a02pe.apps.googleusercontent.com"
   );
-
+  Get.put(AllergenChartController());
   Get.put(ProfileController());
   Get.put(LocationController());
   Get.put(EventController());
