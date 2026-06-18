@@ -26,6 +26,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   final MessagingService messagingService = MessagingService();
   final prefs = SharedPreferencesMethod.storage;
   final ScrollController _scrollController = ScrollController();
+  String? _lastMarkedMessageId;
 
   @override
   void dispose() {
@@ -399,12 +400,23 @@ SizedBox(height: 2.h,),
                                   final messages = snapshot.data!.docs;
 
                                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    if (!mounted) return;
                                     if (_scrollController.hasClients) {
                                       _scrollController.animateTo(
                                         _scrollController.position.maxScrollExtent,
                                         duration: const Duration(milliseconds: 200),
                                         curve: Curves.easeOut,
                                       );
+                                    }
+                                    if (messages.isNotEmpty) {
+                                      final lastMessageId = messages.last.id;
+                                      if (_lastMarkedMessageId != lastMessageId) {
+                                        _lastMarkedMessageId = lastMessageId;
+                                        messagingService.markAsRead(
+                                          groupId: groupId,
+                                          userId: controller.returnUserId(),
+                                        );
+                                      }
                                     }
                                   });
 

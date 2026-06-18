@@ -9,6 +9,7 @@ import 'package:yestable/widget/guest_update_received.dart';
 import '../../../controllers/event_controller.dart';
 import '../../../outh_file/local_db_key.dart';
 import '../../../utils/shared_prefrences_methods.dart';
+import '../../../widget/common_allergens_chart.dart';
 import '../../../widget/complete_guest_dialog.dart';
 import '../../../widget/event_floating_button.dart';
 import '../../../widget/home_screen_widget.dart';
@@ -332,175 +333,176 @@ class AdminHomeScreen extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Obx(
-                                          () => Container(
-                                            width: 88.w,
-                                            height: 4.5.h,
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 1.w,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.sp),
-                                              border: Border.all(
-                                                color: const Color(0xFF5A7C79),
+                                          () {
+                                            final eventData = eventController.myEventsModel.value?.data?.data ?? [];
+                                            final dropdownItems = eventData.map((e) => e.eventName ?? '').where((name) => name.isNotEmpty).toList();
+                                            final selectedValue = controller.selectedEvent.value;
+                                            final hasSelectedValue = dropdownItems.contains(selectedValue);
+
+                                            return Container(
+                                              width: 88.w,
+                                              height: 4.5.h,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 1.w,
                                               ),
-                                              color: const Color(0xFFF6EEEB),
-                                            ),
-                                            child: DropdownButtonHideUnderline(
-                                              child: DropdownButton2<String>(
-                                                isExpanded: true,
-                                                value:
-                                                    controller
-                                                            .selectedEvent
-                                                            .value
-                                                            .isEmpty
-                                                        ? null
-                                                        : controller
-                                                            .selectedEvent
-                                                            .value,
-
-                                                iconStyleData:
-                                                    const IconStyleData(
-                                                      icon: Icon(
-                                                        Icons
-                                                            .keyboard_arrow_down,
-                                                        color: Colors.black,
-                                                      ),
-                                                      iconSize: 24,
-                                                    ),
-
-                                                hint: customText(
-                                                  text: "Select The Event",
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.grey,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.sp),
+                                                border: Border.all(
+                                                  color: const Color(0xFF5A7C79),
                                                 ),
+                                                color: const Color(0xFFF6EEEB),
+                                              ),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton2<String>(
+                                                  isExpanded: true,
+                                                  value: (selectedValue.isEmpty || !hasSelectedValue)
+                                                      ? null
+                                                      : selectedValue,
 
-                                                dropdownStyleData:
-                                                    DropdownStyleData(
-                                                      offset: const Offset(
-                                                        0,
-                                                        -7,
+                                                  iconStyleData:
+                                                      const IconStyleData(
+                                                        icon: Icon(
+                                                          Icons
+                                                              .keyboard_arrow_down,
+                                                          color: Colors.black,
+                                                        ),
+                                                        iconSize: 24,
                                                       ),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              15.sp,
-                                                            ),
-                                                        color: Colors.white,
+
+                                                  hint: customText(
+                                                    text: "Select The Event",
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey,
+                                                  ),
+
+                                                  dropdownStyleData:
+                                                      DropdownStyleData(
+                                                        offset: const Offset(
+                                                          0,
+                                                          -7,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                15.sp,
+                                                              ),
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
-                                                    ),
 
-                                                // ✅ Fix: Show selected value without tick
-                                                selectedItemBuilder: (context) {
-                                                  return controller.events.map((
-                                                    value,
-                                                  ) {
-                                                    return Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: customText(
-                                                        text: value,
-                                                        fontSize: 15.sp,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: Colors.black,
-                                                      ),
-                                                    );
-                                                  }).toList();
-                                                },
-
-                                                onChanged: (String? newValue) {
-                                                  if (newValue != null) {
-                                                    controller.selectEvent(
-                                                      newValue,
-                                                    );
-                                                  }
-                                                },
-
-                                                // ✅ Dropdown list with check and dividers
-                                                items:
-                                                    controller.events.mapIndexed((
-                                                      index,
+                                                  // ✅ Fix: Show selected value without tick
+                                                  selectedItemBuilder: (context) {
+                                                    return dropdownItems.map((
                                                       value,
                                                     ) {
-                                                      final isLast =
-                                                          index ==
-                                                          controller
-                                                                  .events
-                                                                  .length -
-                                                              1;
-
-                                                      return DropdownMenuItem<
-                                                        String
-                                                      >(
-                                                        value: value,
-                                                        enabled: true,
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    vertical:
-                                                                        1.h,
-                                                                  ),
-                                                              // consistent spacing for all items
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  customText(
-                                                                    text: value,
-                                                                    fontSize:
-                                                                        15.sp,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                  ),
-                                                                  if (controller
-                                                                          .selectedEvent
-                                                                          .value ==
-                                                                      value)
-                                                                    Icon(
-                                                                      Icons
-                                                                          .check,
-                                                                      size:
-                                                                          18.sp,
-                                                                    ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            if (!isLast)
-                                                              Container(
-                                                                height: 1,
-                                                                color:
-                                                                    Colors
-                                                                        .grey[300],
-                                                              ),
-                                                          ],
+                                                      return Align(
+                                                        alignment:
+                                                            Alignment.centerLeft,
+                                                        child: customText(
+                                                          text: value,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.black,
                                                         ),
                                                       );
-                                                    }).toList(),
+                                                    }).toList();
+                                                  },
+
+                                                  onChanged: (String? newValue) {
+                                                    if (newValue != null) {
+                                                      controller.selectEvent(
+                                                        newValue,
+                                                      );
+                                                    }
+                                                  },
+
+                                                  // ✅ Dropdown list with check and dividers
+                                                  items:
+                                                      dropdownItems.mapIndexed((
+                                                        index,
+                                                        value,
+                                                      ) {
+                                                        final isLast =
+                                                            index ==
+                                                            dropdownItems
+                                                                    .length -
+                                                                1;
+
+                                                        return DropdownMenuItem<
+                                                          String
+                                                        >(
+                                                          value: value,
+                                                          enabled: true,
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize.min,
+                                                            children: [
+                                                              Container(
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          1.h,
+                                                                    ),
+                                                                // consistent spacing for all items
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    customText(
+                                                                      text: value,
+                                                                      fontSize:
+                                                                          15.sp,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                    ),
+                                                                    if (controller
+                                                                            .selectedEvent
+                                                                            .value ==
+                                                                        value)
+                                                                      Icon(
+                                                                        Icons
+                                                                            .check,
+                                                                        size:
+                                                                            18.sp,
+                                                                      ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              if (!isLast)
+                                                                Container(
+                                                                  height: 1,
+                                                                  color:
+                                                                      Colors
+                                                                          .grey[300],
+                                                                ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                ),
                                               ),
-                                            ),
-                                          ),
+                                            );
+                                          }
                                         ),
                                         SizedBox(height: 2.h),
                                         // Calendar Image
                                         Obx(
-                                          () => Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 5.w,
-                                            ),
-                                            child:
-                                                controller
-                                                            .selectedEvent
-                                                            .value ==
-                                                        "Gizelle Dinner Event"
-                                                    ? Container(
+                                          () {
+                                            final eventData = eventController.myEventsModel.value?.data?.data ?? [];
+                                            final dropdownItems = eventData.map((e) => e.eventName ?? '').where((name) => name.isNotEmpty).toList();
+                                            final isEventSelected = controller.selectedEvent.value.isNotEmpty && dropdownItems.contains(controller.selectedEvent.value);
+
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 5.w,
+                                              ),
+                                              child: isEventSelected
+                                                  ? Container(
                                                       height: 30.h,
                                                       decoration: BoxDecoration(
                                                         borderRadius:
@@ -612,18 +614,6 @@ class AdminHomeScreen extends StatelessWidget {
                                                                         height:
                                                                             1.h,
                                                                       ),
-                                                                      customText(
-                                                                        text:
-                                                                            "32 Allergens found",
-                                                                        fontSize:
-                                                                            15.sp,
-                                                                        fontFamily:
-                                                                            "WorkSans",
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color:
-                                                                            Colors.black,
-                                                                      ),
                                                                       SizedBox(
                                                                         height:
                                                                             1.h,
@@ -633,9 +623,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                                           controller
                                                                               .toggleShowAllergicGuest();
                                                                         },
-                                                                        child: Image.asset(
-                                                                          "assets/png/new_guest_illustrations/allergen_graph_one.png",
-                                                                        ),
+                                                                        child: CommonAllergensChart(),
                                                                       ),
                                                                     ],
                                                                   );
@@ -710,7 +698,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                         ),
                                                       ),
                                                     )
-                                                    : ClipRRect(
+                                                  : ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             20.sp,
@@ -723,7 +711,8 @@ class AdminHomeScreen extends StatelessWidget {
                                                                 .fill, // or use BoxFit.cover if you prefer
                                                       ),
                                                     ),
-                                          ),
+                                            );
+                                          }
                                         ),
 
                                         SizedBox(height: 3.h),
