@@ -9,6 +9,7 @@ import '../controllers/profile_controller.dart';
 import 'button_widget.dart';
 
 void showCustomOtherDialog({
+  bool? isFav = false,
   required TextEditingController controller,
   RxBool? shareWithHost, // optional
   VoidCallback? onDone,
@@ -36,7 +37,7 @@ void showCustomOtherDialog({
             children: [
               Expanded(
                 child: customText(
-                  text: "Not on the list? Tell us\nwhat to skip!",
+                  text: isFav == true ? "Not on the list? Tell us\nyour favorite cuisines!": "Not on the list? Tell us\nwhat to skip!",
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   fontFamily: "CormorantGaramond",

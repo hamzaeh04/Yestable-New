@@ -200,7 +200,7 @@ class AdminHomeScreen extends StatelessWidget {
                                     ),
                                     customText(
                                       text:
-                                          "Lorem ipsum dolor sit amet consectetur.",
+                                          "Good vibes, great company, and a fantastic host.",
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w400,
                                       color: darkGreyColor,

@@ -287,6 +287,7 @@ class YourRootAndRules extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             showCustomOtherDialog(
+                              isFav: true,
                               onDone: (){
                                 controller.otherToggleSwitch2();
                               },

@@ -8,9 +8,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/model/get_event_by_id_model.dart' show GetEventById;
 import 'package:yestable/model/get_event_review_model.dart';
 import 'package:yestable/model/get_my_event_model.dart';
 
@@ -74,6 +76,7 @@ class EventController extends GetxController{
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
   Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
+  Rxn<GetEventById> getEventByIdModel = Rxn<GetEventById>();
 
   // Guest Aware Controllers
   final TextEditingController swimmingPoolController = TextEditingController();
@@ -512,6 +515,7 @@ class EventController extends GetxController{
             Get.toNamed("eventcomfortone", arguments: eventId);
           },
         );
+        clearEventFields();
       } else {
         Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
       }
@@ -569,7 +573,7 @@ class EventController extends GetxController{
       }
 
       final typeValue =
-      eventType.text.trim().isEmpty ? "Private" : eventType.text.trim();
+      eventType.text.trim().isEmpty ? "Dinner" : eventType.text.trim();
 
       /// ---------------------------
       /// Multipart Fields
@@ -667,6 +671,7 @@ class EventController extends GetxController{
         eventReviewModel.refresh();
         // Get.toNamed('eventdetailsscreen', arguments: eventId);
         Get.toNamed("eventcomfortone", arguments: eventId);
+        clearEventFields();
 
       } else {
         Utils.showToast(
@@ -1314,6 +1319,49 @@ class EventController extends GetxController{
     if (data == null) return responseMap;
 
     return responseMap; // ✅ full response return
+  }
+
+  Map<String, String> formatDateTime(String isoString) {
+    final dateTime = DateTime.parse(isoString).toLocal();
+
+    return {
+      "date": DateFormat('dd-MM-yyyy').format(dateTime),
+      "time": DateFormat('hh:mm a').format(dateTime),
+    };
+  }
+
+  Future<void> getEventById(String eventId) async{
+    isMenusLoading.value = true;
+    try{
+      final response = await baseService.baseGetAPI(ApiEndPoints.getEventById(eventId));
+      if(response["success"] == true){
+        final data = response["data"];
+        final result = formatDateTime(data["eventTime"]);
+        getEventByIdModel.value = GetEventById.fromJson(response);
+        Utils.showToast(response["message"], false);
+        eventName.text = data["eventName"];
+        eventDate.text = result['date'] ?? "";
+        eventTime.text = result["time"] ?? "";
+        eventType.text = data["eventType"];
+        eventLocation.text = data["address"];
+        inviteMsg.text = data["invitationMessage"];
+        parkingDetails.text = data["parkingDetails"];
+        addNote.text = data["addNote"];
+        // eventReminder.text = data["reminderNotification"];
+        otherComfortController.text = data["eventTime"];
+        locationController.addressController.text = data["address"];
+        // itemContainingController.text = data["eventTime"];
+        // guestAwareOthersController.text = data["eventTime"];
+        profileController.profilePicture.value = data["image"];
+      } else{
+        Utils.showToast(response["message"], true);
+      }
+    } catch(e){
+      print("Something went wrong $e");
+    }
+    finally{
+      isMenusLoading.value = false;
+    }
   }
 
   void clearEventFields(){

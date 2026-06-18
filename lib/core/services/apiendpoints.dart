@@ -56,6 +56,10 @@ class ApiEndPoints{
     return '/events/${eventId}';
   }
 
+  static String getEventById(String eventId) {
+    return '/events/${eventId}';
+  }
+
   static String myEvents(int page) {
     return '/events/my-events?page=${page}&limit=10';
   }

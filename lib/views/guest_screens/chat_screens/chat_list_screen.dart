@@ -200,6 +200,14 @@ class ChatListScreen extends StatelessWidget {
 
                                           final msgCount = snap.data ?? 0;
 
+                                          String memberCount() {
+                                            if (group["membersCount"] < 10) {
+                                              return group["membersCount"].toString();
+                                            } else {
+                                              return "${group["membersCount"].toString()}+";
+                                            }
+                                          }
+
                                             return chatListWidget(
                                               // "assets/png/admin_home_foodpic.png",
                                               group["imagePath"] ?? "assets/png/admin_home_foodpic.png",

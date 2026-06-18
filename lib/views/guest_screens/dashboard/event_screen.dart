@@ -156,7 +156,7 @@ class EventScreen extends StatelessWidget {
                                                 vertical: 0.5.h,
                                               ),
                                               child: customText(
-                                                text: "In ${controller.getRemainingHours(data?.eventTime?? DateTime.now())} Hrs",
+                                                text: "In ${controller.getRemainingTime(data?.eventTime?? DateTime.now())}",
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.w500,
                                                 color: whiteColor,

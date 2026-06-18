@@ -5,6 +5,7 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/animated_button.dart';
+import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
@@ -40,6 +41,10 @@ class AllowNotificationScreen extends StatelessWidget {
             // Progress bar
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
+              child: backButton(),
+            ),Padding(
+
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: authController.controller.isUser.value == true ? loadingStepIndicator("6/6", 10): loadingStepIndicator("3/3", 10),
             ),
             Padding(
@@ -61,7 +66,7 @@ class AllowNotificationScreen extends StatelessWidget {
                 color: greyTextColor,
               ),
             ),
-            SizedBox(height: 7.h),
+            SizedBox(height: 5.h),
             Container(
               height: 39.h,
               width: double.infinity,
@@ -70,7 +75,7 @@ class AllowNotificationScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 5.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: Obx((){
