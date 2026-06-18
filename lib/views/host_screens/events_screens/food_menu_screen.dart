@@ -402,6 +402,7 @@ class FoodMenuScreen extends StatelessWidget {
                         eventId == null ?
                         eventController.createEvent(context,image: controller.controller.profilePicture.value):
                         eventController.editEvent(eventId: eventId,image: controller.controller.profilePicture.value);
+
                       },
                     ),
 

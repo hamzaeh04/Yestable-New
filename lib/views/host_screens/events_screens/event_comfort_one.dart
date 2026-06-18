@@ -129,7 +129,7 @@ class EventComfortOne extends StatelessWidget {
               color: Colors.grey.shade400,
               height: 3.h,
             ),
-            yesNoWidget(6, title: "Restroom"),
+            yesNoWidget(6, title: "Family / All-Gender Restroom Available"),
             SizedBox(height: 3.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),

@@ -8,9 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/model/get_all_allergen_list.dart';
+import 'package:yestable/model/get_event_by_id_model.dart' show GetEventById;
 import 'package:yestable/model/get_event_review_model.dart';
 import 'package:yestable/model/get_my_event_model.dart';
 
@@ -18,7 +21,7 @@ import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
 import '../core/services/firebase_messaging/messaging_service.dart';
 import '../model/get_all_event_model.dart';
-import '../model/get_allergen_list.dart';
+import '../model/get_event_allergen_list.dart';
 import '../model/get_menu_model.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
@@ -69,14 +72,20 @@ class EventController extends GetxController{
   final TextEditingController eventReminder = TextEditingController();
   final TextEditingController otherComfortController = TextEditingController();
 
+
   var selectedEventType = RxnString();
   var selectedReminderTime = RxnString();
   Rxn<EventReviewModel> eventReviewModel = Rxn<EventReviewModel>();
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
   Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
-  Rxn<EventAllergenResponse> getAllergenList = Rxn<EventAllergenResponse>();
+  Rxn<GetEventById> getEventByIdModel = Rxn<GetEventById>();
+
+  Rxn<AllAllergen> getAllergenList = Rxn<AllAllergen>();
   Rxn<EventAllergenResponse> getEventAllergenData = Rxn<EventAllergenResponse>();
+  final RxBool isLoadingAllerganList = false.obs;
+  final RxBool isLoadingEventAllergens = false.obs;
+
 
   // Guest Aware Controllers
   final TextEditingController swimmingPoolController = TextEditingController();
@@ -100,8 +109,6 @@ class EventController extends GetxController{
   final RxBool isMenusLoading = false.obs;
   final RxBool isLoadingMyEvents = false.obs;
   final RxBool isLoadingAllEvents = false.obs;
-  final RxBool isLoadingAllerganList = false.obs;
-  final RxBool isLoadingEventAllergens = false.obs;
   final RxBool isLoadingCreateEvent = false.obs;
   final RxString menusError = ''.obs;
   final RxList<MenuItem> menus = <MenuItem>[].obs;
@@ -517,6 +524,7 @@ class EventController extends GetxController{
             Get.toNamed("eventcomfortone", arguments: eventId);
           },
         );
+        clearEventFields();
       } else {
         Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
       }
@@ -574,7 +582,7 @@ class EventController extends GetxController{
       }
 
       final typeValue =
-      eventType.text.trim().isEmpty ? "Private" : eventType.text.trim();
+      eventType.text.trim().isEmpty ? "Dinner" : eventType.text.trim();
 
       /// ---------------------------
       /// Multipart Fields
@@ -672,6 +680,7 @@ class EventController extends GetxController{
         eventReviewModel.refresh();
         // Get.toNamed('eventdetailsscreen', arguments: eventId);
         Get.toNamed("eventcomfortone", arguments: eventId);
+        clearEventFields();
 
       } else {
         Utils.showToast(
@@ -1321,6 +1330,49 @@ class EventController extends GetxController{
     return responseMap; // ✅ full response return
   }
 
+  Map<String, String> formatDateTime(String isoString) {
+    final dateTime = DateTime.parse(isoString).toLocal();
+
+    return {
+      "date": DateFormat('dd-MM-yyyy').format(dateTime),
+      "time": DateFormat('hh:mm a').format(dateTime),
+    };
+  }
+
+  Future<void> getEventById(String eventId) async{
+    isMenusLoading.value = true;
+    try{
+      final response = await baseService.baseGetAPI(ApiEndPoints.getEventById(eventId));
+      if(response["success"] == true){
+        final data = response["data"];
+        final result = formatDateTime(data["eventTime"]);
+        getEventByIdModel.value = GetEventById.fromJson(response);
+        Utils.showToast(response["message"], false);
+        eventName.text = data["eventName"];
+        eventDate.text = result['date'] ?? "";
+        eventTime.text = result["time"] ?? "";
+        eventType.text = data["eventType"];
+        eventLocation.text = data["address"];
+        inviteMsg.text = data["invitationMessage"];
+        parkingDetails.text = data["parkingDetails"];
+        addNote.text = data["addNote"];
+        // eventReminder.text = data["reminderNotification"];
+        otherComfortController.text = data["eventTime"];
+        locationController.addressController.text = data["address"];
+        // itemContainingController.text = data["eventTime"];
+        // guestAwareOthersController.text = data["eventTime"];
+        profileController.profilePicture.value = data["image"];
+      } else{
+        Utils.showToast(response["message"], true);
+      }
+    } catch(e){
+      print("Something went wrong $e");
+    }
+    finally{
+      isMenusLoading.value = false;
+    }
+  }
+
   void clearEventFields(){
     eventName.clear();
     eventDate.clear();
@@ -1350,7 +1402,7 @@ class EventController extends GetxController{
 
       if (response != null && response['success'] == true) {
         // 1. Correctly parse and assign the data to your observable state
-        getAllergenList.value = EventAllergenResponse.fromJson(response);
+        getAllergenList.value = AllAllergen.fromJson(response);
 
         // Optional: Show a success message if needed
         // Utils.showToast(response['message'] ?? "Allergens fetched successfully", false);
@@ -1391,4 +1443,5 @@ class EventController extends GetxController{
       isLoadingEventAllergens.value = false;
     }
   }
+
 }

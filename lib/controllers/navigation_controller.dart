@@ -161,14 +161,27 @@ class NavigationController extends GetxController {
       return "";
     }
   }
-  Future<String?> checkIfAlreadyJoined(String eventId) async {
+  Future<Map<String, dynamic>?> checkIfAlreadyJoined(String eventId) async {
+    try {
+      // Fetch event review details first to verify the host ID
+      await eventController.eventReview(eventId);
+      final eventReview = eventController.eventReviewModel.value;
+      if (eventReview != null && eventReview.data != null) {
+        final hostId = eventReview.data!.host?.id;
+        final currentUserId = returnUserId();
+        if (hostId == currentUserId) {
+          return {
+            "success": false,
+            "message": "You can't join the event"
+          };
+        }
+      }
+    } catch (e) {
+      print("Error fetching event details for host check: $e");
+    }
+
     final response = await eventController.eventJoin(eventId);
-
-    if (response == null) return null;
-
-    final msg = response["message"];
-
-    return msg; // ✅ return message directly
+    return response;
   }
 
 
@@ -187,10 +200,13 @@ class NavigationController extends GetxController {
 
       String eventId = prefs.getString("deepLinkEventId") ?? "";
 
-      // ✅ Now message comes from API
-      String? message = await checkIfAlreadyJoined(eventId);
+      // ✅ Now message/success comes from API & host check
+      final response = await checkIfAlreadyJoined(eventId);
 
-      if (message == null) return;
+      if (response == null) return;
+
+      final bool success = response["success"] == true;
+      final String message = response["message"] ?? (success ? "Joined event successfully" : "Failed to join event");
 
       showDialog(
         context: Get.context!,
@@ -205,9 +221,16 @@ class NavigationController extends GetxController {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, size: 50, color: Colors.green),
+                  Icon(
+                    success ? Icons.check_circle : Icons.error,
+                    size: 50,
+                    color: success ? Colors.green : Colors.red,
+                  ),
                   SizedBox(height: 10),
-                  Text("Success", style: TextStyle(fontSize: 20.sp)),
+                  Text(
+                    success ? "Success" : "Failed",
+                    style: TextStyle(fontSize: 20.sp),
+                  ),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center),
                 ],
@@ -216,25 +239,42 @@ class NavigationController extends GetxController {
           );
         },
       );
+
+      if (!success) return;
+
       final userName = pref.getString(LocalDBKeys.USERFULLNAME);
       final userId = pref.getString(LocalDBKeys.USERID);
       messagingService.joinGroup(groupId: eventId, userName: userName.toString(), userId: userId.toString(),memberProfile: controller.getMyProfileModel.value?.data?.profilePic ?? '');
     });
   }
 
-  int getRemainingHours(DateTime eventTime) {
-    final now = DateTime.now();
+  // int getRemainingHours(DateTime eventTime) {
+  //   final now = DateTime.now();
+  //
+  //   final difference = eventTime.difference(now);
+  //
+  //   // If time already passed, return 0 (or you can return negative if you want)
+  //   if (difference.isNegative) {
+  //     return 0;
+  //   }
+  //
+  //   return difference.inHours;
+  // }
 
+  String getRemainingTime(DateTime eventTime) {
+    final now = DateTime.now();
     final difference = eventTime.difference(now);
 
-    // If time already passed, return 0 (or you can return negative if you want)
     if (difference.isNegative) {
-      return 0;
+      return "0 hours";
     }
 
-    return difference.inHours;
-  }
+    if (difference.inHours >= 24) {
+      return "${difference.inDays} day${difference.inDays == 1 ? '' : 's'}";
+    }
 
+    return "${difference.inHours} hour${difference.inHours == 1 ? '' : 's'}";
+  }
 // Example function
   Future<String> getAddressFromCoordinates(double lat, double lng) async {
     try {
