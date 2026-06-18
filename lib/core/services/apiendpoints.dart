@@ -62,4 +62,12 @@ class ApiEndPoints{
   static String joinEvent(String eventId) {
     return '/events/${eventId}/join';
   }
+
+  static String getAllergenList(String eventId){
+    return "/events/${eventId}/allergen-counts";
+  }
+
+  static String getEventAllergens(String eventId) {
+    return "/events/${eventId}/allergens";
+  }
 }

@@ -5,7 +5,15 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 
 class CommonAllergensChart extends StatelessWidget {
-  const CommonAllergensChart({super.key});
+  final List<Map<String, dynamic>> allergensList;
+  final List<String>? yAxisLabels;
+  final bool isGrouped;
+  const CommonAllergensChart({
+    super.key,
+    required this.allergensList,
+    this.yAxisLabels,
+    this.isGrouped = false,
+  });
 
   // Data for the bar chart
   static const List<Map<String, dynamic>> _chartData = [
@@ -21,7 +29,7 @@ class CommonAllergensChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double chartHeight = 130.0;
-    const double yAxisWidth = 35.0;
+    final double yAxisWidth = (yAxisLabels != null) ? 55.0 : 35.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -32,7 +40,7 @@ class CommonAllergensChart extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Left: Y-Axis Labels (10, 05, 00)
+              // Left: Y-Axis Labels (10, 05, 00 or custom labels)
               SizedBox(
                 width: yAxisWidth,
                 child: Column(
@@ -40,17 +48,17 @@ class CommonAllergensChart extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     customText(
-                      text: "10",
+                      text: (yAxisLabels != null && yAxisLabels!.isNotEmpty) ? yAxisLabels![0] : "10",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     customText(
-                      text: "05",
+                      text: (yAxisLabels != null && yAxisLabels!.length > 1) ? yAxisLabels![1] : "05",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     customText(
-                      text: "00",
+                      text: (yAxisLabels != null && yAxisLabels!.length > 2) ? yAxisLabels![2] : "00",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -83,9 +91,31 @@ class CommonAllergensChart extends StatelessWidget {
                         titlesData: const FlTitlesData(
                           show: false, // hidden so overlays align perfectly
                         ),
-                        barGroups: List.generate(_chartData.length, (index) {
-                          final data = _chartData[index];
-                          final double value = (data["value"] as int).toDouble();
+                        barGroups: List.generate(allergensList.length, (index) {
+                          final data = allergensList[index];
+                          
+                          if (isGrouped) {
+                            final List<Map<String, dynamic>> rodsData = List<Map<String, dynamic>>.from(data["rods"] ?? []);
+                            return BarChartGroupData(
+                              x: index,
+                              barRods: rodsData.map((rod) {
+                                final double value = (rod["value"] as num).toDouble();
+                                final Color color = rod["color"] as Color;
+                                return BarChartRodData(
+                                  toY: value,
+                                  color: color,
+                                  width: 2.w,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(4),
+                                    topRight: Radius.circular(4),
+                                  ),
+                                );
+                              }).toList(),
+                              barsSpace: 0.5.w,
+                            );
+                          }
+
+                          final double value = (data["value"] as num).toDouble();
                           final Color color = data["color"] as Color;
 
                           return BarChartGroupData(
@@ -110,8 +140,64 @@ class CommonAllergensChart extends StatelessWidget {
                     // Custom Overlay for annotations (value text and siren emoji)
                     Positioned.fill(
                       child: Row(
-                        children: _chartData.map((data) {
-                          final double value = (data["value"] as int).toDouble();
+                        children: allergensList.map((data) {
+                          if (isGrouped) {
+                            final List<Map<String, dynamic>> rodsData = List<Map<String, dynamic>>.from(data["rods"] ?? []);
+                            return Expanded(
+                              child: Center(
+                                child: SizedBox(
+                                  height: chartHeight,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(rodsData.length, (rodIndex) {
+                                      final rod = rodsData[rodIndex];
+                                      final double value = (rod["value"] as num).toDouble();
+                                      final String valueText = rod["valueText"] as String;
+                                      final bool showAlert = rod["showAlert"] as bool? ?? false;
+                                      final double barHeight = (value / 10.0) * chartHeight;
+
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            width: 2.w,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              alignment: Alignment.bottomCenter,
+                                              children: [
+                                                if (value > 1.2)
+                                                  Positioned(
+                                                    bottom: 0.4.h,
+                                                    child: customText(
+                                                      text: valueText,
+                                                      fontSize: 8.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: whiteColor,
+                                                    ),
+                                                  ),
+                                                if (showAlert)
+                                                  Positioned(
+                                                    bottom: barHeight + 0.4.h,
+                                                    child: customText(
+                                                      text: "🚨",
+                                                      fontSize: 10.sp,
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (rodIndex < rodsData.length - 1)
+                                            SizedBox(width: 0.5.w),
+                                        ],
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+
+                          final double value = (data["value"] as num).toDouble();
                           final String valueText = data["valueText"] as String;
                           final bool showAlert = data["showAlert"] as bool? ?? false;
                           final double barHeight = (value / 10.0) * chartHeight;
@@ -162,10 +248,10 @@ class CommonAllergensChart extends StatelessWidget {
         // X-Axis Labels below the chart
         Row(
           children: [
-            const SizedBox(width: yAxisWidth),
+            SizedBox(width: yAxisWidth),
             Expanded(
               child: Row(
-                children: _chartData.map((data) {
+                children: allergensList.map((data) {
                   final String label = data["label"] as String;
                   return Expanded(
                     child: Center(

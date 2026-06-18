@@ -416,6 +416,21 @@ class AdminHomeScreen extends StatelessWidget {
                                                       controller.selectEvent(
                                                         newValue,
                                                       );
+
+                                                      // Find the selected event ID from eventData matching the selected eventName
+                                                      final selectedEventObj = eventData.firstWhereOrNull(
+                                                        (e) => e?.eventName == newValue,
+                                                      );
+
+                                                      if (selectedEventObj != null && selectedEventObj.id != null) {
+                                                        final String eventId = selectedEventObj.id!;
+                                                        debugPrint("Selected Event ID: $eventId");
+
+                                                         // TODO: Hit your API here using the eventId
+                                                         eventController.getAllAllergenList(eventId: eventId);
+                                                         eventController.getEventAllergens(eventId: eventId);
+                                                        // e.g., eventController.fetchEventDetails(eventId);
+                                                      }
                                                     }
                                                   },
 
@@ -608,47 +623,151 @@ class AdminHomeScreen extends StatelessWidget {
                                                                   .selectedIndex
                                                                   .value) {
                                                                 case 0:
+                                                                  final allergenData = eventController.getAllergenList.value?.data?.allergens ?? [];
+                                                                  
+                                                                  final Map<String, Color> allergenColors = {
+                                                                    "tree nuts": const Color(0xFF7E00F5),
+                                                                    "peanuts": const Color(0xFFFF5B00),
+                                                                    "sesame": const Color(0xFF8A959E),
+                                                                    "dairy": const Color(0xFFE1C500),
+                                                                    "gluten": const Color(0xFF39D300),
+                                                                    "shellfish": const Color(0xFFE19B00),
+                                                                    "eggs": const Color(0xFF00B58D),
+                                                                  };
+
+                                                                  final targetLabels = [
+                                                                    "Tree Nuts",
+                                                                    "Peanuts",
+                                                                    "Sesame",
+                                                                    "Dairy",
+                                                                    "Gluten",
+                                                                    "Shellfish",
+                                                                    "Eggs"
+                                                                  ];
+
+                                                                  final Map<String, int> apiCounts = {};
+                                                                  for (var e in allergenData) {
+                                                                    if (e.label != null) {
+                                                                      apiCounts[e.label!.toLowerCase().trim()] = e.count ?? 0;
+                                                                    }
+                                                                  }
+
+                                                                  int highestCount = 0;
+                                                                  for (final label in targetLabels) {
+                                                                    final count = apiCounts[label.toLowerCase()] ?? 0;
+                                                                    if (count > highestCount) {
+                                                                      highestCount = count;
+                                                                    }
+                                                                  }
+
+                                                                  final dynamicList = targetLabels.map((label) {
+                                                                    final count = apiCounts[label.toLowerCase()] ?? 0;
+                                                                    final color = allergenColors[label.toLowerCase()] ?? const Color(0xFF8A959E);
+                                                                    final double chartValue = count == 0 ? 1.2 : count.toDouble();
+                                                                    return {
+                                                                      "label": label,
+                                                                      "value": chartValue,
+                                                                      "color": color,
+                                                                      "valueText": count.toString().padLeft(2, '0'),
+                                                                      "showAlert": highestCount > 0 && count == highestCount,
+                                                                    };
+                                                                  }).toList();
+
+                                                                  if (eventController.isLoadingAllerganList.value) {
+                                                                    return SizedBox(
+                                                                      height: 15.h,
+                                                                      child: Center(
+                                                                        child: CircularProgressIndicator(color: greenColor),
+                                                                      ),
+                                                                    );
+                                                                  }
+
                                                                   return Column(
                                                                     children: [
                                                                       SizedBox(
-                                                                        height:
-                                                                            1.h,
+                                                                        height: 1.h,
                                                                       ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            1.h,
-                                                                      ),
+                                                                      // SizedBox(
+                                                                      //   height: 1.h,
+                                                                      // ),
                                                                       InkWell(
                                                                         onTap: () {
-                                                                          controller
-                                                                              .toggleShowAllergicGuest();
+                                                                          controller.toggleShowAllergicGuest();
                                                                         },
-                                                                        child: CommonAllergensChart(),
+                                                                        child: CommonAllergensChart(
+                                                                          allergensList: dynamicList,
+                                                                        ),
                                                                       ),
                                                                     ],
                                                                   );
                                                                 case 1:
+                                                                  final allergenData1 = eventController.getAllergenList.value?.data?.allergens ?? [];
+                                                                  final totalAllergens = eventController.getAllergenList.value?.data?.totalAllergens ?? 0;
+                                                                  
+                                                                  final Map<String, Color> allergenColors1 = {
+                                                                    "soya": const Color(0xFFADF802),
+                                                                    "soy": const Color(0xFFADF802),
+                                                                    "peanuts": const Color(0xFFFF5B00),
+                                                                    "dairy": const Color(0xFF8A959E),
+                                                                    "gluten": const Color(0xFF39D300),
+                                                                    "shellfish": const Color(0xFFE19B00),
+                                                                    "eggs": const Color(0xFF00B58D),
+                                                                  };
+
+                                                                  final targetLabels1 = [
+                                                                    "Soya",
+                                                                    "Peanuts",
+                                                                    "Dairy",
+                                                                    "Gluten",
+                                                                    "Shellfish",
+                                                                    "Eggs"
+                                                                  ];
+
+                                                                  final Map<String, int> apiCounts1 = {};
+                                                                  for (var e in allergenData1) {
+                                                                    if (e.label != null) {
+                                                                      apiCounts1[e.label!.toLowerCase().trim()] = e.count ?? 0;
+                                                                    }
+                                                                  }
+
+                                                                  int highestCount1 = 0;
+                                                                  for (final label in targetLabels1) {
+                                                                    final count = label.toLowerCase() == "soya"
+                                                                        ? (apiCounts1["soy"] ?? apiCounts1["soya"] ?? 0)
+                                                                        : (apiCounts1[label.toLowerCase()] ?? 0);
+                                                                    if (count > highestCount1) {
+                                                                      highestCount1 = count;
+                                                                    }
+                                                                  }
+
+                                                                  final dynamicList1 = targetLabels1.map((label) {
+                                                                    final count = label.toLowerCase() == "soya"
+                                                                        ? (apiCounts1["soy"] ?? apiCounts1["soya"] ?? 0)
+                                                                        : (apiCounts1[label.toLowerCase()] ?? 0);
+                                                                    final color = allergenColors1[label.toLowerCase()] ?? const Color(0xFF8A959E);
+                                                                    final double chartValue = count == 0 ? 1.2 : count.toDouble();
+                                                                    return {
+                                                                      "label": label,
+                                                                      "value": chartValue,
+                                                                      "color": color,
+                                                                      "valueText": count.toString().padLeft(2, '0'),
+                                                                      "showAlert": highestCount1 > 0 && count == highestCount1,
+                                                                    };
+                                                                  }).toList();
+
+                                                                  if (eventController.isLoadingAllerganList.value) {
+                                                                    return SizedBox(
+                                                                      height: 15.h,
+                                                                      child: Center(
+                                                                        child: CircularProgressIndicator(color: greenColor),
+                                                                      ),
+                                                                    );
+                                                                  }
+
                                                                   return Column(
                                                                     children: [
                                                                       SizedBox(
-                                                                        height:
-                                                                            1.h,
-                                                                      ),
-                                                                      customText(
-                                                                        text:
-                                                                            "32 Allergens found",
-                                                                        fontSize:
-                                                                            15.sp,
-                                                                        fontFamily:
-                                                                            "WorkSans",
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color:
-                                                                            Colors.black,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            1.h,
+                                                                        height: 1.h,
                                                                       ),
                                                                       InkWell(
                                                                         onTap: () {
@@ -656,37 +775,150 @@ class AdminHomeScreen extends StatelessWidget {
                                                                             "newguestlistscreen",
                                                                           );
                                                                         },
-                                                                        child: Image.asset(
-                                                                          "assets/png/new_guest_illustrations/allergen_graph_two.png",
+                                                                        child: CommonAllergensChart(
+                                                                          allergensList: dynamicList1,
                                                                         ),
                                                                       ),
                                                                     ],
                                                                   );
                                                                 case 2:
+                                                                  final allergenData2 = eventController.getEventAllergenData.value?.data?.allergens ?? [];
+                                                                  
+                                                                  final targetLabels2 = [
+                                                                    "Tree Nuts",
+                                                                    "Peanuts",
+                                                                    "Sesame",
+                                                                    "Dairy",
+                                                                    "Gluten",
+                                                                    "Shellfish",
+                                                                    "Eggs"
+                                                                  ];
+
+                                                                  final dynamicList2 = targetLabels2.map((label) {
+                                                                    final allergen = allergenData2.firstWhereOrNull(
+                                                                      (e) => e.label?.toLowerCase().trim() == label.toLowerCase().trim(),
+                                                                    );
+                                                                    
+                                                                    final int mild = allergen?.mild ?? 0;
+                                                                    final int avoid = allergen?.avoid ?? 0;
+                                                                    final int severe = allergen?.severe ?? 0;
+
+                                                                    final double mildVal = mild == 0 ? 1.2 : mild.toDouble();
+                                                                    final double avoidVal = avoid == 0 ? 1.2 : avoid.toDouble();
+                                                                    final double severeVal = severe == 0 ? 1.2 : severe.toDouble();
+
+                                                                    return {
+                                                                      "label": label,
+                                                                      "rods": [
+                                                                        {
+                                                                          "value": mildVal,
+                                                                          "color": const Color(0xFF39D300), // green
+                                                                          "valueText": mild.toString().padLeft(2, '0'),
+                                                                          "showAlert": false,
+                                                                        },
+                                                                        {
+                                                                          "value": severeVal,
+                                                                          "color": const Color(0xFFFFD600), // yellow
+                                                                          "valueText": severe.toString().padLeft(2, '0'),
+                                                                          "showAlert": false,
+                                                                        },
+                                                                        {
+                                                                          "value": avoidVal,
+                                                                          "color": const Color(0xFFDE5959), // red
+                                                                          "valueText": avoid.toString().padLeft(2, '0'),
+                                                                          "showAlert": false,
+                                                                        },
+                                                                      ],
+                                                                    };
+                                                                  }).toList();
+
+                                                                  if (eventController.isLoadingEventAllergens.value) {
+                                                                    return SizedBox(
+                                                                      height: 15.h,
+                                                                      child: Center(
+                                                                        child: CircularProgressIndicator(color: greenColor),
+                                                                      ),
+                                                                    );
+                                                                  }
+
                                                                   return Column(
                                                                     children: [
                                                                       SizedBox(
-                                                                        height:
-                                                                            1.h,
+                                                                        height: 1.h,
                                                                       ),
-                                                                      customText(
-                                                                        text:
-                                                                            "32 Allergens found",
-                                                                        fontSize:
-                                                                            15.sp,
-                                                                        fontFamily:
-                                                                            "WorkSans",
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color:
-                                                                            Colors.black,
+                                                                      InkWell(
+                                                                        onTap: () {
+                                                                          controller.toggleShowAllergicGuest();
+                                                                        },
+                                                                        child: CommonAllergensChart(
+                                                                          allergensList: dynamicList2,
+                                                                          isGrouped: true,
+                                                                        ),
                                                                       ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            1.h,
-                                                                      ),
-                                                                      Image.asset(
-                                                                        "assets/png/new_guest_illustrations/allergen_graph_three.png",
+                                                                      SizedBox(height: 2.h),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children: [
+                                                                          Row(
+                                                                            children: [
+                                                                              Container(
+                                                                                width: 2.5.w,
+                                                                                height: 2.5.w,
+                                                                                decoration: const BoxDecoration(
+                                                                                  color: Color(0xFFDE5959), // Red
+                                                                                  shape: BoxShape.circle,
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(width: 1.5.w),
+                                                                              customText(
+                                                                                text: "Avoid",
+                                                                                fontSize: 12.sp,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: blackColor,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          SizedBox(width: 4.w),
+                                                                          Row(
+                                                                            children: [
+                                                                              Container(
+                                                                                width: 2.5.w,
+                                                                                height: 2.5.w,
+                                                                                decoration: const BoxDecoration(
+                                                                                  color: Color(0xFFFFD600), // Yellow
+                                                                                  shape: BoxShape.circle,
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(width: 1.5.w),
+                                                                              customText(
+                                                                                text: "Severe",
+                                                                                fontSize: 12.sp,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: blackColor,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          SizedBox(width: 4.w),
+                                                                          Row(
+                                                                            children: [
+                                                                              Container(
+                                                                                width: 2.5.w,
+                                                                                height: 2.5.w,
+                                                                                decoration: const BoxDecoration(
+                                                                                  color: Color(0xFF39D300), // Green
+                                                                                  shape: BoxShape.circle,
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(width: 1.5.w),
+                                                                              customText(
+                                                                                text: "Mild",
+                                                                                fontSize: 12.sp,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: blackColor,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ],
                                                                   );

@@ -18,6 +18,7 @@ import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
 import '../core/services/firebase_messaging/messaging_service.dart';
 import '../model/get_all_event_model.dart';
+import '../model/get_allergen_list.dart';
 import '../model/get_menu_model.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
@@ -74,6 +75,8 @@ class EventController extends GetxController{
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
   Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
+  Rxn<EventAllergenResponse> getAllergenList = Rxn<EventAllergenResponse>();
+  Rxn<EventAllergenResponse> getEventAllergenData = Rxn<EventAllergenResponse>();
 
   // Guest Aware Controllers
   final TextEditingController swimmingPoolController = TextEditingController();
@@ -97,6 +100,8 @@ class EventController extends GetxController{
   final RxBool isMenusLoading = false.obs;
   final RxBool isLoadingMyEvents = false.obs;
   final RxBool isLoadingAllEvents = false.obs;
+  final RxBool isLoadingAllerganList = false.obs;
+  final RxBool isLoadingEventAllergens = false.obs;
   final RxBool isLoadingCreateEvent = false.obs;
   final RxString menusError = ''.obs;
   final RxList<MenuItem> menus = <MenuItem>[].obs;
@@ -1331,5 +1336,59 @@ class EventController extends GetxController{
     itemContainingController.clear();
     guestAwareOthersController.clear();
     profileController.profilePicture.value = null;
+  }
+
+
+  Future<void> getAllAllergenList({String? eventId}) async {
+    // Reset or set loading state at the start
+    isLoadingAllerganList.value = true;
+
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.getAllergenList(eventId ?? ''),
+      );
+
+      if (response != null && response['success'] == true) {
+        // 1. Correctly parse and assign the data to your observable state
+        getAllergenList.value = EventAllergenResponse.fromJson(response);
+
+        // Optional: Show a success message if needed
+        // Utils.showToast(response['message'] ?? "Allergens fetched successfully", false);
+      } else {
+        // Handle API level failure safely
+        String errorMsg = response != null ? response['message'] : "Failed to fetch allergen List";
+        Utils.showToast(errorMsg, true);
+      }
+    } catch (e, stackTrace) {
+      Utils.showToast("Something went wrong", true);
+      print("Error in getAllAllergenList(): $e");
+      print(stackTrace);
+    } finally {
+      // Always stop loading spinners whether the call succeeded or failed
+      isLoadingAllerganList.value = false;
+    }
+  }
+
+  Future<void> getEventAllergens({String? eventId}) async {
+    isLoadingEventAllergens.value = true;
+
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.getEventAllergens(eventId ?? ''),
+      );
+
+      if (response != null && response['success'] == true) {
+        getEventAllergenData.value = EventAllergenResponse.fromJson(response);
+      } else {
+        String errorMsg = response != null ? response['message'] : "Failed to fetch allergen List";
+        Utils.showToast(errorMsg, true);
+      }
+    } catch (e, stackTrace) {
+      Utils.showToast("Something went wrong", true);
+      print("Error in getEventAllergens(): $e");
+      print(stackTrace);
+    } finally {
+      isLoadingEventAllergens.value = false;
+    }
   }
 }

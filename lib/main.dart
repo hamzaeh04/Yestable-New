@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
-import 'package:yestable/controllers/Allergen_controller.dart';
+import 'package:yestable/controllers/allergen_controller.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/location_controller.dart';
