@@ -1024,10 +1024,13 @@ class AdminHomeScreen extends StatelessWidget {
                                                   itemCount: eventData.length,
                                                   itemBuilder: (context, index) {
                                                     final data = eventData[index];
+                                                    print(data.dietaryCompatibilityScore);
                                                     return adminHomeWidget(
                                                       eventname: data?.eventName,
-                                                      confirmedamount: "08 Guest Confirmed",
-                                                      value: 0.65,
+                                                      confirmedamount: "${data.numGuests} Guest Confirmed",
+                                                      value: (data.dietaryCompatibilityScore.toDouble()/100),
+                                                      estimatedGuest: data.estimatedGuests.toString(),
+                                                      joinedGuest: data.numGuests.toString(),
                                                       ontap: () {
                                                         Get.toNamed("eventdetailsscreen", arguments: data?.id);
                                                       },
@@ -1083,6 +1086,8 @@ class AdminHomeScreen extends StatelessWidget {
     String? confirmedamount,
     String? progress,
     double? value,
+    String? estimatedGuest,
+    String? joinedGuest,
     VoidCallback? ontap
   }) {
     return Padding(
@@ -1126,7 +1131,7 @@ class AdminHomeScreen extends StatelessWidget {
                             ),
                           ),
                           customText(
-                            text: progress ?? "(30/25)",
+                            text: "(${joinedGuest ?? 0}/${estimatedGuest ?? 0})",
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
                             color: blackColor,

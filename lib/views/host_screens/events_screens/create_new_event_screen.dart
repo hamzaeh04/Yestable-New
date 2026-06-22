@@ -11,6 +11,7 @@ import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/button_widget.dart';
 
+import '../../../widget/allergens_widget.dart';
 import '../../guest_screens/profile_setup_screens/profile_edit_screen.dart';
 
 class CreateNewEventScreen extends StatelessWidget {
@@ -404,6 +405,12 @@ class CreateNewEventScreen extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15.sp,
                                   ),
+                                  SizedBox(height: 3.4.h),
+                                  customText(
+                                    text: "Estimated Guest",
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15.sp,
+                                  ),
                                 ],
                               ),
                             ),
@@ -482,6 +489,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                                 "🍸 Cocktail",
                                                 "⭐ Holiday",
                                                 "🥞 Brunch",
+                                            "... Other"
                                               ]
                                               .map(
                                                 (
@@ -499,6 +507,16 @@ class CreateNewEventScreen extends StatelessWidget {
                                               .toList(),
 
                                       onChanged: (value) {
+                                        if(value == "... Other"){
+                                          showCustomOptionDialog(
+                                            dialogTitle: "Not on the list? Tell us\nwhat\'s your event type",
+                                            hintText: "Birthday Party",
+                                            textFieldController: eventController.eventType,
+                                            onDone: (){
+                                              print(eventController.eventType.text);
+                                            },
+                                          );
+                                        }
                                         if (value != null) {
                                           eventController
                                               .selectedEventType
@@ -506,6 +524,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                           eventController.eventType.text =
                                               value;
                                         }
+                                        print("${eventController.eventType.text}");
                                       },
                                       dropdownStyleData: DropdownStyleData(
                                         width: 50.w,
@@ -739,7 +758,13 @@ class CreateNewEventScreen extends StatelessWidget {
                                           ),
                                     ),
                                   ),
-                                  SizedBox(height: 1.25.h),
+                                  SizedBox(height: 5.h),
+                                  customProfileField(
+                                    hint: 'No Of Guests',
+                                    size: 14.8.sp,
+                                    controller: eventController.guestCount,
+                                    keyboardType: TextInputType.number
+                                  ),
                                   const Divider(),
                                 ],
                               ),

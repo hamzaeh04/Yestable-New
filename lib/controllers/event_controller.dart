@@ -71,6 +71,7 @@ class EventController extends GetxController{
   final TextEditingController addNote = TextEditingController();
   final TextEditingController eventReminder = TextEditingController();
   final TextEditingController otherComfortController = TextEditingController();
+  final TextEditingController guestCount = TextEditingController();
 
 
   var selectedEventType = RxnString();
@@ -423,6 +424,7 @@ class EventController extends GetxController{
         "location[type]": "Point",
         "location[coordinates][0]": lng.toString(),
         "location[coordinates][1]": lat.toString(),
+        "estimatedGuests": guestCount.text.trim(),
       };
 
 

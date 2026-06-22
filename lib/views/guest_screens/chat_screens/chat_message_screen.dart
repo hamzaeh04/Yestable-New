@@ -637,19 +637,25 @@ SizedBox(height: 2.h,),
                                 InkWell(
                                   onTap: (){
                                     final userName = prefs.getString(LocalDBKeys.USERFULLNAME);
-                                    try{
-                                      messagingService.sendMessage(groupId: groupId, userId: controller.returnUserId(), userName: userName.toString(), message: controller.chatController.text);
-                                      /// ✅ clear ONLY after success
-                                      controller.chatController.clear();
+                                    if(controller.chatController.text.isEmpty){
+
                                     }
-                                    catch(e){
-                                      /// ❌ do NOT clear if failed
-                                      print("Message failed: $e");
-                                      Get.snackbar(
-                                        "Error",
-                                        "Message not sent. Try again.",
-                                      );
+                                    else{
+                                      try{
+                                        messagingService.sendMessage(groupId: groupId, userId: controller.returnUserId(), userName: userName.toString(), message: controller.chatController.text);
+                                        /// ✅ clear ONLY after success
+                                        controller.chatController.clear();
+                                      }
+                                      catch(e){
+                                        /// ❌ do NOT clear if failed
+                                        print("Message failed: $e");
+                                        Get.snackbar(
+                                          "Error",
+                                          "Message not sent. Try again.",
+                                        );
+                                      }
                                     }
+
                                   },
                                   child: Image.asset(
                                     "assets/png/icons/send_message_icon.png",

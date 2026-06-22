@@ -92,6 +92,13 @@ class Event {
   final DateTime? updatedAt;
   final int? v;
 
+  // ✅ NEW FIELDS ADDED
+  final EventComfort2? eventComfort;
+  final GuestAware2? guestAware;
+  final int? dietaryCompatibilityScore;
+  final int? numGuests;
+  final int? estimatedGuests;
+
   Event({
     this.id,
     this.location,
@@ -115,18 +122,25 @@ class Event {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.eventComfort,
+    this.guestAware,
+    this.dietaryCompatibilityScore,
+    this.numGuests,
+    this.estimatedGuests,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
       id: json['_id'],
-      location:
-      json['location'] != null ? Location.fromJson(json['location']) : null,
+      location: json['location'] != null
+          ? Location.fromJson(json['location'])
+          : null,
       image: json['image'],
       address: json['address'],
       eventName: json['eventName'],
-      eventTime:
-      json['eventTime'] != null ? DateTime.parse(json['eventTime']) : null,
+      eventTime: json['eventTime'] != null
+          ? DateTime.parse(json['eventTime'])
+          : null,
       eventType: json['eventType'],
       invitationMessage: json['invitationMessage'],
       parkingDetails: json['parkingDetails'],
@@ -138,13 +152,29 @@ class Event {
       isCancelled: json['isCancelled'],
       displayMenu: json['displayMenu'],
       host: json['host'] != null ? Host.fromJson(json['host']) : null,
-      members: json['members'] != null ? List<dynamic>.from(json['members']) : [],
-      menus: json['menus'] != null ? List<dynamic>.from(json['menus']) : [],
-      createdAt:
-      json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      updatedAt:
-      json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      members: json['members'] != null
+          ? List<dynamic>.from(json['members'])
+          : [],
+      menus:
+      json['menus'] != null ? List<dynamic>.from(json['menus']) : [],
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : null,
       v: json['__v'],
+
+      // ✅ NEW FIELDS PARSED
+      eventComfort: json['eventComfort'] != null
+          ? EventComfort2.fromJson(json['eventComfort'])
+          : null,
+      guestAware: json['guestAware'] != null
+          ? GuestAware2.fromJson(json['guestAware'])
+          : null,
+      dietaryCompatibilityScore: json['dietaryCompatibilityScore'],
+      numGuests: json['numGuests'],
+      estimatedGuests: json['estimatedGuests'],
     );
   }
 
@@ -171,6 +201,13 @@ class Event {
     'createdAt': createdAt?.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),
     '__v': v,
+
+    // ✅ NEW TO JSON
+    'eventComfort': eventComfort?.toJson(),
+    'guestAware': guestAware?.toJson(),
+    'dietaryCompatibilityScore': dietaryCompatibilityScore,
+    'numGuests': numGuests,
+    'estimatedGuests': estimatedGuests,
   };
 }
 
@@ -257,7 +294,8 @@ class Host {
           ? List<dynamic>.from(json['fcmTokens'])
           : [],
       members: json['members'] != null
-          ? List<Member>.from(json['members'].map((x) => Member.fromJson(x)))
+          ? List<Member>.from(
+          json['members'].map((x) => Member.fromJson(x)))
           : [],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
@@ -374,7 +412,8 @@ class Preferences {
       quietArea: json['quietArea'],
       hostingAnEvent: json['hostingAnEvent'],
       favMood: json['favMood'] != null
-          ? List<FavMood>.from(json['favMood'].map((x) => FavMood.fromJson(x)))
+          ? List<FavMood>.from(
+          json['favMood'].map((x) => FavMood.fromJson(x)))
           : [],
       commonAllergens: json['commonAllergens'] != null
           ? CommonAllergens.fromJson(json['commonAllergens'])
@@ -449,13 +488,10 @@ class FavMood {
 
   FavMood({this.mood});
 
-  factory FavMood.fromJson(Map<String, dynamic> json) => FavMood(
-    mood: json['mood'],
-  );
+  factory FavMood.fromJson(Map<String, dynamic> json) =>
+      FavMood(mood: json['mood']);
 
-  Map<String, dynamic> toJson() => {
-    'mood': mood,
-  };
+  Map<String, dynamic> toJson() => {'mood': mood};
 }
 
 class CommonAllergens {
@@ -529,9 +565,11 @@ class ExtraAssistance {
 
   ExtraAssistance({this.options});
 
-  factory ExtraAssistance.fromJson(Map<String, dynamic> json) => ExtraAssistance(
-    options: json['options'] != null ? List<String>.from(json['options']) : [],
-  );
+  factory ExtraAssistance.fromJson(Map<String, dynamic> json) =>
+      ExtraAssistance(
+        options:
+        json['options'] != null ? List<String>.from(json['options']) : [],
+      );
 
   Map<String, dynamic> toJson() => {
     'options': options,
@@ -545,10 +583,129 @@ class SeatingRequirement {
 
   factory SeatingRequirement.fromJson(Map<String, dynamic> json) =>
       SeatingRequirement(
-        options: json['options'] != null ? List<String>.from(json['options']) : [],
+        options:
+        json['options'] != null ? List<String>.from(json['options']) : [],
       );
 
   Map<String, dynamic> toJson() => {
     'options': options,
+  };
+}
+
+/// ================= NEW MODELS =================
+
+class EventComfort2 {
+  final bool? quietSpace;
+  final bool? largerSeating;
+  final bool? wheelChairAccess;
+  final bool? aslInterpreter;
+  final bool? veganMenu;
+  final bool? restroom;
+  final String? other;
+
+  EventComfort2({
+    this.quietSpace,
+    this.largerSeating,
+    this.wheelChairAccess,
+    this.aslInterpreter,
+    this.veganMenu,
+    this.restroom,
+    this.other,
+  });
+
+  factory EventComfort2.fromJson(Map<String, dynamic> json) {
+    return EventComfort2(
+      quietSpace: json['quietSpace'],
+      largerSeating: json['largerSeating'],
+      wheelChairAccess: json['wheelChairAccess'],
+      aslInterpreter: json['aslInterpreter'],
+      veganMenu: json['veganMenu'],
+      restroom: json['restroom'],
+      other: json['other'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'quietSpace': quietSpace,
+    'largerSeating': largerSeating,
+    'wheelChairAccess': wheelChairAccess,
+    'aslInterpreter': aslInterpreter,
+    'veganMenu': veganMenu,
+    'restroom': restroom,
+    'other': other,
+  };
+}
+
+class GuestAware2 {
+  final bool? petsPresent;
+  final bool? childrenPresent;
+  final bool? forAdultOnly;
+  final bool? smokePresent;
+  final bool? smokeFree;
+  final bool? alcohol;
+  final bool? alcoholFree;
+  final bool? stepsToClimb;
+  final String? swimmingPool;
+  final bool? fireArms;
+  final bool? shellFish;
+  final bool? peanuts;
+  final bool? endsInFirmTime;
+  final String? itemContaining;
+  final String? others;
+
+  GuestAware2({
+    this.petsPresent,
+    this.childrenPresent,
+    this.forAdultOnly,
+    this.smokePresent,
+    this.smokeFree,
+    this.alcohol,
+    this.alcoholFree,
+    this.stepsToClimb,
+    this.swimmingPool,
+    this.fireArms,
+    this.shellFish,
+    this.peanuts,
+    this.endsInFirmTime,
+    this.itemContaining,
+    this.others,
+  });
+
+  factory GuestAware2.fromJson(Map<String, dynamic> json) {
+    return GuestAware2(
+      petsPresent: json['petsPresent'],
+      childrenPresent: json['childrenPresent'],
+      forAdultOnly: json['forAdultOnly'],
+      smokePresent: json['smokePresent'],
+      smokeFree: json['smokeFree'],
+      alcohol: json['alcohol'],
+      alcoholFree: json['alcoholFree'],
+      stepsToClimb: json['stepsToClimb'],
+      swimmingPool: json['swimmingPool'],
+      fireArms: json['fireArms'],
+      shellFish: json['shellFish'],
+      peanuts: json['peanuts'],
+      endsInFirmTime: json['endsInFirmTime'],
+      itemContaining: json['itemContaining'],
+      others: json['others'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'petsPresent': petsPresent,
+    'childrenPresent': childrenPresent,
+    'forAdultOnly': forAdultOnly,
+    'smokePresent': smokePresent,
+    'smokeFree': smokeFree,
+    'alcohol': alcohol,
+    'alcoholFree': alcoholFree,
+    'stepsToClimb': stepsToClimb,
+    'swimmingPool': swimmingPool,
+    'fireArms': fireArms,
+    'shellFish': shellFish,
+    'peanuts': peanuts,
+    'endsInFirmTime': endsInFirmTime,
+    'itemContaining': itemContaining,
+    'others': others,
   };
 }

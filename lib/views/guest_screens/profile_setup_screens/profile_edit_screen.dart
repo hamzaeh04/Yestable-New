@@ -1399,10 +1399,12 @@ Widget customProfileField({
   bool? readonly = false,
   Icon? suffixIcon,
   VoidCallback? onSuffixTap,
+  TextInputType? keyboardType
 }) {
   return TextField(
     readOnly: readonly ?? false,
     controller: controller,
+    keyboardType: keyboardType ?? TextInputType.text,
     cursorColor: greenColor,
     textAlignVertical: TextAlignVertical.center,
     decoration: InputDecoration(

@@ -20,6 +20,9 @@ Widget eventScreenWidget({
   required String eventDate,
   required String eventTime,
   required String eventHost,
+  required String estimatedGuest,
+  required String joinedGuest,
+  required double value
 }) {
   final NavigationController controller = Get.find<NavigationController>();
   BaseService baseService = BaseService();
@@ -117,7 +120,7 @@ Widget eventScreenWidget({
                       Row(
                         children: [
                           customText(
-                            text: "95",
+                            text: "${value * 100}",
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             color: blueColor,
@@ -139,7 +142,7 @@ Widget eventScreenWidget({
                     borderRadius: BorderRadius.circular(10.sp),
                     child: LinearProgressIndicator(
                       minHeight: 0.6.h,
-                      value: 0.95,
+                      value: value,
                       valueColor: AlwaysStoppedAnimation<Color>(greenColor),
                       backgroundColor: whiteColor,
                     ),
@@ -159,7 +162,7 @@ Widget eventScreenWidget({
                               color: blackColor,
                             ),
                             customText(
-                              text: "(30/25)",
+                              text: "(${joinedGuest ?? 0}/${estimatedGuest ?? 0})",
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w500,
                               color: greenColor,
@@ -172,7 +175,7 @@ Widget eventScreenWidget({
                           borderRadius: BorderRadius.circular(10.sp),
                           child: LinearProgressIndicator(
                             minHeight: 0.6.h,
-                            value: 0.95,
+                            value: double.parse(joinedGuest) / 100,
                             valueColor: AlwaysStoppedAnimation<Color>(
                               blueColor,
                             ),

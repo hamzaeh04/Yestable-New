@@ -45,6 +45,9 @@ class EventData {
   final DateTime updatedAt;
   final EventComfort eventComfort;
   final GuestAware guestAware;
+  final int? dietaryCompatibilityScore;
+  final int? numGuests;
+  final int? estimatedGuests;
 
   EventData({
     required this.id,
@@ -70,6 +73,9 @@ class EventData {
     required this.updatedAt,
     required this.eventComfort,
     required this.guestAware,
+    required this.dietaryCompatibilityScore,
+    required this.numGuests,
+    required this.estimatedGuests,
   });
 
   factory EventData.fromJson(Map<String, dynamic> json) {
@@ -97,6 +103,9 @@ class EventData {
       updatedAt: DateTime.parse(json['updatedAt']),
       eventComfort: EventComfort.fromJson(json['eventComfort']),
       guestAware: GuestAware.fromJson(json['guestAware']),
+      dietaryCompatibilityScore: json['dietaryCompatibilityScore'],
+      numGuests: json['numGuests'],
+      estimatedGuests: json['estimatedGuests'],
     );
   }
 }

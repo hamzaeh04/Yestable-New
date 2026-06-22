@@ -116,7 +116,10 @@ void showEventDialog(BuildContext context) {
                                         eventTime: controller.formatTime2(data?.eventTime),
                                         eventHost: data?.host?.name ?? "Sophia Andreas",
                                         eventLocation: displayLocation,
-                                        image: data?.image
+                                        image: data?.image,
+                                        value: (data!.dietaryCompatibilityScore!.toDouble()/100),
+                                        estimatedGuest: data!.estimatedGuests.toString(),
+                                        joinedGuest: data!.numGuests.toString(),
                                     ),
                                   ),
                                 ),
