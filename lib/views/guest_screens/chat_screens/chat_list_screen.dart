@@ -12,11 +12,32 @@ import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/chat_list_widget.dart';
 import '../../../widget/home_screen_widget.dart';
 
-class ChatListScreen extends StatelessWidget {
+class ChatListScreen extends StatefulWidget {
   ChatListScreen({super.key});
+
+  @override
+  State<ChatListScreen> createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends State<ChatListScreen> {
   final NavigationController controller = Get.find<NavigationController>();
   final MessagingService messagingService = MessagingService();
   final prefs = SharedPreferencesMethod.storage;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  bool _matchesGroupName(Map<String, dynamic> group) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return true;
+    final groupName = (group['GroupName'] ?? '').toString().toLowerCase();
+    return groupName.contains(query);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +70,13 @@ class ChatListScreen extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  InkWell(
-                      onTap: (){
-                        // controller.addtoFriendScreen();
-                      },
-                      child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
-                  ),
-                  SizedBox(width: 2.w),
+                  // InkWell(
+                  //     onTap: (){
+                  //       // controller.addtoFriendScreen();
+                  //     },
+                  //     child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
+                  // ),
+                  // SizedBox(width: 2.w),
                   InkWell(
                       onTap: (){
                         Get.toNamed("mynotificationscreen");
@@ -85,6 +106,12 @@ class ChatListScreen extends StatelessWidget {
                             SizedBox(height: 3.h),
                             // Search bar on top
                             TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                setState(() {
+                                  _searchQuery = value;
+                                });
+                              },
                               style: TextStyle(
                                   fontSize: 13.sp, fontFamily: "WorkSans"),
                               // Optional: shrink text size
@@ -181,6 +208,10 @@ class ChatListScreen extends StatelessWidget {
                                 }
 
                                 final joinedGroups = joinedSnapshot.data!;
+                                final filteredGroups = joinedGroups
+                                    .where((groupDoc) => _matchesGroupName(
+                                        groupDoc.data() as Map<String, dynamic>))
+                                    .toList();
 
                                 if (joinedGroups.isEmpty) {
                                   return Center(
@@ -188,10 +219,17 @@ class ChatListScreen extends StatelessWidget {
                                   );
                                 }
 
+                                if (filteredGroups.isEmpty) {
+                                  return Center(
+                                    child: customText(
+                                        text: "No groups match your search"),
+                                  );
+                                }
+
                                 return ListView.builder(
-                                  itemCount: joinedGroups.length,
+                                  itemCount: filteredGroups.length,
                                   itemBuilder: (context, index) {
-                                    final groupDoc = joinedGroups[index];
+                                    final groupDoc = filteredGroups[index];
 
                                     final group =
                                     groupDoc.data() as Map<String, dynamic>;
@@ -284,13 +322,24 @@ class ChatListScreen extends StatelessWidget {
                             }
 
                             final groups = snapshot.data!.docs;
+                            final filteredGroups = groups
+                                .where((groupDoc) => _matchesGroupName(
+                                    groupDoc.data() as Map<String, dynamic>))
+                                .toList();
+
+                            if (filteredGroups.isEmpty) {
+                              return Center(
+                                child: customText(
+                                    text: "No groups match your search"),
+                              );
+                            }
 
                             return ListView.builder(
-                              itemCount: groups.length,
+                              itemCount: filteredGroups.length,
                               itemBuilder: (context, index) {
 
                                 final group =
-                                groups[index].data() as Map<String, dynamic>;
+                                filteredGroups[index].data() as Map<String, dynamic>;
 
                                 Timestamp? lastMessageTime = group["lastMessageTime"];
 
@@ -325,7 +374,7 @@ class ChatListScreen extends StatelessWidget {
                                   ),
                                   child: StreamBuilder<int>(
                                     stream: messagingService.getUnreadCount(
-                                      groupId: groups[index].id,
+                                      groupId: filteredGroups[index].id,
                                       userId: controller.returnUserId(),
                                     ),
                                     builder: (context, snap) {

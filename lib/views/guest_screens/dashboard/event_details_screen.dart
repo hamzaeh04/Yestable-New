@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/outh_file/local_db_key.dart';
+import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
@@ -17,6 +20,7 @@ class EventDetailsScreen extends StatelessWidget {
 final NavigationController controller = Get.find<NavigationController>();
 final EventController eventController = Get.find<EventController>();
   BaseService baseService = BaseService();
+  final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
@@ -210,11 +214,41 @@ final EventController eventController = Get.find<EventController>();
                       },
                       child: Row(
                         children: [
-                          Image.asset(
-                            "assets/png/chat_images/user1.png",
-                            height: 9.h,
-                            width: 14.w,
-                          ),
+                          data?.host?.profilePic != null ?
+
+              Image.network(
+              "${baseService.baseURL}${data?.host?.profilePic}",
+              height: 6.h,
+              width: 14.w,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+
+              return Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Container(
+              height: 6.h,
+              width: 14.w,
+              color: Colors.white,
+              ),
+              );
+              },
+              errorBuilder: (context, error, stackTrace) {
+              return Container(
+              height: 9.h,
+              width: 14.w,
+              alignment: Alignment.center,
+              child: const Icon(Icons.person),
+              );
+              },
+              ):
+                            Image.asset(
+                              "assets/png/chat_images/user1.png",
+                              height: 9.h,
+                              width: 14.w,
+                            ),
+
                           SizedBox(width: 3.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,6 +272,7 @@ final EventController eventController = Get.find<EventController>();
                       ),
                     ),
                   ),
+                  SizedBox(height: 1.h,),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 5.w,
@@ -584,17 +619,29 @@ final EventController eventController = Get.find<EventController>();
           ),
         ],
       ),
-    // ✅ Reactive FloatingActionButton
-    floatingActionButton: Obx(() => controller.isUser.value == false
-    ? FloatingActionButton(
-    backgroundColor: blueColor,
-    onPressed: () {
-    Get.toNamed("createneweventscreen", arguments: eventId);
-    },
-    child: Image.asset("assets/png/icons/event_floating_icon.png",height: 17.sp),
-    )
-        : SizedBox.shrink(), // 👈 returns nothing if false
-    ));
+      floatingActionButton: Obx(() {
+        if (controller.isUser.value) return const SizedBox.shrink();
+
+        final hostId =
+            eventController.eventReviewModel.value?.data?.host?.id ?? "";
+        final isEventHost = prefs.getString(LocalDBKeys.USERID) == hostId;
+        if (!isEventHost || hostId.isEmpty) return const SizedBox.shrink();
+
+        return FloatingActionButton(
+          backgroundColor: blueColor,
+          onPressed: () {
+            Get.toNamed(
+              "createneweventscreen",
+              arguments: eventId,
+            );
+          },
+          child: Image.asset(
+            "assets/png/icons/event_floating_icon.png",
+            height: 17.sp,
+          ),
+        );
+      }),
+    );
   }
 }
 Widget reveiwWidget(BuildContext context) {

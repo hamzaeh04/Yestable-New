@@ -20,6 +20,16 @@ class EventComfortThree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
+
+    // Pre-fill mayGuestsContact (index 14) in edit mode.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final data = eventController.getEventByIdModel?.value?.data;
+      if (eventId != null) {
+        eventController.profileController.selectedOptions[14] =
+            "${data?.displayMenu}";
+      }
+    });
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
