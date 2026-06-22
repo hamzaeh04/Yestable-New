@@ -206,7 +206,7 @@ class ChatGroupSetting extends StatelessWidget {
 
                                         _buildInfoRow(
                                           member["userName"] ?? "",
-                                          imagePath: "assets/png/chat_images/user1.png",
+                                          imagePath: "${baseService.baseURL}${member["memberProfile"]}" ?? "assets/png/chat_images/user1.png",
                                           isHost: member["userId"] == adminId,
                                         ),
 
@@ -393,7 +393,7 @@ class ChatGroupSetting extends StatelessWidget {
           Row(
             children: [
               if (imagePath != null) ...[
-                Image.asset(
+                Image.network(
                   imagePath,
                   height: 3.h,
                   width: 3.h,

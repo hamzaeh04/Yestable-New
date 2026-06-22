@@ -49,16 +49,16 @@ class EventScreen extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      // controller.goTSearchScreen();
-
-                    },
-                    child: homeIconWidget(
-                      imagePath: "assets/png/icons/search_icon.png",
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
+                  // InkWell(
+                  //   onTap: () {
+                  //     // controller.goTSearchScreen();
+                  //
+                  //   },
+                  //   child: homeIconWidget(
+                  //     imagePath: "assets/png/icons/search_icon.png",
+                  //   ),
+                  // ),
+                  // SizedBox(width: 2.w),
                   InkWell(
                     onTap: () {
                       Get.toNamed("mynotificationscreen");

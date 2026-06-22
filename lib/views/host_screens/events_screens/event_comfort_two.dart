@@ -34,6 +34,35 @@ class EventComfortTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
+
+    // Pre-fill Yes/No selections for guestAware when entering in edit mode.
+    // Runs every time build is called so back-navigation also restores values.
+    // NOTE: selectedOptions indices 1-13 are reused for guestAware (after
+    // EventComfortOne clears them on submit). Index 9 is the pool widget.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (eventId != null) {
+        final data = controller.getEventByIdModel.value?.data;
+        final guestAware = data?.guestAware;
+        void setOpt(bool? value, int index) {
+          if (value == null) return;
+          controller.profileController.selectedOptions[index] = value ? 'yes' : 'no';
+        }
+        setOpt(guestAware?.petsPresent,     1);
+        setOpt(guestAware?.childrenPresent, 2);
+        setOpt(guestAware?.forAdultOnly,    3);
+        setOpt(guestAware?.smokePresent,    4);
+        setOpt(guestAware?.smokeFree,       5);
+        setOpt(guestAware?.alcohol,         6);
+        setOpt(guestAware?.alcoholFree,     7);
+        setOpt(guestAware?.stepsToClimb,    8);
+        // index 9 is swimming pool — handled via controller.poolSelection
+        setOpt(guestAware?.fireArms,        10);
+        setOpt(guestAware?.shellFish,       11);
+        setOpt(guestAware?.peanuts,         12);
+        setOpt(guestAware?.endsInFirmTime,  13);
+      }
+    });
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(

@@ -501,12 +501,22 @@ SizedBox(height: 2.h,),
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
 
-                                                  /// PROFILE IMAGE
-                                                  Image.asset(
-                                                    "assets/png/chat_images/chat_profile_img.png",
+                                                  /// PROFILE IMAGEImage.network(
+                                                  Image.network(
+                                                    "${baseService.baseURL}${message["senderProfile"]}",
                                                     height: 6.h,
                                                     width: 12.w,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Image.asset(
+                                                        "assets/png/chat_images/chat_profile_img.png",
+                                                        height: 6.h,
+                                                        width: 12.w,
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    },
+                                                    fit: BoxFit.cover,
                                                   ),
+
 
                                                   SizedBox(width: 3.w),
 
@@ -637,12 +647,15 @@ SizedBox(height: 2.h,),
                                 InkWell(
                                   onTap: (){
                                     final userName = prefs.getString(LocalDBKeys.USERFULLNAME);
+                                    final userProfile = prefs.getString(LocalDBKeys.USERPROFILEPIC);
                                     if(controller.chatController.text.isEmpty){
+
+                                      print("${baseService.baseURL}${userProfile}");
 
                                     }
                                     else{
                                       try{
-                                        messagingService.sendMessage(groupId: groupId, userId: controller.returnUserId(), userName: userName.toString(), message: controller.chatController.text);
+                                        messagingService.sendMessage(groupId: groupId, userId: controller.returnUserId(), userName: userName.toString(), message: controller.chatController.text, userProfile: userProfile ?? "");
                                         /// ✅ clear ONLY after success
                                         controller.chatController.clear();
                                       }

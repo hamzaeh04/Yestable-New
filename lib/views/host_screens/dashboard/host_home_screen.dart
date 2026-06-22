@@ -5,6 +5,7 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/views/guest_screens/dashboard/event_screen.dart';
+import 'package:yestable/widget/custom_image_widget.dart';
 import 'package:yestable/widget/guest_update_received.dart';
 import '../../../controllers/event_controller.dart';
 import '../../../outh_file/local_db_key.dart';
@@ -140,15 +141,15 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
 
                   const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      // controller.goTSearchScreen();
-                    },
-                    child: homeIconWidget(
-                      imagePath: "assets/png/icons/search_icon.png",
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
+                  // InkWell(
+                  //   onTap: () {
+                  //     // controller.goTSearchScreen();
+                  //   },
+                  //   child: homeIconWidget(
+                  //     imagePath: "assets/png/icons/search_icon.png",
+                  //   ),
+                  // ),
+                  // SizedBox(width: 2.w),
                   InkWell(
                     onTap: () {
                       Get.toNamed("mynotificationscreen");
@@ -1026,6 +1027,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                     final data = eventData[index];
                                                     print(data.dietaryCompatibilityScore);
                                                     return adminHomeWidget(
+                                                      imagePath: data?.image,
                                                       eventname: data?.eventName,
                                                       confirmedamount: "${data.numGuests} Guest Confirmed",
                                                       value: (data.dietaryCompatibilityScore.toDouble()/100),
@@ -1082,6 +1084,7 @@ class AdminHomeScreen extends StatelessWidget {
   }
 
   Widget adminHomeWidget({
+    String? imagePath,
     String? eventname,
     String? confirmedamount,
     String? progress,
@@ -1104,11 +1107,26 @@ class AdminHomeScreen extends StatelessWidget {
                 // Image thumbnail
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12.sp),
-                  child: Image.asset(
+                  child: imagePath == null || imagePath!.isEmpty
+                      ? Image.asset(
                     "assets/png/admin_home_foodpic.png",
                     height: 7.h,
                     width: 15.w,
                     fit: BoxFit.cover,
+                  )
+                      : Image.network(
+                    "${baseService.baseURL}$imagePath",
+                    height: 7.h,
+                    width: 15.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        "assets/png/admin_home_foodpic.png",
+                        height: 7.h,
+                        width: 15.w,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
                 SizedBox(width: 3.w),

@@ -1,3 +1,4 @@
+
 class GetMyEventModel {
   final bool success;
   final int statusCode;
@@ -104,6 +105,7 @@ class Event {
 
   final EventComfort1 eventComfort1;
   final GuestAware1 guestAware1;
+  String? image;
 
   Event({
     required this.id,
@@ -131,6 +133,7 @@ class Event {
     required this.location,
     required this.eventComfort1,
     required this.guestAware1,
+    required this.image,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -166,6 +169,7 @@ class Event {
 
       eventComfort1: EventComfort1.fromJson(json['eventComfort'] ?? {}),
       guestAware1: GuestAware1.fromJson(json['guestAware'] ?? {}),
+      image: json['image'] ?? '',
     );
   }
 
@@ -199,6 +203,7 @@ class Event {
       'location': location.toJson(),
       'eventComfort': eventComfort1.toJson(),
       'guestAware': guestAware1.toJson(),
+      'image': image
     };
   }
 }

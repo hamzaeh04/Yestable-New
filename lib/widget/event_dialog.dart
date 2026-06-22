@@ -9,9 +9,10 @@ import '../controllers/navigation_controller.dart';
 import 'event_widget.dart';
 import 'home_screen_widget.dart';
 
-void showEventDialog(BuildContext context) {
+void showEventDialog(BuildContext context, DateTime selectedDay) {
   final NavigationController controller = Get.find<NavigationController>();
   final EventController eventController = Get.find<EventController>();
+
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -44,7 +45,7 @@ void showEventDialog(BuildContext context) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         customText(
-                          text: controller.formatDate2(DateTime.now()),
+                          text: controller.formatDate2(selectedDay),
                           fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
                           fontFamily: "CormorantGaramond",

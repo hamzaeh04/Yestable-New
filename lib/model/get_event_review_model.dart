@@ -171,6 +171,9 @@ class Host {
   final String? username;
   final String? profilePic;
   final String? location;
+  final String? bio;
+  final List<dynamic>? members;
+  final HostPreferences? preferences;
 
   Host({
     this.id,
@@ -178,7 +181,10 @@ class Host {
     this.name,
     this.username,
     this.profilePic,
-    this.location
+    this.location,
+    this.bio,
+    this.members,
+    this.preferences,
   });
 
   factory Host.fromJson(Map<String, dynamic> json) {
@@ -189,6 +195,149 @@ class Host {
       username: json['username'],
       profilePic: json['profilePic'],
       location: json['location'],
+      bio: json['bio'],
+      members: json['members'],
+      preferences: json['preferences'] != null
+          ? HostPreferences.fromJson(json['preferences'])
+          : null,
+    );
+  }
+}
+
+class HostPreferences {
+  final HostCommonAllergens? commonAllergens;
+  final List<HostFavMood>? favMood;
+  final HostPlate? plate;
+  final HostYumYuck? yumYuck;
+
+  HostPreferences({
+    this.commonAllergens,
+    this.favMood,
+    this.plate,
+    this.yumYuck,
+  });
+
+  factory HostPreferences.fromJson(Map<String, dynamic> json) {
+    return HostPreferences(
+      commonAllergens: json['commonAllergens'] != null
+          ? HostCommonAllergens.fromJson(json['commonAllergens'])
+          : null,
+      favMood: (json['favMood'] as List?)
+          ?.map((e) => HostFavMood.fromJson(e))
+          .toList(),
+      plate: json['plate'] != null ? HostPlate.fromJson(json['plate']) : null,
+      yumYuck: json['yumYuck'] != null
+          ? HostYumYuck.fromJson(json['yumYuck'])
+          : null,
+    );
+  }
+}
+
+class HostCommonAllergens {
+  final String? peanut;
+  final String? treeNuts;
+  final String? sesame;
+  final String? gluten;
+  final String? eggs;
+  final String? soy;
+  final String? fish;
+  final String? shellFish;
+  final String? dairy;
+  final String? others;
+
+  HostCommonAllergens({
+    this.peanut,
+    this.treeNuts,
+    this.sesame,
+    this.gluten,
+    this.eggs,
+    this.soy,
+    this.fish,
+    this.shellFish,
+    this.dairy,
+    this.others,
+  });
+
+  factory HostCommonAllergens.fromJson(Map<String, dynamic> json) {
+    return HostCommonAllergens(
+      peanut: json['peanut'],
+      treeNuts: json['treeNuts'],
+      sesame: json['sesame'],
+      gluten: json['gluten'],
+      eggs: json['eggs'],
+      soy: json['soy'],
+      fish: json['fish'],
+      shellFish: json['shellFish'],
+      dairy: json['dairy'],
+      others: json['others'],
+    );
+  }
+
+  Map<String, String?> toMap() {
+    return {
+      'peanut': peanut,
+      'treeNuts': treeNuts,
+      'sesame': sesame,
+      'gluten': gluten,
+      'eggs': eggs,
+      'soy': soy,
+      'fish': fish,
+      'shellFish': shellFish,
+      'dairy': dairy,
+      'others': others,
+    };
+  }
+}
+
+class HostFavMood {
+  final String? mood;
+
+  HostFavMood({this.mood});
+
+  factory HostFavMood.fromJson(Map<String, dynamic> json) {
+    return HostFavMood(mood: json['mood']);
+  }
+}
+
+class HostPlate {
+  final bool? vegan;
+  final bool? vegetarian;
+  final bool? halal;
+  final bool? kosher;
+  final bool? keto;
+  final String? other;
+
+  HostPlate({
+    this.vegan,
+    this.vegetarian,
+    this.halal,
+    this.kosher,
+    this.keto,
+    this.other,
+  });
+
+  factory HostPlate.fromJson(Map<String, dynamic> json) {
+    return HostPlate(
+      vegan: json['vegan'],
+      vegetarian: json['vegetarian'],
+      halal: json['halal'],
+      kosher: json['kosher'],
+      keto: json['keto'],
+      other: json['other'],
+    );
+  }
+}
+
+class HostYumYuck {
+  final List<String>? yum;
+  final List<String>? yuck;
+
+  HostYumYuck({this.yum, this.yuck});
+
+  factory HostYumYuck.fromJson(Map<String, dynamic> json) {
+    return HostYumYuck(
+      yum: (json['yum'] as List?)?.map((e) => e.toString()).toList(),
+      yuck: (json['yuck'] as List?)?.map((e) => e.toString()).toList(),
     );
   }
 }

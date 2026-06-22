@@ -95,6 +95,7 @@ class MessagingService {
     required String groupId,
     required String userId,
     required String userName,
+    required String userProfile,
     required String message,
   }) async {
     final groupDoc = _firestore.collection("group").doc(groupId);
@@ -105,6 +106,7 @@ class MessagingService {
       "messageId": msgRef.id,
       "senderId": userId,
       "senderName": userName,
+      "senderProfile": userProfile,
       "message": message,
       "createdAt": FieldValue.serverTimestamp(),
     });

@@ -13,7 +13,6 @@ import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/model/get_all_allergen_list.dart';
-import 'package:yestable/model/get_event_by_id_model.dart' show GetEventById;
 import 'package:yestable/model/get_event_review_model.dart';
 import 'package:yestable/model/get_my_event_model.dart';
 
@@ -22,6 +21,7 @@ import '../core/services/base_services.dart';
 import '../core/services/firebase_messaging/messaging_service.dart';
 import '../model/get_all_event_model.dart';
 import '../model/get_event_allergen_list.dart';
+import '../model/get_event_by_id_model.dart' show EventDetailsResponse;
 import '../model/get_menu_model.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
@@ -35,6 +35,30 @@ import 'navigation_controller.dart';
 
 class EventController extends GetxController{
   ProfileController profileController = Get.find<ProfileController>();
+
+  bool? quietSpace;
+  bool? largerSeating;
+  bool? wheelChairAccess;
+  bool? aslInterpreter;
+  bool? veganMenu;
+  bool? restroom;
+
+  bool? petsPresent;
+  bool? childrenPresent;
+  bool? forAdultOnly;
+  bool? smokePresent;
+  bool? smokeFree;
+  bool? alcohol;
+  bool? alcoholFree;
+  bool? stepsToClimb;
+  bool? fireArms;
+  bool? shellFish;
+  bool? peanuts;
+  bool? endsInFirmTime;
+  bool? mayGuestsContact;
+
+  final selectedDay = DateTime.now().obs;
+  final focusedDay = DateTime.now().obs;
 
   final SharedPreferences pref = SharedPreferencesMethod.storage;
   final MessagingService messagingService = MessagingService();
@@ -80,7 +104,7 @@ class EventController extends GetxController{
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
   Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
-  Rxn<GetEventById> getEventByIdModel = Rxn<GetEventById>();
+  Rxn<EventDetailsResponse> getEventByIdModel = Rxn<EventDetailsResponse>();
 
   Rxn<AllAllergen> getAllergenList = Rxn<AllAllergen>();
   Rxn<EventAllergenResponse> getEventAllergenData = Rxn<EventAllergenResponse>();
@@ -682,7 +706,8 @@ class EventController extends GetxController{
         eventReviewModel.refresh();
         // Get.toNamed('eventdetailsscreen', arguments: eventId);
         Get.toNamed("eventcomfortone", arguments: eventId);
-        clearEventFields();
+        // NOTE: Do NOT call clearEventFields() here — the flow continues
+        // through EventComfortOne → Two → Three, which need prefilled data.
 
       } else {
         Utils.showToast(
@@ -1000,11 +1025,11 @@ class EventController extends GetxController{
           false,
         );
 
-        // ✅ RESET ONLY SELECTED OPTIONS
+        // Clear selectedOptions so EventComfortTwo can reuse indices 1-13 for guestAware
         profileController.selectedOptions.clear();
-        Get.toNamed("eventcomforttwo", arguments: eventId);
         otherComfortController.clear();
-        print("✅ selectedOptions cleared after success");
+        Get.toNamed("eventcomforttwo", arguments: eventId);
+        print("✅ selectedOptions cleared after comfort submit");
 
       } else {
         Utils.showToast(
@@ -1171,6 +1196,7 @@ class EventController extends GetxController{
 
       } else {
         // Handle API failure
+
         final message = response?['message'] ?? "Something went wrong";
         print("API Error: $message");
         Utils.showToast(response['message'], true);
@@ -1341,41 +1367,134 @@ class EventController extends GetxController{
     };
   }
 
-  Future<void> getEventById(String eventId) async{
+
+  /// Stores a bool value into selectedOptions as 'yes' or 'no'.
+  /// Uses the SAME keys that yesNoWidget reads and getBoolOption parses.
+  void _setOption(bool? value, int index) {
+    if (value == null) return;
+    profileController.selectedOptions[index] = value ? 'yes' : 'no';
+    print("_setOption index=$index value=${profileController.selectedOptions[index]}");
+  }
+
+  Future<void> getEventById(String eventId) async {
     isMenusLoading.value = true;
-    try{
+    try {
       final response = await baseService.baseGetAPI(ApiEndPoints.getEventById(eventId));
-      if(response["success"] == true){
+      if (response["success"] == true) {
         final data = response["data"];
+        final eventComfort = (response["data"]["eventComfort"] ?? {}) as Map<String, dynamic>;
+        final guestAware  = (response["data"]["guestAware"]  ?? {}) as Map<String, dynamic>;
+        print("Comfort: ${eventComfort}");
+        print("Aware: ${guestAware}");
         final result = formatDateTime(data["eventTime"]);
-        getEventByIdModel.value = GetEventById.fromJson(response);
-        Utils.showToast(response["message"], false);
-        eventName.text = data["eventName"];
-        eventDate.text = result['date'] ?? "";
-        eventTime.text = result["time"] ?? "";
-        eventType.text = data["eventType"];
-        eventLocation.text = data["address"];
-        inviteMsg.text = data["invitationMessage"];
-        parkingDetails.text = data["parkingDetails"];
-        addNote.text = data["addNote"];
-        // eventReminder.text = data["reminderNotification"];
-        otherComfortController.text = data["eventTime"];
-        locationController.addressController.text = data["address"];
-        // itemContainingController.text = data["eventTime"];
-        // guestAwareOthersController.text = data["eventTime"];
-        profileController.profilePicture.value = data["image"];
-      } else{
+
+        getEventByIdModel.value = EventDetailsResponse.fromJson(response);
+        // Utils.showToast(response["message"], false); // suppress toast on edit load
+
+        // // ── Basic event fields ──────────────────────────────────────────
+        eventName.text         = data["eventName"]          ?? "";
+        eventDate.text         = result['date']              ?? "";
+        eventTime.text         = result["time"]              ?? "";
+        eventType.text         = data["eventType"]           ?? "";
+        eventLocation.text     = data["address"]             ?? "";
+        inviteMsg.text         = data["invitationMessage"]   ?? "";
+        parkingDetails.text    = data["parkingDetails"]      ?? "";
+        addNote.text           = data["addNote"]             ?? "";
+        locationController.addressController.text = data["address"] ?? "";
+        profileController.profilePicture.value    = data["image"];
+        //
+        // // ── EventComfort (screen 1, indices 1-6) ────────────────────────
+        // print("selectedOptions length: ${profileController.selectedOptions.length}");
+        // print("selectedOptions: ${profileController.selectedOptions}");
+        // quietSpace      = eventComfort["quietSpace"];
+        // largerSeating   = eventComfort["largerSeating"];
+        // wheelChairAccess= eventComfort["wheelChairAccess"];
+        // aslInterpreter  = eventComfort["aslInterpreter"];
+        // veganMenu       = eventComfort["veganMenu"];
+        // restroom        = eventComfort["restroom"];
+        // otherComfortController.text = eventComfort["other"] ?? "";
+        //
+        // // Pre-fill selectedOptions with the SAME indices yesNoWidget uses
+        // // EventComfortOne renders index+1 for a 5-item list (1-5) + hardcoded 6
+        // _setOption(quietSpace,       1);
+        // _setOption(largerSeating,    2);
+        // _setOption(wheelChairAccess, 3);
+        // _setOption(aslInterpreter,   4);
+        // _setOption(veganMenu,        5);
+        // _setOption(restroom,         6);
+        // print("selectedOptions length: ${profileController.selectedOptions.length}");
+        // print("selectedOptions: ${profileController.selectedOptions}");
+        //
+        // // ── GuestAware (screen 2, indices 1-13; screen 3, index 14) ─────
+        // petsPresent      = guestAware["petsPresent"];
+        // childrenPresent  = guestAware["childrenPresent"];
+        // forAdultOnly     = guestAware["forAdultOnly"];
+        // smokePresent     = guestAware["smokePresent"];
+        // smokeFree        = guestAware["smokeFree"];
+        // alcohol          = guestAware["alcohol"];
+        // alcoholFree      = guestAware["alcoholFree"];
+        // stepsToClimb     = guestAware["stepsToClimb"];
+        // fireArms         = guestAware["fireArms"];
+        // shellFish        = guestAware["shellFish"];
+        // peanuts          = guestAware["peanuts"];
+        // endsInFirmTime   = guestAware["endsInFirmTime"];
+        // mayGuestsContact = guestAware["mayGuestsContact"];
+        // poolSelection.value        = guestAware["swimmingPool"]       ?? "";
+        // guestsWelcomeToSwim.value  = guestAware["guestsWelcomeToSwim"] ?? false;
+        // itemContainingController.text   = guestAware["itemContaining"] ?? "";
+        // guestAwareOthersController.text = guestAware["others"]         ?? "";
+        // _setOption(guestAware["petsPresent"], 0);
+        // _setOption(guestAware["childrenPresent"], 1);
+        // _setOption(guestAware["forAdultOnly"], 2);
+        // _setOption(guestAware["smokePresent"], 3);
+        // _setOption(guestAware["smokeFree"], 4);
+        // _setOption(guestAware["alcohol"], 5);
+        // _setOption(guestAware["alcoholFree"], 6);
+        // _setOption(guestAware["stepsToClimb"], 7);
+        // _setOption(guestAware["fireArms"], 8);
+        // _setOption(guestAware["shellFish"], 9);
+        // _setOption(guestAware["peanuts"], 10);
+        // _setOption(guestAware["endsInFirmTime"], 11);
+        // _setOption(guestAware["mayGuestsContact"], 12);
+        //
+        // // ── Seed selectedMenus from existing event menus ─────────────────
+        // final menusList = data["menus"] as List? ?? [];
+        // selectedMenus.clear();
+        // for (final menuJson in menusList) {
+        //   if (menuJson is Map<String, dynamic>) {
+        //     selectedMenus.add(MenuItem(
+        //       id:           menuJson['_id']         as String?,
+        //       type:         menuJson['type']        as String?,
+        //       mealCategory: menuJson['mealCategory'] != null
+        //           ? List<String>.from(menuJson['mealCategory'])
+        //           : null,
+        //       menuImage:   menuJson['menuImage']    as String?,
+        //       title:       menuJson['title']        as String?,
+        //       description: menuJson['description']  as String?,
+        //       createdAt:   menuJson['createdAt'] != null
+        //           ? DateTime.tryParse(menuJson['createdAt'])
+        //           : null,
+        //       updatedAt:   menuJson['updatedAt'] != null
+        //           ? DateTime.tryParse(menuJson['updatedAt'])
+        //           : null,
+        //       v: menuJson['__v'] as int?,
+        //     ));
+        //   }
+        // }
+        // print("✅ getEventById: seeded ${selectedMenus.length} menu(s) into selectedMenus");
+
+      } else {
         Utils.showToast(response["message"], true);
       }
-    } catch(e){
-      print("Something went wrong $e");
-    }
-    finally{
+    } catch (e) {
+      print("Something went wrong in getEventById: $e");
+    } finally {
       isMenusLoading.value = false;
     }
   }
 
-  void clearEventFields(){
+  void clearEventFields() {
+    // ── Text fields ──────────────────────────────────────────────────────
     eventName.clear();
     eventDate.clear();
     eventTime.clear();
@@ -1386,10 +1505,42 @@ class EventController extends GetxController{
     addNote.clear();
     eventReminder.clear();
     otherComfortController.clear();
-    locationController.addressController.clear();
     itemContainingController.clear();
     guestAwareOthersController.clear();
+    guestContactController.clear();
+    locationController.addressController.clear();
+
+    // ── Observables ──────────────────────────────────────────────────────
     profileController.profilePicture.value = null;
+    selectedMenus.clear();
+    poolSelection.value       = '';
+    guestsWelcomeToSwim.value = false;
+    profileController.selectedOptions.clear();
+    getEventByIdModel.value   = null;
+
+    // ── EventComfort booleans ────────────────────────────────────────────
+    quietSpace       = null;
+    largerSeating    = null;
+    wheelChairAccess = null;
+    aslInterpreter   = null;
+    veganMenu        = null;
+    restroom         = null;
+
+    // ── GuestAware booleans ──────────────────────────────────────────────
+    petsPresent      = null;
+    childrenPresent  = null;
+    forAdultOnly     = null;
+    smokePresent     = null;
+    smokeFree        = null;
+    alcohol          = null;
+    alcoholFree      = null;
+    stepsToClimb     = null;
+    fireArms         = null;
+    shellFish        = null;
+    peanuts          = null;
+    endsInFirmTime   = null;
+    mayGuestsContact = null;
+    print("✅ clearEventFields: all state reset");
   }
 
 

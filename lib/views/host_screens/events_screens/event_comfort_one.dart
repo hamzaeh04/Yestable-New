@@ -25,6 +25,28 @@ class EventComfortOne extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
+
+    // Pre-fill Yes/No selections when entering in edit mode.
+    // Runs every time build is called so back-navigation also restores values.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (eventId != null) {
+        final data = controller.getEventByIdModel.value?.data;
+        final guestAware = data?.guestAware;
+        final eventComfort = data?.eventComfort;
+        void setOpt(bool? value, int index) {
+          if (value == null) return;
+          controller.profileController.selectedOptions[index] = value ? 'yes' : 'no';
+        }
+        setOpt(eventComfort?.quietSpace,       1);
+        setOpt(eventComfort?.largerSeating,    2);
+        setOpt(eventComfort?.wheelChairAccess, 3);
+        setOpt(eventComfort?.aslInterpreter,   4);
+        setOpt(eventComfort?.veganMenu,        5);
+        setOpt(eventComfort?.restroom,         6);
+        print("${eventComfort?.quietSpace} ${eventComfort?.largerSeating} ${eventComfort?.wheelChairAccess} ${eventComfort?.aslInterpreter} ${eventComfort?.veganMenu} ${eventComfort?.restroom}");
+      }
+    });
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
