@@ -29,23 +29,8 @@ class FoodPreferencesOne extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     loadingStepIndicator("4/6", 0.5),
-                    Row(
-                      children: [
-                        backButton(),
-                        Spacer(),
-                        InkWell(
-                          onTap: (){
-                            Get.toNamed("foodpreferencestwo");
-                          },
-                          child: customText(
-                            text: "Skip",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: greenColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                    backButton(),
+
                     SizedBox(height: 1.8.h),
                     customText(
                       text: "Your Taste Personality",

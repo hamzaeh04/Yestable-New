@@ -74,23 +74,8 @@ class FoodPreferencesTwo extends StatelessWidget {
                 children: [
                   SizedBox(height: 1.h),
                   loadingStepIndicator("5/6", 0.80),
-                  Row(
-                    children: [
-                      backButton(),
-                      Spacer(),
-                      InkWell(
-                        onTap: () {
-                          Get.toNamed("allownotificationscreen");
-                        },
-                        child: customText(
-                          text: "Skip",
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: greenColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                  backButton(),
+
                   SizedBox(height: 1.h),
                   customText(
                     text: "We're Here For You!",

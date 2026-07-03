@@ -47,17 +47,7 @@ class YourRootAndRules extends StatelessWidget {
                 children: [
                   SizedBox(height: 2.h),
                   loadingStepIndicator("3/6", 0.5),
-                  Row(
-                    children: [
-                      backButton(),
-                      Spacer(),
-                      TextButton(onPressed: (){
-                        Get.toNamed('foodpreferencesone');
-                      }, child: customText(text: 'Skip', fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: greenColor,))
-                    ],
-                  ),
+                  backButton(),
 
                   SizedBox(height: 1.h),
                   customText(
