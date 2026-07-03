@@ -113,7 +113,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                 });
                               },
                               style: TextStyle(
-                                  fontSize: 13.sp, fontFamily: "WorkSans"),
+                                  fontSize: 15.sp, fontFamily: "WorkSans"),
                               // Optional: shrink text size
                               decoration: InputDecoration(
                                 isDense: true,

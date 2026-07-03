@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
@@ -248,11 +250,20 @@ Widget groupImage(String? imagePath, bool isDisabled) {
   Widget imageWidget;
 
   if (imagePath != null && imagePath.isNotEmpty) {
-    imageWidget = Image.network(
-      "$baseUrl$imagePath",
+    imageWidget = CachedNetworkImage(
+      imageUrl: "$baseUrl$imagePath",
       width: 12.w,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) {
+      placeholder: (context, url) => Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Container(
+          height: 6.h,
+          width: 12.w,
+          color: Colors.white,
+        ),
+      ),
+      errorWidget: (context, url, error) {
         return Image.asset(
           "assets/png/admin_home_foodpic.png",
           width: 12.w,

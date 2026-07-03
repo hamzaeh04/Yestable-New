@@ -196,7 +196,7 @@ Widget invitationWidget(
   );
 }
 
-Widget upComingEventWidget({double? width,double? height, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost, String? image}) {
+Widget upComingEventWidget({double? width,double? height, required String eventName, required String eventLocation, required String eventDate, required String eventTime, required String eventHost, String? image, required String dietryscore}) {
   return Container(
     // height: height!=null ? height : 50.h,
     width: width!=null ? width : 65.w,
@@ -261,7 +261,7 @@ Widget upComingEventWidget({double? width,double? height, required String eventN
                   Row(
                     children: [
                       customText(
-                        text: "95",
+                        text: dietryscore ?? "95",
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                         color: blueColor,
@@ -271,7 +271,7 @@ Widget upComingEventWidget({double? width,double? height, required String eventN
                         text: "%", // example of another item in the row
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
-                        color: blackColor,
+                        color: blueColor,
                         fontFamily: "CormorantGaramond",
                       ),
                     ],
@@ -283,7 +283,7 @@ Widget upComingEventWidget({double? width,double? height, required String eventN
                 borderRadius: BorderRadius.circular(10.sp),
                 child: LinearProgressIndicator(
                   minHeight: 0.7.h,
-                  value: 0.95,
+                  value: double.parse(dietryscore)/100 ?? 0.95,
                   valueColor: AlwaysStoppedAnimation<Color>(greenColor),
                   backgroundColor: Colors.grey[300],
                 ),

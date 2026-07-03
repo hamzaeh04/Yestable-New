@@ -288,6 +288,7 @@ class YourRootAndRules extends StatelessWidget {
                           onTap: () {
                             showCustomOtherDialog(
                               isFav: true,
+                              hintText: "I like ice cream",
                               onDone: (){
                                 controller.otherToggleSwitch2();
                               },

@@ -1,7 +1,9 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/event_controller.dart';
@@ -245,9 +247,22 @@ class EventPublishScreen extends StatelessWidget {
                             child: Container(
                               height: 5.5.h,
                               width: 14.w,
-                              child: Image.network(
-                                "${baseService.baseURL}${data.host?.profilePic}",
+                              child: CachedNetworkImage(
+                                imageUrl: "${baseService.baseURL}${data.host?.profilePic}",
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) => Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
+                                  child: Container(
+                                    height: 5.5.h,
+                                    width: 14.w,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  "assets/png/chat_images/user1.png",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
@@ -474,31 +489,31 @@ class EventPublishScreen extends StatelessWidget {
                           color: darkGreyColor,
                         ),
                         SizedBox(height: 1.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            customText(
-                              text: "Your Dietry Compactibility Score",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: greenColor,
-                            ),
-                            customText(
-                              text: "95%",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w700,
-                              color: greenColor,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 1.h),
-                        LinearProgressIndicator(
-                          backgroundColor: whiteColor, // Track color
-                          color: greenColor, // Progress color
-                          value: 0.95,
-                          minHeight: 0.7.h,
-                          borderRadius: BorderRadius.circular(10.sp),
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     customText(
+                        //       text: "Your Dietry Compactibility Score",
+                        //       fontSize: 14.sp,
+                        //       fontWeight: FontWeight.w500,
+                        //       color: greenColor,
+                        //     ),
+                        //     customText(
+                        //       text: "95%",
+                        //       fontSize: 14.sp,
+                        //       fontWeight: FontWeight.w700,
+                        //       color: greenColor,
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(height: 1.h),
+                        // LinearProgressIndicator(
+                        //   backgroundColor: whiteColor, // Track color
+                        //   color: greenColor, // Progress color
+                        //   value: 0.95,
+                        //   minHeight: 0.7.h,
+                        //   borderRadius: BorderRadius.circular(10.sp),
+                        // ),
                         SizedBox(height: 1.5.h),
                         controller.isUser.value
                             ? Wrap(

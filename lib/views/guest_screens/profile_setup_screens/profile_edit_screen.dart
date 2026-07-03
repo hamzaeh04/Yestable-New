@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
@@ -275,7 +277,20 @@ class ProfileEditScreen extends StatelessWidget {
                           child: SizedBox(
                             height: 13.h,
                             width: 26.w,
-                            child: Image.network(imageUrl, fit: BoxFit.cover),
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  height: 13.h,
+                                  width: 26.w,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                            ),
                           ),
                         );
                       }
@@ -1360,8 +1375,9 @@ Widget setPlace(int index, {String? title}) {
                         activeIndex: index,
                       );
                       if (!success) return;
+                    } else {
                       // If they already exist, we should still ensure the controller knows their ID
-                      controller.memberId = memberId ?? '';
+                      controller.memberId = memberId;
                     }
 
                     controller.isPreferences.value = true;

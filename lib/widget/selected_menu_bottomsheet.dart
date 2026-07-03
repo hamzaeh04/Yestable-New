@@ -1,10 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
-import 'package:yestable/widget/button_widget.dart';
 import '../constants/constants_widgets.dart';
 
 void selectedMenuBottomSheet(BuildContext context) {
@@ -209,11 +209,18 @@ Widget menuItem({
                   final trimmed = imagePath.trim();
 
                   if (trimmed.startsWith('http')) {
-                    return Image.network(
-                      trimmed,
+                    return CachedNetworkImage(
+                      imageUrl: trimmed,
                       height: 13.h,
                       width: 12.h,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        height: 13.h,
+                        width: 12.h,
+                        color: Colors.grey.shade100,
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                     );
                   }
 
@@ -227,11 +234,18 @@ Widget menuItem({
                   }
 
                   final fullUrl = "${baseService.baseURL}$trimmed";
-                  return Image.network(
-                    fullUrl,
+                  return CachedNetworkImage(
+                    imageUrl: fullUrl,
                     height: 13.h,
                     width: 12.h,
                     fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 13.h,
+                      width: 12.h,
+                      color: Colors.grey.shade100,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
                   );
                 },
               ),
