@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
@@ -1114,12 +1116,21 @@ class AdminHomeScreen extends StatelessWidget {
                     width: 15.w,
                     fit: BoxFit.cover,
                   )
-                      : Image.network(
-                    "${baseService.baseURL}$imagePath",
+                      : CachedNetworkImage(
+                    imageUrl: "${baseService.baseURL}$imagePath",
                     height: 7.h,
                     width: 15.w,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        height: 7.h,
+                        width: 15.w,
+                        color: Colors.white,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
                       return Image.asset(
                         "assets/png/admin_home_foodpic.png",
                         height: 7.h,

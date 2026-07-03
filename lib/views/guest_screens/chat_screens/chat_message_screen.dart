@@ -1,8 +1,10 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
@@ -85,11 +87,26 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10.sp), // adjust as needed
                               child: imagePath != null && imagePath.isNotEmpty
-                                  ? Image.network(
-                                "${baseService.baseURL}$imagePath",
+                                  ? CachedNetworkImage(
+                                imageUrl: "${baseService.baseURL}$imagePath",
                                 height: 6.h,
                                 width: 14.w,
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) => Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
+                                  child: Container(
+                                    height: 6.h,
+                                    width: 14.w,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  "assets/png/chat_images/chat_msg_image.png",
+                                  height: 6.h,
+                                  width: 15.w,
+                                  fit: BoxFit.cover,
+                                ),
                               )
                                   : Image.asset(
                                 "assets/png/chat_images/chat_msg_image.png",
@@ -500,23 +517,34 @@ SizedBox(height: 2.h,),
                                               child: Row(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
+                                                  /// PROFILE IMAGE
+                                                  ClipOval(
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: "${baseService.baseURL}${message["senderProfile"]}",
+                                                      height: 6.h,
+                                                      width: 12.w,
+                                                      fit: BoxFit.cover,
 
-                                                  /// PROFILE IMAGEImage.network(
-                                                  Image.network(
-                                                    "${baseService.baseURL}${message["senderProfile"]}",
-                                                    height: 6.h,
-                                                    width: 12.w,
-                                                    errorBuilder: (context, error, stackTrace) {
-                                                      return Image.asset(
-                                                        "assets/png/chat_images/chat_profile_img.png",
-                                                        height: 6.h,
-                                                        width: 12.w,
-                                                        fit: BoxFit.cover,
-                                                      );
-                                                    },
-                                                    fit: BoxFit.cover,
+                                                      placeholder: (context, url) => Shimmer.fromColors(
+                                                        baseColor: Colors.grey.shade300,
+                                                        highlightColor: Colors.grey.shade100,
+                                                        child: Container(
+                                                          height: 6.h,
+                                                          width: 12.w,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+
+                                                      errorWidget: (context, url, error) {
+                                                        return Image.asset(
+                                                          "assets/png/chat_images/chat_profile_img.png",
+                                                          height: 6.h,
+                                                          width: 12.w,
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
-
 
                                                   SizedBox(width: 3.w),
 
@@ -651,6 +679,7 @@ SizedBox(height: 2.h,),
                                     if(controller.chatController.text.isEmpty){
 
                                       print("${baseService.baseURL}${userProfile}");
+                                      print(prefs.getString(LocalDBKeys.USERPROFILEPIC));
 
                                     }
                                     else{

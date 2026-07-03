@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -538,13 +539,21 @@ Widget _menuApiCard({required MenuItem menu}) {
                       width: 53.w,
                       fit: BoxFit.cover,
                     )
-                  : Image.network(
-                      imgUrl,
+                  : CachedNetworkImage(
+                      imageUrl: imgUrl,
                       height: 15.h,
                       width: 53.w,
                       fit: BoxFit.cover,
-
-                      errorBuilder: (_, __, ___) => Image.asset(
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(
+                          height: 15.h,
+                          width: 53.w,
+                          color: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
                         "assets/png/event_detail_img/event1.png",
                         height: 15.h,
                         width: 53.w,

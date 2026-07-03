@@ -74,11 +74,12 @@ class AuthController extends GetxController {
     step = data["user"]["onboardingStep"];
     if (data == null) return; // Safety guard
     await prefs.setString(LocalDBKeys.TOKEN, data["access_token"]);
-    await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
-    await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, profileCompleted);
+    await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"] ?? "");
+    await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, profileCompleted ?? false);
     await prefs.setString(LocalDBKeys.USERFULLNAME, data["user"]["name"] ?? "");
-    await prefs.setString(LocalDBKeys.USERID, data["user"]["_id"]);
+    await prefs.setString(LocalDBKeys.USERID, data["user"]["_id"] ?? "");
     await prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${data["user"]["onboardingStep"]}");
+    await prefs.setString(LocalDBKeys.USERPROFILEPIC, data["user"]["profilePic"] ?? "");
     print("Faaaaahhhh: ${data["access_token"]}");
     print("userId: ${prefs.getString(LocalDBKeys.USERID)}");
     print("SharedPreferences: ${prefs.getBool(LocalDBKeys.PROFILECOMPLETED)}");

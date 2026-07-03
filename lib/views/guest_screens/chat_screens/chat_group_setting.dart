@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
@@ -30,10 +32,9 @@ class ChatGroupSetting extends StatelessWidget {
     final invitationMsg = args["invitationMsg"];
     final adminId = args["adminId"];
     final isGroupEnable = args["isGroupEnable"];
-    eventController.switchValue3.value = !(isGroupEnable ?? false);
-    navigationController.isHost.value = (navigationController.returnUserId() == adminId);
-
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      eventController.switchValue3.value = !(isGroupEnable ?? false);
+      navigationController.isHost.value = (navigationController.returnUserId() == adminId);
       eventController.listenGroupStatus(groupId);
     });
     return Scaffold(
@@ -97,10 +98,19 @@ class ChatGroupSetting extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.grey.shade200,
                             ),
-                            child: Image.network(
-                              "${baseService.baseURL}$imagePath",
+                            child: CachedNetworkImage(
+                              imageUrl: "${baseService.baseURL}$imagePath",
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  height: 12.h,
+                                  width: 12.h,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
                                   Icon(
                                     Icons.group,
                                     size: 8.h,
@@ -393,11 +403,21 @@ class ChatGroupSetting extends StatelessWidget {
           Row(
             children: [
               if (imagePath != null) ...[
-                Image.network(
-                  imagePath,
+                CachedNetworkImage(
+                  imageUrl: imagePath,
                   height: 3.h,
                   width: 3.h,
                   fit: BoxFit.contain,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      height: 3.h,
+                      width: 3.h,
+                      color: Colors.white,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error, size: 15),
                 ),
                 SizedBox(width: 3.w),
               ],

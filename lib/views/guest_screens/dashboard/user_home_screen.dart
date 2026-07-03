@@ -26,19 +26,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   // SIRF YEH SIMPLE CHECK: Kya dialog pehle dikha chuke hain?
-    //   if (controller.hasShownInvitedDialog.value == false) {
-    //
-    //     // 1. Foran lock kar dein taake dobara na chale
-    //     controller.hasShownInvitedDialog.value = true;
-    //
-    //     // 2. Dialog dikha dein
-    //     youAreInvitedDialog(context);
-    //
-    //     print("Dialog shown for the first time.");
-    //   }
-    // });
     return Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(
@@ -57,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                         fontFamily: "CormorantGaramond",
                         fontWeight: FontWeight.w500,
                         color: whiteColor,
-                        height: 0.1.h
+                        height: 0.1.h,
                       ),
                       customText(
                         text: controller.formatDate2(DateTime.now()) ?? "May 01, 2025",
@@ -68,18 +55,12 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  // InkWell(
-                  //   onTap: (){
-                  //     // controller.goTSearchScreen();
-                  //   },
-                  //     child: homeIconWidget(imagePath: "assets/png/icons/search_icon.png", )
-                  // ),
-                  // SizedBox(width: 2.w),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       Get.toNamed("mynotificationscreen");
                     },
-                      child: homeIconWidget(icon: Icons.notifications)),
+                    child: homeIconWidget(icon: Icons.notifications),
+                  ),
                 ],
               ),
             ),
@@ -118,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     customText(
-                                      text: "Dinner Calender",
+                                      text: "Dinner Calendar",
                                       fontSize: 20.sp,
                                       fontFamily: "CormorantGaramond",
                                       fontWeight: FontWeight.w600,
@@ -141,7 +122,7 @@ class HomeScreen extends StatelessWidget {
                                         Container(
                                           height: 2.h,
                                           width: 2.w,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: greenColor,
                                           ),
@@ -160,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                                         Container(
                                           height: 2.h,
                                           width: 2.w,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: blueColor,
                                           ),
@@ -181,231 +162,181 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 2.h),
 
-                          // Calendar Image
+                          // Calendar Box
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 5.w),
                             child: Container(
-
                               decoration: BoxDecoration(
                                 color: whiteColor,
                                 borderRadius: BorderRadius.circular(16.sp),
-
                               ),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+                                child: Obx(() {
+                                  // Force GetX reactive tracking for calendar data updates
+                                  final _ = eventController.getAllEventsModel.value;
 
-                                    child: Column(
-                                      children: [
-                                        Obx(() => TableCalendar(
-                                            firstDay: DateTime.utc(2010, 10, 16),
-                                            lastDay: DateTime.utc(2030, 3, 14),
-                                            focusedDay: eventController.focusedDay.value,
+                                  return TableCalendar(
+                                    firstDay: DateTime.utc(2010, 10, 16),
+                                    lastDay: DateTime.utc(2030, 3, 14),
+                                    focusedDay: eventController.focusedDay.value,
+                                    selectedDayPredicate: (day) {
+                                      return isSameDay(eventController.selectedDay.value, day);
+                                    },
+                                    onDaySelected: (selectedDay, focusedDay) {
+                                      eventController.selectedDay.value = selectedDay;
+                                      eventController.focusedDay.value = focusedDay;
 
-                                            selectedDayPredicate: (day) {
-                                              return isSameDay(eventController.selectedDay.value, day);
-                                            },
+                                      showEventDialog(
+                                        context,
+                                        selectedDay,
+                                      );
+                                    },
 
-                                            onDaySelected: (selectedDay, focusedDay) {
+                                    /// 🔥 EVENTS SOURCE
+                                    eventLoader: (day) {
+                                      int count = 0;
 
-                                              eventController.selectedDay.value = selectedDay;
-                                              eventController.focusedDay.value = focusedDay;
+                                      // 1. Try to get count from calendar API data
+                                      final calendar = eventController.getAllEventsModel.value?.data?.calendar;
+                                      if (calendar != null) {
+                                        final monthName = calendar.month ?? "";
+                                        final currentMonthName = _getMonthName(day.month);
+                                        if (monthName.trim().toLowerCase() == currentMonthName.trim().toLowerCase()) {
+                                          final dates = calendar.dates;
+                                          if (dates != null) {
+                                            final dateInfo = dates[day.day.toString()];
+                                            if (dateInfo != null) {
+                                              count = dateInfo.eventCount ?? (dateInfo.eventIds?.length ?? 0);
+                                            }
+                                          }
+                                        }
+                                      }
 
+                                      // 2. Fallback: Scan upcomingEvents list directly for matching date
+                                      if (count == 0) {
+                                        final upcomingEvents = eventController.getAllEventsModel.value?.data?.data ?? [];
+                                        final matchingEvents = upcomingEvents.where((e) {
+                                          return e.eventTime != null &&
+                                              e.eventTime!.year == day.year &&
+                                              e.eventTime!.month == day.month &&
+                                              e.eventTime!.day == day.day;
+                                        }).toList();
+                                        count = matchingEvents.length;
+                                      }
 
-                                              showEventDialog(
-                                                context,
-                                                selectedDay,
-                                              );
-                                            },
+                                      if (count == 0) return [];
+                                      return List.generate(count, (index) => index);
+                                    },
+                                    headerVisible: false,
+                                    daysOfWeekHeight: 4.h,
+                                    rowHeight: 4.8.h,
+                                    daysOfWeekStyle: DaysOfWeekStyle(
+                                      weekdayStyle: TextStyle(
+                                        color: foodBoundariesBorderGreenColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      weekendStyle: TextStyle(
+                                        color: foodBoundariesBorderGreenColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    calendarStyle: CalendarStyle(
+                                      defaultTextStyle: TextStyle(
+                                        color: blackColor,
+                                        fontSize: 14.5.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      weekendTextStyle: TextStyle(
+                                        color: blackColor,
+                                        fontSize: 14.5.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      outsideTextStyle: TextStyle(
+                                        color: Colors.grey.shade400,
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      todayDecoration: BoxDecoration(
+                                        color: foodBoundariesBorderGreenColor,
+                                        borderRadius: BorderRadius.circular(12.sp),
+                                      ),
+                                      todayTextStyle: TextStyle(
+                                        color: whiteColor,
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      cellMargin: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w),
+                                    ),
 
-                                          /// 🔥 EVENTS SOURCE
-                                          eventLoader: (day) {
-                                            Map<DateTime, List> events = {
-                                              DateTime.utc(2026, 3, 26): ['event1', 'event2'],
-                                              DateTime.utc(2026, 3, 27): ['event1'],
-                                            };
-
-                                            return events[DateTime.utc(day.year, day.month, day.day)] ?? [];
-                                          },
-
-                                          headerVisible: false,
-
-                                          daysOfWeekHeight: 4.h,
-                                          rowHeight: 4.8.h,
-
-                                          daysOfWeekStyle: DaysOfWeekStyle(
-                                            weekdayStyle: TextStyle(
-                                              color: foodBoundariesBorderGreenColor,
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            weekendStyle: TextStyle(
-                                              color: foodBoundariesBorderGreenColor,
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
+                                    /// 🔥 MULTIPLE MARKERS
+                                    calendarBuilders: CalendarBuilders(
+                                      selectedBuilder: (context, day, focusedDay) {
+                                        return Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w),
+                                          decoration: BoxDecoration(
+                                            color: foodBoundariesBorderGreenColor.withAlpha(160),
+                                            borderRadius: BorderRadius.circular(12.sp),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: TextStyle(
+                                                color: whiteColor,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
+                                        );
+                                      },
+                                      markerBuilder: (context, date, events) {
+                                        if (events.isEmpty) return const SizedBox();
 
-                                          calendarStyle: CalendarStyle(
-                                            defaultTextStyle: TextStyle(
-                                              color: blackColor,
-                                              fontSize: 14.5.sp,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            weekendTextStyle: TextStyle(
-                                              color: blackColor,
-                                              fontSize: 14.5.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            outsideTextStyle: TextStyle(
-                                              color: Colors.grey.shade400,
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-
-                                            todayDecoration: BoxDecoration(
-                                              color: foodBoundariesBorderGreenColor,
-                                              borderRadius: BorderRadius.circular(12.sp),
-                                            ),
-                                            todayTextStyle: TextStyle(
-                                              color: whiteColor,
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-
-
-
-                                            // selectedDecoration: BoxDecoration(
-                                            //   color: foodBoundariesBorderGreenColor.withAlpha(160),
-                                            //   borderRadius: BorderRadius.circular(12.sp),
-                                            // ),
-                                            // selectedTextStyle: TextStyle(
-                                            //   color: whiteColor,
-                                            //   fontSize: 15.sp,
-                                            //   fontWeight: FontWeight.w500,
-                                            // ),
-
-                                            cellMargin: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w),
-                                          ),
-
-                                          /// 🔥 MULTIPLE MARKERS (2 dots: green + blue)
-                                          calendarBuilders: CalendarBuilders(
-                                            selectedBuilder: (context, day, focusedDay) {
-                                              return Container(
-                                                margin: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w),
-                                                decoration: BoxDecoration(
-                                                  color: foodBoundariesBorderGreenColor.withAlpha(160),
-                                                  borderRadius: BorderRadius.circular(12.sp),
-                                                ),
-                                                child: Center(
-                                                  child: Text('${day.day}', style: TextStyle(
-                                                    color: whiteColor,
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),),
-                                                ),
-                                              );
-                                            },
-                                            markerBuilder: (context, date, events) {
-                                              if (events.isEmpty) return SizedBox();
-
-                                              return Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: events.take(2).toList().asMap().entries.map((entry) {
-                                                  int index = entry.key;
-
+                                        // Using Positioned inside TableCalendar's underlying Stack layout to force space down
+                                        return Positioned(
+                                          bottom: 1, // Controls the distance from the bottom edge of the cell matrix
+                                          left: 0,
+                                          right: 0,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Stack(
+                                                clipBehavior: Clip.none,
+                                                children: events.asMap().entries.map((entry) {
+                                                  final index = entry.key;
                                                   return Container(
-                                                    margin: EdgeInsets.symmetric(horizontal: 1, vertical: 0.6.h),
-                                                    width: 1.w,
-                                                    height: 1.h,
+                                                    margin: EdgeInsets.only(
+                                                      left: index * 6.0, // Clean horizontal separation space
+                                                    ),
+                                                    height: 5.5,
+                                                    width: 5.5,
                                                     decoration: BoxDecoration(
-                                                      color: index == 0 ? greenColor : blueColor,
                                                       shape: BoxShape.circle,
+                                                      color: greenColor,
+                                                      border: Border.all(
+                                                        color: Colors.white,
+                                                        width: 0.5,
+                                                      ),
                                                     ),
                                                   );
                                                 }).toList(),
-                                              );
-                                            },
+                                              ),
+                                            ],
                                           ),
-                                          ),
-                                        ),
-                                      ],
+                                        );
+                                      },
                                     ),
+                                  );
+                                }),
                               ),
-
                             ),
                           ),
-                          SizedBox(height: 1.h),
-
-                          // // Invitations
-                          // Padding(
-                          //   padding: EdgeInsets.symmetric(horizontal: 4.w),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: [
-                          //       customText(
-                          //         text: "Invitations",
-                          //         fontSize: 19.sp,
-                          //         fontWeight: FontWeight.w600,
-                          //         fontFamily: "CormorantGaramond",
-                          //         color: blackColor,
-                          //       ),
-                          //       InkWell(
-                          //         onTap: () => controller.goToSeeAllPage(),
-                          //         child: Row(
-                          //           children: [
-                          //             customText(
-                          //               text: "View All",
-                          //               fontSize: 14.sp,
-                          //               fontWeight: FontWeight.w400,
-                          //               color: blackColor,
-                          //             ),
-                          //             SizedBox(width: 1.w),
-                          //             Icon(
-                          //               Icons.arrow_forward,
-                          //               color: blackColor,
-                          //               size: 16.sp,
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                          // SizedBox(height: 1.h),
-                          // SingleChildScrollView(
-                          //   scrollDirection: Axis.horizontal,
-                          //   padding: EdgeInsets.symmetric(horizontal: 4.w),
-                          //   child: Row(
-                          //     children: [
-                          //       invitationWidget(
-                          //         "Jenera Dinner Event",
-                          //         "20+ Attendees",
-                          //         "In New York",
-                          //         "May 12, 2025",
-                          //         "assets/png/dinner_event.png",
-                          //       ),
-                          //       SizedBox(width: 4.w),
-                          //       invitationWidget(
-                          //         "Parkinson Dinner Event",
-                          //         "35+ Attendees",
-                          //         "Los Angeles",
-                          //         "May 18, 2025",
-                          //         "assets/png/dinner_event.png",
-                          //       ),
-                          //       SizedBox(width: 4.w),
-                          //       invitationWidget(
-                          //         "Scorpio Dinner Event",
-                          //         "50+ Attendees",
-                          //         "Miami Beach",
-                          //         "May 25, 2025",
-                          //         "assets/png/dinner_event.png",
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
                           SizedBox(height: 3.h),
 
-                          // Upcoming Events
+                          // Upcoming Events Label
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 4.w),
                             child: Row(
@@ -441,39 +372,45 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 2.h),
-                          Obx((){
+
+                          // Upcoming Events Content
+                          Obx(() {
                             final eventData = eventController.getAllEventsModel.value?.data?.data;
-                            if(eventController.isLoadingAllEvents.value == true)
+                            if (eventController.isLoadingAllEvents.value == true) {
                               return Padding(
                                 padding: EdgeInsets.only(top: 7.h),
                                 child: SizedBox(
-                                    child: Center(child: CircularProgressIndicator(color: greenColor,))),
+                                  child: Center(child: CircularProgressIndicator(color: greenColor)),
+                                ),
                               );
-                            if(eventData == null || eventData.isEmpty)
+                            }
+                            if (eventData == null || eventData.isEmpty) {
                               return Padding(
-                                  padding: EdgeInsets.only(top: 7.h),
-                                  child: Center(child: customText(text: 'No events found!', fontSize: 14.5.sp))
+                                padding: EdgeInsets.only(top: 7.h),
+                                child: Center(child: customText(text: 'No events found!', fontSize: 14.5.sp)),
                               );
+                            }
                             return SizedBox(
                               height: 42.h,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                itemCount: eventData?.length ?? 0,
+                                itemCount: eventData.length,
                                 itemBuilder: (context, index) {
-                                  final data = eventData?[index];
-                                  String displayLocation = (data?.location?.coordinates != null)
-                                      ? "${data!.location!.coordinates![1]}, ${data.location!.coordinates![0]}"
+                                  final data = eventData[index];
+                                  String displayLocation = (data.address != null)
+                                      ? "${data.address}"
                                       : "132 My Street, Kingston, New York 12486";
                                   return Padding(
                                     padding: EdgeInsets.only(right: 3.w),
                                     child: upComingEventWidget(
-                                        eventName: data?.eventName  ?? "Sophia Dinner Event",
-                                        eventDate: controller.formatDate2(data?.eventTime),
-                                        eventTime: controller.formatTime2(data?.eventTime),
-                                        eventHost: data?.host?.name ?? "Sophia Andreas",
-                                        eventLocation: displayLocation,
-                                      image: data?.image
+                                      eventName: data.eventName ?? "Sophia Dinner Event",
+                                      eventDate: controller.formatDate2(data.eventTime),
+                                      eventTime: controller.formatTime2(data.eventTime),
+                                      eventHost: data.host?.name ?? "Sophia Andreas",
+                                      eventLocation: displayLocation,
+                                      image: data.image,
+                                      dietryscore: data.dietaryCompatibilityScore.toString(),
                                     ),
                                   );
                                 },
@@ -490,7 +427,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: blueColor,
         foregroundColor: whiteColor,
@@ -504,7 +440,17 @@ class HomeScreen extends StatelessWidget {
           width: 6.w,
         ),
       ),
-
     );
   }
+}
+
+String _getMonthName(int month) {
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  if (month >= 1 && month <= 12) {
+    return months[month - 1];
+  }
+  return "";
 }

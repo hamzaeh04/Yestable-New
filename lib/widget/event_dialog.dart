@@ -64,26 +64,55 @@ void showEventDialog(BuildContext context, DateTime selectedDay) {
                     SizedBox(height: 1.h),
                     // Event 1
                     Obx((){
-                      final eventData = eventController.getAllEventsModel.value?.data?.data;
-                      if(eventController.isLoadingAllEvents.value == true)
+                      if (eventController.isLoadingAllEvents.value == true) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 7.h),
                           child: SizedBox(
                               child: Center(child: CircularProgressIndicator(color: greenColor,))),
                         );
-                      if(eventData == null || eventData.isEmpty)
+                      }
+
+                      final calendar = eventController.getAllEventsModel.value?.data?.calendar;
+                      List<String> targetEventIds = [];
+                      if (calendar != null) {
+                        final monthName = calendar.month ?? "";
+                        final currentMonthName = _getMonthName(selectedDay.month);
+                        if (monthName.toLowerCase() == currentMonthName.toLowerCase()) {
+                          final dates = calendar.dates;
+                          if (dates != null) {
+                            final dateInfo = dates[selectedDay.day.toString()];
+                            if (dateInfo != null) {
+                              targetEventIds = dateInfo.eventIds ?? [];
+                            }
+                          }
+                        }
+                      }
+
+                      final allEvents = eventController.getAllEventsModel.value?.data?.data ?? [];
+                      final eventData = allEvents.where((e) {
+                        final matchesId = targetEventIds.contains(e.id);
+                        final matchesDate = e.eventTime != null &&
+                            e.eventTime!.year == selectedDay.year &&
+                            e.eventTime!.month == selectedDay.month &&
+                            e.eventTime!.day == selectedDay.day;
+                        return matchesId || matchesDate;
+                      }).toList();
+
+                      if (eventData.isEmpty) {
                         return Padding(
                             padding: EdgeInsets.symmetric(vertical: 7.h),
                             child: Center(child: customText(text: 'No events found!', fontSize: 14.5.sp))
                         );
+                      }
+
                       return SizedBox(
                         height: 40.h, // or any max height you want
                         child: ListView.builder(
-                          itemCount: eventData?.length ?? 0,
+                          itemCount: eventData.length,
                           itemBuilder: (context, index) {
-                            final data = eventData?[index];
-                            String displayLocation = (data?.location?.coordinates != null)
-                                ? "${data!.location!.coordinates![1]}, ${data.location!.coordinates![0]}"
+                            final data = eventData[index];
+                            String displayLocation = (data.address != null)
+                                ? "${data.address}"
                                 : "132 My Street, Kingston, New York 12486";
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +125,7 @@ void showEventDialog(BuildContext context, DateTime selectedDay) {
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.5.h),
                                     child: customText(
-                                      text: "In 13 Hrs",
+                                      text: "In ${controller.getRemainingTime(data.eventTime ?? DateTime.now())}" ?? "In 13 Hrs",
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w500,
                                       color: whiteColor,
@@ -108,19 +137,19 @@ void showEventDialog(BuildContext context, DateTime selectedDay) {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
-                                      Get.toNamed("eventdetailsscreen", arguments: data?.id);
+                                      Get.toNamed("eventdetailsscreen", arguments: data.id);
                                     },
                                     child: eventScreenWidget(
                                         bgcolor: backgroundColor,
-                                        eventName: data?.eventName ?? "Sophia Dinner Event",
-                                        eventDate: controller.formatDate2(data?.eventTime),
-                                        eventTime: controller.formatTime2(data?.eventTime),
-                                        eventHost: data?.host?.name ?? "Sophia Andreas",
+                                        eventName: data.eventName ?? "Sophia Dinner Event",
+                                        eventDate: controller.formatDate2(data.eventTime),
+                                        eventTime: controller.formatTime2(data.eventTime),
+                                        eventHost: data.host?.name ?? "Sophia Andreas",
                                         eventLocation: displayLocation,
-                                        image: data?.image,
-                                        value: (data!.dietaryCompatibilityScore!.toDouble()/100),
-                                        estimatedGuest: data!.estimatedGuests.toString(),
-                                        joinedGuest: data!.numGuests.toString(),
+                                        image: data.image,
+                                        value: ((data.dietaryCompatibilityScore ?? 0).toDouble() / 100),
+                                        estimatedGuest: (data.estimatedGuests ?? 0).toString(),
+                                        joinedGuest: (data.numGuests ?? 0).toString(),
                                     ),
                                   ),
                                 ),
@@ -171,6 +200,17 @@ void showEventDialog(BuildContext context, DateTime selectedDay) {
       );
     },
   );
+}
+
+String _getMonthName(int month) {
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  if (month >= 1 && month <= 12) {
+    return months[month - 1];
+  }
+  return "";
 }
 
 

@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
@@ -25,7 +27,9 @@ class CreateNewEventScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
     if (eventId == null) {
-      eventController.switchValue3.value = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        eventController.switchValue3.value = false;
+      });
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         eventController.getEventById(eventId);
@@ -119,11 +123,26 @@ class CreateNewEventScreen extends StatelessWidget {
                                         height: double.infinity,
                                       )
                                     else if (hasNetworkImage)
-                                      Image.network(
-                                        "${baseService.baseURL}${data?.image}",
+                                      CachedNetworkImage(
+                                        imageUrl: "${baseService.baseURL}${data?.image}",
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
+                                        placeholder: (context, url) => Shimmer.fromColors(
+                                          baseColor: Colors.grey.shade300,
+                                          highlightColor: Colors.grey.shade100,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) => Image.asset(
+                                          "assets/png/event_widget_icon/event.png",
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        ),
                                       )
                                     else
                                       Image.asset(

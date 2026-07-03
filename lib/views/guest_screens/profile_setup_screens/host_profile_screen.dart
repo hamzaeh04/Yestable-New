@@ -208,23 +208,23 @@ class HostProfileScreen extends StatelessWidget {
                                                   SizedBox(height: 0.8.h),
                                                   Row(
                                                     children: [
-                                                      Obx(() =>
-                                                      controller.isUser.value == true ?
-                                                      buttonWidget(
-                                                        "Message",
-                                                        whiteColor,
-                                                        colors: greenColor.withAlpha(140),
-                                                        height: 3.5.h,
-                                                        width: 27.w,
-                                                        fontsize: 14.sp,
-                                                        onTap: () {
-                                                        },
-                                                      ):SizedBox.shrink(),
-                                                      ),
-                                                      Obx(() =>
-                                                      controller.isUser.value == true?
-                                                      SizedBox(width: 2.w):SizedBox.shrink(),
-                                                      ),
+                                                      // Obx(() =>
+                                                      // controller.isUser.value == true ?
+                                                      // buttonWidget(
+                                                      //   "Message",
+                                                      //   whiteColor,
+                                                      //   colors: greenColor.withAlpha(140),
+                                                      //   height: 3.5.h,
+                                                      //   width: 27.w,
+                                                      //   fontsize: 14.sp,
+                                                      //   onTap: () {
+                                                      //   },
+                                                      // ):SizedBox.shrink(),
+                                                      // ),
+                                                      // Obx(() =>
+                                                      // controller.isUser.value == true?
+                                                      // SizedBox(width: 2.w):SizedBox.shrink(),
+                                                      // ),
                                                       Builder(
                                                           builder: (buttonContext) {
                                                             return buttonWidget(

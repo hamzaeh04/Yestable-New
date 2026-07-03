@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -216,32 +217,26 @@ final EventController eventController = Get.find<EventController>();
                         children: [
                           data?.host?.profilePic != null ?
 
-              Image.network(
-              "${baseService.baseURL}${data?.host?.profilePic}",
-              height: 6.h,
-              width: 14.w,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-
-              return Shimmer.fromColors(
-              baseColor: Colors.grey.shade300,
-              highlightColor: Colors.grey.shade100,
-              child: Container(
-              height: 6.h,
-              width: 14.w,
-              color: Colors.white,
-              ),
-              );
-              },
-              errorBuilder: (context, error, stackTrace) {
-              return Container(
-              height: 9.h,
-              width: 14.w,
-              alignment: Alignment.center,
-              child: const Icon(Icons.person),
-              );
-              },
+              CachedNetworkImage(
+                imageUrl: "${baseService.baseURL}${data?.host?.profilePic}",
+                height: 6.h,
+                width: 14.w,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                    height: 6.h,
+                    width: 14.w,
+                    color: Colors.white,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 9.h,
+                  width: 14.w,
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.person),
+                ),
               ):
                             Image.asset(
                               "assets/png/chat_images/user1.png",
@@ -426,7 +421,7 @@ final EventController eventController = Get.find<EventController>();
                           color: blackColor,
                         ),
                         customText(
-                          text: "${data?.location?.coordinates?[0]}, ${data?.location?.coordinates?[1]}" ?? "132 My Street, Kingston, New York 12486.",
+                          text: "${data?.address}" ?? "132 My Street, Kingston, New York 12486.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
@@ -496,7 +491,7 @@ final EventController eventController = Get.find<EventController>();
                               color: greenColor,
                             ),
                             customText(
-                              text: "95%",
+                              text: "${data.dietaryCompatibilityScore} %",
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w700,
                               color: greenColor,
@@ -508,7 +503,7 @@ final EventController eventController = Get.find<EventController>();
                         LinearProgressIndicator(
                           backgroundColor: whiteColor, // Track color
                           color: greenColor,            // Progress color
-                          value: 0.95,
+                          value: (double.parse(data.dietaryCompatibilityScore.toString())/100),
                           minHeight: 0.7.h,
                           borderRadius: BorderRadius.circular(10.sp),
                         ),
@@ -768,12 +763,18 @@ Widget menuItem({
             ClipRRect(
               borderRadius: BorderRadius.circular(2.w),
               child: imagePath.startsWith('http')
-                  ? Image.network(
-                      imagePath,
+                  ? CachedNetworkImage(
+                      imageUrl: imagePath,
                       height: 13.h,
                       width: 12.h,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
+                      placeholder: (context, url) => Container(
+                        height: 13.h,
+                        width: 12.h,
+                        color: Colors.grey[100],
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Container(
                         height: 13.h, width: 12.h, color: Colors.grey[200], child: Icon(Icons.error)
                       ),
                     )

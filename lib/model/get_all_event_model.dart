@@ -35,6 +35,9 @@ class Data {
   final int? limit;
   final int? totalPages;
   final bool? fromCache;
+  final CalendarData? calendar;
+  final List<dynamic>? invitations;
+  final List<Event>? upcomingEvents;
 
   Data({
     this.data,
@@ -43,18 +46,32 @@ class Data {
     this.limit,
     this.totalPages,
     this.fromCache,
+    this.calendar,
+    this.invitations,
+    this.upcomingEvents,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
-      data: json['data'] != null
-          ? List<Event>.from(json['data'].map((x) => Event.fromJson(x)))
-          : null,
+      data: json['upcomingEvents'] != null
+          ? List<Event>.from(json['upcomingEvents'].map((x) => Event.fromJson(x)))
+          : (json['data'] != null
+              ? List<Event>.from(json['data'].map((x) => Event.fromJson(x)))
+              : null),
       total: json['total'],
       page: json['page'],
       limit: json['limit'],
       totalPages: json['totalPages'],
       fromCache: json['fromCache'],
+      calendar: json['calendar'] != null
+          ? CalendarData.fromJson(json['calendar'])
+          : null,
+      invitations: json['invitations'] != null
+          ? List<dynamic>.from(json['invitations'])
+          : [],
+      upcomingEvents: json['upcomingEvents'] != null
+          ? List<Event>.from(json['upcomingEvents'].map((x) => Event.fromJson(x)))
+          : null,
     );
   }
 
@@ -65,6 +82,58 @@ class Data {
     'limit': limit,
     'totalPages': totalPages,
     'fromCache': fromCache,
+    'calendar': calendar?.toJson(),
+    'invitations': invitations,
+    'upcomingEvents': upcomingEvents?.map((x) => x.toJson()).toList(),
+  };
+}
+
+class CalendarData {
+  final String? month;
+  final Map<String, CalendarDateInfo>? dates;
+  final int? totalEventsThisMonth;
+
+  CalendarData({this.month, this.dates, this.totalEventsThisMonth});
+
+  factory CalendarData.fromJson(Map<String, dynamic> json) {
+    final Map<String, CalendarDateInfo> parsedDates = {};
+    if (json['dates'] != null && json['dates'] is Map) {
+      json['dates'].forEach((key, value) {
+        if (value is Map) {
+          parsedDates[key.toString()] = CalendarDateInfo.fromJson(Map<String, dynamic>.from(value));
+        }
+      });
+    }
+    return CalendarData(
+      month: json['month'],
+      dates: parsedDates,
+      totalEventsThisMonth: json['totalEventsThisMonth'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'month': month,
+    'dates': dates?.map((key, value) => MapEntry(key, value.toJson())),
+    'totalEventsThisMonth': totalEventsThisMonth,
+  };
+}
+
+class CalendarDateInfo {
+  final List<String>? eventIds;
+  final int? eventCount;
+
+  CalendarDateInfo({this.eventIds, this.eventCount});
+
+  factory CalendarDateInfo.fromJson(Map<String, dynamic> json) {
+    return CalendarDateInfo(
+      eventIds: json['eventIds'] != null ? List<String>.from(json['eventIds']) : [],
+      eventCount: json['eventCount'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'eventIds': eventIds,
+    'eventCount': eventCount,
   };
 }
 
