@@ -798,8 +798,10 @@ class CreateNewEventScreen extends StatelessWidget {
                             whiteColor,
                             colors: greenColor,
                             onTap: () {
-                              // Get.toNamed("guestlistscreen");
-                              Get.toNamed("foodmenuscreen", arguments: eventId);
+                              eventId == null ?
+                              eventController.createEvent(context,image: controller.profilePicture.value):
+                              eventController.editEvent(eventId: eventId,image: controller.profilePicture.value);
+                              // Get.toNamed("foodmenuscreen", arguments: eventId);
                               print(eventId);
                             },
                           ),

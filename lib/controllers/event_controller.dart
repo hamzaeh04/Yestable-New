@@ -453,15 +453,15 @@ class EventController extends GetxController{
 
 
       // menus array
-      List<String> menus = selectedMenus
-          .map((m) => m.id)
-          .whereType<String>()
-          .toList();
+      // List<String> menus = selectedMenus
+      //     .map((m) => m.id)
+      //     .whereType<String>()
+      //     .toList();
 
       await _sendMultipartEventRequest(
         ApiEndPoints.createEvent,
         fields,
-        menus,
+        // menus,
         image,
         context,
       );
@@ -472,7 +472,7 @@ class EventController extends GetxController{
   Future<void> _sendMultipartEventRequest(
       String endpoint,
       Map<String, String> fields,
-      List<String> menus,
+      // List<String> menus,
       File? image,
       BuildContext context,
       ) async {
@@ -498,9 +498,9 @@ class EventController extends GetxController{
       request.fields.addAll(fields);
 
       // Add menus array
-      for (var menu in menus) {
-        request.fields['menus[]'] = menu;
-      }
+      // for (var menu in menus) {
+      //   request.fields['menus[]'] = menu;
+      // }
 
       // Add image
       if (image != null) {
@@ -547,7 +547,8 @@ class EventController extends GetxController{
           },
           onCancel: () {
             Navigator.pop(context);
-            Get.toNamed("eventcomfortone", arguments: eventId);
+            // Get.toNamed("eventcomfortone", arguments: eventId);
+            Get.toNamed("foodmenuscreen", arguments: eventId);
           },
         );
         clearEventFields();
