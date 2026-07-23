@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+import 'package:yestable/model/get_ai_menu.dart';
 import 'package:yestable/model/get_all_allergen_list.dart';
 import 'package:yestable/model/get_event_review_model.dart';
 import 'package:yestable/model/get_my_event_model.dart';
@@ -35,6 +36,8 @@ import 'navigation_controller.dart';
 
 class EventController extends GetxController{
   ProfileController profileController = Get.find<ProfileController>();
+  TextEditingController aiController = TextEditingController();
+  bool refreshMenu = false;
 
   bool? quietSpace;
   bool? largerSeating;
@@ -56,6 +59,7 @@ class EventController extends GetxController{
   bool? peanuts;
   bool? endsInFirmTime;
   bool? mayGuestsContact;
+  String mainEventId = "";
 
   final selectedDay = DateTime.now().obs;
   final focusedDay = DateTime.now().obs;
@@ -104,6 +108,9 @@ class EventController extends GetxController{
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
   Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
+  Rxn<AiMenu> getAiMenuModel = Rxn<AiMenu>();
+  final RxBool isAiMenuLoading = false.obs;
+  final RxString aiMenuError = ''.obs;
   Rxn<EventDetailsResponse> getEventByIdModel = Rxn<EventDetailsResponse>();
 
   Rxn<AllAllergen> getAllergenList = Rxn<AllAllergen>();
@@ -530,6 +537,7 @@ class EventController extends GetxController{
         Utils.showToast(jsonResponse['message'] ?? "Event created", false);
 
         String eventId = jsonResponse["data"]["_id"];
+        mainEventId = eventId;
         String eventImage = jsonResponse["data"]["image"] ?? "";
         String link = generateEventLink(eventId);
         final adminName = pref.getString(LocalDBKeys.USERFULLNAME);
@@ -567,6 +575,7 @@ class EventController extends GetxController{
   Future<void> editEvent({
     required String eventId,
     File? image,
+    bool isEdit = false
   }) async {
     try {
       EasyLoading.show(
@@ -643,6 +652,7 @@ class EventController extends GetxController{
         menus,
         image,
         eventId,
+        isEdit
       );
     } catch (e) {
       Utils.showToast("Failed to update event", true);
@@ -656,6 +666,7 @@ class EventController extends GetxController{
       List<String> menus,
       File? image,
       String eventId,
+      bool isEdit
       ) async {
     try {
       final url = "${baseService.baseURL}$endpoint";
@@ -705,8 +716,10 @@ class EventController extends GetxController{
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.showToast(jsonResponse['message'] ?? "Event updated", false);
         eventReviewModel.refresh();
-        // Get.toNamed('eventdetailsscreen', arguments: eventId);
-        Get.toNamed("eventcomfortone", arguments: eventId);
+        isEdit == false ? Get.toNamed("eventcomfortone", arguments: eventId):
+        Get.toNamed("foodmenuscreen", arguments: eventId);
+
+
         // NOTE: Do NOT call clearEventFields() here — the flow continues
         // through EventComfortOne → Two → Three, which need prefilled data.
 
@@ -766,9 +779,16 @@ class EventController extends GetxController{
 
   bool removeSelectedMenuById(String? id) {
     if (id == null || id.isEmpty) return false;
-    final before = selectedMenus.length;
+    final menu = selectedMenus.firstWhereOrNull((m) => m.id == id);
+    if (menu == null) return false;
     selectedMenus.removeWhere((m) => m.id == id);
-    return selectedMenus.length != before;
+    if (menu.isAi == true) {
+      print("🗑️ Removing AI-created menu id=$id — hitting DELETE ${ApiEndPoints.deleteMenu(id)}");
+      baseService.baseDeleteAPI(ApiEndPoints.deleteMenu(id), loading: false).then((response) {
+        print("🗑️ Delete AI menu id=$id response: $response");
+      });
+    }
+    return true;
   }
 
   Future<void> pickDateOrTime({
@@ -853,12 +873,13 @@ class EventController extends GetxController{
     }
   }
 
-  Future<void> uploadMenu() async {
+  Future<MenuItem?> uploadMenu({bool noNavigate = false}) async {
     // Remove jsonEncode
     final fields = {
       "title": menuTitle.text.trim(),
       "type": selectedType.value ?? "",
       "description": menuDescription.text.trim(),
+      if (noNavigate) "isAi": "true",
     };
 
     // Prepare list of meal categories
@@ -866,19 +887,21 @@ class EventController extends GetxController{
     selectedMealCategory.map((e) => e["name"] ?? "").toList();
 
     // Send request
-    await _sendMultipartMenuRequest(
+    return await _sendMultipartMenuRequest(
       ApiEndPoints.addMenu,
       fields,
       mealCategories,
       itemPic.value,
+      noNavigate
     );
   }
 
-  Future<void> _sendMultipartMenuRequest(
+  Future<MenuItem?> _sendMultipartMenuRequest(
       String endpoint,
       Map<String, String> fields,
       List<String> mealCategories,
       File? menuImage,
+      bool noNavigate,
       ) async {
     try {
       EasyLoading.show(
@@ -929,16 +952,23 @@ class EventController extends GetxController{
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.showToast("${jsonResponse['message']}", false);
+        final createdMenu = jsonResponse['data'] != null
+            ? MenuItem.fromJson(jsonResponse['data'])
+            : null;
         // Get.toNamed('menuSuccessScreen');
         clearItemFields();
         getMenus();
+        if(noNavigate == false)
         Get.back();
+        return createdMenu;
       } else {
         Utils.showToast(jsonResponse['message'] ?? "Something went wrong", false);
+        return null;
       }
     } catch (e) {
       print("❌ Error: $e");
       Utils.showToast("Check Internet Connection", false);
+      return null;
     } finally{
       getMenuModel.refresh();
       menus.refresh();
@@ -1383,8 +1413,8 @@ class EventController extends GetxController{
       final response = await baseService.baseGetAPI(ApiEndPoints.getEventById(eventId));
       if (response["success"] == true) {
         final data = response["data"];
-        final eventComfort = (response["data"]["eventComfort"] ?? {}) as Map<String, dynamic>;
-        final guestAware  = (response["data"]["guestAware"]  ?? {}) as Map<String, dynamic>;
+        final eventComfort = Map<String, dynamic>.from(response["data"]["eventComfort"] ?? {});
+        final guestAware  = Map<String, dynamic>.from(response["data"]["guestAware"]  ?? {});
         print("Comfort: ${eventComfort}");
         print("Aware: ${guestAware}");
         final result = formatDateTime(data["eventTime"]);
@@ -1494,6 +1524,40 @@ class EventController extends GetxController{
     }
   }
 
+
+  Future<void> GetAiMenu(String id, bool refresh, String prompt) async {
+    isAiMenuLoading.value = true;
+    aiMenuError.value = '';
+    try {
+      final body = {
+        "prompt": prompt,
+        "refresh": refresh,
+      };
+
+      final responseMap = await baseService.basePostAPI(
+        ApiEndPoints.aiMenu(id),
+        body,
+        loading: false,
+      );
+      if (responseMap["success"] != true) {
+        aiMenuError.value = (responseMap["message"] ?? "Failed to fetch AI menu suggestions").toString();
+        return;
+      }
+      final data = responseMap["data"];
+      if (data == null) {
+        aiMenuError.value = "Failed to fetch AI menu suggestions";
+        return; // Safety guard
+      }
+
+      getAiMenuModel.value = AiMenu.fromJson(responseMap);
+      aiController.clear();
+    } catch (e) {
+      aiMenuError.value = "Failed to fetch AI menu suggestions";
+      print("🍽️ Something went wrong in GetAiMenu: $e");
+    } finally {
+      isAiMenuLoading.value = false;
+    }
+  }
   void clearEventFields() {
     // ── Text fields ──────────────────────────────────────────────────────
     eventName.clear();
@@ -1510,6 +1574,8 @@ class EventController extends GetxController{
     guestAwareOthersController.clear();
     guestContactController.clear();
     locationController.addressController.clear();
+    selectedReminderTime.value = null;
+    guestCount.clear();
 
     // ── Observables ──────────────────────────────────────────────────────
     profileController.profilePicture.value = null;

@@ -57,6 +57,7 @@ class MenuItem {
   final String? menuImage;
   final String? title;
   final String? description;
+  final bool? isAi;
   final User? userId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -69,6 +70,7 @@ class MenuItem {
     this.menuImage,
     this.title,
     this.description,
+    this.isAi,
     this.userId,
     this.createdAt,
     this.updatedAt,
@@ -84,7 +86,10 @@ class MenuItem {
     menuImage: json['menuImage'] as String?,
     title: json['title'] as String?,
     description: json['description'] as String?,
-    userId: json['userId'] != null ? User.fromJson(json['userId']) : null,
+    isAi: json['isAi'] as bool?,
+    userId: json['userId'] is Map<String, dynamic>
+        ? User.fromJson(json['userId'] as Map<String, dynamic>)
+        : (json['userId'] is String ? User(id: json['userId'] as String) : null),
     createdAt: json['createdAt'] != null
         ? DateTime.tryParse(json['createdAt'])
         : null,
@@ -101,6 +106,7 @@ class MenuItem {
     'menuImage': menuImage,
     'title': title,
     'description': description,
+    'isAi': isAi,
     'userId': userId?.toJson(),
     'createdAt': createdAt?.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),

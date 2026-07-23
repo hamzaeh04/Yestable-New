@@ -17,6 +17,11 @@ class ApiEndPoints{
   static const String notificationSetting = '/users/profile/notification-settings';
   static const String registerFcm = '/notifications/register';
 
+  static String aiMenu(String id){
+    return "/events/$id/menu-suggestions";
+
+  }
+
   static String updateMemberAllergensPlate(String memberId){
     return '/users/members/${memberId}/allergens-plate';
   }
@@ -31,6 +36,10 @@ class ApiEndPoints{
 
   static String deleteMember(String memberId){
     return '/users/members/$memberId';
+  }
+
+  static String deleteMenu(String menuId){
+    return '/menus/$menuId';
   }
   static String updateEventComfort(String eventId){
     return '/events/$eventId/comfort';

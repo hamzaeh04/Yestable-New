@@ -800,7 +800,7 @@ class CreateNewEventScreen extends StatelessWidget {
                             onTap: () {
                               eventId == null ?
                               eventController.createEvent(context,image: controller.profilePicture.value):
-                              eventController.editEvent(eventId: eventId,image: controller.profilePicture.value);
+                              eventController.editEvent(eventId: eventId,image: controller.profilePicture.value, isEdit: true);
                               // Get.toNamed("foodmenuscreen", arguments: eventId);
                               print(eventId);
                             },

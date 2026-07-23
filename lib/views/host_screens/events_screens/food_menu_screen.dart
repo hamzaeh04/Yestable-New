@@ -13,6 +13,7 @@ import 'package:yestable/core/services/firebase_messaging/messaging_service.dart
 import 'package:yestable/model/get_menu_model.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
+import 'package:yestable/utils/utility.dart';
 import 'package:yestable/widget/ai_menu_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
@@ -30,10 +31,16 @@ class FoodMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    print("iam here my id is here :${eventController.mainEventId}");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       eventController.getMenus();
     });
+
+
     final eventId = Get.arguments;
+    if (eventId is String && eventId.isNotEmpty) {
+      eventController.mainEventId = eventId;
+    }
     return Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(
@@ -102,94 +109,63 @@ class FoodMenuScreen extends StatelessWidget {
                                       fontFamily: "CormorantGaramond",
                                       fontWeight: FontWeight.w600,
                                       color: blackColor,
-                                      height: 0.13.h
+                                      height: 0.13.h,
                                     ),
-                                    // customText(
-                                    //   text: "Your guests' safety, visualized.",
-                                    //   fontSize: 14.sp,
-                                    //   fontWeight: FontWeight.w400,
-                                    //   color: darkGreyColor,
-                                    // ),
+
                                   ],
                                 ),
                               ),
-                              // SizedBox(height: 2.h),
-                              // Padding(
-                              //   padding: EdgeInsets.symmetric(horizontal: 5.w),
-                              //   child: Container(
-                              //     width: double.infinity,
-                              //     decoration: BoxDecoration(
-                              //       borderRadius: BorderRadius.circular(20.sp),
-                              //       color: whiteColor,
-                              //     ),
-                              //     child: Padding(
-                              //       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                              //       child: Column(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           Row(
-                              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //             children: [
-                              //               customText(
-                              //                 text: "Guest Taste preferences",
-                              //                 fontSize: 17.sp,
-                              //                 fontWeight: FontWeight.w600,
-                              //                 fontFamily: "CormorantGaramond",
-                              //                 color: blackColor,
-                              //               ),
-                              //               customText(
-                              //                 text: "18 Guest",
-                              //                 fontSize: 13.sp,
-                              //                 fontWeight: FontWeight.w400,
-                              //                 color: darkGreyColor,
-                              //               ),
-                              //             ],
-                              //           ),
-                              //           SizedBox(height: 2.h),
-                              //           Image.asset("assets/png/pie_chart.png", fit: BoxFit.contain),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
                               SizedBox(height: 2.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 5.w),
 
-                                child: Obx(() => Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    buttonWidget(
-                                      "YesTable Menu (AI)",
-                                      image: Image.asset(
-                                        'assets/png/chat_images/yesGPT.png',
-                                        width: 5.w,
+                                child: Obx(
+                                  () => Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      buttonWidget(
+                                        "YesTable Menu (AI)",
+                                        image: Image.asset(
+                                          'assets/png/chat_images/yesGPT.png',
+                                          width: 5.w,
+                                        ),
+                                        controller.isYesTableSelected.value
+                                            ? whiteColor
+                                            : blackColor,
+                                        colors:
+                                            controller.isYesTableSelected.value
+                                                ? greenColor
+                                                : backgroundColor,
+                                        borderColor: greenColor.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        width: 43.w,
+                                        height: 4.5.h,
+                                        fontsize: 14.sp,
+                                        onTap: controller.selectYesTable,
                                       ),
-                                      controller.isYesTableSelected.value ? whiteColor:blackColor,
-                                      colors: controller.isYesTableSelected.value
-                                          ? greenColor
-                                          : backgroundColor,
-                                      borderColor: greenColor.withValues(alpha: 0.3),
-                                      width: 43.w,
-                                      height: 4.5.h,
-                                      fontsize: 14.sp,
-                                      onTap: controller.selectYesTable,
-                                    ),
 
-                                    buttonWidget(
-                                      "Manually Picked",
-                                      controller.isYesTableSelected.value ? blackColor:whiteColor,
-                                      colors: controller.isYesTableSelected.value
-                                          ? backgroundColor
-                                          : greenColor,
-                                      borderColor: greenColor.withValues(alpha: 0.3),
-                                      width: 43.w,
-                                      height: 4.5.h,
-                                      fontsize: 14.sp,
-                                      onTap: controller.selectManual,
-                                    ),
-                                  ],
-                                )),
+                                      buttonWidget(
+                                        "Manually Picked",
+                                        controller.isYesTableSelected.value
+                                            ? blackColor
+                                            : whiteColor,
+                                        colors:
+                                            controller.isYesTableSelected.value
+                                                ? backgroundColor
+                                                : greenColor,
+                                        borderColor: greenColor.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        width: 43.w,
+                                        height: 4.5.h,
+                                        fontsize: 14.sp,
+                                        onTap: controller.selectManual,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                               SizedBox(height: 0.h),
                               Padding(
@@ -199,12 +175,14 @@ class FoodMenuScreen extends StatelessWidget {
                                     DefaultTabController(
                                       length: 3,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-
                                           SizedBox(height: 1.h),
                                           Obx(() {
-                                            if (controller.isYesTableSelected.value) {
+                                            if (controller
+                                                .isYesTableSelected
+                                                .value) {
                                               /// ✅ YesTable Menu Selected (VERTICAL LIST)
                                               return Column(
                                                 children: [
@@ -212,74 +190,201 @@ class FoodMenuScreen extends StatelessWidget {
                                                     //margin: EdgeInsets.symmetric(horizontal: 5.w),
                                                     height: 5.5.h,
                                                     width: double.infinity,
-                                                    padding: EdgeInsets.only(right: 2.w, left: 4.w),
+                                                    padding: EdgeInsets.only(
+                                                      right: 2.w,
+                                                      left: 4.w,
+                                                    ),
                                                     decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(25.sp),
-                                                      border: Border.all(color: lightgreenColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            25.sp,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: lightgreenColor,
+                                                      ),
                                                     ),
                                                     child: Row(
                                                       children: [
                                                         Expanded(
                                                           child: TextField(
+                                                            controller:
+                                                                eventController
+                                                                    .aiController,
                                                             style: TextStyle(
                                                               fontSize: 14.sp,
-                                                              fontFamily: "WorkSans",
+                                                              fontFamily:
+                                                                  "WorkSans",
                                                             ),
                                                             decoration: InputDecoration(
-                                                              hintText: '"Suggest a brunch for this group!"',
+                                                              hintText:
+                                                                  '"Suggest a brunch for this group!"',
                                                               hintStyle: TextStyle(
-                                                                fontSize: 14.5.sp,
-                                                                color: Colors.black.withValues(alpha: 0.6),
+                                                                fontSize:
+                                                                    14.5.sp,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.6,
+                                                                    ),
                                                               ),
-                                                              border: InputBorder.none,       // ✅ remove border
-                                                              enabledBorder: InputBorder.none,
-                                                              focusedBorder: InputBorder.none,
-                                                              disabledBorder: InputBorder.none,
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                              enabledBorder:
+                                                                  InputBorder
+                                                                      .none,
+                                                              focusedBorder:
+                                                                  InputBorder
+                                                                      .none,
+                                                              disabledBorder:
+                                                                  InputBorder
+                                                                      .none,
                                                               isDense: true,
-                                                              contentPadding: EdgeInsets.zero,
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .zero,
                                                             ),
                                                           ),
                                                         ),
-                                                        Container(
-                                                          height: 5.2.h,
-                                                          width: 9.w,
-                                                          decoration: BoxDecoration(
-                                                            shape: BoxShape.circle,
-                                                            color: greenColor,
+                                                        InkWell(
+                                                          onTap: () {
+                                                            if (eventController
+                                                                .aiController
+                                                                .text
+                                                                .isEmpty) {
+                                                              Utils.showToast(
+                                                                "Write the Prompt",
+                                                                true,
+                                                              );
+                                                            } else {
+                                                              eventController.GetAiMenu(
+                                                                eventController
+                                                                    .mainEventId,
+                                                                eventController
+                                                                    .refreshMenu,
+                                                                eventController
+                                                                    .aiController
+                                                                    .text,
+                                                              );
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                            height: 5.2.h,
+                                                            width: 9.w,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  shape:
+                                                                      BoxShape
+                                                                          .circle,
+                                                                  color:
+                                                                      greenColor,
+                                                                ),
+                                                            child: Image.asset(
+                                                              'assets/png/chat_images/circle.png',
+                                                            ),
                                                           ),
-                                                          child: Image.asset('assets/png/chat_images/circle.png'),
-                                                        )
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
-                                                  SizedBox(height: 0.8.h,),
+                                                  SizedBox(height: 0.8.h),
                                                   SizedBox(
                                                     height: 4.h,
                                                     child: SingleChildScrollView(
-                                                      scrollDirection: Axis.horizontal,
-                                                      physics: const BouncingScrollPhysics(),
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      physics:
+                                                          const BouncingScrollPhysics(),
                                                       child: Row(
                                                         children: [
-                                                          list('Suggest a brunch menu this group would like'),
-                                                          SizedBox(width: 2.w,),
-                                                          list('Suggest a brunch menu this group would like'),
+                                                          list(
+                                                            'Suggest a brunch menu this group would like',
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                          list(
+                                                            'Suggest a brunch menu this group would like',
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
                                                   ),
+
+                                                  SizedBox(height: 1.h),
+                                                  // SizedBox(
+                                                  //   height: 24.h,
+                                                  //   child: SingleChildScrollView(
+                                                  //     scrollDirection:
+                                                  //         Axis.horizontal,
+                                                  //     physics:
+                                                  //         const BouncingScrollPhysics(),
+                                                  //     child: Row(
+                                                  //       children: [
+                                                  //         FoodMenuCard(),
+                                                  //         SizedBox(width: 2.w),
+                                                  //         FoodMenuCard(),
+                                                  //       ],
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
                                                   SizedBox(
-                                                    height: 24.h,
-                                                    child: SingleChildScrollView(
-                                                      scrollDirection: Axis.horizontal,
-                                                      physics: const BouncingScrollPhysics(),
-                                                      child: Row(
-                                                        children: [
-                                                          FoodMenuCard(),
-                                                          SizedBox(width: 2.w),
-                                                          FoodMenuCard(),
-                                                        ],
-                                                      ),
-                                                    ),
+                                                    height: 25.h,
+                                                    child: Obx(() {
+                                                      if (eventController.isAiMenuLoading.value) {
+                                                        return const Center(
+                                                          child: CircularProgressIndicator(color: greenColor),
+                                                        );
+                                                      }
+
+                                                      final suggestions = eventController.getAiMenuModel.value?.data?.suggestions ?? [];
+                                                      if (suggestions.isEmpty) {
+                                                        return Center(
+                                                          child: Padding(
+                                                            padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                                            child: customText(
+                                                              text: eventController.aiMenuError.value.isNotEmpty
+                                                                  ? eventController.aiMenuError.value
+                                                                  : "No AI menu suggestions yet",
+                                                              fontSize: 14.sp,
+                                                              color: darkGreyColor,
+                                                              textAlign: TextAlign.center,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        physics: const BouncingScrollPhysics(),
+                                                        itemCount: suggestions.length,
+                                                        itemBuilder: (context, index) {
+                                                          final suggestion = suggestions[index];
+                                                          final badges = suggestion.badges ?? [];
+                                                          final dietaryTags = suggestion.dietaryTags ?? [];
+                                                          final menuItem = MenuItem(
+                                                            id: suggestion.title ?? '',
+                                                            title: suggestion.title ?? '',
+                                                            description: suggestion.type ?? '',
+                                                            mealCategory: dietaryTags,
+                                                            menuImage: 'assets/png/profile_food_images/selected_menu_image.png',
+                                                            type: suggestion.type ?? '',
+                                                          );
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 4.w),
+                                                            child: FoodMenuCard(
+                                                              title: suggestion.title,
+                                                              subtitle: suggestion.type,
+                                                              desc: suggestion.description,
+                                                              category: dietaryTags.isNotEmpty ? dietaryTags.first : null,
+                                                              preference1: badges.isNotEmpty ? badges[0] : '',
+                                                              preference2: badges.length > 1 ? badges[1] : '',
+                                                              preference3: badges.length > 2 ? badges[2] : '',
+                                                              menuItem: menuItem,
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }),
                                                   ),
                                                 ],
                                               );
@@ -287,24 +392,26 @@ class FoodMenuScreen extends StatelessWidget {
                                               /// ✅ Manual Menu Selected (HORIZONTAL LIST)
                                               return Column(
                                                 children: [
-
                                                   TabBar(
                                                     labelColor: Colors.black,
-                                                    unselectedLabelColor: Colors.grey,
-                                                    indicatorColor: Colors.black,
+                                                    unselectedLabelColor:
+                                                        Colors.grey,
+                                                    indicatorColor:
+                                                        Colors.black,
                                                     indicatorWeight: 2,
 
                                                     labelStyle: TextStyle(
                                                       fontSize: 15.sp,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       fontFamily: "WorkSans",
                                                     ),
+
                                                     // unselectedLabelStyle: TextStyle(
                                                     //   fontSize: 14.sp,
                                                     //   fontWeight: FontWeight.w400,
                                                     //   fontFamily: "WorkSans",
                                                     // ),
-
                                                     tabs: const [
                                                       Tab(text: "Appetizers"),
                                                       Tab(text: "Main Course"),
@@ -312,14 +419,20 @@ class FoodMenuScreen extends StatelessWidget {
                                                     ],
                                                   ),
 
-                                                  SizedBox(height: 0.7.h,),
+                                                  SizedBox(height: 0.7.h),
                                                   SizedBox(
                                                     height: 32.h,
                                                     child: TabBarView(
                                                       children: [
-                                                        _menusHorizontalList(type: "Appetizers"),
-                                                        _menusHorizontalList(type: "Main Course"),
-                                                        _menusHorizontalList(type: "Drinks"),
+                                                        _menusHorizontalList(
+                                                          type: "Appetizers",
+                                                        ),
+                                                        _menusHorizontalList(
+                                                          type: "Main Course",
+                                                        ),
+                                                        _menusHorizontalList(
+                                                          type: "Drinks",
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -327,14 +440,14 @@ class FoodMenuScreen extends StatelessWidget {
                                               );
                                             }
                                           }),
-
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 8.h), // Give space for bottom panel
+                              SizedBox(height: 8.h),
+                              // Give space for bottom panel
                             ],
                           ),
                         ),
@@ -380,7 +493,7 @@ class FoodMenuScreen extends StatelessWidget {
                           color: blackColor,
                         ),
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             selectedMenuBottomSheet(context);
                           },
                           child: Icon(
@@ -403,12 +516,8 @@ class FoodMenuScreen extends StatelessWidget {
                         // eventId == null ?
                         // eventController.createEvent(context,image: controller.controller.profilePicture.value):
                         eventController.editEvent(eventId: eventId);
-
-
                       },
                     ),
-
-
 
                     SizedBox(height: 1.h),
                   ],
@@ -418,16 +527,20 @@ class FoodMenuScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 14.h),
-        child: FloatingActionButton(
-          backgroundColor: greenColor,
-          shape: CircleBorder(),
-          onPressed: (){
-            menuFormDialog(context);
-        },
-        child: Icon(Icons.add, color: whiteColor,),),
-      ),
+      floatingActionButton: Obx(() {
+        if (controller.isYesTableSelected.value) return const SizedBox.shrink();
+        return Padding(
+          padding: EdgeInsets.only(bottom: 14.h),
+          child: FloatingActionButton(
+            backgroundColor: greenColor,
+            shape: CircleBorder(),
+            onPressed: () {
+              menuFormDialog(context);
+            },
+            child: Icon(Icons.add, color: whiteColor),
+          ),
+        );
+      }),
     );
   }
 }
@@ -437,7 +550,7 @@ Widget _menusHorizontalList({required String type}) {
 
   return Obx(() {
     if (eventController.isMenusLoading.value) {
-      return const Center(child: CircularProgressIndicator(color: greenColor,));
+      return const Center(child: CircularProgressIndicator(color: greenColor));
     }
 
     if (eventController.menusError.value.isNotEmpty) {
@@ -457,7 +570,10 @@ Widget _menusHorizontalList({required String type}) {
               InkWell(
                 onTap: () => eventController.getMenus(),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.8.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 3.w,
+                    vertical: 0.8.h,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(18.sp),
                     border: Border.all(color: lightgreenColor),
@@ -475,9 +591,11 @@ Widget _menusHorizontalList({required String type}) {
       );
     }
 
-    final filtered = eventController.menus
-        .where((m) => (m.type ?? "").toLowerCase() == type.toLowerCase())
-        .toList();
+    final filtered =
+        eventController.menus
+            .where((m) => (m.type ?? "").toLowerCase() == type.toLowerCase())
+            .where((m) => m.isAi != true)
+            .toList();
 
     if (filtered.isEmpty) {
       return Center(
@@ -512,11 +630,14 @@ Widget _menuApiCard({required MenuItem menu}) {
 
   final img = (menu.menuImage ?? "").trim();
   final imgUrl =
-      img.isEmpty ? null : (img.startsWith("http") ? img : "${baseService.baseURL}$img");
+      img.isEmpty
+          ? null
+          : (img.startsWith("http") ? img : "${baseService.baseURL}$img");
 
-  final categories = (menu.mealCategory ?? <String>[])
-      .where((e) => e.trim().isNotEmpty)
-      .toList();
+  final categories =
+      (menu.mealCategory ?? <String>[])
+          .where((e) => e.trim().isNotEmpty)
+          .toList();
   final c1 = categories.isNotEmpty ? categories[0] : null;
   final c2 = categories.length > 1 ? categories[1] : null;
 
@@ -533,34 +654,37 @@ Widget _menuApiCard({required MenuItem menu}) {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(2.w),
-              child: imgUrl == null
-                  ? Image.asset(
-                      "assets/png/event_detail_img/event1.png",
-                      height: 15.h,
-                      width: 53.w,
-                      fit: BoxFit.cover,
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: imgUrl,
-                      height: 15.h,
-                      width: 53.w,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Container(
-                          height: 15.h,
-                          width: 53.w,
-                          color: Colors.white,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
+              child:
+                  imgUrl == null
+                      ? Image.asset(
                         "assets/png/event_detail_img/event1.png",
                         height: 15.h,
                         width: 53.w,
                         fit: BoxFit.cover,
+                      )
+                      : CachedNetworkImage(
+                        imageUrl: imgUrl,
+                        height: 15.h,
+                        width: 53.w,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: Container(
+                                height: 15.h,
+                                width: 53.w,
+                                color: Colors.white,
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Image.asset(
+                              "assets/png/event_detail_img/event1.png",
+                              height: 15.h,
+                              width: 53.w,
+                              fit: BoxFit.cover,
+                            ),
                       ),
-                    ),
             ),
             Positioned(
               bottom: 0.5.h,
@@ -577,7 +701,10 @@ Widget _menuApiCard({required MenuItem menu}) {
                         snackPosition: SnackPosition.BOTTOM,
                         backgroundColor: Colors.black.withValues(alpha: 0.8),
                         colorText: Colors.white,
-                        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 4.w,
+                          vertical: 2.h,
+                        ),
                       );
                     } else {
                       Get.snackbar(
@@ -586,7 +713,10 @@ Widget _menuApiCard({required MenuItem menu}) {
                         snackPosition: SnackPosition.BOTTOM,
                         backgroundColor: Colors.black.withValues(alpha: 0.8),
                         colorText: Colors.white,
-                        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 4.w,
+                          vertical: 2.h,
+                        ),
                       );
                     }
                   },
@@ -600,7 +730,7 @@ Widget _menuApiCard({required MenuItem menu}) {
                           color: Colors.black12,
                           blurRadius: 4,
                           offset: Offset(0, 2),
-                        )
+                        ),
                       ],
                     ),
                     child: Icon(
@@ -616,7 +746,8 @@ Widget _menuApiCard({required MenuItem menu}) {
         ),
         SizedBox(height: 0.5.h),
         customText(
-          text: (menu.title ?? "").trim().isEmpty ? "Untitled Menu" : menu.title!,
+          text:
+              (menu.title ?? "").trim().isEmpty ? "Untitled Menu" : menu.title!,
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
           fontFamily: "CormorantGaramond",
@@ -648,7 +779,6 @@ Widget _menuApiCard({required MenuItem menu}) {
     ),
   );
 }
-
 
 Widget menuItem({
   required String title,
@@ -685,17 +815,14 @@ Widget menuItem({
                   color: Colors.white,
                   shape: BoxShape.circle,
                   boxShadow: [
-                  BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                  )],
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
-                child: Icon(
-                  Icons.add,
-                  size: 17.sp,
-                  color: Colors.black,
-                ),
+                child: Icon(Icons.add, size: 17.sp, color: Colors.black),
               ),
             ),
           ],
@@ -709,11 +836,7 @@ Widget menuItem({
           color: blackColor,
         ),
         SizedBox(height: 0.25.h),
-        customText(
-          text: subtitle,
-          fontSize: 14.sp,
-          color: darkGreyColor,
-        ),
+        customText(text: subtitle, fontSize: 14.sp, color: darkGreyColor),
         SizedBox(height: 1.h),
         Row(
           children: [
@@ -727,19 +850,13 @@ Widget menuItem({
   );
 }
 
-Widget foodPreferenceBox({
-  required String text,
-  required String imgPath,
-}) {
+Widget foodPreferenceBox({required String text, required String imgPath}) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 0.5.h),
     decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(30.w),
-        border: Border.all(
-          color: Colors.grey,
-          width: 0.1.w,
-        )
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(30.w),
+      border: Border.all(color: Colors.grey, width: 0.1.w),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
@@ -754,9 +871,9 @@ Widget foodPreferenceBox({
         Flexible(
           child: customText(
             text: text,
-              fontSize: 13.5.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
+            fontSize: 13.5.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
             overFlow: TextOverflow.ellipsis,
           ),
         ),
@@ -764,19 +881,20 @@ Widget foodPreferenceBox({
     ),
   );
 }
-Widget list(String title){
+
+Widget list(String title) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
     height: 3.5.h,
     // width: 10.w,
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.sp),
-        border: Border.all(color: Colors.grey)
+      borderRadius: BorderRadius.circular(25.sp),
+      border: Border.all(color: Colors.grey),
     ),
     child: customText(
-        textAlign: TextAlign.center,
-        text: title,
-        fontSize: 14.sp
+      textAlign: TextAlign.center,
+      text: title,
+      fontSize: 14.sp,
     ),
   );
 }
