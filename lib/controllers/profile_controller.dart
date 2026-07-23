@@ -569,7 +569,7 @@ class ProfileController extends GetxController {
   }
 
   void _initializeFoodSelections() {
-    foodSelections.assignAll(List.generate(yumYuckItems.length, (index) => 0));
+    foodSelections.value = List.generate(yumYuckItems.length, (index) => 0, growable: true);
   }
 
   // Updated Method to trigger UI update properly
@@ -603,6 +603,13 @@ class ProfileController extends GetxController {
         yuck.add(cleanTitle);
       }
     }
+  }
+
+  void clearYumYuck() {
+    yum.clear();
+    yuck.clear();
+
+    foodSelections.value = List.generate(yumYuckItems.length, (index) => 0, growable: true);
   }
 
 // Example JSON
@@ -767,15 +774,14 @@ class ProfileController extends GetxController {
   // ];
   final List<String> allergenKeys = [
     "peanut",
-    "dairy",
+    "treeNuts",
+    "sesame",
     "gluten",
     "eggs",
     "soy",
     "fish",
     "shellFish",
-    "treeNuts",
-    "sesame",
-    "others",
+    "dairy",
   ];
   final List<Map<String, dynamic>> allergens = [
     {
@@ -891,6 +897,14 @@ class ProfileController extends GetxController {
     allergens[index]['desc'] =
         getAllergyType(newProgress);
   }
+  void resetAllergens() {
+    for (var allergen in allergens) {
+      (allergen['progress'] as RxDouble).value = 0.0;
+      allergen['desc'] = 'No Allergy';
+    }
+
+    update();
+  }
 
   void populatePersonalInfo() {
     final data = getMyProfileModel.value?.data;
@@ -904,6 +918,139 @@ class ProfileController extends GetxController {
     customPronoun.text = data.pronoun ?? "";
     switchValue2.value = data.iAmHosting ?? false;
     switchValue.value = data.isProfilePublic ?? false;
+  }
+
+  void populateAllergiesDietary() {
+    final ca = getMyProfileModel.value?.data?.preferences?.commonAllergens;
+    if (ca == null) return;
+    
+    final map = ca.toMap();
+    
+    for (int i = 0; i < allergenKeys.length; i++) {
+      if (i >= allergens.length) break;
+      final key = allergenKeys[i];
+      final val = map[key];
+      if (val != null) {
+        double progress = 0.0;
+        if (val == "No Allergy") progress = 0.0;
+        else if (val == "Mild or Digestive Reaction") progress = 0.45;
+        else if (val == "Avoid for belief or Culture") progress = 0.7;
+        else if (val == "Severe Allergy (Anaphylaxis)") progress = 1.0;
+        
+        updateProgress(i, progress);
+      }
+    }
+    
+    if (map['others'] != null && map['others'] != "No Allergy" && map['others']!.isNotEmpty) {
+        other.value = true;
+        otherController.text = map['others']!;
+    } else {
+        other.value = false;
+        otherController.clear();
+    }
+  }
+
+  void populateYourRootAndRules() {
+    final pref = getMyProfileModel.value?.data?.preferences;
+    if (pref == null) return;
+    
+    final p = pref.plate;
+    selectedAllergens.clear();
+    other3.value = false;
+    otherRootRuleController.clear();
+    if (p != null) {
+       if (p.vegan == true) selectedAllergens.add(1);
+       if (p.vegetarian == true) selectedAllergens.add(2);
+       if (p.halal == true) selectedAllergens.add(3);
+       if (p.kosher == true) selectedAllergens.add(4);
+       if (p.keto == true) selectedAllergens.add(5);
+       if (p.other != null && p.other!.isNotEmpty) {
+           other3.value = true;
+           otherRootRuleController.text = p.other!;
+       }
+    }
+    
+    final favMoods = pref.favMood;
+    foodNationality.clear();
+    other2.value = false;
+    otherMoodController.clear();
+    if (favMoods != null) {
+       for (var fm in favMoods) {
+           final mood = fm.mood;
+           final index = foodOptions.indexWhere((element) => element['name'] == mood);
+           if (index != -1) {
+               foodNationality.add(index);
+           } else if (mood != null && mood.isNotEmpty) {
+               other2.value = true;
+               otherMoodController.text = mood;
+           }
+       }
+       updateFoodMoodList();
+    }
+  }
+
+  void populateFoodPreferencesOne() {
+    final yy = getMyProfileModel.value?.data?.preferences?.yumYuck;
+    if (yy == null) return;
+    
+    _initializeFoodSelections();
+    
+    final yums = yy.yum ?? [];
+    final yucks = yy.yuck ?? [];
+    
+    for (int i = 0; i < yumYuckItems.length; i++) {
+        String title = yumYuckItems[i];
+        String cleanTitle = title.split(' ').sublist(1).join(' ').toLowerCase();
+        if (yums.contains(cleanTitle)) {
+           foodSelections[i] = 1;
+        } else if (yucks.contains(cleanTitle)) {
+           foodSelections[i] = 2;
+        }
+    }
+  }
+
+  void populateFoodPreferencesTwo() {
+    final pref = getMyProfileModel.value?.data?.preferences;
+    if (pref == null) return;
+    
+    mobilityConcerns.text = pref.mobilityConcerns ?? "";
+    anythingElse.text = pref.needAnythingElse ?? "";
+    
+    if (pref.quietArea != null) {
+        if (pref.quietArea == true) {
+            select("Yes");
+        } else {
+            select("No");
+        }
+    }
+    
+    selectSeatingRequirements.clear();
+    showSeatingOther.value = false;
+    seatingOther.clear();
+    if (pref.seatingRequirement?.options != null) {
+        for (var opt in pref.seatingRequirement!.options!) {
+            selectSeatingRequirements.add(opt);
+            if (!seating.contains(opt)) {
+               showSeatingOther.value = true;
+               seatingOther.text = opt;
+               seatingOtherValue = opt;
+            }
+        }
+    }
+    
+    selectExtraAssistance.clear();
+    showAssistanceOther.value = false;
+    assistanceOther.clear();
+    if (pref.extraAssistance?.options != null) {
+        for (var opt in pref.extraAssistance!.options!) {
+            selectExtraAssistance.add(opt);
+            if (!assistance.contains(opt)) {
+               showAssistanceOther.value = true;
+               assistanceOther.text = opt;
+               assistanceOtherValue = opt;
+            }
+        }
+    }
   }
 
 
@@ -966,7 +1113,7 @@ class ProfileController extends GetxController {
       print("📋 Fields: ${request.fields}");
 
       /// Add profile image dynamically
-      if (profilePic != null) {
+      if (profilePic != null && await profilePic.exists()) {
         print("📸 Adding profilePic: ${profilePic.path}");
 
         // Detect MIME type from file extension
@@ -1022,6 +1169,7 @@ class ProfileController extends GetxController {
             jsonResponse["data"]["name"],
           );
         }
+        // profilePicture.value = null;
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
@@ -1092,7 +1240,7 @@ class ProfileController extends GetxController {
       print("📋 Fields: ${request.fields}");
 
       /// Add profile image dynamically
-      if (profilePic != null) {
+      if (profilePic != null && await profilePic.exists()) {
         print("📸 Adding profilePic: ${profilePic.path}");
 
         // Detect MIME type from file extension
@@ -1143,6 +1291,7 @@ class ProfileController extends GetxController {
 
         }
         prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${jsonResponse["data"]["onboardingStep"]}");
+        // profilePicture.value = null;
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
@@ -1158,18 +1307,36 @@ class ProfileController extends GetxController {
   }
 
   Future<void> UpdateAllergensPlate({bool? isMember = false, String? memberId}) async {
-    // List<String> platesList = getSelectedPlateString()
-    //     .split(',')               // ["vegan", "other"]
-    //     .map((e) => e.trim())     // trim spaces
-    //     .toList();
+    commanAllergens.clear();
+    for (int i = 0; i < allergenKeys.length; i++) {
+       if (i >= allergens.length) break;
+       final title = allergenKeys[i];
+       final allergyType = getAllergyType(allergens[i]['progress'].value);
+       commanAllergens[title] = allergyType;
+    }
+    
     final plateData = getSelectedPlateMap();
+    if (other.value && otherController.text.isNotEmpty) {
+      commanAllergens["others"] = otherController.text;
+    } else {
+      commanAllergens["others"] = "No Allergy";
+    }
     print("formatteddddd: ${plateData}");
+    // Build favMood dynamically here!
+    List<Map<String, String>> finalFavMoods = foodNationality
+        .where((i) => i >= 0 && i < foodOptions.length)
+        .map((i) => {"mood": foodOptions[i]["name"]!})
+        .toList();
+    if (other2.value && otherMoodController.text.isNotEmpty) {
+        finalFavMoods.add({"mood": otherMoodController.text.trim()});
+    }
+
     try {
       // Construct your API body
       Map<String, dynamic> body = {
         "commonAllergens": commanAllergens,
         "plate": plateData,
-        "favMood": foodMoodOptionList
+        "favMood": finalFavMoods
       };
       // Make PATCH API call
       final response = await baseService.basePatchAPI(
@@ -1256,8 +1423,8 @@ class ProfileController extends GetxController {
         print("seating: ${seatingOther.text.trim()}");
         print("assistance: ${assistanceOther.text.trim()}",);
         print("isQuite: ${IsYes()}",);
-        showSeatingOther.value = !showSeatingOther.value;
-        showAssistanceOther.value = !showAssistanceOther.value;
+        showSeatingOther.value = false;
+        showAssistanceOther.value = false;
         final index = selectedIndex.value;
         print(isPreferences.value);
         if (isPreferences.value == true && index >= 0 && index < placeCompleted.length) {
@@ -1277,9 +1444,10 @@ class ProfileController extends GetxController {
           });
         } else {
           getMyProfileModel.refresh();
-          isEdit.value == true ? Get.offNamed('bottomnavigationbar'):
-          Get.toNamed("allownotificationscreen", arguments: 2);
+          isEdit.value == true ? Get.offAllNamed('bottomnavigationbar'):
+          Get.offAllNamed("allownotificationscreen", arguments: 2);
           isEdit.value == true ? clearSetupProfileFields(): null;
+          clearPreferences();
         }
         prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${response["data"]["onboardingStep"]}");
       } else {
@@ -1423,5 +1591,22 @@ class ProfileController extends GetxController {
     location.clear();
     customPronoun.clear();
     pronounIsSelected.value = 0;
+    profilePicture.value = null;
   }
+
+  void clearPreferences(){
+    resetAllergens();
+    commanAllergens.clear();
+    selectedAllergens.clear();
+    otherRootRuleController.clear();
+    foodMoodOptionList.clear();
+    foodNationality.clear();
+    clearYumYuck();
+    selectSeatingRequirements.clear();
+    selectExtraAssistance.clear();
+    isYes.value = true; // or whatever your default is
+    mobilityConcerns.clear();
+    anythingElse.clear();
+  }
+
 }

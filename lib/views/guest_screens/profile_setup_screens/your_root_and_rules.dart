@@ -14,7 +14,13 @@ import '../../../widget/button_widget.dart';
 import '../../../widget/show_other_dialog_box.dart';
 
 class YourRootAndRules extends StatelessWidget {
-  YourRootAndRules({super.key});
+  YourRootAndRules({super.key}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.isEdit.value == true) {
+        controller.populateYourRootAndRules();
+      }
+    });
+  }
 
   final ProfileController controller = Get.find<ProfileController>();
 
@@ -269,7 +275,8 @@ class YourRootAndRules extends StatelessWidget {
                                   height: 4.h,
                                   fontsize: 15.sp,
                                   onTap: () {
-                                    showCustomOtherDialog(controller: controller.otherMoodController,);
+                                    showCustomOtherDialog(controller: controller.otherMoodController,isFav: true,
+                                      hintText: "I like ice cream",);
                                   },
                                 ),
                               ],

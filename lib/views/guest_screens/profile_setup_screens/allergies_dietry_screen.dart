@@ -14,7 +14,13 @@ import '../../../widget/button_widget.dart';
 import '../../../widget/loading_step_indicator.dart';
 
 class AllergiesDietryScreen extends StatelessWidget {
-  AllergiesDietryScreen({super.key});
+  AllergiesDietryScreen({super.key}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.isEdit.value == true) {
+        controller.populateAllergiesDietary();
+      }
+    });
+  }
   final ProfileController controller = Get.find<ProfileController>();
   final NavigationController navigationController = Get.find<NavigationController>();
 
@@ -70,16 +76,6 @@ class AllergiesDietryScreen extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
-
-                    final title = controller.allergenKeys[index];
-                    final allergyType = controller.getAllergyType(controller.allergens[index]['progress'].value);
-
-                    // Store directly in single map
-                    controller.commanAllergens[title] = allergyType;
-
-                    // Print the map (ab index se nahi, title se print karo)
-                    print('${title} -> ${controller.commanAllergens[title]}');
-
                     return Obx(() => progressBar(
                       controller.allergens[index]['progress'], // RxDouble
                       controller.allergens[index]['title'],

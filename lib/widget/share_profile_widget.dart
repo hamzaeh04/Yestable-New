@@ -39,7 +39,7 @@ void showShareProfileDialog(BuildContext context, {VoidCallback? onCancelTap}) {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onCancelTap ?? () {
-                        Get.toNamed('bottomnavigationbar');
+                        Get.offAllNamed('bottomnavigationbar');
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: greenColor),
