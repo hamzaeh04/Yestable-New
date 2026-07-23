@@ -1415,9 +1415,11 @@ Widget customProfileField({
   bool? readonly = false,
   Icon? suffixIcon,
   VoidCallback? onSuffixTap,
+  VoidCallback? ontap,
   TextInputType? keyboardType
 }) {
   return TextField(
+    onTap: ontap,
     readOnly: readonly ?? false,
     controller: controller,
     keyboardType: keyboardType ?? TextInputType.text,

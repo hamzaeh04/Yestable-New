@@ -16,7 +16,7 @@ void showCustomOtherDialog({
   String description =
   "This info stays private unless you choose to share it with a host.",
   String hintText =
-  "Lorem ipsum dolor sit amet consectetur. Nec arcu enim consequat pulvinar proin urna ac tempus. Nulla viverra dui tellus nisi mont es sit tellus ac pellentesque.",
+  "What to add?",
 }) {
   final ProfileController profileController = Get.find<ProfileController>();
 
@@ -126,36 +126,6 @@ void showCustomOtherDialog({
               colors: blueColor,
                 onTap: () {
                   if (onDone != null) onDone();
-
-                  final otherText =
-                  profileController.otherMoodController.text.trim();
-
-                  if (otherText.isNotEmpty) {
-
-                    // 🔎 Check if "other" already exists
-                    int index = profileController.foodMoodOptionList
-                        .indexWhere((element) => element.containsKey("other"));
-
-                    if (index != -1) {
-                      // ✅ Override existing value
-                      profileController.foodMoodOptionList[index]["other"] = otherText;
-                      profileController.foodMoodOptionList.refresh(); // Important for GetX
-                      print("🔥 Updated Other: $otherText");
-                    } else {
-                      // ✅ Add new entry
-                      profileController.foodMoodOptionList.add({"other": otherText});
-                      print("🔥 Added Other: $otherText");
-                    }
-
-                    print(profileController.foodMoodOptionList);
-                  }
-
-                  // 🔁 Override in map automatically (Map already overrides keys)
-                  profileController.commanAllergens["others"] =
-                      profileController.otherController.text.trim();
-
-                  print(profileController.commanAllergens);
-
                   Get.back();
                 }
             ),

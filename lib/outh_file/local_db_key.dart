@@ -4,6 +4,7 @@ class LocalDBKeys {
   static const String FIRSTTIMEOPENAPP = "FIRSTTIMEOPENAPP";
   static const String USERTYPE = "USERTYPE";
   static const String KHANTAR = "KHANTAR";
+  static const String ISHOST = "ISHOST";
   static const String USERDETAIL = "USERDETAIL";
   static const String USERID = "USERID";
   static const String USEREMAIL = "USEREMAIL";

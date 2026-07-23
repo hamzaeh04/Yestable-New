@@ -14,6 +14,8 @@ import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_posted_dialog.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
 import '../../../constants/constants_widgets.dart';
+import '../../../outh_file/local_db_key.dart';
+import '../../../utils/shared_prefrences_methods.dart';
 import '../../../widget/custom_image_widget.dart';
 import '../../../widget/event_accesibility_widget.dart';
 import '../../guest_screens/dashboard/event_details_screen.dart';
@@ -23,10 +25,14 @@ class EventPublishScreen extends StatelessWidget {
   final NavigationController controller = Get.find<NavigationController>();
   final EventController eventController = Get.find<EventController>();
   BaseService baseService = BaseService();
+  final prefs = SharedPreferencesMethod.storage;
+
 
   @override
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
+    bool isHost = prefs.getString(LocalDBKeys.ISHOST) == "true";
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       eventController.eventReview(eventId);
       final data = eventController.eventReviewModel.value?.data;
@@ -35,6 +41,7 @@ class EventPublishScreen extends StatelessWidget {
           data?.guestAware,
         );
     });
+
 
     return Scaffold(
       body: Stack(
@@ -681,7 +688,8 @@ class EventPublishScreen extends StatelessWidget {
                           //     hostReviewsBottomSheet(context);
                           //   },
                           // ),
-                          if (controller.isUser.value == false) ...[
+
+                          if (isHost == true || controller.isUser.value) ...[
                             SizedBox(height: 2.h),
                             buttonWidget(
                               "Publish Now",

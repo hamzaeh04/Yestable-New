@@ -10,7 +10,13 @@ import '../../../controllers/profile_controller.dart';
 import '../../../widget/loading_step_indicator.dart';
 
 class FoodPreferencesOne extends StatelessWidget {
-  FoodPreferencesOne({super.key});
+  FoodPreferencesOne({super.key}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.isEdit.value == true) {
+        controller.populateFoodPreferencesOne();
+      }
+    });
+  }
 
   final ProfileController controller = Get.find<ProfileController>();
 

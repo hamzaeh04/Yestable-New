@@ -18,7 +18,13 @@ import '../../../constants/constants_widgets.dart';
 import '../../../widget/extra_assitance_dropdown.dart';
 
 class FoodPreferencesTwo extends StatelessWidget {
-  FoodPreferencesTwo({super.key});
+  FoodPreferencesTwo({super.key}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.isEdit.value == true) {
+        controller.populateFoodPreferencesTwo();
+      }
+    });
+  }
   final ProfileController controller = Get.find<ProfileController>();
   final NavigationController navigationController = Get.find<NavigationController>();
   final List<String> titles = [

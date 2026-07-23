@@ -76,12 +76,18 @@ final EventController eventController = Get.find<EventController>();
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        customText(
-                          text: data?.eventName ?? "Gizelle Dinner Event",
-                          fontSize: 19.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "CormorantGaramond",
-                          color: blackColor,
+                        InkWell(
+                          onTap: (){
+              print("User ID: ${prefs.getString(LocalDBKeys.USERID).toString()}  -  Host ID: ${data?.host?.id}");
+
+              },
+                          child: customText(
+                            text: data?.eventName ?? "Gizelle Dinner Event",
+                            fontSize: 19.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "CormorantGaramond",
+                            color: blackColor,
+                          ),
                         ),
 
                         SizedBox(height: 0.5.h),
@@ -615,11 +621,12 @@ final EventController eventController = Get.find<EventController>();
         ],
       ),
       floatingActionButton: Obx(() {
-        if (controller.isUser.value) return const SizedBox.shrink();
+        // if (controller.isUser.value) return const SizedBox.shrink();
 
         final hostId =
             eventController.eventReviewModel.value?.data?.host?.id ?? "";
         final isEventHost = prefs.getString(LocalDBKeys.USERID) == hostId;
+
         if (!isEventHost || hostId.isEmpty) return const SizedBox.shrink();
 
         return FloatingActionButton(

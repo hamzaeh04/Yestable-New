@@ -26,6 +26,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isHost = prefs.getString(LocalDBKeys.ISHOST) == "true";
     return Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(
@@ -427,7 +428,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: isHost == false ? FloatingActionButton(
         backgroundColor: blueColor,
         foregroundColor: whiteColor,
         shape: const CircleBorder(),
@@ -439,7 +440,8 @@ class HomeScreen extends StatelessWidget {
           height: 6.h,
           width: 6.w,
         ),
-      ),
+      ): buildCreateNewEventButton(context),
+      floatingActionButtonLocation: isHost == false ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.centerFloat,
     );
   }
 }
