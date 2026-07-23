@@ -1169,6 +1169,7 @@ class ProfileController extends GetxController {
             jsonResponse["data"]["name"],
           );
         }
+        prefs.setString(LocalDBKeys.ISHOST, jsonResponse["data"]["iAmHosting"].toString());
         // profilePicture.value = null;
       } else {
         Utils.showToast(
@@ -1291,6 +1292,8 @@ class ProfileController extends GetxController {
 
         }
         prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${jsonResponse["data"]["onboardingStep"]}");
+        // prefs.setString(LocalDBKeys.ISHOST, jsonResponse["data"]["iAmHosting"]);
+
         // profilePicture.value = null;
       } else {
         Utils.showToast(
@@ -1528,7 +1531,7 @@ class ProfileController extends GetxController {
         // Show a success message
         // Utils.showToast(response['message'] ?? "Profile fetched successfully", false);
         initializeMembers(); // <--- call it here
-
+        prefs.setString(LocalDBKeys.ISHOST, response["data"]["iAmHosting"].toString());
       } else {
         // Handle API errors
         Utils.showToast(response['message'] ?? "Failed to fetch profile", true);

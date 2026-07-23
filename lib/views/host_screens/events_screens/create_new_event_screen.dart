@@ -440,17 +440,24 @@ class CreateNewEventScreen extends StatelessWidget {
                                 children: [
                                   // customText(text: "Gizelle Dinner Event", fontWeight: FontWeight.w400, fontSize: 15.sp),
                                   customProfileField(
-                                    hint: 'Gizelle Dinner Event',
+                                    hint: 'Enter Event Name',
                                     controller: eventController.eventName,
                                   ),
                                   SizedBox(height: 0.25.h),
                                   const Divider(),
                                   // customText(text: "May 03, 2025", fontWeight: FontWeight.w400, fontSize: 15.sp),
                                   customProfileField(
-                                    hint: 'May 03, 2025',
+                                    hint: 'Select Date',
                                     readonly: true,
                                     controller: eventController.eventDate,
                                     suffixIcon: Icon(Icons.date_range),
+                                    ontap: () {
+                                      eventController.pickDateOrTime(
+                                        context: context,
+                                        controller: eventController.eventDate,
+                                        type: "date",
+                                      );
+                                    },
                                     onSuffixTap: () {
                                       eventController.pickDateOrTime(
                                         context: context,
@@ -463,11 +470,18 @@ class CreateNewEventScreen extends StatelessWidget {
                                   const Divider(),
                                   customProfileField(
                                     readonly: true,
-                                    hint: "07:00 AM",
+                                    hint: "Select Time",
                                     controller: eventController.eventTime,
                                     suffixIcon: Icon(
                                       Icons.access_time_outlined,
                                     ),
+                                    ontap: () {
+                                      eventController.pickDateOrTime(
+                                        context: context,
+                                        controller: eventController.eventTime,
+                                        type: "time",
+                                      );
+                                    },
                                     onSuffixTap: () {
                                       eventController.pickDateOrTime(
                                         context: context,
@@ -588,9 +602,21 @@ class CreateNewEventScreen extends StatelessWidget {
                                       children: [
                                         Expanded(
                                           child: customProfileField(
+                                            ontap: () async {
+                                              await eventController
+                                                  .locationController
+                                                  .getUserLocation();
+                                              eventController
+                                                  .locationController
+                                                  .addressController
+                                                  .text = eventController
+                                                  .locationController
+                                                  .address
+                                                  .value;
+                                            },
                                             readonly: true,
                                             hint:
-                                                "132 My Street, Pasadena, CA 91101",
+                                                "Select Location",
                                             controller:
                                                 eventController
                                                     .locationController
