@@ -103,7 +103,6 @@ class YourRootAndRules extends StatelessWidget {
                       return allergenWidget(index + 1, text, icon: leadingWidget);
                     },
                   ),
-
                   /// Other Foods
                   Obx(
                         () => controller.other3.value
@@ -179,6 +178,7 @@ class YourRootAndRules extends StatelessWidget {
                           textFieldController: controller.otherRootRuleController,
                       title: "Others",
                       path: "assets/png/icons/others_icon.png",
+                      isSelected: controller.other3,
                     ),
                   ),
                   SizedBox(height: 2.h),

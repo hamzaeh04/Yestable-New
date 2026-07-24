@@ -53,7 +53,7 @@ class AddProfilePicture extends StatelessWidget {
                     color: darkGreyColor
                   ),
                   SizedBox(height: 15.h),
-                  Center(
+                  Center  (
                     child: Stack(
                       children: [
                         Container(
@@ -131,7 +131,9 @@ class AddProfilePicture extends StatelessWidget {
                       greenColor,
                       borderColor: greenColor,
                       onTap: () {
+                        final pickedPicture = navigationController.controller.profilePicture.value;
                         navigationController.controller.clearSetupProfileFields();
+                        navigationController.controller.profilePicture.value = pickedPicture;
                         navigationController.controller.isEdit.value = false;
                         Get.toNamed("profileeditscreen");
                       },

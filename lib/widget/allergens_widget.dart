@@ -56,10 +56,12 @@ Widget others({
   required String title,
   TextEditingController? textFieldController,
   String? path,
-  VoidCallback? onDone
+  VoidCallback? onDone,
+  RxBool? isSelected,
 }) {
   final ProfileController controller = Get.find<ProfileController>();
   final RxBool shareWithHost = false.obs;
+  final RxBool selected = isSelected ?? controller.other;
 
   return Obx(() => GestureDetector(
     onTap: () {
@@ -152,10 +154,10 @@ Widget others({
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color:
-        controller.other.value ? blueColor : Colors.transparent, // directly observable
+        selected.value ? blueColor : Colors.transparent, // directly observable
         borderRadius: BorderRadius.circular(30.sp),
         border: Border.all(
-          color: controller.other.value ? Colors.transparent : Colors.grey,
+          color: selected.value ? Colors.transparent : Colors.grey,
         ),
       ),
       child: Row(

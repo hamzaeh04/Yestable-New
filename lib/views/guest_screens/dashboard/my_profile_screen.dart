@@ -1,3 +1,4 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,13 +6,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/profile_controller.dart';
+
 import 'package:yestable/core/services/login/google_auth_service.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/bar_chart.dart';
-import 'package:yestable/widget/guest_update_received.dart';
-import 'package:yestable/widget/showShareDialogBox_widget.dart';
-import 'package:yestable/widget/you_are_invited_dialog.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -22,112 +21,15 @@ import '../../../widget/event_accesibility_widget.dart';
 import '../../../widget/foodpreference_yesno_widget.dart';
 import '../../../widget/home_screen_widget.dart';
 import '../profile_setup_screens/community_profile.dart';
-import '../profile_setup_screens/host_profile_reviews.dart';
 
 class MyProfileScreen extends StatelessWidget {
   MyProfileScreen({super.key});
   final NavigationController controller = Get.find<NavigationController>();
+  final ProfileController profileController = Get.find<ProfileController>();
   GoogleAuthService authService = GoogleAuthService();
 
   @override
   Widget build(BuildContext context) {
-    final yumList =
-        controller
-            .controller
-            .getMyProfileModel
-            .value
-            ?.data
-            ?.preferences
-            ?.yumYuck
-            ?.yum
-            ?.map((e) => e.toLowerCase().trim())
-            .toList() ??
-            [];
-    final yuckList =
-        controller
-            .controller
-            .getMyProfileModel
-            .value
-            ?.data
-            ?.preferences
-            ?.yumYuck
-            ?.yuck
-            ?.map((e) => e.toLowerCase().trim())
-            .toList() ??
-            [];
-
-    // Filter the emoji list to only items present in API
-    final filteredItems =
-    controller.controller.yumYuckItems.where((item) {
-      String name =
-      item.replaceAll(RegExp(r'[^\w\s]'), '').trim().toLowerCase();
-      return yumList.contains(name) || yuckList.contains(name);
-    }).toList();
-    final List<String> favMoodFromApi =
-        controller
-            .controller
-            .getMyProfileModel
-            .value
-            ?.data
-            ?.preferences
-            ?.favMood
-            ?.map((e) => e.mood?.trim() ?? '')
-            .toList() ??
-            [];
-    final List<Map<String, String>> selectedCuisine =
-    controller.controller.foodOptions.where((item) {
-      String name = item['name']!.trim();
-      return favMoodFromApi.contains(name);
-    }).toList();
-    final seatingOptions =
-        controller
-            .controller
-            .getMyProfileModel
-            .value
-            ?.data
-            ?.preferences
-            ?.seatingRequirement
-            ?.options ??
-            [];
-    final assistanceOptions =
-        controller
-            .controller
-            .getMyProfileModel
-            .value
-            ?.data
-            ?.preferences
-            ?.extraAssistance
-            ?.options ??
-            [];
-    final quietArea =
-        controller
-            .controller
-            .getMyProfileModel
-            .value
-            ?.data
-            ?.preferences
-            ?.quietArea ??
-            false;
-    final List<String> eventAccesibilityList = [];
-
-    // Seating
-    for (var seat in seatingOptions) {
-      if (controller.controller.seatingMap.containsKey(seat)) {
-        eventAccesibilityList.add(controller.controller.seatingMap[seat]!);
-      }
-    }
-
-    // Extra Assistance
-    for (var assist in assistanceOptions) {
-      if (controller.controller.assistanceMap.containsKey(assist)) {
-        eventAccesibilityList.add(controller.controller.assistanceMap[assist]!);
-      }
-    }
-
-    // Quiet Area
-    if (quietArea) {
-      eventAccesibilityList.add("Quiet Area");
-    }
     return Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
@@ -204,569 +106,681 @@ class MyProfileScreen extends StatelessWidget {
             // Main Scrollable Area
             Obx((){
               final data = controller.controller.getMyProfileModel.value?.data;
+              final yumList =
+                  data?.preferences?.yumYuck?.yum
+                      ?.map((e) => e.toLowerCase().trim())
+                      .toList() ??
+                  [];
+              final yuckList =
+                  data?.preferences?.yumYuck?.yuck
+                      ?.map((e) => e.toLowerCase().trim())
+                      .toList() ??
+                  [];
+
+              // Filter the emoji list to only items present in API
+              final filteredItems =
+              controller.controller.yumYuckItems.where((item) {
+                String name =
+                item.replaceAll(RegExp(r'[^\w\s]'), '').trim().toLowerCase();
+                return yumList.contains(name) || yuckList.contains(name);
+              }).toList();
+              final List<String> favMoodFromApi =
+                  data?.preferences?.favMood
+                      ?.map((e) => e.mood?.trim() ?? '')
+                      .toList() ??
+                  [];
+              final List<Map<String, String>> selectedCuisine =
+              controller.controller.foodOptions.where((item) {
+                String name = item['name']!.trim();
+                return favMoodFromApi.contains(name);
+              }).toList();
+              final seatingOptions =
+                  data?.preferences?.seatingRequirement?.options ?? [];
+              final assistanceOptions =
+                  data?.preferences?.extraAssistance?.options ?? [];
+              final quietArea = data?.preferences?.quietArea ?? false;
+              final List<String> eventAccesibilityList = [];
+
+              // Seating
+              for (var seat in seatingOptions) {
+                if (controller.controller.seatingMap.containsKey(seat)) {
+                  eventAccesibilityList.add(controller.controller.seatingMap[seat]!);
+                }
+              }
+
+              // Extra Assistance
+              for (var assist in assistanceOptions) {
+                if (controller.controller.assistanceMap.containsKey(assist)) {
+                  eventAccesibilityList.add(controller.controller.assistanceMap[assist]!);
+                }
+              }
+
+              // Quiet Area
+              if (quietArea) {
+                eventAccesibilityList.add("Quiet Area");
+              }
               return Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30.sp),
                     topRight: Radius.circular(30.sp),
                   ),
-                  child: Container(
-                    color: backgroundColor,
-                    child: DefaultTabController(
-                      length: 1,
-                      child: Column(
-                        children: [
-                          // Profile Info
-                          Expanded(
-                            child: NestedScrollView(
-                              headerSliverBuilder:
-                                  (context, innerBoxIsScrolled) => [
-                                SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w,
-                                      vertical: 2.h,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-
-                                            ClipRRect(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                21.sp,
-                                              ),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  guestUpdateReceived(
-                                                    context,
-                                                  );
-                                                },
-                                                child: Container(
-                                                  height: 11.h,
-                                                  width: 11.h,
-                                                  color: Colors.grey.shade200,
-                                                  child:
-                                                  data?.profilePic != null
-                                                      ? CustomProfileWidget(
-
-                                                    imageUrl: data!.profilePic!.startsWith("https")
-                                                        ? data!.profilePic!
-                                                        :
-                                                    "${controller.controller.baseService.baseURL}${data?.profilePic ?? ""}",
-                                                    width: 80,
-                                                    height: 80,
-                                                    radius: 40,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                      : Container(
-                                                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                                height: 12.h,
-                                                width: 26.w,
+                  child: CustomRefreshIndicator(
+                    onRefresh: () async {
+                      await profileController.fetchMyProfile();
+                    },
+                    notificationPredicate: (notification) => true,
+                    builder: (BuildContext context, Widget child, IndicatorController indicator) {
+                      return AnimatedBuilder(
+                        animation: indicator,
+                        builder: (context, _) {
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              child,
+                              Positioned(
+                                top: 12,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: Opacity(
+                                    opacity: indicator.isIdle ? 0.0 : 1.0,
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.15),
+                                            blurRadius: 6,
+                                          ),
+                                        ],
+                                      ),
+                                      child: indicator.isLoading
+                                          ? SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2.5,
                                                 color: greenColor,
-                                                child: Image.asset(
-                                                  "assets/png/profile_image_large.png",
-                                                  fit: BoxFit.contain,
-                                                ),
                                               ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 4.w),
-                                            Expanded(
-                                              child: InkWell(
-                                                onTap: () {
-                                                  AllergenBarChart();
-                                                },
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment
-                                                      .start,
-                                                  children: [
-                                                    customText(
-                                                      text:
-                                                      data?.name ??
-                                                          "Username",
-                                                      fontSize: 20.sp,
-                                                      fontWeight:
-                                                      FontWeight.w600,
-                                                      fontFamily:
-                                                      "CormorantGaramond",
-                                                    ),
-                                                    // customText(
-                                                    //   text: "256 Friends",
-                                                    //   fontSize: 14.sp,
-                                                    //   fontWeight:
-                                                    //       FontWeight.w400,
-                                                    //   color: darkGreyColor,
-                                                    // ),
-                                                    SizedBox(height: 0.8.h),
-                                                    Row(
-                                                      children: [
-                                                        buttonWidget(
-                                                          "Edit Profile",
-                                                          whiteColor,
-                                                          colors: greenColor
-                                                              .withAlpha(140),
-                                                          height: 3.25.h,
-                                                          width: 27.w,
-                                                          fontsize: 14.sp,
-                                                          onTap: () {
-                                                            Get.toNamed("profileeditscreen",);
-                                                            controller.controller.isEdit.value = true;
-                                                            controller.hasCheckedProfile.value = false;
-                                                            print("IsEdit: ${controller.controller.isEdit.value}");
-                                                            // print("faaaahhhh: ${data}");
-                                                          },
-                                                        ),
-                                                        SizedBox(width: 2.w),
-                                                        Builder(
-                                                            builder: (buttonContext) {
-                                                              return buttonWidget(
-                                                                "Share Profile",
-                                                                whiteColor,
-                                                                colors: blueColor.withAlpha(140),
-                                                                height: 3.25.h,
-                                                                width: 27.w,
-                                                                fontsize: 14.sp,
-                                                                onTap: () async {
-                                                                  final prefs = await SharedPreferencesMethod.storage;
-                                                                  final userId = prefs.getString(LocalDBKeys.USERID);
-
-                                                                  final String url =
-                                                                      "https://yes-table-web.vercel.app/?userId=$userId";
-
-                                                                  final box = buttonContext.findRenderObject() as RenderBox?;
-                                                                  Share.share(
-                                                                    url,
-                                                                    subject: "Check out my profile",
-                                                                    sharePositionOrigin: box != null
-                                                                        ? box.localToGlobal(Offset.zero) & box.size
-                                                                        : null,
-                                                                  );
-                                                                },
-                                                              );
-                                                            }
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 2.h),
-                                        customText(
-                                          text:
-                                          data?.bio ??
-                                              "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
-                                                  "eget magna sapien. Faucibus nibh mauris mattis aliquam\n"
-                                                  "proin pellentesque sed done Nu lla sed cons memagnat.",
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: darkGreyColor,
-                                        ),
-                                        SizedBox(height: 1.h),
-                                        Row(
-                                          children: [
-                                            Image.asset(
-                                              "assets/png/icons/map_location_icon.png",
-                                              height: 2.h,
-                                              width: 2.h,
-                                              fit: BoxFit.contain,
-                                              errorBuilder:
-                                                  (
-                                                  context,
-                                                  error,
-                                                  stackTrace,
-                                                  ) => Icon(
-                                                Icons.location_on,
-                                                size: 2.h,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            SizedBox(width: 1.w),
-                                            customText(
-                                              text:
-                                              data?.location ??
-                                                  "New York",
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: blackColor,
-                                              txtDecoration:
-                                              TextDecoration.underline,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Colors.grey.shade300,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                    ),
-                                    child: TabBar(
-                                      isScrollable: true,
-                                      padding: EdgeInsets.zero,
-                                      indicatorColor: blackColor,
-                                      labelColor: blackColor,
-                                      unselectedLabelColor: Colors.grey,
-                                      labelStyle: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      labelPadding: EdgeInsets.zero,
-                                      tabs: [
-                                        Tab(text: "Preference"),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              body: TabBarView(
-                                children: [
-                                  SingleChildScrollView(
-                                    padding: EdgeInsets.all(5.w),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        customText(
-                                          text: "Dietary Priorities",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackColor,
-                                        ),
-                                        SizedBox(height: 1.h),
-                                        customText(
-                                          text: "Allergies:",
-                                          fontSize: 14.sp,
-                                          color: blackColor,
-                                        ),
-                                        SizedBox(height: 0.5.h),
-
-                                        Wrap(
-                                          spacing: 5,
-                                          runSpacing: 1,
-                                          children: List.generate(
-                                            controller
-                                                .controller
-                                                .allergens
-                                                .length,
-                                                (index) {
-                                              const keys = ["peanut", "treeNuts", "sesame", "gluten", "eggs", "soy", "fish", "shellFish", "dairy"];
-                                              final key = keys.length > index ? keys[index] : '';
-                                              final rawValue = controller.controller.allergensMap.isNotEmpty ? (controller.controller.allergensMap[key] ?? '') : '';
-
-                                              // Use the new function to get simplified severity
-                                              final severity = controller
-                                                  .controller
-                                                  .getAllergySeverity(
-                                                rawValue,
-                                              );
-
-                                              return foodPreferencesOne(
-                                                index + 15,
-                                                "${controller.controller.allergens[index]['title']} - $severity",
-                                                imgpath:
-                                                controller
-                                                    .controller
-                                                    .allergens[index]['path'],
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(height: 1.h),
-                                        customText(
-                                          text: "Diets:",
-                                          fontSize: 14.sp,
-                                          color: blackColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        SizedBox(height: 0.5.h),
-                                        Wrap(
-                                          spacing: 5,
-                                          runSpacing: 1,
-                                          children: List.generate(
-                                            controller
-                                                .controller
-                                                .selectedDiet
-                                                .length,
-                                                (index) {
-                                              return foodPreferencesOne(
-                                                index + 24,
-                                                controller
-                                                    .controller
-                                                    .selectedDiet[index]['name']!,
-                                                imgpath:
-                                                controller
-                                                    .controller
-                                                    .selectedDiet[index]['imgPath'],
-                                              );
-                                            },
-                                          ),
-                                        ),
-
-                                        SizedBox(height: 2.h),
-                                        customText(
-                                          text: "Yuck Or Yum?",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackColor,
-                                          fontFamily: 'CormorantGaramond',
-                                        ),
-                                        SizedBox(height: 0.7.h),
-                                        ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          shrinkWrap: true,
-                                          physics:
-                                          NeverScrollableScrollPhysics(),
-                                          itemCount: filteredItems.length,
-                                          itemBuilder: (context, index) {
-                                            String item =
-                                            filteredItems[index];
-                                            String name =
-                                            item
-                                                .replaceAll(
-                                              RegExp(r'[^\w\s]'),
-                                              '',
                                             )
-                                                .trim()
-                                                .toLowerCase();
-                                            bool isSelected;
-                                            Color color;
-
-                                            if (yumList.contains(name)) {
-                                              isSelected = true;
-                                              color = greenColor;
-                                            } else if (yuckList.contains(
-                                              name,
-                                            )) {
-                                              isSelected = false;
-                                              color = redColor;
-                                            } else {
-                                              // This should not happen because we filtered already
-                                              return SizedBox.shrink();
-                                            }
-
-                                            return yuckOrYumList(
-                                              title: item,
-                                              color: color,
-                                              isSelected: isSelected,
-                                            );
-                                          },
-                                        ),
-                                        SizedBox(height: 2.h),
-                                        customText(
-                                          text: "Food Preferences",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackColor,
-                                        ),
-                                        SizedBox(height: 1.h),
-                                        customText(
-                                          text: "Liked Cuisines:",
-                                          fontSize: 14.sp,
-                                          color: blackColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        SizedBox(height: 0.5.h),
-                                        Wrap(
-                                          spacing: 5,
-                                          runSpacing: 1,
-                                          children: List.generate(
-                                            selectedCuisine.length,
-                                                (index) => foodPreferencesOne(
-                                              index + 28,
-                                              selectedCuisine[index]['name']!,
-                                              imgpath:
-                                              selectedCuisine[index]['imgPath'],
+                                          : Icon(
+                                              Icons.arrow_downward,
+                                              color: greenColor,
+                                              size: 20,
                                             ),
-                                          ),
-                                        ),
-                                        // SizedBox(height: 1.h),
-                                        // customText(
-                                        //   text: "Disliked Ingredients",
-                                        //   fontSize: 14.sp,
-                                        //   color: blackColor,
-                                        //   fontWeight: FontWeight.w500,
-                                        // ),
-                                        // SizedBox(height: 0.5.h),
-                                        // Wrap(
-                                        //   spacing: 5,
-                                        //   runSpacing: 1,
-                                        //   children: List.generate(
-                                        //     dislikedIngredient.length,
-                                        //     (index) => foodPreferencesOne(
-                                        //       index + 35,
-                                        //       dislikedIngredient[index]["name"]!,
-                                        //       imgpath:
-                                        //           dislikedIngredient[index]["imgPath"],
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        controller.isUser.value
-                                            ? Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
-                                          children: [
-                                            SizedBox(height: 2.h),
-                                            customText(
-                                              text:
-                                              "Accessibility Needs",
-                                              fontSize: 15.sp,
-                                              color: blackColor,
-                                              fontWeight:
-                                              FontWeight.w600,
-                                            ),
-                                            Wrap(
-                                              spacing: 5,
-                                              runSpacing: 1,
-                                              children: List.generate(
-                                                eventAccesibilityList
-                                                    .length,
-                                                    (
-                                                    index,
-                                                    ) => eventAccesibillityWidget(
-                                                  eventAccesibilityList[index],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                            : SizedBox.shrink(),
-                                      ],
                                     ),
                                   ),
-                                  // Center(
-                                  //   child: SingleChildScrollView(
-                                  //     child:
-                                  //         controller.isUser.value
-                                  //             ? Column(
-                                  //               children: [
-                                  //                 Padding(
-                                  //                   padding:
-                                  //                       EdgeInsets.symmetric(
-                                  //                         horizontal: 5.w,
-                                  //                         vertical: 1.h,
-                                  //                       ),
-                                  //                   child: buildPostCard(
-                                  //                     profileImage:
-                                  //                         "assets/png/chat_images/user5.png",
-                                  //                     userName:
-                                  //                         "Sarah Scarnio",
-                                  //                     postTime:
-                                  //                         "2hrs ago",
-                                  //                     postText:
-                                  //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                  //                     postImage:
-                                  //                         "assets/png/chat_images/group_profile_pic.png",
-                                  //                   ),
-                                  //                 ),
-                                  //                 Divider(),
-                                  //                 Padding(
-                                  //                   padding:
-                                  //                       EdgeInsets.symmetric(
-                                  //                         horizontal: 5.w,
-                                  //                       ),
-                                  //                   child: buildPostCard(
-                                  //                     profileImage:
-                                  //                         'assets/png/chat_images/user5.png',
-                                  //                     userName:
-                                  //                         'Sarah Scarnio',
-                                  //                     postTime: '3h ago',
-                                  //                     postText:
-                                  //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                  //                     likesCount:
-                                  //                         '1.4k Likes',
-                                  //                     showRepliesAndAvatar:
-                                  //                         false, // 👈 Only likes shown
-                                  //                   ),
-                                  //                 ),
-                                  //                 Divider(),
-                                  //                 Padding(
-                                  //                   padding:
-                                  //                       EdgeInsets.symmetric(
-                                  //                         horizontal: 5.w,
-                                  //                       ),
-                                  //                   child: buildPostCard(
-                                  //                     profileImage:
-                                  //                         'assets/png/chat_images/user5.png',
-                                  //                     userName:
-                                  //                         'Sarah Scarnio',
-                                  //                     postTime: '3h ago',
-                                  //                     postText:
-                                  //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                  //                     likesCount:
-                                  //                         '1.4k Likes',
-                                  //                     showRepliesAndAvatar:
-                                  //                         false, // 👈 Only likes shown
-                                  //                   ),
-                                  //                 ),
-                                  //                 Divider(),
-                                  //                 Padding(
-                                  //                   padding:
-                                  //                       EdgeInsets.symmetric(
-                                  //                         horizontal: 5.w,
-                                  //                       ),
-                                  //                   child: buildPostCard(
-                                  //                     profileImage:
-                                  //                         'assets/png/chat_images/user5.png',
-                                  //                     userName:
-                                  //                         'Sarah Scarnio',
-                                  //                     postTime: '3h ago',
-                                  //                     postText:
-                                  //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
-                                  //                     likesCount:
-                                  //                         '1.4k Likes',
-                                  //                     showRepliesAndAvatar:
-                                  //                         false, // 👈 Only likes shown
-                                  //                   ),
-                                  //                 ),
-                                  //               ],
-                                  //             )
-                                  //             : Column(
-                                  //               children: [
-                                  //                 Padding(
-                                  //                   padding:
-                                  //                       EdgeInsets.symmetric(
-                                  //                         horizontal: 5.w,
-                                  //                         vertical: 1.h,
-                                  //                       ),
-                                  //                   child: buildPostCard(
-                                  //                     profileImage:
-                                  //                         "assets/png/chat_images/user5.png",
-                                  //                     userName:
-                                  //                         "Sarah Scarnio",
-                                  //                     postTime:
-                                  //                         "2hrs ago",
-                                  //                     postText:
-                                  //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
-                                  //                     postImage:
-                                  //                         "assets/png/chat_images/group_profile_pic.png",
-                                  //                   ),
-                                  //                 ),
-                                  //               ],
-                                  //             ),
-                                  //   ),
-                                  // ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+
+
+                    child: Container(
+                      color: backgroundColor,
+                      child: DefaultTabController(
+                        length: 1,
+                        child: Column(
+                          children: [
+                            // Profile Info
+                            Expanded(
+                              child: NestedScrollView(
+                                headerSliverBuilder:
+                                    (context, innerBoxIsScrolled) => [
+                                  SliverToBoxAdapter(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w,
+                                        vertical: 2.h,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                    
+                                              ClipRRect(
+                                                
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                  21.sp,
+                                                ),
+                                                child: InkWell(
+                                                  // onTap: () {
+                                                  //   guestUpdateReceived(
+                                                  //     context,
+                                                  //   );
+                                                  // },
+                                                  child: Container(
+                                                    height: 11.h,
+                                                    width: 11.h,
+                                                    color: Colors.grey.shade200,
+                                                    child:
+                                                    data?.profilePic != null
+                                                        ? CustomProfileWidget(
+                    
+                                                      imageUrl: data!.profilePic!.startsWith("https")
+                                                          ? data!.profilePic!
+                                                          :
+                                                      "${controller.controller.baseService.baseURL}${data?.profilePic ?? ""}",
+                                                      width: 80,
+                                                      height: 80,
+                                                      radius: 40,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                        : Container(
+                                                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                  height: 12.h,
+                                                  width: 26.w,
+                                                  color: greenColor,
+                                                  child: Image.asset(
+                                                    "assets/png/profile_image_large.png",
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 4.w),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    // AllergenBarChart();
+                                                  },
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      customText(
+                                                        text:
+                                                        data?.name ??
+                                                            "Username",
+                                                        fontSize: 20.sp,
+                                                        fontWeight:
+                                                        FontWeight.w600,
+                                                        fontFamily:
+                                                        "CormorantGaramond",
+                                                      ),
+                                                      // customText(
+                                                      //   text: "256 Friends",
+                                                      //   fontSize: 14.sp,
+                                                      //   fontWeight:
+                                                      //       FontWeight.w400,
+                                                      //   color: darkGreyColor,
+                                                      // ),
+                                                      SizedBox(height: 0.8.h),
+                                                      Row(
+                                                        children: [
+                                                          buttonWidget(
+                                                            "Edit Profile",
+                                                            whiteColor,
+                                                            colors: greenColor
+                                                                .withAlpha(140),
+                                                            height: 3.25.h,
+                                                            width: 27.w,
+                                                            fontsize: 14.sp,
+                                                            onTap: () {
+                                                              Get.toNamed("profileeditscreen",);
+                                                              controller.controller.isEdit.value = true;
+                                                              controller.hasCheckedProfile.value = false;
+                                                              print("IsEdit: ${controller.controller.isEdit.value}");
+                                                              // print("faaaahhhh: ${data}");
+                                                            },
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                          Builder(
+                                                              builder: (buttonContext) {
+                                                                return buttonWidget(
+                                                                  "Share Profile",
+                                                                  whiteColor,
+                                                                  colors: blueColor.withAlpha(140),
+                                                                  height: 3.25.h,
+                                                                  width: 27.w,
+                                                                  fontsize: 14.sp,
+                                                                  onTap: () async {
+                                                                    final prefs = await SharedPreferencesMethod.storage;
+                                                                    final userId = prefs.getString(LocalDBKeys.USERID);
+                    
+                                                                    final String url =
+                                                                        "https://yes-table-web.vercel.app/?userId=$userId";
+                    
+                                                                    final box = buttonContext.findRenderObject() as RenderBox?;
+                                                                    Share.share(
+                                                                      url,
+                                                                      subject: "Check out my profile",
+                                                                      sharePositionOrigin: box != null
+                                                                          ? box.localToGlobal(Offset.zero) & box.size
+                                                                          : null,
+                                                                    );
+                                                                  },
+                                                                );
+                                                              }
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 2.h),
+                                          customText(
+                                            text:
+                                            data?.bio ??
+                                                "Lorem ipsum dolor sit amet consectetur. Viverra tellus\n"
+                                                    "eget magna sapien. Faucibus nibh mauris mattis aliquam\n"
+                                                    "proin pellentesque sed done Nu lla sed cons memagnat.",
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: darkGreyColor,
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/png/icons/map_location_icon.png",
+                                                height: 2.h,
+                                                width: 2.h,
+                                                fit: BoxFit.contain,
+                                                errorBuilder:
+                                                    (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                    ) => Icon(
+                                                  Icons.location_on,
+                                                  size: 2.h,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              SizedBox(width: 1.w),
+                                              customText(
+                                                text:
+                                                data?.location ??
+                                                    "New York",
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: blackColor,
+                                                txtDecoration:
+                                                TextDecoration.underline,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SliverToBoxAdapter(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
+                                      child: TabBar(
+                                        isScrollable: true,
+                                        padding: EdgeInsets.zero,
+                                        indicatorColor: blackColor,
+                                        labelColor: blackColor,
+                                        unselectedLabelColor: Colors.grey,
+                                        labelStyle: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        labelPadding: EdgeInsets.zero,
+                                        tabs: [
+                                          Tab(text: "Preference"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ],
+                                body: TabBarView(
+                                  children: [
+                                    SingleChildScrollView(
+                                      padding: EdgeInsets.all(5.w),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          customText(
+                                            text: "Dietary Priorities",
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackColor,
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          customText(
+                                            text: "Allergies:",
+                                            fontSize: 14.sp,
+                                            color: blackColor,
+                                          ),
+                                          SizedBox(height: 0.5.h),
+                    
+                                          Wrap(
+                                            spacing: 5,
+                                            runSpacing: 1,
+                                            children: List.generate(
+                                              controller
+                                                  .controller
+                                                  .allergens
+                                                  .length,
+                                                  (index) {
+                                                const keys = ["peanut", "treeNuts", "sesame", "gluten", "eggs", "soy", "fish", "shellFish", "dairy"];
+                                                final key = keys.length > index ? keys[index] : '';
+                                                final rawValue = controller.controller.allergensMap.isNotEmpty ? (controller.controller.allergensMap[key] ?? '') : '';
+                    
+                                                // Use the new function to get simplified severity
+                                                final severity = controller
+                                                    .controller
+                                                    .getAllergySeverity(
+                                                  rawValue,
+                                                );
+                    
+                                                return foodPreferencesOne(
+                                                  index + 15,
+                                                  "${controller.controller.allergens[index]['title']} - $severity",
+                                                  imgpath:
+                                                  controller
+                                                      .controller
+                                                      .allergens[index]['path'],
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          customText(
+                                            text: "Diets:",
+                                            fontSize: 14.sp,
+                                            color: blackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          SizedBox(height: 0.5.h),
+                                          Wrap(
+                                            spacing: 5,
+                                            runSpacing: 1,
+                                            children: List.generate(
+                                              controller
+                                                  .controller
+                                                  .selectedDiet
+                                                  .length,
+                                                  (index) {
+                                                return foodPreferencesOne(
+                                                  index + 24,
+                                                  controller
+                                                      .controller
+                                                      .selectedDiet[index]['name']!,
+                                                  imgpath:
+                                                  controller
+                                                      .controller
+                                                      .selectedDiet[index]['imgPath'],
+                                                );
+                                              },
+                                            ),
+                                          ),
+                    
+                                          SizedBox(height: 2.h),
+                                          customText(
+                                            text: "Yuck Or Yum?",
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackColor,
+                                            fontFamily: 'CormorantGaramond',
+                                          ),
+                                          SizedBox(height: 0.7.h),
+                                          ListView.builder(
+                                            padding: EdgeInsets.zero,
+                                            shrinkWrap: true,
+                                            physics:
+                                            NeverScrollableScrollPhysics(),
+                                            itemCount: filteredItems.length,
+                                            itemBuilder: (context, index) {
+                                              String item =
+                                              filteredItems[index];
+                                              String name =
+                                              item
+                                                  .replaceAll(
+                                                RegExp(r'[^\w\s]'),
+                                                '',
+                                              )
+                                                  .trim()
+                                                  .toLowerCase();
+                                              bool isSelected;
+                                              Color color;
+                    
+                                              if (yumList.contains(name)) {
+                                                isSelected = true;
+                                                color = greenColor;
+                                              } else if (yuckList.contains(
+                                                name,
+                                              )) {
+                                                isSelected = false;
+                                                color = redColor;
+                                              } else {
+                                                // This should not happen because we filtered already
+                                                return SizedBox.shrink();
+                                              }
+                    
+                                              return yuckOrYumList(
+                                                title: item,
+                                                color: color,
+                                                isSelected: isSelected,
+                                              );
+                                            },
+                                          ),
+                                          SizedBox(height: 2.h),
+                                          customText(
+                                            text: "Food Preferences",
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackColor,
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          customText(
+                                            text: "Liked Cuisines:",
+                                            fontSize: 14.sp,
+                                            color: blackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          SizedBox(height: 0.5.h),
+                                          Wrap(
+                                            spacing: 5,
+                                            runSpacing: 1,
+                                            children: List.generate(
+                                              selectedCuisine.length,
+                                                  (index) => foodPreferencesOne(
+                                                index + 28,
+                                                selectedCuisine[index]['name']!,
+                                                imgpath:
+                                                selectedCuisine[index]['imgPath'],
+                                              ),
+                                            ),
+                                          ),
+                                          // SizedBox(height: 1.h),
+                                          // customText(
+                                          //   text: "Disliked Ingredients",
+                                          //   fontSize: 14.sp,
+                                          //   color: blackColor,
+                                          //   fontWeight: FontWeight.w500,
+                                          // ),
+                                          // SizedBox(height: 0.5.h),
+                                          // Wrap(
+                                          //   spacing: 5,
+                                          //   runSpacing: 1,
+                                          //   children: List.generate(
+                                          //     dislikedIngredient.length,
+                                          //     (index) => foodPreferencesOne(
+                                          //       index + 35,
+                                          //       dislikedIngredient[index]["name"]!,
+                                          //       imgpath:
+                                          //           dislikedIngredient[index]["imgPath"],
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                          controller.isUser.value
+                                              ? Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              SizedBox(height: 2.h),
+                                              customText(
+                                                text:
+                                                "Accessibility Needs",
+                                                fontSize: 15.sp,
+                                                color: blackColor,
+                                                fontWeight:
+                                                FontWeight.w600,
+                                              ),
+                                              Wrap(
+                                                spacing: 5,
+                                                runSpacing: 1,
+                                                children: List.generate(
+                                                  eventAccesibilityList
+                                                      .length,
+                                                      (
+                                                      index,
+                                                      ) => eventAccesibillityWidget(
+                                                    eventAccesibilityList[index],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                              : SizedBox.shrink(),
+                                        ],
+                                      ),
+                                    ),
+                                    // Center(
+                                    //   child: SingleChildScrollView(
+                                    //     child:
+                                    //         controller.isUser.value
+                                    //             ? Column(
+                                    //               children: [
+                                    //                 Padding(
+                                    //                   padding:
+                                    //                       EdgeInsets.symmetric(
+                                    //                         horizontal: 5.w,
+                                    //                         vertical: 1.h,
+                                    //                       ),
+                                    //                   child: buildPostCard(
+                                    //                     profileImage:
+                                    //                         "assets/png/chat_images/user5.png",
+                                    //                     userName:
+                                    //                         "Sarah Scarnio",
+                                    //                     postTime:
+                                    //                         "2hrs ago",
+                                    //                     postText:
+                                    //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                    //                     postImage:
+                                    //                         "assets/png/chat_images/group_profile_pic.png",
+                                    //                   ),
+                                    //                 ),
+                                    //                 Divider(),
+                                    //                 Padding(
+                                    //                   padding:
+                                    //                       EdgeInsets.symmetric(
+                                    //                         horizontal: 5.w,
+                                    //                       ),
+                                    //                   child: buildPostCard(
+                                    //                     profileImage:
+                                    //                         'assets/png/chat_images/user5.png',
+                                    //                     userName:
+                                    //                         'Sarah Scarnio',
+                                    //                     postTime: '3h ago',
+                                    //                     postText:
+                                    //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                    //                     likesCount:
+                                    //                         '1.4k Likes',
+                                    //                     showRepliesAndAvatar:
+                                    //                         false, // 👈 Only likes shown
+                                    //                   ),
+                                    //                 ),
+                                    //                 Divider(),
+                                    //                 Padding(
+                                    //                   padding:
+                                    //                       EdgeInsets.symmetric(
+                                    //                         horizontal: 5.w,
+                                    //                       ),
+                                    //                   child: buildPostCard(
+                                    //                     profileImage:
+                                    //                         'assets/png/chat_images/user5.png',
+                                    //                     userName:
+                                    //                         'Sarah Scarnio',
+                                    //                     postTime: '3h ago',
+                                    //                     postText:
+                                    //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                    //                     likesCount:
+                                    //                         '1.4k Likes',
+                                    //                     showRepliesAndAvatar:
+                                    //                         false, // 👈 Only likes shown
+                                    //                   ),
+                                    //                 ),
+                                    //                 Divider(),
+                                    //                 Padding(
+                                    //                   padding:
+                                    //                       EdgeInsets.symmetric(
+                                    //                         horizontal: 5.w,
+                                    //                       ),
+                                    //                   child: buildPostCard(
+                                    //                     profileImage:
+                                    //                         'assets/png/chat_images/user5.png',
+                                    //                     userName:
+                                    //                         'Sarah Scarnio',
+                                    //                     postTime: '3h ago',
+                                    //                     postText:
+                                    //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien.",
+                                    //                     likesCount:
+                                    //                         '1.4k Likes',
+                                    //                     showRepliesAndAvatar:
+                                    //                         false, // 👈 Only likes shown
+                                    //                   ),
+                                    //                 ),
+                                    //               ],
+                                    //             )
+                                    //             : Column(
+                                    //               children: [
+                                    //                 Padding(
+                                    //                   padding:
+                                    //                       EdgeInsets.symmetric(
+                                    //                         horizontal: 5.w,
+                                    //                         vertical: 1.h,
+                                    //                       ),
+                                    //                   child: buildPostCard(
+                                    //                     profileImage:
+                                    //                         "assets/png/chat_images/user5.png",
+                                    //                     userName:
+                                    //                         "Sarah Scarnio",
+                                    //                     postTime:
+                                    //                         "2hrs ago",
+                                    //                     postText:
+                                    //                         "Lorem ipsum dolor sit amet consectetur. Viverra tellus eget magna sapien. Faucibus nibh mauris mattis aliquam proin pellentesque sed done Nulla sed cons memagnat consectetur. Viv emauris rra tellus eget magna sapieneget Faucibusequat scelerisque.",
+                                    //                     postImage:
+                                    //                         "assets/png/chat_images/group_profile_pic.png",
+                                    //                   ),
+                                    //                 ),
+                                    //               ],
+                                    //             ),
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

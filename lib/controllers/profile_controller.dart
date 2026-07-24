@@ -785,7 +785,7 @@ class ProfileController extends GetxController {
   ];
   final List<Map<String, dynamic>> allergens = [
     {
-      "progress": 0.3.obs,
+      "progress": 0.0.obs,
       "title": "🥜 Peanuts",
       "desc": "Severe Allergy (Anaphylaxis)",
       "circleImg": "🥜",
@@ -815,21 +815,21 @@ class ProfileController extends GetxController {
       "isEmoji" : false
     },
     {
-      "progress": 0.8.obs,
+      "progress": 0.0.obs,
       "title": "🥚 Eggs",
       "desc": "Avoid for Beliefs or Culture",
       "circleImg": "🥚",
       "isEmoji" : false
     },
     {
-      "progress": 0.7.obs,
+      "progress": 0.0.obs,
       "title": "🫘 Soy",
       "desc": "Mild or Digestive Reaction",
       "circleImg": "🫘",
       "isEmoji" : false
     },
     {
-      "progress": 0.6.obs,
+      "progress": 0.0.obs,
       "title": " Fish",
       "desc": "Severe Allergy (Anaphylaxis)",
       "circleImg": "📷",
@@ -861,6 +861,9 @@ class ProfileController extends GetxController {
         ?.toMap()
         .map((key, value) => MapEntry(key, value ?? '')) ?? {};
   }
+
+
+
 
   // Function to convert API value to simplified severity
   String getAllergySeverity(String apiValue) {
@@ -1440,6 +1443,7 @@ class ProfileController extends GetxController {
           Future.delayed(Duration(seconds: 3), () {
             if(isPreferences.value == true) { // check again
               fetchMyProfile(); // Refresh to update profileCompleted status
+              clearPreferences();
               Get.toNamed('profileeditscreen');
               isPreferences.value = false;
             }

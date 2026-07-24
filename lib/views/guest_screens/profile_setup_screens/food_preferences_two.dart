@@ -84,7 +84,7 @@ class FoodPreferencesTwo extends StatelessWidget {
 
                   SizedBox(height: 1.h),
                   customText(
-                    text: "We're Here For You!",
+                    text: " We're Here For You!",
                     fontSize: 22.5.sp,
                     fontFamily: "CormorantGaramond",
                     fontWeight: FontWeight.w600,

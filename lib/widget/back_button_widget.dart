@@ -3,14 +3,15 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 
-Widget backButton() {
+Widget backButton({VoidCallback? onTap}) {
   return InkWell(
-    onTap: (){
-      print("Back pressed");
-      Get.back();
-    },
+    onTap: onTap ??
+            () {
+          print("Back pressed");
+          Get.back();
+        },
     child: Container(
-      padding: EdgeInsets.all(1.5.h), // instead of fixed height/width
+      padding: EdgeInsets.all(1.5.h),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: greenColor,
@@ -23,4 +24,3 @@ Widget backButton() {
     ),
   );
 }
-

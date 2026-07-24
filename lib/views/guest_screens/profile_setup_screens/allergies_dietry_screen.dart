@@ -36,7 +36,10 @@ class AllergiesDietryScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 loadingStepIndicator("2/6", 0.5),
-                backButton(),
+                backButton(onTap: (){
+                  Get.back();
+                  controller.clearPreferences();
+                }),
                 SizedBox(height: 2.h),
                 Obx(() =>
                   controller.isPreferences.value == true ?
