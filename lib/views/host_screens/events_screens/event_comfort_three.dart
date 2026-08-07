@@ -21,12 +21,21 @@ class EventComfortThree extends StatelessWidget {
   Widget build(BuildContext context) {
     final eventId = Get.arguments;
 
-    // Pre-fill mayGuestsContact (index 14) in edit mode.
+    // Pre-fill mayGuestsContact (index 14) and displayMenu in edit mode.
+    // Only pre-fill from the fetched data if the user hasn't already made a
+    // choice on this screen this session — otherwise re-visiting this route
+    // (e.g. tap Yes -> go back -> come forward again) re-runs this callback
+    // and stomps the user's tap back to the value that was on the server
+    // *before* this edit session started, since getEventByIdModel is fetched
+    // once at the start of the edit flow and isn't refreshed mid-flow.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final data = eventController.getEventByIdModel?.value?.data;
       if (eventId != null) {
-        eventController.profileController.selectedOptions[14] =
-            "${data?.displayMenu}";
+        if (data?.guestAware?.guestContact != null) {
+          eventController.profileController.selectedOptions[14] =
+              data!.guestAware!.guestContact == true ? "yes": "no";
+        }
+        controller.isSelected.value = data?.displayMenu ?? false;
       }
     });
 

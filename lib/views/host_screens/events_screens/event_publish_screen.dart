@@ -1,6 +1,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -245,10 +246,10 @@ class EventPublishScreen extends StatelessWidget {
                           (data?.host?.profilePic == null ||
                                   data!.host!.profilePic!.isEmpty)
                               ? Image.asset(
-                                "assets/png/chat_images/user1.png",
-                                height: 6.h,
-                                width: 14.w,
-                              )
+                        "assets/png/bottom_bar_icons/profile_icon.png",
+                        height: 6.h,
+                        width: 8.w,
+                      )
                               : ClipRRect(
                             borderRadius: BorderRadius.circular(12.sp),
                             child: Container(
@@ -267,8 +268,9 @@ class EventPublishScreen extends StatelessWidget {
                                   ),
                                 ),
                                 errorWidget: (context, url, error) => Image.asset(
-                                  "assets/png/chat_images/user1.png",
-                                  fit: BoxFit.cover,
+                                  "assets/png/bottom_bar_icons/profile_icon.png",
+                                  height: 6.h,
+                                  width: 8.w,
                                 ),
                               ),
                             ),
@@ -344,36 +346,63 @@ class EventPublishScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 1.h),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.5.w,
+                    ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          "assets/png/icons/map_location_icon.png",
-                          height: 2.h,
-                          width: 4.w,
+                        Icon(
+                          Icons.link,
+                          size: 2.5.h,
                         ),
+
                         SizedBox(width: 3.w),
+
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              customText(
-                                text: "IN HOUSES",
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w500,
-                                color: blackColor,
-                                height: 0.1.h,
+                          child: customText(
+                            text: "https://yestable-107c6.web.app/event/$eventId",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: darkGreyColor,
+                            overFlow: TextOverflow.ellipsis,
+                          ),
+                        ),
+
+                        SizedBox(width: 2.w),
+
+                        InkWell(
+                          onTap: () async {
+                            final eventLink =
+                                "https://yestable-107c6.web.app/event/$eventId";
+
+                            await Clipboard.setData(
+                              ClipboardData(text: eventLink),
+                            );
+
+                            Get.snackbar(
+                              "Copied",
+                              "Event link copied to clipboard",
+                              snackPosition: SnackPosition.BOTTOM,
+                              duration: const Duration(seconds: 2),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              icon: const Icon(
+                                Icons.check_circle,
+                                color: Colors.white,
                               ),
-                              SizedBox(height: 0.5.h),
-                              customText(
-                                text: data?.host?.location ?? "New York, USA",
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: darkGreyColor,
-                              ),
-                            ],
+                              margin: const EdgeInsets.all(12),
+                              borderRadius: 10,
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Padding(
+                            padding: EdgeInsets.all(1.w),
+                            child: Icon(
+                              Icons.copy_rounded,
+                              size: 2.h,
+                              color: darkGreyColor,
+                            ),
                           ),
                         ),
                       ],
@@ -522,7 +551,13 @@ class EventPublishScreen extends StatelessWidget {
                         //   borderRadius: BorderRadius.circular(10.sp),
                         // ),
                         SizedBox(height: 1.5.h),
-                        controller.isUser.value
+                        // isHost comes from the profile API's iAmHosting
+                        // (persisted to ISHOST on fetch), not the app-mode
+                        // toggle picked at role-select — that toggle doesn't
+                        // reflect whether this profile actually has hosting
+                        // enabled, so the menu tabs could stay hidden even
+                        // when they should show.
+                        !isHost
                             ? Wrap(
                               spacing: 4,
                               runSpacing: 0,
@@ -700,6 +735,7 @@ class EventPublishScreen extends StatelessWidget {
                                 // eventPostedDialog(context);
                               },
                             ),
+
                             SizedBox(height: 1.h),
                             buttonWidget(
                               "Back",

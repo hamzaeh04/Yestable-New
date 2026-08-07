@@ -6,6 +6,7 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/event_controller.dart';
+import 'package:yestable/utils/utility.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/customTextField.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -318,6 +319,15 @@ Future<void> menuFormDialog(BuildContext context) {
                         SizedBox(width: 3.w),
                         Expanded(
                           child: buttonWidget("Save", whiteColor, colors: greenColor, height: 4.h, fontsize: 15.5.sp, onTap: (){
+                            if (eventController.menuTitle.text.trim().isEmpty) {
+                              Utils.showToast("Please enter a title", true);
+                              return;
+                            }
+                            if (eventController.selectedType.value == null ||
+                                eventController.selectedType.value!.isEmpty) {
+                              Utils.showToast("Please select a menu type", true);
+                              return;
+                            }
 
                             eventController.uploadMenu();
                           })

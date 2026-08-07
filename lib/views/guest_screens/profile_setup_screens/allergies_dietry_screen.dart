@@ -16,7 +16,12 @@ import '../../../widget/loading_step_indicator.dart';
 class AllergiesDietryScreen extends StatelessWidget {
   AllergiesDietryScreen({super.key}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.isEdit.value == true) {
+      // Don't prefill from the guest's OWN saved profile when this screen
+      // is being used to set a MEMBER's preferences (isPreferences==true) —
+      // isEdit only means "editing a saved profile", it doesn't distinguish
+      // whose profile, so without this check a member's form would open
+      // showing the guest's own previously-saved allergies.
+      if (controller.isEdit.value == true && controller.isPreferences.value != true) {
         controller.populateAllergiesDietary();
       }
     });

@@ -90,27 +90,130 @@
 
 
 <!DOCTYPE html>
+
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Redirecting...</title>
-</head>
-<body>
-<script>
-  const path = window.location.pathname;
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open Yestable</title>
 
-  // extract event id from URL
-  const parts = path.split('/');
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f7f7f7;
+    }
+
+    .container {
+      padding: 30px;
+      max-width: 400px;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    button,
+    a {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button {
+      border: none;
+      background: #000;
+      color: white;
+    }
+
+    a {
+      border: 1px solid #ccc;
+      color: #333;
+      background: white;
+    }
+  </style>
+
+</head>
+
+<body>
+<div class="container">
+  <h2>Open Yestable</h2>
+
+  ```
+  <p>
+    Open this event in the Yestable app.
+  </p>
+
+  <button id="openApp">
+    Open Yestable App
+  </button>
+
+  <a
+    id="storeLink"
+    href="#"
+  >
+    Download Yestable
+  </a>
+  ```
+
+</div>
+
+<script>
+  // Get the event ID from the URL
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
   const eventId = parts[parts.length - 1];
 
-  // try open app
-  window.location.href = `yestable://event/${eventId}`;
+  // Detect iPhone/iPad
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (
+      navigator.platform === "MacIntel" &&
+      navigator.maxTouchPoints > 1
+    );
 
-  // fallback after 1 sec
-  setTimeout(() => {
-    window.location.href = "https://play.google.com/store/apps/details?id=com.example.yestable";
-<!--    window.location.href = "https://play.google.com/store/apps/details?id=com.your.app";-->
-  }, 1000);
+  // Store URLs
+  const appStoreUrl =
+    "https://apps.apple.com/app/id6751505718";
+
+  const playStoreUrl =
+    "https://play.google.com/store/apps/details?id=com.example.yestable";
+
+  // Set the correct store link
+  const storeLink =
+    document.getElementById("storeLink");
+
+  storeLink.href =
+    isIOS
+      ? appStoreUrl
+      : playStoreUrl;
+
+  // Open the app only when the user clicks the button
+  document
+    .getElementById("openApp")
+    .addEventListener("click", () => {
+      window.location.href =
+        `yestable://event/${eventId}`;
+    });
 </script>
+
 </body>
 </html>
+
+

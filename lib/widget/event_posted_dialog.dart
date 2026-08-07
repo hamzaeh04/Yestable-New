@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/utils/utility.dart';
 import 'package:yestable/views/guest_screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/showShareDialogBox_widget.dart';
 
 import '../constants/constants_widgets.dart';
 
-void eventPostedDialog(BuildContext context) {
+void eventPostedDialog(BuildContext context, {String? shareLink}) {
   final NavigationController controller = Get.find<NavigationController>();
+
+  void goToDashboard() {
+    Get.to(() => CustomBottomNavBar());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.changePage(0);
+    });
+  }
   showDialog(
     context: context,
     builder: (context) {
@@ -81,14 +91,25 @@ void eventPostedDialog(BuildContext context) {
                     // 1. Dialog band karein
                     Get.back();
 
-                    // 2. Dashboard pe jayein
-                    Get.to(() => CustomBottomNavBar());
-
-                    // 3. Sabse zaroori: Controller ko update karne ke liye chota sa delay dein
-                    // Isse "Build scheduled during frame" wala error khatam ho jayega
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      controller.changePage(0);
-                    });
+                    if (shareLink != null && shareLink.isNotEmpty) {
+                      // 2. Share-link dialog dikhayein
+                      showShareProfileDialog(
+                        context,
+                        title: "Share Event Link",
+                        link: shareLink,
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: shareLink));
+                          Utils.showToast("Link copied!", false);
+                        },
+                        onCancel: () {
+                          Get.back();
+                          goToDashboard();
+                        },
+                      );
+                    } else {
+                      // 2. Dashboard pe jayein
+                      goToDashboard();
+                    }
                   },
                 ),
               ),

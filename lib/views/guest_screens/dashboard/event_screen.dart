@@ -192,7 +192,7 @@ class EventScreen extends StatelessWidget {
                               SizedBox(height: 2.h),
 
                               // Load More Button
-                              if (eventController.currentPage < eventController.totalPages)
+                              if (eventController.currentPage.value < eventController.totalPages.value)
                                 ElevatedButton(
                                   onPressed: eventController.isLoadingMore.value
                                       ? null

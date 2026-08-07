@@ -16,7 +16,9 @@ import '../../../widget/show_other_dialog_box.dart';
 class YourRootAndRules extends StatelessWidget {
   YourRootAndRules({super.key}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.isEdit.value == true) {
+      // See allergies_dietry_screen.dart: don't prefill from the guest's
+      // own saved profile when setting a MEMBER's preferences.
+      if (controller.isEdit.value == true && controller.isPreferences.value != true) {
         controller.populateYourRootAndRules();
       }
     });

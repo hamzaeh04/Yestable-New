@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -18,69 +19,80 @@ import '../../../widget/event_accesibility_widget.dart';
 
 class EventDetailsScreen extends StatelessWidget {
   EventDetailsScreen({super.key});
-final NavigationController controller = Get.find<NavigationController>();
-final EventController eventController = Get.find<EventController>();
+  final NavigationController controller = Get.find<NavigationController>();
+  final EventController eventController = Get.find<EventController>();
   BaseService baseService = BaseService();
   final prefs = SharedPreferencesMethod.storage;
 
   @override
   Widget build(BuildContext context) {
-
     final eventId = Get.arguments;
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       eventController.eventReview(eventId);
     });
     return Scaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
-            child: Obx((){
+            child: Obx(() {
               final data = eventController.eventReviewModel.value?.data;
               // eventController.mapEventComfortAccessibility(
               //   data?.eventComfort,
               //   data?.guestAware,
               // );
               //
-              final notAllowedItem = data?.guestAware?.itemContaining?.split(',')
-                  .map((e) => e.trim())
-                  .where((e) => e.isNotEmpty)
-                  .toList() ?? [];
-              if(eventController.isMenusLoading.value == true)
+              final notAllowedItem =
+                  data?.guestAware?.itemContaining
+                      ?.split(',')
+                      .map((e) => e.trim())
+                      .where((e) => e.isNotEmpty)
+                      .toList() ??
+                  [];
+              if (eventController.isMenusLoading.value == true)
                 return Column(
                   children: [
-                    SizedBox(height: 45.h,),
-                    Center(child: CircularProgressIndicator(color: greenColor,))
+                    SizedBox(height: 45.h),
+                    Center(child: CircularProgressIndicator(color: greenColor)),
                   ],
                 );
-              if(eventController.eventReviewModel.value == null)
+              if (eventController.eventReviewModel.value == null)
                 return Column(
                   children: [
-                    SizedBox(height: 45.h,),
-                    Center(child: customText(text: "Details not found"))
+                    SizedBox(height: 45.h),
+                    Center(child: customText(text: "Details not found")),
                   ],
                 );
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  (data!.image == null || data!.image!.isEmpty) ?
-                  Image.asset(
-                    'assets/png/event_screen_banner.png',
-                    height: 35.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ): customImageWidget(imagePath: data?.image ?? "", height: 35.h, width: double.infinity),
+                  (data!.image == null || data!.image!.isEmpty)
+                      ? Image.asset(
+                        'assets/png/event_screen_banner.png',
+                        height: 35.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                      : customImageWidget(
+                        imagePath: data?.image ?? "",
+                        height: 35.h,
+                        width: double.infinity,
+                      ),
 
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 1.h,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
-                          onTap: (){
-              print("User ID: ${prefs.getString(LocalDBKeys.USERID).toString()}  -  Host ID: ${data?.host?.id}");
-
-              },
+                          onTap: () {
+                            print(
+                              "User ID: ${prefs.getString(LocalDBKeys.USERID).toString()}  -  Host ID: ${data?.host?.id}",
+                            );
+                          },
                           child: customText(
                             text: data?.eventName ?? "Gizelle Dinner Event",
                             fontSize: 19.sp,
@@ -92,8 +104,9 @@ final EventController eventController = Get.find<EventController>();
 
                         SizedBox(height: 0.5.h),
                         customText(
-                          text: data?.addNote ??
-                          "Lorem ipsum dolor sit amet consectetur. Viverra tellus\neget magna sapien. Faucibus nibh mauris mattis aliquam\nproin pellentesque sed done.",
+                          text:
+                              data?.addNote ??
+                              "Lorem ipsum dolor sit amet consectetur. Viverra tellus\neget magna sapien. Faucibus nibh mauris mattis aliquam\nproin pellentesque sed done.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
@@ -106,7 +119,10 @@ final EventController eventController = Get.find<EventController>();
                   Divider(),
 
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 1.h,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -120,8 +136,9 @@ final EventController eventController = Get.find<EventController>();
 
                         SizedBox(height: 0.5.h),
                         customText(
-                          text: data?.invitationMessage ??
-                          "With hearts full of joy, we invite you to join us in celebrating the first birthday of our beloved [Baby’s Name]. This special milestone means so much to us, and your presence will make the day even more memorable.",
+                          text:
+                              data?.invitationMessage ??
+                              "With hearts full of joy, we invite you to join us in celebrating the first birthday of our beloved [Baby’s Name]. This special milestone means so much to us, and your presence will make the day even more memorable.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
@@ -135,7 +152,9 @@ final EventController eventController = Get.find<EventController>();
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: Theme(
-                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      data: Theme.of(
+                        context,
+                      ).copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         tilePadding: EdgeInsets.zero,
                         childrenPadding: EdgeInsets.only(bottom: 1.h),
@@ -162,8 +181,9 @@ final EventController eventController = Get.find<EventController>();
                             runSpacing: 1,
                             children: List.generate(
                               eventController.eventComfortAccessibility.length,
-                                  (index) => eventAccesibillityWidget(
-                                eventController.eventComfortAccessibility[index],
+                              (index) => eventAccesibillityWidget(
+                                eventController
+                                    .eventComfortAccessibility[index],
                               ),
                             ),
                           ),
@@ -177,7 +197,8 @@ final EventController eventController = Get.find<EventController>();
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       customText(
                                         text: "Items Are Not Allowed",
@@ -195,7 +216,7 @@ final EventController eventController = Get.find<EventController>();
                                         alignment: WrapAlignment.start,
                                         children: List.generate(
                                           notAllowedItem.length,
-                                              (index) => eventAccesibillityWidget(
+                                          (index) => eventAccesibillityWidget(
                                             notAllowedItem[index],
                                           ),
                                         ),
@@ -211,44 +232,53 @@ final EventController eventController = Get.find<EventController>();
                     ),
                   ),
 
-
                   Divider(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         Get.toNamed("hostprofilepcreen");
                       },
                       child: Row(
                         children: [
-                          data?.host?.profilePic != null ?
-
-              CachedNetworkImage(
-                imageUrl: "${baseService.baseURL}${data?.host?.profilePic}",
-                height: 6.h,
-                width: 14.w,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
-                  child: Container(
-                    height: 6.h,
-                    width: 14.w,
-                    color: Colors.white,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  height: 9.h,
-                  width: 14.w,
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.person),
-                ),
-              ):
-                            Image.asset(
-                              "assets/png/chat_images/user1.png",
-                              height: 9.h,
-                              width: 14.w,
+                          (data?.host?.profilePic != null &&
+                                  data!.host!.profilePic!.isNotEmpty)
+                              ? Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.sp)
                             ),
+                            clipBehavior: Clip.antiAlias, // <-- Add this
+
+                            child: CachedNetworkImage(
+                                  imageUrl:
+                                      "${baseService.baseURL}${data?.host?.profilePic}",
+                                  height: 6.h,
+                                  width: 14.w,
+                                  fit: BoxFit.cover,
+                                  placeholder:
+                                      (context, url) => Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade300,
+                                        highlightColor: Colors.grey.shade100,
+                                        child: Container(
+                                          height: 6.h,
+                                          width: 14.w,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) => Container(
+                                        height: 9.h,
+                                        width: 14.w,
+                                        alignment: Alignment.center,
+                                        child: const Icon(Icons.person),
+                                      ),
+                                ),
+                              )
+                              : Image.asset(
+                                "assets/png/bottom_bar_icons/profile_icon.png",
+                                height: 6.h,
+                                width: 8.w,
+                              ),
 
                           SizedBox(width: 3.w),
                           Column(
@@ -273,11 +303,9 @@ final EventController eventController = Get.find<EventController>();
                       ),
                     ),
                   ),
-                  SizedBox(height: 1.h,),
+                  SizedBox(height: 1.h),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.w,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -291,60 +319,86 @@ final EventController eventController = Get.find<EventController>();
                         ),
                         SizedBox(width: 3.w),
                         Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              customText(
-                                text: controller.formatDate2(data?.eventTime) ?? "May 02, 2025",
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w500,
-                                color: blackColor,
-                                height: 0.1.h,
-                              ),
-                              SizedBox(height: 0.5.h),
-                              customText(
-                                text: controller.formatTime2(data?.eventTime) ??"7:30 PM - 9:00 PM",
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: darkGreyColor,
-                              ),
-                            ]),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            customText(
+                              text:
+                                  controller.formatDate2(data?.eventTime) ??
+                                  "May 02, 2025",
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
+                              color: blackColor,
+                              height: 0.1.h,
+                            ),
+                            SizedBox(height: 0.5.h),
+                            customText(
+                              text:
+                                  controller.formatTime2(data?.eventTime) ??
+                                  "7:30 PM - 9:00 PM",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: darkGreyColor,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                   SizedBox(height: 1.5.h),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.w,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 4.5.w),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          "assets/png/icons/map_location_icon.png",
-                          height: 2.h,
-                          width: 4.w,
-                        ),
+                        Icon(Icons.link, size: 2.5.h),
+
                         SizedBox(width: 3.w),
+
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              customText(
-                                text: "IN HOUSES",
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w500,
-                                color: blackColor,
-                                height: 0.1.h,
+                          child: customText(
+                            text:
+                                "https://yestable-107c6.web.app/event/$eventId",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: darkGreyColor,
+                            overFlow: TextOverflow.ellipsis,
+                          ),
+                        ),
+
+                        SizedBox(width: 2.w),
+
+                        InkWell(
+                          onTap: () async {
+                            final eventLink =
+                                "https://yestable-107c6.web.app/event/$eventId";
+
+                            await Clipboard.setData(
+                              ClipboardData(text: eventLink),
+                            );
+
+                            Get.snackbar(
+                              "Copied",
+                              "Event link copied to clipboard",
+                              snackPosition: SnackPosition.BOTTOM,
+                              duration: const Duration(seconds: 2),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              icon: const Icon(
+                                Icons.check_circle,
+                                color: Colors.white,
                               ),
-                              SizedBox(height: 0.5.h),
-                              customText(
-                                text: "New York, USA",
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: darkGreyColor,
-                              ),
-                            ],
+                              margin: const EdgeInsets.all(12),
+                              borderRadius: 10,
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Padding(
+                            padding: EdgeInsets.all(1.w),
+                            child: Icon(
+                              Icons.copy_rounded,
+                              size: 2.h,
+                              color: darkGreyColor,
+                            ),
                           ),
                         ),
                       ],
@@ -427,27 +481,34 @@ final EventController eventController = Get.find<EventController>();
                           color: blackColor,
                         ),
                         customText(
-                          text: "${data?.address}" ?? "132 My Street, Kingston, New York 12486.",
+                          text:
+                              "${data?.address}" ??
+                              "132 My Street, Kingston, New York 12486.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
                         ),
                         SizedBox(height: 1.h),
                         Container(
-                          child: Image.asset("assets/png/event_detail_img/event_detial_map.png"),
+                          child: Image.asset(
+                            "assets/png/event_detail_img/event_detial_map.png",
+                          ),
                         ),
                         SizedBox(height: 1.h),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset("assets/png/icons/round_watch.png", width: 3.w,),
-                            SizedBox(width: 1.w,),
+                            Image.asset(
+                              "assets/png/icons/round_watch.png",
+                              width: 3.w,
+                            ),
+                            SizedBox(width: 1.w),
                             Column(
                               children: [
                                 customText(
-                                    text: 'Parking Details',
-                                    fontSize: 18.sp,
-                                    fontFamily: 'CormorantGaramond'
+                                  text: 'Parking Details',
+                                  fontSize: 18.sp,
+                                  fontFamily: 'CormorantGaramond',
                                 ),
                               ],
                             ),
@@ -455,9 +516,11 @@ final EventController eventController = Get.find<EventController>();
                         ),
                         Row(
                           children: [
-                            SizedBox(width: 4.w,),
+                            SizedBox(width: 4.w),
                             customText(
-                              text: data?.parkingDetails ?? 'Street parking after 6pm; lot behind venue.',
+                              text:
+                                  data?.parkingDetails ??
+                                  'Street parking after 6pm; lot behind venue.',
                               fontSize: 14.sp,
                             ),
                           ],
@@ -481,7 +544,8 @@ final EventController eventController = Get.find<EventController>();
                           color: blackColor,
                         ),
                         customText(
-                          text: "See dishes made for you - no stress, just great food",
+                          text:
+                              "See dishes made for you - no stress, just great food",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: darkGreyColor,
@@ -508,95 +572,149 @@ final EventController eventController = Get.find<EventController>();
                         SizedBox(height: 1.h),
                         LinearProgressIndicator(
                           backgroundColor: whiteColor, // Track color
-                          color: greenColor,            // Progress color
-                          value: (double.parse(data.dietaryCompatibilityScore.toString())/100),
+                          color: greenColor, // Progress color
+                          value:
+                              (double.parse(
+                                    data.dietaryCompatibilityScore.toString(),
+                                  ) /
+                                  100),
                           minHeight: 0.7.h,
                           borderRadius: BorderRadius.circular(10.sp),
                         ),
                         SizedBox(height: 1.5.h),
-                        controller.isUser.value ?
-                        Wrap(
-                          spacing: 4,
-                          runSpacing: 0,
-                          children: List.generate(
-                            eventController.eventMenuList.length,
+                        controller.isUser.value
+                            ? Wrap(
+                              spacing: 4,
+                              runSpacing: 0,
+                              children: List.generate(
+                                eventController.eventMenuList.length,
                                 (index) => eventAccesibillityWidget(
-                              eventController.eventMenuList[index],
-                            ),
-                          ),
-                        )
-                            :
-                        DefaultTabController(
-                          length: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TabBar(
-                                labelColor: Colors.black,
-                                unselectedLabelColor: Colors.grey,
-                                indicatorColor: Colors.black,
-                                indicatorWeight: 2,
-                                tabs: const [
-                                  Tab(text: "Appetizers"),
-                                  Tab(text: "Main Course"),
-                                  Tab(text: "Drinks"),
+                                  eventController.eventMenuList[index],
+                                ),
+                              ),
+                            )
+                            : DefaultTabController(
+                              length: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TabBar(
+                                    labelColor: Colors.black,
+                                    unselectedLabelColor: Colors.grey,
+                                    indicatorColor: Colors.black,
+                                    indicatorWeight: 2,
+                                    tabs: const [
+                                      Tab(text: "Appetizers"),
+                                      Tab(text: "Main Course"),
+                                      Tab(text: "Drinks"),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Builder(
+                                    builder: (context) {
+                                      final tabController =
+                                          DefaultTabController.of(context);
+                                      return AnimatedBuilder(
+                                        animation: tabController,
+                                        builder: (context, _) {
+                                          final currentTabName =
+                                              [
+                                                "Appetizers",
+                                                "Main Course",
+                                                "Drinks",
+                                              ][tabController.index];
+                                          final filteredMenus =
+                                              data?.menus
+                                                  ?.where(
+                                                    (m) =>
+                                                        m.type ==
+                                                        currentTabName,
+                                                  )
+                                                  .toList() ??
+                                              [];
+
+                                          if (filteredMenus.isEmpty) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 2.h,
+                                              ),
+                                              child: Center(
+                                                child: customText(
+                                                  text:
+                                                      "No $currentTabName added yet",
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            );
+                                          }
+
+                                          return Column(
+                                            children:
+                                                filteredMenus.map((menu) {
+                                                  String cat1 = "";
+                                                  String cat2 = "";
+                                                  if (menu.mealCategory !=
+                                                          null &&
+                                                      menu
+                                                          .mealCategory!
+                                                          .isNotEmpty) {
+                                                    cat1 =
+                                                        menu.mealCategory![0];
+                                                  }
+                                                  if (menu.mealCategory !=
+                                                          null &&
+                                                      menu
+                                                              .mealCategory!
+                                                              .length >
+                                                          1) {
+                                                    cat2 =
+                                                        menu.mealCategory![1];
+                                                  }
+
+                                                  return Column(
+                                                    children: [
+                                                      menuItem(
+                                                        title: menu.title ?? "",
+                                                        subtitle:
+                                                            menu.description ??
+                                                            "",
+                                                        imagePath:
+                                                            menu.menuImage !=
+                                                                        null &&
+                                                                    menu
+                                                                        .menuImage!
+                                                                        .isNotEmpty
+                                                                ? "${baseService.baseURL}${menu.menuImage}"
+                                                                : "",
+                                                        text1: cat1,
+                                                        text2: cat2,
+                                                        boximg1:
+                                                            eventController
+                                                                .mealCategoryIcon(
+                                                                  cat1,
+                                                                ) ??
+                                                            "",
+                                                        boximg2:
+                                                            eventController
+                                                                .mealCategoryIcon(
+                                                                  cat2,
+                                                                ) ??
+                                                            "",
+                                                        containerColor:
+                                                            backgroundColor,
+                                                      ),
+                                                      Divider(),
+                                                    ],
+                                                  );
+                                                }).toList(),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
-                              SizedBox(height: 1.h),
-                              Builder(builder: (context) {
-                                final tabController = DefaultTabController.of(context);
-                                return AnimatedBuilder(
-                                  animation: tabController,
-                                  builder: (context, _) {
-                                    final currentTabName = ["Appetizers", "Main Course", "Drinks"][tabController.index];
-                                    final filteredMenus = data?.menus?.where((m) => m.type == currentTabName).toList() ?? [];
-
-                                    if (filteredMenus.isEmpty) {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 2.h),
-                                        child: Center(
-                                          child: customText(
-                                              text: "No $currentTabName added yet",
-                                              fontSize: 14.sp),
-                                        ),
-                                      );
-                                    }
-
-                                    return Column(
-                                      children: filteredMenus.map((menu) {
-                                        String cat1 = "";
-                                        String cat2 = "";
-                                        if (menu.mealCategory != null && menu.mealCategory!.isNotEmpty) {
-                                          cat1 = menu.mealCategory![0];
-                                        }
-                                        if (menu.mealCategory != null && menu.mealCategory!.length > 1) {
-                                          cat2 = menu.mealCategory![1];
-                                        }
-
-                                        return Column(
-                                          children: [
-                                            menuItem(
-                                                title: menu.title ?? "",
-                                                subtitle: menu.description ?? "",
-                                                imagePath: menu.menuImage != null && menu.menuImage!.isNotEmpty
-                                                    ? "${baseService.baseURL}${menu.menuImage}"
-                                                    : "",
-                                                text1: cat1,
-                                                text2: cat2,
-                                                boximg1: eventController.mealCategoryIcon(cat1) ?? "",
-                                                boximg2: eventController.mealCategoryIcon(cat2) ?? "",
-                                                containerColor: backgroundColor),
-                                            Divider(),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    );
-                                  },
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
+                            ),
                       ],
                     ),
                   ),
@@ -632,10 +750,7 @@ final EventController eventController = Get.find<EventController>();
         return FloatingActionButton(
           backgroundColor: blueColor,
           onPressed: () {
-            Get.toNamed(
-              "createneweventscreen",
-              arguments: eventId,
-            );
+            Get.toNamed("createneweventscreen", arguments: eventId);
           },
           child: Image.asset(
             "assets/png/icons/event_floating_icon.png",
@@ -646,21 +761,21 @@ final EventController eventController = Get.find<EventController>();
     );
   }
 }
+
 Widget reveiwWidget(BuildContext context) {
   return GestureDetector(
-    onTap: (){
-    },
+    onTap: () {},
     child: Container(
       decoration: BoxDecoration(
         color: whiteColor,
         border: Border.all(
           color: Colors.grey.shade300, // Slight grey border
-          width: 1,                     // Thin border
+          width: 1, // Thin border
         ),
         borderRadius: BorderRadius.circular(15.sp), // Optional: rounded corners
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -671,10 +786,8 @@ Widget reveiwWidget(BuildContext context) {
                   itemCount: 5,
                   itemSize: 18.sp,
                   physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, _) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
+                  itemBuilder:
+                      (context, _) => Icon(Icons.star, color: Colors.amber),
                 ),
                 SizedBox(width: 2.w),
                 customText(
@@ -697,7 +810,9 @@ Widget reveiwWidget(BuildContext context) {
               children: [
                 CircleAvatar(
                   radius: 18.sp, // Adjust size as needed
-                  backgroundImage: AssetImage('assets/png/chat_images/user1.png'), // Replace with your image path
+                  backgroundImage: AssetImage(
+                    'assets/png/chat_images/user1.png',
+                  ), // Replace with your image path
                   backgroundColor: Colors.grey[200], // Optional: fallback color
                 ),
                 SizedBox(width: 2.w),
@@ -738,7 +853,7 @@ Widget menuItem({
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 0.8.h,),
+              SizedBox(height: 0.8.h),
               customText(
                 text: title,
                 fontSize: 16.sp,
@@ -747,19 +862,26 @@ Widget menuItem({
                 color: blackColor,
               ),
               SizedBox(height: 0.h),
-              customText(
-                text: subtitle,
-                fontSize: 14.sp,
-                color: darkGreyColor,
-              ),
+              customText(text: subtitle, fontSize: 14.sp, color: darkGreyColor),
               SizedBox(height: 1.5.h),
               Row(
                 children: [
-                  if (text1.isNotEmpty) foodPreferenceBox(text: text1, imgPath: boximg1, bgColor: containerColor),
-                  if (text1.isNotEmpty && text2.isNotEmpty) SizedBox(width: 3.w),
-                  if (text2.isNotEmpty) foodPreferenceBox(text: text2, imgPath: boximg2, bgColor: containerColor),
+                  if (text1.isNotEmpty)
+                    foodPreferenceBox(
+                      text: text1,
+                      imgPath: boximg1,
+                      bgColor: containerColor,
+                    ),
+                  if (text1.isNotEmpty && text2.isNotEmpty)
+                    SizedBox(width: 3.w),
+                  if (text2.isNotEmpty)
+                    foodPreferenceBox(
+                      text: text2,
+                      imgPath: boximg2,
+                      bgColor: containerColor,
+                    ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -769,31 +891,45 @@ Widget menuItem({
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(2.w),
-              child: imagePath.startsWith('http')
-                  ? CachedNetworkImage(
-                      imageUrl: imagePath,
-                      height: 13.h,
-                      width: 12.h,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
+              child:
+                  imagePath.startsWith('http')
+                      ? CachedNetworkImage(
+                        imageUrl: imagePath,
                         height: 13.h,
                         width: 12.h,
-                        color: Colors.grey[100],
-                        child: const Center(child: CircularProgressIndicator()),
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Container(
+                              height: 13.h,
+                              width: 12.h,
+                              color: Colors.grey[100],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              height: 13.h,
+                              width: 12.h,
+                              color: Colors.grey[200],
+                              child: Icon(Icons.error),
+                            ),
+                      )
+                      : Image.asset(
+                        imagePath.isNotEmpty
+                            ? imagePath
+                            : 'assets/png/event_detail_img/event1.png',
+                        height: 13.h,
+                        width: 12.h,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (context, error, stackTrace) => Container(
+                              height: 13.h,
+                              width: 12.h,
+                              color: Colors.grey[200],
+                              child: Icon(Icons.error),
+                            ),
                       ),
-                      errorWidget: (context, url, error) => Container(
-                        height: 13.h, width: 12.h, color: Colors.grey[200], child: Icon(Icons.error)
-                      ),
-                    )
-                  : Image.asset(
-                      imagePath.isNotEmpty ? imagePath : 'assets/png/event_detail_img/event1.png',
-                      height: 13.h,
-                      width: 12.h,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 13.h, width: 12.h, color: Colors.grey[200], child: Icon(Icons.error)
-                      ),
-                    ),
             ),
             if (cheaque == true)
               Positioned(
@@ -806,17 +942,10 @@ Widget menuItem({
                     color: Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4,
-                      )
+                      BoxShadow(color: Colors.black12, blurRadius: 4),
                     ],
                   ),
-                  child: Icon(
-                    Icons.remove,
-                    size: 2.h,
-                    color: Colors.black,
-                  ),
+                  child: Icon(Icons.remove, size: 2.h, color: Colors.black),
                 ),
               ),
           ],
@@ -825,13 +954,14 @@ Widget menuItem({
     ),
   );
 }
+
 Widget foodPreferenceBox({
   required String text,
   required String imgPath,
   Color? bgColor,
 }) {
   return InkWell(
-    onTap: (){
+    onTap: () {
       print(bgColor);
     },
     child: Container(
@@ -842,7 +972,7 @@ Widget foodPreferenceBox({
         border: Border.all(
           color: Colors.grey, // 👈 Grey border color
           width: 0.1.w,
-        )
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -869,4 +999,3 @@ Widget foodPreferenceBox({
     ),
   );
 }
-

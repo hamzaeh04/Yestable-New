@@ -179,25 +179,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               );
                             }
 
-                            return FutureBuilder<List<QueryDocumentSnapshot>>(
-                              future: () async {
-                                List<QueryDocumentSnapshot> joinedGroups = [];
-
-                                for (var group in allGroups) {
-                                  final memberDoc = await FirebaseFirestore.instance
-                                      .collection('group')
-                                      .doc(group.id)
-                                      .collection('members')
-                                      .doc(controller.returnUserId())
-                                      .get();
-
-                                  if (memberDoc.exists) {
-                                    joinedGroups.add(group);
-                                  }
-                                }
-
-                                return joinedGroups;
-                              }(),
+                            return StreamBuilder<QuerySnapshot>(
+                              // Real-time membership check. collectionGroup('members')
+                              // streams every group's members subcollection, so when
+                              // exitGroup() deletes the current user's
+                              // members/{userId} doc this fires immediately and the
+                              // group drops off the list right away. The previous
+                              // one-time .get() per group never re-ran after the
+                              // initial load, since deleting a doc inside a
+                              // subcollection doesn't trigger the outer
+                              // collection('group').snapshots() listener above.
+                              stream: FirebaseFirestore.instance
+                                  .collectionGroup('members')
+                                  .snapshots(),
                               builder: (context, joinedSnapshot) {
                                 if (!joinedSnapshot.hasData) {
                                   return const Center(
@@ -207,7 +201,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                   );
                                 }
 
-                                final joinedGroups = joinedSnapshot.data!;
+                                final currentUserId = controller.returnUserId();
+                                final joinedGroupIds = joinedSnapshot.data!.docs
+                                    .where((doc) => doc.id == currentUserId)
+                                    .map((doc) => doc.reference.parent.parent?.id)
+                                    .whereType<String>()
+                                    .toSet();
+
+                                final joinedGroups = allGroups
+                                    .where((group) => joinedGroupIds.contains(group.id))
+                                    .toList();
                                 final filteredGroups = joinedGroups
                                     .where((groupDoc) => _matchesGroupName(
                                         groupDoc.data() as Map<String, dynamic>))

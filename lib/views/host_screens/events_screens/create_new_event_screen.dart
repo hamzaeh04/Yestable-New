@@ -103,10 +103,14 @@ class CreateNewEventScreen extends StatelessWidget {
                             child: Obx(() {
                               final data =
                                   eventController.getEventByIdModel.value?.data;
+
                               final hasNetworkImage =
                                   eventId != null &&
                                   data?.image != null &&
-                                  data!.image!.isNotEmpty;
+                                  data!.image!.isNotEmpty &&
+                                  !eventController.isNetworkImageDeleted.value;
+
+                              eventController.imagePath = data?.image;
 
                               final hasImage =
                                   controller.profilePicture.value != null ||
@@ -122,9 +126,11 @@ class CreateNewEventScreen extends StatelessWidget {
                                         width: double.infinity,
                                         height: double.infinity,
                                       )
-                                    else if (hasNetworkImage)
+                                    else if (hasNetworkImage && eventController.imagePath != null && eventController.imagePath!.isNotEmpty)
                                       CachedNetworkImage(
-                                        imageUrl: "${baseService.baseURL}${data?.image}",
+                                        imageUrl: eventController.imagePath!.startsWith('http')
+                                            ? eventController.imagePath!
+                                            : "${baseService.baseURL}${eventController.imagePath}",
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
@@ -197,7 +203,10 @@ class CreateNewEventScreen extends StatelessWidget {
                                         top: 1.3.h,
                                         right: 2.5.w,
                                         child: InkWell(
-                                          onTap: controller.removeImage,
+                                          onTap: () {
+                                            controller.removeImage();
+                                            eventController.isNetworkImageDeleted.value = true;
+                                          },
                                           child: Container(
                                             padding: EdgeInsets.symmetric(
                                               horizontal: 1.w,
@@ -540,17 +549,26 @@ class CreateNewEventScreen extends StatelessWidget {
                                               .toList(),
 
                                       onChanged: (value) {
-                                        if(value == "... Other"){
+                                        if (value == "... Other") {
+                                          eventController.eventType.clear();
                                           showCustomOptionDialog(
                                             dialogTitle: "Not on the list? Tell us\nwhat\'s your event type",
                                             hintText: "Birthday Party",
                                             textFieldController: eventController.eventType,
-                                            onDone: (){
-                                              print(eventController.eventType.text);
+                                            onDone: () {
+                                              final customType =
+                                                  eventController.eventType.text
+                                                      .trim();
+                                              eventController
+                                                  .selectedEventType
+                                                  .value = customType.isEmpty
+                                                  ? "... Other"
+                                                  : customType;
+                                              eventController.eventType.text =
+                                                  customType;
                                             },
                                           );
-                                        }
-                                        if (value != null) {
+                                        } else if (value != null) {
                                           eventController
                                               .selectedEventType
                                               .value = value;
@@ -614,15 +632,18 @@ class CreateNewEventScreen extends StatelessWidget {
                                                   .address
                                                   .value;
                                             },
+
+
                                             readonly: true,
                                             hint:
-                                                "Select Location",
+                                                "Address",
                                             controller:
                                                 eventController
                                                     .locationController
                                                     .addressController,
                                           ),
                                         ),
+
                                         Padding(
                                           padding: EdgeInsets.only(right: 3.w),
                                           child: InkWell(

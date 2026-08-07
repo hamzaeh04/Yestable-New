@@ -60,6 +60,9 @@ class EventComfortTwo extends StatelessWidget {
         setOpt(guestAware?.shellFish,       11);
         setOpt(guestAware?.peanuts,         12);
         setOpt(guestAware?.endsInFirmTime,  13);
+        
+        controller.itemContainingController.text = guestAware?.itemContaining ?? "";
+        controller.guestAwareOthersController.text = guestAware?.others ?? "";
       }
     });
 

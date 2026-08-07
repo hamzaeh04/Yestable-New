@@ -1,0 +1,39 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "group",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "adminId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastMessageTime",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "members",
+      "fieldPath": "userId",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    }
+  ]
+}

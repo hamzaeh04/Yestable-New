@@ -40,6 +40,7 @@ class NavigationController extends GetxController {
   late BuildContext context;
   RxBool isProfileComplete = false.obs;
   RxBool hasCheckedProfile = false.obs;
+  bool completeProfileWorkerRegistered = false;
   RxBool isInvited = false.obs;
   RxBool isGuestUpdateReceived = true.obs;
   var selectedEvent = ''.obs;

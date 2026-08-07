@@ -263,8 +263,8 @@ class MyProfileScreen extends StatelessWidget {
                                                     width: 11.h,
                                                     color: Colors.grey.shade200,
                                                     child:
-                                                    data?.profilePic != null
-                                                        ? CustomProfileWidget(
+                                                    (data?.profilePic != null && data!.profilePic!.isNotEmpty)
+                                                         ? CustomProfileWidget(
                     
                                                       imageUrl: data!.profilePic!.startsWith("https")
                                                           ? data!.profilePic!

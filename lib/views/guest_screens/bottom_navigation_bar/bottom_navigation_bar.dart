@@ -59,6 +59,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       if (_pageController.hasClients) {
         _pageController.jumpToPage(index);
       }
+      // Refresh the host dashboard's event list/pagination whenever the
+      // user lands back on the Home tab (e.g. returning from the edit
+      // event flow without CustomBottomNavBar being recreated), so
+      // "Load More" reflects the current event count instead of stale
+      // currentPage/totalPages left over from before the edit.
+      if (index == 0 && controller.isUser.value == false) {
+        eventController.getMyEvents();
+      }
     });
 
     // 🔥 Show dialog after UI ready

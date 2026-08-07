@@ -223,4 +223,32 @@ class MessagingService {
       debugPrint("enable chat update failed: $e");
     }
   }
+
+  /// -----------------------------
+  /// UPDATE MEMBER NAME & PROFILE
+  /// -----------------------------
+  /// Updates the user's userName/memberProfile across every group's
+  /// members subcollection (not just one particular group), via
+  /// collectionGroup('members'). Relies on the "userId" field already
+  /// stored on each member doc (see joinGroup/createGroup) since
+  /// collectionGroup queries can't filter by document ID across groups.
+  Future<void> updateMemberProfile({
+    required String userId,
+    required String userName,
+    required String memberProfile,
+  }) async {
+    final membersQuery = await _firestore
+        .collectionGroup("members")
+        .where("userId", isEqualTo: userId)
+        .get();
+
+    final batch = _firestore.batch();
+    for (final doc in membersQuery.docs) {
+      batch.update(doc.reference, {
+        "userName": userName,
+        "memberProfile": memberProfile,
+      });
+    }
+    await batch.commit();
+  }
 }

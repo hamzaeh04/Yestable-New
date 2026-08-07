@@ -107,32 +107,39 @@ class FoodMenuCard extends StatelessWidget {
                     SizedBox(
                         width: 30.w,
                         height: 3.6.h,
-                        child: buttonWidget(
+                        child: Obx(() {
+                          final isAdded = eventController.isAiMenuAdded(menuItem.id);
+                          if (isAdded) {
+                            return buttonWidget(
+                              'Added',
+                              greenColor,
+                              colors: whiteColor,
+                              borderColor: greenColor,
+                              icon: Icons.check,
+                              fontsize: 15.sp,
+                              onTap: null,
+                            );
+                          }
+                          return buttonWidget(
                             'Add To Menu', whiteColor, colors: greenColor, fontsize: 15.sp,
-                          onTap: () async {
-                            eventController.menuTitle.text = title.toString();
-                            eventController.selectedType.value = subtitle;
-                            eventController.menuDescription.text = desc.toString();
-                            eventController.selectedMealCategory.value = (menuItem.mealCategory ?? <String>[])
-                                .map((tag) => {
-                                      "name": tag,
-                                      "imgPath": eventController.mealCategoryIcon(tag) ?? "",
-                                    })
-                                .toList();
-                            final createdMenu = await eventController.uploadMenu(noNavigate: true);
-                            if (createdMenu == null) return;
+                            onTap: () async {
+                              if (eventController.isAiMenuAdded(menuItem.id)) return;
+                              eventController.menuTitle.text = title.toString();
+                              eventController.selectedType.value = subtitle;
+                              eventController.menuDescription.text = desc.toString();
+                              eventController.selectedMealCategory.value = (menuItem.mealCategory ?? <String>[])
+                                  .map((tag) => {
+                                        "name": tag,
+                                        "imgPath": eventController.mealCategoryIcon(tag) ?? "",
+                                      })
+                                  .toList();
+                              final createdMenu = await eventController.uploadMenu(noNavigate: true);
+                              if (createdMenu == null) return;
 
-                            final added = eventController.addSelectedMenu(createdMenu);
-                            if (!added) {
-                              Get.snackbar(
-                                "Already added",
-                                "This menu is already in your selected list",
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.black.withValues(alpha: 0.8),
-                                colorText: Colors.white,
-                                margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                              );
-                            } else {
+                              eventController.addSelectedMenu(createdMenu);
+                              if (menuItem.id != null && menuItem.id!.isNotEmpty) {
+                                eventController.markAiMenuAdded(menuItem.id!);
+                              }
                               Get.snackbar(
                                 "Added",
                                 "Menu added to your selected list",
@@ -141,9 +148,9 @@ class FoodMenuCard extends StatelessWidget {
                                 colorText: Colors.white,
                                 margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                               );
-                            }
-                          },
-                        )
+                            },
+                          );
+                        }),
                     ),
                   ],
                 ),

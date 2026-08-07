@@ -102,8 +102,7 @@ class ProfileEditScreen extends StatelessWidget {
                                     .controller.nameController.text.isNotEmpty && navigationController
                                     .controller.userName.text.isNotEmpty && navigationController
                                     .controller.email.text.isNotEmpty && navigationController
-                                    .controller.location.text.isNotEmpty && navigationController
-                                    .controller.bio.text.isNotEmpty) {
+                                    .controller.location.text.isNotEmpty) {
                                   navigationController.controller.setupProfile(navigationController.isUser.value, profilePic: navigationController.controller.profilePicture.value);
                                 } else {
                                   Utils.showToast("Fill all the fields!", true);
@@ -378,7 +377,7 @@ class ProfileEditScreen extends StatelessWidget {
                                         : SizedBox(height: 18.h),
                               ),
                               customText(
-                                text: "Location",
+                                text: "Address",
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15.sp,
                               ),
@@ -1380,6 +1379,14 @@ Widget setPlace(int index, {String? title}) {
                       controller.memberId = memberId;
                     }
 
+                    // These wizard screens (allergies, root & rules, food
+                    // preferences, seating/assistance) all read/write the
+                    // same shared ProfileController fields for both "my own
+                    // preferences" and "a member's preferences" — clear
+                    // before entering so a member's form doesn't open
+                    // showing whatever was last entered for someone else.
+                    print("===== CLEARING PREFERENCES ====");
+                    controller.clearPreferences();
                     controller.isPreferences.value = true;
                     Get.toNamed('allergiesdietryscreen');
                   },

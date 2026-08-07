@@ -28,8 +28,10 @@ class AllowNotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_){
-      navigationController.controller.getMyProfileModel.refresh();
+      // navigationController.controller.getMyProfileModel.refresh();
+      navigationController.controller.fetchMyProfile();
     });
+
     final steps = Get.arguments;
     return Scaffold(
       body: SafeArea(
@@ -98,9 +100,16 @@ class AllowNotificationScreen extends StatelessWidget {
                       } else{
                         if (steps == 1) {
                           await controller.enableNotification();
-                          showShareProfileDialog(context, onCancelTap: (){
-                            Get.toNamed('bottomnavigationbar', arguments: true);
-                          });
+                          // showShareProfileDialog(context, onCancelTap: (){
+                          //   Get.toNamed('bottomnavigationbar', arguments: true);
+                          // });
+                          // Force the host dashboard's "complete your guest
+                          // profile" check to re-evaluate against the fresh
+                          // profileCompleted value instead of trusting
+                          // whatever hasCheckedProfile was left at (e.g.
+                          // still locked true from a previous logout).
+                          navigationController.hasCheckedProfile.value = false;
+                          Get.toNamed('bottomnavigationbar');
                           authController.controller.controller.clearSetupProfileFields();
                           await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, true);
                         }
@@ -126,9 +135,16 @@ class AllowNotificationScreen extends StatelessWidget {
                           }
                         } else{
                           if (steps == 1) {
-                            showShareProfileDialog(context, onCancelTap: (){
-                              Get.toNamed('bottomnavigationbar', arguments: true);
-                            });
+                            // showShareProfileDialog(context, onCancelTap: (){
+                            //   Get.toNamed('bottomnavigationbar', arguments: true);
+                            // });
+                            // Force the host dashboard's "complete your guest
+                          // profile" check to re-evaluate against the fresh
+                          // profileCompleted value instead of trusting
+                          // whatever hasCheckedProfile was left at (e.g.
+                          // still locked true from a previous logout).
+                          navigationController.hasCheckedProfile.value = false;
+                          Get.toNamed('bottomnavigationbar');
                             authController.controller.controller.clearSetupProfileFields();
                             await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, true);
                           }

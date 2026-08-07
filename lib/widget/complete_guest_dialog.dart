@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
+import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
 import '../constants/constants_widgets.dart';
 
 void completeGuestProfileDialog(BuildContext context) {
   NavigationController navigationController = Get.find<NavigationController>();
+  ProfileController controller = Get.find<ProfileController>();
   showDialog(
     context: context,
     builder: (context) {
@@ -56,8 +58,9 @@ void completeGuestProfileDialog(BuildContext context) {
                     whiteColor,
                     colors: greenColor,
                     onTap: () {
+                      controller.clearPreferences();
+                      navigationController.controller.isEdit.value = false;
                       Get.toNamed("allergiesdietryscreen");
-                      navigationController.controller.isEdit.value = true;
                     },
                   ),
                 ],

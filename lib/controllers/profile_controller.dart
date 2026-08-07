@@ -12,6 +12,7 @@ import 'package:path/path.dart' as path;
 import 'package:yestable/controllers/auth_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
+import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/core/services/multipart_request.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 
@@ -25,6 +26,7 @@ import '../widget/update_sent_sucessfull_dialog.dart';
 class ProfileController extends GetxController {
   // --- Existing Variables (No changes here) ---
   BaseService baseService = BaseService();
+  final MessagingService messagingService = MessagingService();
 
   // final String url =
   //     "https://yes-table-web.vercel.app/userId=$userId";
@@ -1172,8 +1174,29 @@ class ProfileController extends GetxController {
             jsonResponse["data"]["name"],
           );
         }
+        if (jsonResponse["data"] != null &&
+            jsonResponse["data"]["profilePic"] != null) {
+          prefs.setString(
+            LocalDBKeys.USERPROFILEPIC,
+            jsonResponse["data"]["profilePic"],
+          );
+        }
         prefs.setString(LocalDBKeys.ISHOST, jsonResponse["data"]["iAmHosting"].toString());
         // profilePicture.value = null;
+
+        final userId = prefs.getString(LocalDBKeys.USERID);
+        if (userId != null && userId.isNotEmpty && jsonResponse["data"] != null) {
+          print("🔄 updateMemberProfile → userId: $userId, name: ${jsonResponse["data"]["name"]}, pic: ${jsonResponse["data"]["profilePic"]}");
+          messagingService.updateMemberProfile(
+            userId: userId,
+            userName: jsonResponse["data"]["name"] ?? "",
+            memberProfile: jsonResponse["data"]["profilePic"] ?? "",
+          ).then((_) {
+            print("✅ updateMemberProfile succeeded for userId: $userId");
+          }).catchError((e) {
+            print("❌ updateMemberProfile FAILED: $e");
+          });
+        }
       } else {
         Utils.showToast(
           jsonResponse['message'] ?? "Something went wrong",
@@ -1187,7 +1210,6 @@ class ProfileController extends GetxController {
       EasyLoading.dismiss();
     }
   }
-
 
   Future<void> setupProfile(
       bool isUser, {
@@ -1451,11 +1473,21 @@ class ProfileController extends GetxController {
           });
         } else {
           getMyProfileModel.refresh();
+          // AllowNotificationScreen expects steps==2 when isUser==true (guest)
+          // and steps==1 when isUser==false (host) — this was hardcoded to 2,
+          // so a host completing their guest profile from the dashboard
+          // reminder dialog would land there with a mismatched steps value
+          // and get "Complete your profile first." even though it's done.
+          final bool isGuestIdentity = Get.find<NavigationController>().isUser.value;
           isEdit.value == true ? Get.offAllNamed('bottomnavigationbar'):
-          Get.offAllNamed("allownotificationscreen", arguments: 2);
+          Get.offAllNamed("allownotificationscreen", arguments: isGuestIdentity ? 2 : 1);
           isEdit.value == true ? clearSetupProfileFields(): null;
+          print("+++++ Clearing Preferences1 +++++");
           clearPreferences();
         }
+        print("+++++ Clearing Preferences2 +++++");
+
+        clearPreferences();
         prefs.setString(LocalDBKeys.ONBOARDINGSTEP, "${response["data"]["onboardingStep"]}");
       } else {
         print("Failed: ${response?['message']}");
@@ -1540,8 +1572,10 @@ class ProfileController extends GetxController {
         // Handle API errors
         Utils.showToast(response['message'] ?? "Failed to fetch profile", true);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Handle exceptions
+      print("❌ fetchMyProfile threw: $e");
+      print("❌ fetchMyProfile stackTrace: $stackTrace");
       Utils.showToast("Something went wrong: $e", true);
     }
   }
@@ -1613,6 +1647,18 @@ class ProfileController extends GetxController {
     selectExtraAssistance.clear();
     isYes.value = true; // or whatever your default is
     mobilityConcerns.clear();
+    anythingElse.clear();
+    other.value = false;
+    other3.value = false;
+    other2.value = false;
+    otherController.clear();
+    otherRootRuleController.clear();
+    otherMoodController.clear();
+    mobilityConcerns.clear();
+    showSeatingOther.value = false;
+    seatingOther.clear();
+    showAssistanceOther.value = false;
+    assistanceOther.clear();
     anythingElse.clear();
   }
 

@@ -220,9 +220,11 @@ class ChatGroupSetting extends StatelessWidget {
                                           isHost: member["userId"] == adminId,
                                         ),
 
+
                                         if (index != members.length - 1)
                                           const Divider(height: 1),
                                       ],
+
                                     );
                                   },
                                 ),

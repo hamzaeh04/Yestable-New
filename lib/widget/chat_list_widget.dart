@@ -264,18 +264,32 @@ Widget groupImage(String? imagePath, bool isDisabled) {
         ),
       ),
       errorWidget: (context, url, error) {
-        return Image.asset(
-          "assets/png/admin_home_foodpic.png",
+        return Container(
+          height: 6.h,
           width: 12.w,
-          fit: BoxFit.cover,
+          decoration: BoxDecoration(
+              color: greyBorderColor,
+              borderRadius: BorderRadius.circular(12.sp)
+          ),
+          child: Icon(
+            Icons.group,
+            color: Colors.grey,
+          ),
         );
       },
     );
   } else {
-    imageWidget = Image.asset(
-      "assets/png/admin_home_foodpic.png",
+    imageWidget = Container(
+      height: 6.h,
       width: 12.w,
-      fit: BoxFit.cover,
+      decoration: BoxDecoration(
+          color: greyBorderColor,
+          borderRadius: BorderRadius.circular(12.sp)
+      ),
+      child: Icon(
+        Icons.group,
+        color: Colors.grey,
+      ),
     );
   }
 

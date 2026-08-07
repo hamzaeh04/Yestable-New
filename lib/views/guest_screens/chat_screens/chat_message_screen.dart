@@ -101,19 +101,31 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                                     color: Colors.white,
                                   ),
                                 ),
-                                errorWidget: (context, url, error) => Image.asset(
-                                  "assets/png/chat_images/chat_msg_image.png",
+                                errorWidget: (context, url, error) => Container(
                                   height: 6.h,
-                                  width: 15.w,
-                                  fit: BoxFit.cover,
+                                  width: 14.w,
+                                  decoration: BoxDecoration(
+                                    color: greyBorderColor,
+                                    borderRadius: BorderRadius.circular(12.sp)
+                                  ),
+                                  child: Icon(
+                                    Icons.group,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               )
-                                  : Image.asset(
-                                "assets/png/chat_images/chat_msg_image.png",
+                                  : Container(
                                 height: 6.h,
-                                width: 15.w,
-                                fit: BoxFit.cover,
-                              ),
+                                width: 14.w,
+                                decoration: BoxDecoration(
+                                    color: greyBorderColor,
+                                    borderRadius: BorderRadius.circular(12.sp)
+                                ),
+                                    child: Icon(
+                                                                    Icons.group,
+                                                                    color: Colors.grey,
+                                                                  ),
+                                  ),
                             ),
 
                             Positioned(
@@ -519,8 +531,12 @@ SizedBox(height: 2.h,),
                                                 children: [
                                                   /// PROFILE IMAGE
                                                   ClipOval(
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: "${baseService.baseURL}${message["senderProfile"]}",
+                                                    child: (message["senderProfile"] != null &&
+                                                        (message["senderProfile"] as String).isNotEmpty)
+                                                        ? CachedNetworkImage(
+                                                      imageUrl: (message["senderProfile"] as String).startsWith("http")
+                                                          ? message["senderProfile"]
+                                                          : "${baseService.baseURL}${message["senderProfile"]}",
                                                       height: 6.h,
                                                       width: 12.w,
                                                       fit: BoxFit.cover,
@@ -537,12 +553,18 @@ SizedBox(height: 2.h,),
 
                                                       errorWidget: (context, url, error) {
                                                         return Image.asset(
-                                                          "assets/png/chat_images/chat_profile_img.png",
-                                                          height: 6.h,
-                                                          width: 12.w,
-                                                          fit: BoxFit.cover,
+                                                          "assets/png/bottom_bar_icons/profile_icon.png",
+                                                          height: 4.5.h,
+                                                          width: 8.w,
+                                                          fit: BoxFit.contain,
                                                         );
                                                       },
+                                                    )
+                                                        : Image.asset(
+                                                      "assets/png/bottom_bar_icons/profile_icon.png",
+                                                      height: 4.5.h,
+                                                      width: 8.w,
+                                                      fit: BoxFit.contain,
                                                     ),
                                                   ),
 

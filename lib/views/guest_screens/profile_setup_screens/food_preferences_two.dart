@@ -20,7 +20,9 @@ import '../../../widget/extra_assitance_dropdown.dart';
 class FoodPreferencesTwo extends StatelessWidget {
   FoodPreferencesTwo({super.key}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.isEdit.value == true) {
+      // See allergies_dietry_screen.dart: don't prefill from the guest's
+      // own saved profile when setting a MEMBER's preferences.
+      if (controller.isEdit.value == true && controller.isPreferences.value != true) {
         controller.populateFoodPreferencesTwo();
       }
     });

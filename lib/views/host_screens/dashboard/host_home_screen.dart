@@ -102,12 +102,38 @@ class AdminHomeScreen extends StatelessWidget {
     //   }
     // });
     final showDialog = Get.arguments;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!controller.isProfileComplete.value && !controller.hasCheckedProfile.value) {
-        controller.hasCheckedProfile.value = true;
+
+    // profileCompleted comes from the fetched profile (fetchMyProfile(),
+    // kicked off unawaited at app boot), not the dead isProfileComplete flag
+    // which was never assigned anywhere and always read as false. Since the
+    // fetch may still be in flight when this runs, only act once we know
+    // for sure it's false — re-checking via `ever` when the model arrives —
+    // rather than showing the dialog on an unloaded/unknown state.
+    //
+    // hasCheckedProfile locks as soon as we get a definitive (non-null)
+    // answer, whether or not the dialog gets shown — otherwise, when the
+    // profile IS complete, the lock never engages and every later re-run of
+    // this callback (e.g. a rebuild triggered by switching tabs) re-checks
+    // from scratch, which is what made the dialog reappear on every tab
+    // switch instead of at most once per app open.
+    void maybeShowCompleteProfileDialog() {
+      if (controller.hasCheckedProfile.value) return;
+      final profileCompleted =
+          controller.controller.getMyProfileModel.value?.data?.profileCompleted;
+      if (profileCompleted == null) return; // not loaded yet, wait for `ever`
+      controller.hasCheckedProfile.value = true;
+      if (profileCompleted == false && context.mounted) {
         completeGuestProfileDialog(context);
       }
-      if(showDialog == true){
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      maybeShowCompleteProfileDialog();
+      if (!controller.completeProfileWorkerRegistered) {
+        controller.completeProfileWorkerRegistered = true;
+        ever(controller.controller.getMyProfileModel, (_) => maybeShowCompleteProfileDialog());
+      }
+      if (showDialog == true && context.mounted) {
         completeGuestProfileDialog(context);
       }
     });
@@ -1045,16 +1071,16 @@ class AdminHomeScreen extends StatelessWidget {
                                                 SizedBox(height: 2.h),
 
                                                 // Load More Button
-                                                if (eventController.currentPage < eventController.totalPages)
+                                                if (eventController.myEventsCurrentPage.value < eventController.myEventsTotalPages.value)
                                                   ElevatedButton(
-                                                    onPressed: eventController.isLoadingMore.value
+                                                    onPressed: eventController.isLoadingMoreMyEvents.value
                                                         ? null
                                                         : () => eventController.getMyEvents(loadMore: true),
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor: greenColor,
                                                       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.5.h),
                                                     ),
-                                                    child: eventController.isLoadingMore.value
+                                                    child: eventController.isLoadingMoreMyEvents.value
                                                         ? SizedBox(
                                                       height: 2.h,
                                                       width: 2.h,

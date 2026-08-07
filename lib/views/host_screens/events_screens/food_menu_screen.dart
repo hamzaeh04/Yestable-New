@@ -566,6 +566,7 @@ Widget _menusHorizontalList({required String type}) {
                 color: darkGreyColor,
                 textAlign: TextAlign.center,
               ),
+
               SizedBox(height: 1.2.h),
               InkWell(
                 onTap: () => eventController.getMenus(),

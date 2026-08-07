@@ -43,7 +43,8 @@ class EventComfortOne extends StatelessWidget {
         setOpt(eventComfort?.aslInterpreter,   4);
         setOpt(eventComfort?.veganMenu,        5);
         setOpt(eventComfort?.restroom,         6);
-        print("${eventComfort?.quietSpace} ${eventComfort?.largerSeating} ${eventComfort?.wheelChairAccess} ${eventComfort?.aslInterpreter} ${eventComfort?.veganMenu} ${eventComfort?.restroom}");
+        setOpt(guestAware?.guestContact,         14);
+        print("--- HEHE --- ${eventComfort?.quietSpace} ${eventComfort?.largerSeating} ${eventComfort?.wheelChairAccess} ${eventComfort?.aslInterpreter} ${eventComfort?.veganMenu} ${eventComfort?.restroom} ${guestAware?.guestContact}");
       }
     });
 

@@ -392,7 +392,7 @@ class HomeScreen extends StatelessWidget {
                               );
                             }
                             return SizedBox(
-                              height: 42.h,
+                              height: 43.5.h,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -428,19 +428,9 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: isHost == false ? FloatingActionButton(
-        backgroundColor: blueColor,
-        foregroundColor: whiteColor,
-        shape: const CircleBorder(),
-        onPressed: () async {
-          showRedirectingDialog(context);
-        },
-        child: Image.asset(
-          "assets/png/floating_bar_icon.png",
-          height: 6.h,
-          width: 6.w,
-        ),
-      ): buildCreateNewEventButton(context),
+
+
+      floatingActionButton: isHost == false ? SizedBox.shrink() : buildCreateNewEventButton(context),
       floatingActionButtonLocation: isHost == false ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.centerFloat,
     );
   }
