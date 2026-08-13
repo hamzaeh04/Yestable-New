@@ -125,7 +125,8 @@ class FoodMenuCard extends StatelessWidget {
                             onTap: () async {
                               if (eventController.isAiMenuAdded(menuItem.id)) return;
                               eventController.menuTitle.text = title.toString();
-                              eventController.selectedType.value = subtitle;
+                              eventController.selectedType.value =
+                                  eventController.normalizeMenuType(subtitle);
                               eventController.menuDescription.text = desc.toString();
                               eventController.selectedMealCategory.value = (menuItem.mealCategory ?? <String>[])
                                   .map((tag) => {

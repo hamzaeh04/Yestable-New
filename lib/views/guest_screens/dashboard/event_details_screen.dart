@@ -718,7 +718,7 @@ class EventDetailsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 5.h),
+                  SizedBox(height: 15.h),
                 ],
               );
             }),

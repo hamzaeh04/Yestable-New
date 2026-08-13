@@ -20,7 +20,7 @@ import 'package:yestable/model/get_my_event_model.dart';
 import '../core/services/apiendpoints.dart';
 import '../core/services/base_services.dart';
 import '../core/services/firebase_messaging/messaging_service.dart';
-import '../model/get_all_event_model.dart';
+import '../model/get_all_event_model.dart' hide Event;
 import '../model/get_event_allergen_list.dart';
 import '../model/get_event_by_id_model.dart' show EventDetailsResponse;
 import '../model/get_menu_model.dart';
@@ -290,6 +290,29 @@ class EventController extends GetxController {
   RxList<Map<String, String>> selectedMealCategory =
       <Map<String, String>>[].obs; // List of categories
   final type = ["Appetizers", "Main Course", "Drinks"];
+
+  // Event Details/Publish screens filter menus by exact match against
+  // `type` above. AI suggestions come back with free-text types (e.g.
+  // "Starter", "Entree", "Beverage") that never match those three strings,
+  // so an AI-picked item would save fine but never show under any tab.
+  // Map whatever the AI returns onto one of the three canonical categories.
+  String normalizeMenuType(String? aiType) {
+    final t = (aiType ?? '').toLowerCase();
+    if (t.contains('drink') ||
+        t.contains('beverage') ||
+        t.contains('cocktail') ||
+        t.contains('wine') ||
+        t.contains('beer')) {
+      return "Drinks";
+    }
+    if (t.contains('appetizer') ||
+        t.contains('starter') ||
+        t.contains('snack') ||
+        t.contains('small plate')) {
+      return "Appetizers";
+    }
+    return "Main Course";
+  }
   final List<Map<String, String>> mealCategory = [
     {
       "name": "Vegetarian",
@@ -464,7 +487,7 @@ class EventController extends GetxController {
         "reminderNotification": "true",
         "displayMenu": (selectedMenus.isNotEmpty).toString(),
 
-        // ✅ Proper nested object format
+        // ✅ Nested location (matches editEvent fix)
         "location[type]": "Point",
         "location[coordinates][0]": lng.toString(),
         "location[coordinates][1]": lat.toString(),
@@ -701,9 +724,13 @@ class EventController extends GetxController {
       // Add fields
       request.fields.addAll(fields);
 
-      // Add menus array
+      // Add menus array. request.fields is a Map<String, String>, so
+      // repeatedly setting the same 'menus[]' key here would silently
+      // overwrite all but the last selected menu. Add each id as its own
+      // multipart part instead — request.files is a List and preserves
+      // duplicate field names correctly.
       for (var menu in menus) {
-        request.fields.addAll({'menus[]': menu});
+        request.files.add(http.MultipartFile.fromString('menus[]', menu));
       }
 
       // Add image
@@ -974,9 +1001,12 @@ class EventController extends GetxController {
       // Add normal fields
       request.fields.addAll(fields);
 
-      // Add mealCategory as array
+      // Add mealCategory as array. Same fields-map collision as menus[]
+      // above — use separate multipart parts so every category survives.
       for (var category in mealCategories) {
-        request.fields['mealCategory[]'] = category;
+        request.files.add(
+          http.MultipartFile.fromString('mealCategory[]', category),
+        );
       }
 
       // Add image
@@ -1390,24 +1420,17 @@ class EventController extends GetxController {
       if (myEventsCurrentPage.value >= myEventsTotalPages.value) return; // No more pages
       isLoadingMoreMyEvents.value = true;
       myEventsCurrentPage.value += 1;
-    } else {
-      myEventsCurrentPage.value = 1; // Reset for fresh load
-      isLoadingMyEvents.value = true;
-    }
 
-    try {
-      final response = await baseService.baseGetAPI(
-        ApiEndPoints.myEvents(myEventsCurrentPage.value),
-        loading: loadMore ? false : true,
-      );
+      try {
+        final response = await baseService.baseGetAPI(
+          ApiEndPoints.myEvents(myEventsCurrentPage.value),
+          loading: false,
+        );
 
-      if (response != null && response['success'] == true) {
-        final newData = GetMyEventModel.fromJson(response);
+        if (response != null && response['success'] == true) {
+          final newData = GetMyEventModel.fromJson(response);
+          myEventsTotalPages.value = newData.data?.totalPages ?? 1;
 
-        myEventsTotalPages.value = newData.data?.totalPages ?? 1;
-
-        if (loadMore) {
-          // Append new events to existing list
           var currentData = myEventsModel.value;
           currentData?.data?.data?.addAll(newData.data?.data ?? []);
           // Newest-created events first, regardless of the backend's order.
@@ -1417,13 +1440,38 @@ class EventController extends GetxController {
           myEventsModel.value = currentData;
           myEventsModel.refresh();
         } else {
-          newData.data?.data?.sort(
-            (a, b) => b.createdAt.compareTo(a.createdAt),
-          );
-          myEventsModel.value = newData;
+          Utils.showToast(response['message'] ?? "Failed to fetch events", true);
         }
+      } catch (e, stackTrace) {
+        Utils.showToast("Something went wrong: $e", true);
+        print("Error in getMyEvents(): $e");
+        print(stackTrace);
+      } finally {
+        isLoadingMoreMyEvents.value = false;
+      }
+      return;
+    }
 
-        // Utils.showToast(response['message'] ?? "Events fetched successfully", false);
+    // Fresh load: just page 1, sorted locally by createdAt. Note the
+    // backend's page 1 isn't guaranteed to contain the most recently
+    // created event (its default list order isn't by createdAt) — a
+    // brand-new event could land on a later page, in which case it'll
+    // bubble to the top once Load More merges that page in below.
+    myEventsCurrentPage.value = 1;
+    isLoadingMyEvents.value = true;
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.myEvents(myEventsCurrentPage.value),
+        loading: true,
+      );
+
+      if (response != null && response['success'] == true) {
+        final newData = GetMyEventModel.fromJson(response);
+        myEventsTotalPages.value = newData.data?.totalPages ?? 1;
+        newData.data?.data?.sort(
+          (a, b) => b.createdAt.compareTo(a.createdAt),
+        );
+        myEventsModel.value = newData;
       } else {
         Utils.showToast(response['message'] ?? "Failed to fetch events", true);
       }
@@ -1433,7 +1481,6 @@ class EventController extends GetxController {
       print(stackTrace);
     } finally {
       isLoadingMyEvents.value = false;
-      isLoadingMoreMyEvents.value = false;
     }
   }
 

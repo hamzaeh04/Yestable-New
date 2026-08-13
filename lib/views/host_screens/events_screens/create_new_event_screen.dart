@@ -616,25 +616,26 @@ class CreateNewEventScreen extends StatelessWidget {
                                         ),
                                       );
                                     }
+
                                     return Row(
                                       children: [
                                         Expanded(
                                           child: customProfileField(
                                             ontap: () async {
-                                              await eventController
-                                                  .locationController
-                                                  .getUserLocation();
-                                              eventController
-                                                  .locationController
-                                                  .addressController
-                                                  .text = eventController
-                                                  .locationController
-                                                  .address
-                                                  .value;
+                                              // await eventController
+                                              //     .locationController
+                                              //     .getUserLocation();
+                                              // eventController
+                                              //     .locationController
+                                              //     .addressController
+                                              //     .text = eventController
+                                              //     .locationController
+                                              //     .address
+                                              //     .value;
                                             },
 
 
-                                            readonly: true,
+                                            // readonly: true,
                                             hint:
                                                 "Address",
                                             controller:
@@ -647,18 +648,18 @@ class CreateNewEventScreen extends StatelessWidget {
                                         Padding(
                                           padding: EdgeInsets.only(right: 3.w),
                                           child: InkWell(
-                                            onTap: () async {
-                                              await eventController
-                                                  .locationController
-                                                  .getUserLocation();
-                                              eventController
-                                                  .locationController
-                                                  .addressController
-                                                  .text = eventController
-                                                      .locationController
-                                                      .address
-                                                      .value;
-                                            },
+                                            // onTap: () async {
+                                            //   await eventController
+                                            //       .locationController
+                                            //       .getUserLocation();
+                                            //   eventController
+                                            //       .locationController
+                                            //       .addressController
+                                            //       .text = eventController
+                                            //           .locationController
+                                            //           .address
+                                            //           .value;
+                                            // },
                                             child: Image.asset(
                                               'assets/png/icons/location_pointer.png',
                                               width: 6.w,
