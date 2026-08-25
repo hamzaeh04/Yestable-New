@@ -76,6 +76,18 @@ class ApiEndPoints{
     return '/events/${eventId}/join';
   }
 
+  static String ignoreEventLink(String eventId) {
+    return '/events/${eventId}/ignore-link';
+  }
+
+  static String pendingInvitations() {
+    return '/invitations/my/pending';
+  }
+
+  static String respondToInvitation(String invitationId) {
+    return '/invitations/${invitationId}/respond';
+  }
+
   static String getAllergenList(String eventId){
     return "/events/${eventId}/allergen-counts";
   }

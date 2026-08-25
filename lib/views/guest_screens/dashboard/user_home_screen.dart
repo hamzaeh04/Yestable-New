@@ -58,6 +58,15 @@ class HomeScreen extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                     onTap: () {
+                      Get.toNamed("viewallinvitation");
+                    },
+                    child: homeIconWidget(
+                      imagePath: "assets/png/icons/add-user.png",
+                    ),
+                  ),
+                  SizedBox(width: 2.w,),
+                  InkWell(
+                    onTap: () {
                       Get.toNamed("mynotificationscreen");
                     },
                     child: homeIconWidget(icon: Icons.notifications),

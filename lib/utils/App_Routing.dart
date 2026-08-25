@@ -16,6 +16,7 @@ import '../views/guest_screens/chat_screens/chat_group_setting.dart';
 import '../views/guest_screens/chat_screens/new_message_screen.dart';
 import '../views/guest_screens/chat_screens/profile_chat_message.dart';
 import '../views/guest_screens/dashboard/my_notification_screen.dart';
+import '../views/guest_screens/dashboard/viewall_invitation_screen.dart';
 import '../views/guest_screens/profile_setup_screens/add_profile_picture.dart';
 import '../views/guest_screens/auth_screens/signup_screen.dart';
 import '../views/guest_screens/profile_setup_screens/allergies_dietry_screen.dart';
@@ -84,6 +85,7 @@ class AppRoutes {
     GetPage(name: '/yourrootandrules', page: () => YourRootAndRules()),
     GetPage(name: '/adminhomescreen', page: () => AdminHomeScreen()),
     GetPage(name: '/privacypolicy', page: () => PrivacyPolicy()),
+    GetPage(name: '/viewallinvitation', page: () => ViewallInvitationScreen()),
 
   ];
 }

@@ -141,6 +141,9 @@ class BaseService {
       // ---------- SUCCESS ----------
       if (response.statusCode >= 200 && response.statusCode < 300) {
         var jsonData = json.decode(response.body);
+        if (jsonData is List) {
+          return {"success": true, "data": jsonData};
+        }
         return {"success": true, ...jsonData};
       }
 

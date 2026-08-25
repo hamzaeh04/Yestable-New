@@ -29,9 +29,11 @@
 //
 import 'package:get/get.dart';
 import 'package:app_links/app_links.dart';
+import 'package:path/path.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
+import '../widget/guest_update_received.dart';
 
 class WelcomeController extends GetxController {
   final String nextRoute;
@@ -183,6 +185,7 @@ class WelcomeController extends GetxController {
            if (Get.isRegistered<NavigationController>()) {
              Get.find<NavigationController>().checkDeepLinkAndShowDialog();
            }
+          // guestUpdateReceived(controller.context);
         } else {
            Get.offAllNamed("/bottomnavigationbar");
         }

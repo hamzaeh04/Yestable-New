@@ -13,6 +13,7 @@ import 'package:yestable/views/guest_screens/dashboard/my_notification_screen.da
 import 'package:yestable/views/guest_screens/dashboard/search_screen.dart';
 import 'package:yestable/views/guest_screens/profile_setup_screens/host_profile_screen.dart';
 import 'package:yestable/views/host_screens/dashboard/host_home_screen.dart';
+import 'package:yestable/widget/guest_update_received.dart';
 
 import '../../../controllers/notification_controller.dart';
 import '../dashboard/my_profile_screen.dart';
@@ -75,6 +76,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       eventController.getAllEvents();
       controller.isUser.value == false ? eventController.getMyEvents(): null;
       controller.checkDeepLinkAndShowDialog();
+      // guestUpdateReceived(context);
 
     });
   }
@@ -101,7 +103,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     EventScreen(),
     ChatListScreen(),
     MyProfileScreen(),
-    ViewallInvitationScreen(),
+    // ViewallInvitationScreen(),
     // MyNotificationScreen(),
     // SearchScreen(),
     // AddFreindScreen(),

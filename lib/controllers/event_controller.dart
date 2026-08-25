@@ -24,6 +24,7 @@ import '../model/get_all_event_model.dart' hide Event;
 import '../model/get_event_allergen_list.dart';
 import '../model/get_event_by_id_model.dart' show EventDetailsResponse;
 import '../model/get_menu_model.dart';
+import '../model/pending_invitation_model.dart' hide GuestAware, EventComfort;
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
 import '../utils/utility.dart';
@@ -110,6 +111,7 @@ class EventController extends GetxController {
   Rxn<GetAllEventsModel> getAllEventsModel = Rxn<GetAllEventsModel>();
   Rxn<GetMyEventModel> myEventsModel = Rxn<GetMyEventModel>();
   Rxn<GetMenuModel> getMenuModel = Rxn<GetMenuModel>();
+  Rxn<PendingInvitationModel> pendingInvitationModel = Rxn<PendingInvitationModel>();
   Rxn<AiMenu> getAiMenuModel = Rxn<AiMenu>();
   final RxBool isAiMenuLoading = false.obs;
   final RxString aiMenuError = ''.obs;
@@ -1499,6 +1501,55 @@ class EventController extends GetxController {
 
     // Refresh events after successful join
     await getAllEvents();
+
+    return responseMap;
+  }
+
+  Future<Map<String, dynamic>?> ignoreEventLink(String eventId) async {
+    final body = {};
+
+    final responseMap = await baseService.basePostAPI(
+      ApiEndPoints.ignoreEventLink(eventId),
+      body,
+      loading: true,
+    );
+
+    return responseMap;
+  }
+
+  final RxBool isLoadingPendingInvitations = false.obs;
+
+  Future<void> getPendingInvitations() async {
+    isLoadingPendingInvitations.value = true;
+
+    final responseMap = await baseService.baseGetAPI(
+      ApiEndPoints.pendingInvitations(),
+    );
+
+    isLoadingPendingInvitations.value = false;
+
+    if (responseMap["success"] != true) return;
+
+    pendingInvitationModel.value = PendingInvitationModel.fromJson(responseMap);
+  }
+
+  Future<Map<String, dynamic>?> respondToInvitation(
+    String invitationId,
+    String status,
+  ) async {
+    final responseMap = await baseService.basePatchAPI(
+      ApiEndPoints.respondToInvitation(invitationId),
+      body: {"status": status},
+      loading: true,
+    );
+
+    if (responseMap["success"] == true) {
+      pendingInvitationModel.value?.data
+          ?.removeWhere((invitation) => invitation.id == invitationId);
+      pendingInvitationModel.refresh();
+      getAllEvents();
+
+    }
 
     return responseMap;
   }

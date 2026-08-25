@@ -169,15 +169,15 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
 
                   const Spacer(),
-                  // InkWell(
-                  //   onTap: () {
-                  //     // controller.goTSearchScreen();
-                  //   },
-                  //   child: homeIconWidget(
-                  //     imagePath: "assets/png/icons/search_icon.png",
-                  //   ),
-                  // ),
-                  // SizedBox(width: 2.w),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed("viewallinvitation");
+                    },
+                    child: homeIconWidget(
+                      imagePath: "assets/png/icons/add-user.png",
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
                   InkWell(
                     onTap: () {
                       Get.toNamed("mynotificationscreen");

@@ -718,9 +718,7 @@ class GuestAware {
       json['mayGuestsContact'] as bool? ?? false,
       itemContaining: json['itemContaining'] is String ? json['itemContaining'] as String : null,
       others: json['others'] is String ? json['others'] as String : null,
-      // Backend can send `false` here instead of a string when unset —
-      // treat anything that isn't actually a String as "not set".
-      guestContact: json['guestContact'] as bool ? json['guestContact'] as bool : null,
+      guestContact: json['guestContact'] as bool?,
     );
   }
 

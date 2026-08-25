@@ -13,6 +13,7 @@ import '../core/services/firebase_messaging/messaging_service.dart';
 import '../outh_file/local_db_key.dart';
 import '../utils/shared_prefrences_methods.dart';
 import '../widget/complete_guest_dialog.dart';
+import '../widget/guest_update_received.dart';
 import '../widget/update_sent_sucessfull_dialog.dart';
 
 class NavigationController extends GetxController {
@@ -181,8 +182,9 @@ class NavigationController extends GetxController {
       print("Error fetching event details for host check: $e");
     }
 
-    final response = await eventController.eventJoin(eventId);
-    return response;
+    // Eligibility only — the actual join API call happens when the guest
+    // explicitly taps "Join" in the invitation dialog.
+    return {"success": true};
   }
 
 
@@ -200,6 +202,8 @@ class NavigationController extends GetxController {
       if (Get.context == null) return;
 
       String eventId = prefs.getString("deepLinkEventId") ?? "";
+      await eventController.getEventById(eventId);
+
 
       // ✅ Now message/success comes from API & host check
       final response = await checkIfAlreadyJoined(eventId);
@@ -209,43 +213,14 @@ class NavigationController extends GetxController {
       final bool success = response["success"] == true;
       final String message = response["message"] ?? (success ? "Joined event successfully" : "Failed to join event");
 
-      showDialog(
-        context: Get.context!,
-        builder: (_) {
-          return Dialog(
-            backgroundColor: backgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.sp),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    success ? Icons.check_circle : Icons.error,
-                    size: 50,
-                    color: success ? Colors.green : Colors.red,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    success ? "Success" : "Failed",
-                    style: TextStyle(fontSize: 20.sp),
-                  ),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center),
-                ],
-              ),
-            ),
-          );
-        },
-      );
+      guestUpdateReceived(Get.context!, success: success, eventId: eventId, controller: controller);
 
-      if (!success) return;
 
-      final userName = pref.getString(LocalDBKeys.USERFULLNAME);
-      final userId = pref.getString(LocalDBKeys.USERID);
-      messagingService.joinGroup(groupId: eventId, userName: userName.toString(), userId: userId.toString(),memberProfile: controller.getMyProfileModel.value?.data?.profilePic ?? '');
+      // if (!success) return;
+      //
+      // final userName = pref.getString(LocalDBKeys.USERFULLNAME);
+      // final userId = pref.getString(LocalDBKeys.USERID);
+      // messagingService.joinGroup(groupId: eventId, userName: userName.toString(), userId: userId.toString(),memberProfile: controller.getMyProfileModel.value?.data?.profilePic ?? '');
     });
   }
 

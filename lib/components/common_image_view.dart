@@ -29,7 +29,7 @@ class CommonImageView extends StatelessWidget {
     this.width,
     this.color,
     this.fit = BoxFit.fill,
-    this.placeHolder = 'assets/png/image_not_found.jpg',
+    this.placeHolder = 'assets/png/dinner_profile.png',
   });
 
   @override
