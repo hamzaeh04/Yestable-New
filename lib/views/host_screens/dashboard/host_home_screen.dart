@@ -1185,12 +1185,12 @@ class AdminHomeScreen extends StatelessWidget {
                               color: blackColor,
                             ),
                           ),
-                          customText(
-                            text: "(${joinedGuest ?? 0}/${estimatedGuest ?? 0})",
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: blackColor,
-                          ),
+                          // customText(
+                          //   text: "(Confirmed Guests: ${joinedGuest ?? 0})",
+                          //   fontSize: 14.sp,
+                          //   fontWeight: FontWeight.w400,
+                          //   color: blackColor,
+                          // ),
                         ],
                       ),
                       customText(

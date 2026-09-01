@@ -13,6 +13,7 @@ import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/views/guest_screens/profile_setup_screens/host_profile_reviews.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_posted_dialog.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../outh_file/local_db_key.dart';
@@ -44,7 +45,8 @@ class EventPublishScreen extends StatelessWidget {
     });
 
 
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -581,7 +583,7 @@ class EventPublishScreen extends StatelessWidget {
                                     tabs: const [
                                       Tab(text: "Appetizers"),
                                       Tab(text: "Main Course"),
-                                      Tab(text: "Drinks"),
+                                      Tab(text: "Desserts & Others"),
                                     ],
                                   ),
                                   SizedBox(height: 1.h),
@@ -596,7 +598,7 @@ class EventPublishScreen extends StatelessWidget {
                                               [
                                                 "Appetizers",
                                                 "Main Course",
-                                                "Drinks",
+                                                "Desserts & Others",
                                               ][tabController.index];
                                           final filteredMenus =
                                               data?.menus
@@ -772,6 +774,7 @@ class EventPublishScreen extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

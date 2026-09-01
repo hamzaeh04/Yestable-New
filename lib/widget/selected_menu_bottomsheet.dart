@@ -60,7 +60,7 @@ void selectedMenuBottomSheet(BuildContext context) {
                   tabs: const [
                     Tab(text: "Appetizers"),
                     Tab(text: "Main Course"),
-                    Tab(text: "Drinks"),
+                    Tab(text: "Desserts & Others"),
                   ],
                 ),
               ),
@@ -75,7 +75,7 @@ void selectedMenuBottomSheet(BuildContext context) {
                     children: [
                       _selectedMenusTab(eventController, "Appetizers"),
                       _selectedMenusTab(eventController, "Main Course"),
-                      _selectedMenusTab(eventController, "Drinks"),
+                      _selectedMenusTab(eventController, "Desserts & Others"),
                     ],
                   ),
                 ),

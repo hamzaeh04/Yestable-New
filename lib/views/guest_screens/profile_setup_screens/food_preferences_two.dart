@@ -11,7 +11,7 @@ import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/preferences_widget.dart';
 import 'package:yestable/widget/privacy_dialog.dart';
-import 'package:yestable/widget/update_sent_sucessfull_dialog.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -56,7 +56,9 @@ class FoodPreferencesTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -468,6 +470,7 @@ class FoodPreferencesTwo extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

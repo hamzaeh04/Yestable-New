@@ -139,12 +139,12 @@ class EventScreen extends StatelessWidget {
                                       : "132 My Street, Kingston, New York 12486";
 
                                   return Padding(
-                                    padding: EdgeInsets.only(bottom: 2.h),
+                                    padding: EdgeInsets.only(bottom: 2.h, left: 5.w, right: 5.w),
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                          padding: EdgeInsets.symmetric(horizontal: 0.w),
                                           child: Container(
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(25.sp),

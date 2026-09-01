@@ -33,7 +33,7 @@ class EventData {
   final String? parkingDetails;
   final String? addNote;
   final bool? reminderNotification;
-  final List<dynamic>? members;
+  final List<Member>? members;
   final List<Menu>? menus;
   final Host? host;
   final bool? reminderSent;
@@ -91,7 +91,9 @@ class EventData {
       parkingDetails: json['parkingDetails'],
       addNote: json['addNote'],
       reminderNotification: json['reminderNotification'],
-      members: json['members'],
+      members: (json['members'] as List?)
+          ?.map((e) => Member.fromJson(e))
+          .toList(),
       menus: (json['menus'] as List?)?.map((e) => Menu.fromJson(e)).toList(),
       host: json['host'] != null ? Host.fromJson(json['host']) : null,
       reminderSent: json['reminderSent'],
@@ -121,6 +123,170 @@ class Location {
       type: json['type'],
       coordinates: (json['coordinates'] as List?)
           ?.map((e) => (e as num).toDouble())
+          .toList(),
+    );
+  }
+}
+
+class Member {
+  final String? id;
+  final String? email;
+  final String? name;
+  final bool? iAmHosting;
+  final bool? isProfilePublic;
+  final bool? notificationOpen;
+  final int? onboardingStep;
+  final bool? profileCompleted;
+  final bool? isOnboarding;
+  final bool? isNotificationAllowed;
+  final List<dynamic>? fcmTokens;
+  final List<dynamic>? members;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? v;
+  final String? bio;
+  final String? location;
+  final String? profilePic;
+  final String? pronoun;
+  final String? username;
+  final MemberPreferences? preferences;
+  final String? invitationStatus;
+
+  Member({
+    this.id,
+    this.email,
+    this.name,
+    this.iAmHosting,
+    this.isProfilePublic,
+    this.notificationOpen,
+    this.onboardingStep,
+    this.profileCompleted,
+    this.isOnboarding,
+    this.isNotificationAllowed,
+    this.fcmTokens,
+    this.members,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+    this.bio,
+    this.location,
+    this.profilePic,
+    this.pronoun,
+    this.username,
+    this.preferences,
+    this.invitationStatus,
+  });
+
+  factory Member.fromJson(Map<String, dynamic> json) {
+    return Member(
+      id: json['_id'],
+      email: json['email'],
+      name: json['name'],
+      iAmHosting: json['iAmHosting'],
+      isProfilePublic: json['isProfilePublic'],
+      notificationOpen: json['notificationOpen'],
+      onboardingStep: json['onboardingStep'],
+      profileCompleted: json['profileCompleted'],
+      isOnboarding: json['isOnboarding'],
+      isNotificationAllowed: json['isNotificationAllowed'],
+      fcmTokens: json['fcmTokens'],
+      members: json['members'],
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt'])
+          : null,
+      v: json['__v'],
+      bio: json['bio'],
+      location: json['location'],
+      profilePic: json['profilePic'],
+      pronoun: json['pronoun'],
+      username: json['username'],
+      preferences: json['preferences'] != null
+          ? MemberPreferences.fromJson(json['preferences'])
+          : null,
+        invitationStatus: json['invitationStatus'],
+    );
+  }
+}
+
+class MemberPreferences {
+  final HostCommonAllergens? commonAllergens;
+  final List<HostFavMood>? favMood;
+  final HostPlate? plate;
+  final ExtraAssistance? extraAssistance;
+  final bool? quietArea;
+  final SeatingRequirement? seatingRequirement;
+  final HostYumYuck? yumYuck;
+  final String? mobilityConcerns;
+  final String? needAnythingElse;
+  final bool? hostingAnEvent;
+
+  MemberPreferences({
+    this.commonAllergens,
+    this.favMood,
+    this.plate,
+    this.extraAssistance,
+    this.quietArea,
+    this.seatingRequirement,
+    this.yumYuck,
+    this.mobilityConcerns,
+    this.needAnythingElse,
+    this.hostingAnEvent,
+  });
+
+  factory MemberPreferences.fromJson(Map<String, dynamic> json) {
+    return MemberPreferences(
+      commonAllergens: json['commonAllergens'] != null
+          ? HostCommonAllergens.fromJson(json['commonAllergens'])
+          : null,
+      favMood: (json['favMood'] as List?)
+          ?.map((e) => HostFavMood.fromJson(e))
+          .toList(),
+      plate: json['plate'] != null
+          ? HostPlate.fromJson(json['plate'])
+          : null,
+      extraAssistance: json['extraAssistance'] != null
+          ? ExtraAssistance.fromJson(json['extraAssistance'])
+          : null,
+      quietArea: json['quietArea'],
+      seatingRequirement: json['seatingRequirement'] != null
+          ? SeatingRequirement.fromJson(json['seatingRequirement'])
+          : null,
+      yumYuck: json['yumYuck'] != null
+          ? HostYumYuck.fromJson(json['yumYuck'])
+          : null,
+      mobilityConcerns: json['mobilityConcerns'],
+      needAnythingElse: json['needAnythingElse'],
+      hostingAnEvent: json['hostingAnEvent'],
+    );
+  }
+}
+
+class ExtraAssistance {
+  final List<String>? options;
+
+  ExtraAssistance({this.options});
+
+  factory ExtraAssistance.fromJson(Map<String, dynamic> json) {
+    return ExtraAssistance(
+      options: (json['options'] as List?)
+          ?.map((e) => e.toString())
+          .toList(),
+    );
+  }
+}
+
+class SeatingRequirement {
+  final List<String>? options;
+
+  SeatingRequirement({this.options});
+
+  factory SeatingRequirement.fromJson(Map<String, dynamic> json) {
+    return SeatingRequirement(
+      options: (json['options'] as List?)
+          ?.map((e) => e.toString())
           .toList(),
     );
   }
@@ -425,4 +591,5 @@ class GuestAware {
       itemContaining: json['itemContaining'],
     );
   }
+
 }

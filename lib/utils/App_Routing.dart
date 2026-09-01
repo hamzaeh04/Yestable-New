@@ -37,6 +37,7 @@ import '../views/host_screens/events_screens/event_comfort_two.dart';
 import '../views/host_screens/dashboard/new_guest_list_screen.dart';
 import '../views/host_screens/events_screens/event_publish_screen.dart';
 import '../views/host_screens/events_screens/food_menu_screen.dart';
+import '../views/host_screens/events_screens/guest_profile_screen.dart';
 import '../views/host_screens/host_profile_setup_screens/add_host_profile_picture.dart';
 import '../views/host_screens/host_profile_setup_screens/allergies_host_screen.dart';
 import '../views/host_screens/host_profile_setup_screens/allow_host_notification_screen.dart';
@@ -71,7 +72,7 @@ class AppRoutes {
     GetPage(name: '/createneweventscreen', page: () => CreateNewEventScreen()),
     GetPage(name: '/eventpublishscreen', page: () => EventPublishScreen()),
     GetPage(name: '/newguestlistscreen', page: () => NewGuestListScreen()),
-    // GetPage(name: '/guestlistscreen', page: () => GuestListScreen()),
+    GetPage(name: '/guestprofilescreen', page: () => GuestProfileScreen()),
     GetPage(name: '/eventcomfortone', page: () => EventComfortOne()),
     GetPage(name: '/eventcomforttwo', page: () => EventComfortTwo()),
     GetPage(name: '/eventcomfortthree', page: () => EventComfortThree()),

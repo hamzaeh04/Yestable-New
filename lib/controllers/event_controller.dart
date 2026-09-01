@@ -291,7 +291,7 @@ class EventController extends GetxController {
   var selectedType = RxnString();
   RxList<Map<String, String>> selectedMealCategory =
       <Map<String, String>>[].obs; // List of categories
-  final type = ["Appetizers", "Main Course", "Drinks"];
+  final type = ["Appetizers", "Main Course", "Desserts & Others"];
 
   // Event Details/Publish screens filter menus by exact match against
   // `type` above. AI suggestions come back with free-text types (e.g.
@@ -300,12 +300,18 @@ class EventController extends GetxController {
   // Map whatever the AI returns onto one of the three canonical categories.
   String normalizeMenuType(String? aiType) {
     final t = (aiType ?? '').toLowerCase();
-    if (t.contains('drink') ||
-        t.contains('beverage') ||
-        t.contains('cocktail') ||
-        t.contains('wine') ||
-        t.contains('beer')) {
-      return "Drinks";
+    if (t.contains('dessert') ||
+        t.contains('sweet') ||
+        t.contains('cake') ||
+        t.contains('pastry') ||
+        t.contains('ice cream') ||
+        t.contains('icecream') ||
+        t.contains('pudding') ||
+        t.contains('cookie') ||
+        t.contains('brownie') ||
+        t.contains('donut') ||
+        t.contains('chocolate')) {
+      return "Desserts & Others";
     }
     if (t.contains('appetizer') ||
         t.contains('starter') ||
@@ -917,6 +923,8 @@ class EventController extends GetxController {
       TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
+        initialEntryMode: TimePickerEntryMode.input, // 👈 Digital input mode
+
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
@@ -1048,6 +1056,11 @@ class EventController extends GetxController {
         // Get.toNamed('menuSuccessScreen');
         clearItemFields();
         getMenus();
+        print("==== Menu ID ==== ${jsonResponse['data']}");
+        final menu = MenuItem.fromJson(jsonResponse['data']);
+
+        addSelectedMenu(menu); // ✅ menu is MenuItem
+
         if (noNavigate == false) Get.back();
         return createdMenu;
       } else {

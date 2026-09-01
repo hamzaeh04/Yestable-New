@@ -5,6 +5,7 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/widget/allergens_widget.dart';
 import 'package:yestable/widget/animated_button.dart';
 import 'package:yestable/widget/back_button_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 import 'package:yestable/widget/show_other_dialog_box.dart';
 
 import '../../../constants/color_constants.dart';
@@ -32,13 +33,15 @@ class AllergiesDietryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 loadingStepIndicator("2/6", 0.5),
                 backButton(onTap: (){
@@ -77,21 +80,14 @@ class AllergiesDietryScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 1.h),
 
-                /// Allergens Progress Bars
+                /// Allergens Cards
                 ListView.builder(
                   itemCount: controller.allergens.length,
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
-                    return Obx(() => progressBar(
-                      controller.allergens[index]['progress'], // RxDouble
-                      controller.allergens[index]['title'],
-                      controller.getAllergyType(controller.allergens[index]['progress'].value),
-                      circleImg: controller.allergens[index]['circleImg'],
-                      isEmoji: controller.allergens[index]['isEmoji'],
-                      path: controller.allergens[index]['path'],
-                    ));
+                    return allergenCard(controller, index);
                   },
                 ),
 
@@ -313,146 +309,302 @@ class AllergiesDietryScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 
-/// Progress Bar Widget
-Widget progressBar(RxDouble progress, String title, String desc,{String? circleImg,bool? isEmoji,String? path}) {
-  return Padding(
-    padding: EdgeInsets.only(bottom: 1.h),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            /// LEFT SIDE (IMAGE ONLY IF PATH EXISTS)
-            Row(
-              children: [
-                if (path != null) ...[
-                  Image.asset(
-                    path,
-                    height: 2.5.h,
-                    width: 2.5.h,
-                  ),
-                  SizedBox(width: 1.w),
-                ],
-                customText(
-                  text: title,
-                  fontSize: 16.sp,
+/// Allergen Radio Card Widget
+Widget allergenCard(ProfileController controller, int index) {
+  final allergen = controller.allergens[index];
+  final title = allergen['title'] as String;
+  final path = allergen['path'] as String?;
+  final circleImg = allergen['circleImg'] as String?;
+
+  final List<Map<String, dynamic>> options = [
+    {
+      "label": "No Allergy",
+      "apiValue": "No Allergy",
+      "progress": 0.0,
+    },
+    {
+      "label": "Mild/Digestive Reaction",
+      "apiValue": "Mild or Digestive Reaction",
+      "progress": 0.45,
+    },
+    {
+      "label": "Avoid for belief/culture",
+      "apiValue": "Avoid for belief or Culture",
+      "progress": 0.7,
+    },
+    {
+      "label": "Severe Allergy",
+      "apiValue": "Severe Allergy (Anaphylaxis)",
+      "progress": 1.0,
+    },
+  ];
+
+  return Obx(() {
+    final String currentSelected = (allergen['selectedOption'] != null && allergen['selectedOption'] is RxString)
+        ? (allergen['selectedOption'] as RxString).value
+        : controller.getAllergyType((allergen['progress'] as RxDouble).value);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.5.h),
+      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.25.h),
+      decoration: BoxDecoration(
+        color: whiteColor,
+        borderRadius: BorderRadius.circular(16.sp),
+        border: Border.all(color: greyBorderColor.withOpacity(0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// Header: Icon/Emoji + Title
+          Row(
+            children: [
+              if (path != null) ...[
+                Image.asset(
+                  path,
+                  height: 2.25.h,
+                  width: 2.25.h,
                 ),
+                SizedBox(width: 2.w),
               ],
-            ),
-            // Obx(() => customText(
-            //   text: "${(progress.value * 100).round()}%",
-            //   fontSize: 14.5.sp,
-            // )),
-            customText(
-                text: "${desc}",
-                fontSize: 14.5.sp,
+              customText(
+                text: title,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
               ),
+            ],
+          ),
+          SizedBox(height: 1.h),
 
-          ],
-        ),
-        SizedBox(height: 0.5.h),
+          /// 4 Radio Options
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(options.length, (optIndex) {
+              final opt = options[optIndex];
+              final String label = opt['label'];
+              final String apiValue = opt['apiValue'];
+              final double progressVal = opt['progress'];
 
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final barHeight = 1.25.h;
-            final circleSize = 3.h;
+              final bool isSelected = currentSelected == apiValue ||
+                  (apiValue.startsWith("Avoid") && currentSelected.startsWith("Avoid")) ||
+                  (apiValue.startsWith("Severe") && currentSelected.startsWith("Severe"));
 
-            return GestureDetector(
-              onPanUpdate: (details) {
-                double dx = details.localPosition.dx;
-                double newProgress = dx / constraints.maxWidth;
-                progress.value = newProgress.clamp(0.0, 1.0);
-              },
-
-              onTapDown: (details) {
-                double dx = details.localPosition.dx;
-                double newProgress = dx / constraints.maxWidth;
-                progress.value = newProgress.clamp(0.0, 1.0);
-              },
-
-              child: SizedBox(
-                height: circleSize,
-                child: Obx(() {
-                  final leftPosition =
-                      (constraints.maxWidth * progress.value) - (circleSize / 2);
-
-                  return Stack(
-                    alignment: Alignment.centerLeft,
-                    clipBehavior: Clip.none,
-                    children: [
-                      /// Progress Bar
-                      Positioned(
-                        top: (circleSize - barHeight) / 2,
-                        left: 0,
-                        right: 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25.sp),
-                          child: Container(
-                            height: barHeight,
-                            color: Colors.white,
-                            child: FractionallySizedBox(
-                              alignment: Alignment.centerLeft,
-                              widthFactor: progress.value,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFEDDAA7),
-                                      Color(0xFFFBC93F),
-                                      Color(0xFF5F9CD3),
-                                      Color(0xFF2C608F),
-                                      Color(0xFFE83D3D),
-                                    ],
-                                  ),
-                                ),
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.8.w),
+                  child: GestureDetector(
+                    onTap: () {
+                      controller.updateProgress(index, progressVal, selectedVal: apiValue);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 1.2.h, horizontal: 1.w),
+                      constraints: BoxConstraints(minHeight: 9.h),
+                      decoration: BoxDecoration(
+                        color: isSelected ? const Color(0xFFF0F6F5) : Colors.white,
+                        borderRadius: BorderRadius.circular(12.sp),
+                        border: Border.all(
+                          color: isSelected ? greenColor : greyBorderColor.withOpacity(0.4),
+                          width: isSelected ? 1.5 : 1,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          /// Radio Check Button
+                          Container(
+                            height: 2.h,
+                            width: 2.h,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isSelected ? greenColor : Colors.transparent,
+                              border: Border.all(
+                                color: isSelected ? greenColor : greyBorderColor.withOpacity(0.6),
+                                width: 1.5,
                               ),
                             ),
+                            child: isSelected
+                                ? Icon(
+                                    Icons.check,
+                                    size: 13.sp,
+                                    color: whiteColor,
+                                  )
+                                : null,
                           ),
-                        ),
-                      ),
+                          SizedBox(height: 0.8.h),
 
-                      /// Indicator Circle
-                      Positioned(
-                        left: leftPosition.clamp(
-                          0.0,
-                          constraints.maxWidth - circleSize,
-                        ),
-                        top: 0,
-                        child: Container(
-                          height: circleSize,
-                          width: circleSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFFC0D3E5),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 0.5.w,
-                            ),
+                          /// Option Label
+                          customText(
+                            text: label,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                            color: isSelected ? greenColor : blackColor,
+                            textAlign: TextAlign.center,
+                            maxLines: 3,
+                            fontSize: 12.sp
+
                           ),
-                          child: Center(
-                            child: path !=null ? Image.asset(
-                              path,
-                              height: 2.h,
-                              width: 2.h,
-                            ):customText(
-                              text: circleImg,
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                        ),
+                        ],
                       ),
-                    ],
-                  );
-                }),
-              ),
-            );
-          },
-        ),
-      ],
-    ),
-  );
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  });
 }
+
+// Widget progressBar(
+//     RxDouble progress,
+//     String title,
+//     String desc, {
+//       String? circleImg,
+//       bool? isEmoji,
+//       String? path,
+//     }) {
+//   return Padding(
+//     padding: EdgeInsets.only(bottom: 1.h),
+//     child: Column(
+//       children: [
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             /// LEFT SIDE (IMAGE ONLY IF PATH EXISTS)
+//             Row(
+//               children: [
+//                 if (path != null) ...[
+//                   Image.asset(
+//                     path,
+//                     height: 2.5.h,
+//                     width: 2.5.h,
+//                   ),
+//                   SizedBox(width: 1.w),
+//                 ],
+//                 customText(
+//                   text: title,
+//                   fontSize: 16.sp,
+//                 ),
+//               ],
+//             ),
+//
+//             // Obx(() => customText(
+//             //       text: "${(progress.value * 100).round()}%",
+//             //       fontSize: 14.5.sp,
+//             //     )),
+//
+//             customText(
+//               text: desc,
+//               fontSize: 14.5.sp,
+//             ),
+//           ],
+//         ),
+//
+//         SizedBox(height: 0.5.h),
+//
+//         LayoutBuilder(
+//           builder: (context, constraints) {
+//             final barHeight = 1.25.h;
+//             final circleSize = 3.h;
+//
+//             return GestureDetector(
+//               onPanUpdate: (details) {
+//                 double dx = details.localPosition.dx;
+//                 double newProgress = dx / constraints.maxWidth;
+//                 progress.value = newProgress.clamp(0.0, 1.0);
+//               },
+//               onTapDown: (details) {
+//                 double dx = details.localPosition.dx;
+//                 double newProgress = dx / constraints.maxWidth;
+//                 progress.value = newProgress.clamp(0.0, 1.0);
+//               },
+//               child: SizedBox(
+//                 height: circleSize,
+//                 child: Obx(() {
+//                   final leftPosition =
+//                       (constraints.maxWidth * progress.value) -
+//                           (circleSize / 2);
+//
+//                   return Stack(
+//                     alignment: Alignment.centerLeft,
+//                     clipBehavior: Clip.none,
+//                     children: [
+//                       /// Progress Bar
+//                       Positioned(
+//                         top: (circleSize - barHeight) / 2,
+//                         left: 0,
+//                         right: 0,
+//                         child: ClipRRect(
+//                           borderRadius:
+//                           BorderRadius.circular(25.sp),
+//                           child: Container(
+//                             height: barHeight,
+//                             color: Colors.white,
+//                             child: FractionallySizedBox(
+//                               alignment: Alignment.centerLeft,
+//                               widthFactor: progress.value,
+//                               child: Container(
+//                                 decoration: const BoxDecoration(
+//                                   gradient: LinearGradient(
+//                                     colors: [
+//                                       Color(0xFFEDDAA7),
+//                                       Color(0xFFFBC93F),
+//                                       Color(0xFF5F9CD3),
+//                                       Color(0xFF2C608F),
+//                                       Color(0xFFE83D3D),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//
+//                       /// Indicator Circle
+//                       Positioned(
+//                         left: leftPosition.clamp(
+//                           0.0,
+//                           constraints.maxWidth - circleSize,
+//                         ),
+//                         top: 0,
+//                         child: Container(
+//                           height: circleSize,
+//                           width: circleSize,
+//                           decoration: BoxDecoration(
+//                             shape: BoxShape.circle,
+//                             color: const Color(0xFFC0D3E5),
+//                             border: Border.all(
+//                               color: Colors.white,
+//                               width: 0.5.w,
+//                             ),
+//                           ),
+//                           child: Center(
+//                             child: path != null
+//                                 ? Image.asset(
+//                               path,
+//                               height: 2.h,
+//                               width: 2.h,
+//                             )
+//                                 : customText(
+//                               text: circleImg ?? "",
+//                               fontSize: 15.sp,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   );
+//                 }),
+//               ),
+//             );
+//           },
+//         ),
+//       ],
+//     ),
+//   );
+// }

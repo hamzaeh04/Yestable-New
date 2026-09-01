@@ -19,7 +19,10 @@ class ApiEndPoints{
 
   static String aiMenu(String id){
     return "/events/$id/menu-suggestions";
+  }
 
+  static String getProfileById(String userId){
+    return "/users/profile/$userId";
   }
 
   static String updateMemberAllergensPlate(String memberId){

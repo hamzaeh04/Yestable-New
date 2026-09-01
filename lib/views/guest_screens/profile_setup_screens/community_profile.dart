@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 import 'package:yestable/widget/showShareDialogBox_widget.dart';
 
 import '../../../constants/color_constants.dart';
@@ -90,7 +91,9 @@ class CommunityProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -605,6 +608,7 @@ class CommunityProfile extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

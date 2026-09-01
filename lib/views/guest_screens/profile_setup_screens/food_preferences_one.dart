@@ -5,6 +5,8 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:flutter/gestures.dart';
+import 'package:yestable/widget/floating_home_button.dart';
+
 import '../../../constants/constants_widgets.dart';
 import '../../../controllers/profile_controller.dart';
 import '../../../widget/loading_step_indicator.dart';
@@ -24,7 +26,9 @@ class FoodPreferencesOne extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           // scrollDirection default vertical hi hota hai
@@ -136,6 +140,7 @@ class FoodPreferencesOne extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 

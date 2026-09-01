@@ -13,6 +13,8 @@ import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/home_screen_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
+import '../../../components/common_image_view.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../core/services/base_services.dart';
 import '../../../widget/event_accesibility_widget.dart';
@@ -30,7 +32,8 @@ class EventDetailsScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       eventController.eventReview(eventId);
     });
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -41,6 +44,8 @@ class EventDetailsScreen extends StatelessWidget {
               //   data?.guestAware,
               // );
               //
+              final hostId = data?.host?.id ?? "";
+              final isEventHost = prefs.getString(LocalDBKeys.USERID) == hostId;
               final notAllowedItem =
                   data?.guestAware?.itemContaining
                       ?.split(',')
@@ -233,6 +238,126 @@ class EventDetailsScreen extends StatelessWidget {
                   ),
 
                   Divider(),
+                  isEventHost ? Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    child: Theme(
+                      data: Theme.of(
+                        context,
+                      ).copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        tilePadding: EdgeInsets.zero,
+                        childrenPadding: EdgeInsets.only(bottom: 1.h),
+                        dense: true,
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: customText(
+                                text: "RSVP",
+                                fontSize: 18.5.sp,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "CormorantGaramond",
+                                color: blackColor,
+                                maxLines: 1,
+                                overFlow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        children: [
+
+                          DefaultTabController(
+                            length: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TabBar(
+                                  labelColor: Colors.black,
+                                  unselectedLabelColor: Colors.grey,
+                                  indicatorColor: Colors.black,
+                                  indicatorWeight: 2,
+                                  tabs: const [
+                                    Tab(text: "Accepted"),
+                                    Tab(text: "Pending"),
+                                    Tab(text: "Rejected"),
+                                  ],
+                                ),
+                                SizedBox(height: 1.h),
+                                Builder(
+                                  builder: (context) {
+                                    final tabController =
+                                        DefaultTabController.of(context);
+                                    return AnimatedBuilder(
+                                      animation: tabController,
+                                      builder: (context, _) {
+                                        final currentStatus = [
+                                          "Accepted",
+                                          "Pending",
+                                          "Rejected",
+                                        ][tabController.index];
+                                        final membersList =
+                                            eventController
+                                                .eventReviewModel
+                                                .value
+                                                ?.data
+                                                ?.members ??
+                                            [];
+                                        final filteredMembers =
+                                            membersList.where((member) {
+                                              final status =
+                                                  member.invitationStatus
+                                                      ?.trim()
+                                                      .toLowerCase() ??
+                                                  "";
+                                              return status ==
+                                                  currentStatus.toLowerCase();
+                                            }).toList();
+
+                                        if (filteredMembers.isEmpty) {
+                                          return Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 1.5.h,
+                                            ),
+                                            child: Center(
+                                              child: customText(
+                                                text:
+                                                    "No $currentStatus guests found",
+                                                fontSize: 14.sp,
+                                              ),
+                                            ),
+                                          );
+                                        }
+
+                                        return ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          padding: EdgeInsets.zero,
+                                          itemCount: filteredMembers.length,
+                                          itemBuilder: (context, index) {
+                                            final member =
+                                                filteredMembers[index];
+                                            return members(
+                                              id: member.id ?? "",
+                                              imagePath:
+                                                  member.profilePic ?? "",
+                                              username: member.name ?? "",
+                                              status:
+                                                  member.invitationStatus ?? "",
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ) : SizedBox.shrink(),
+                  isEventHost ? Divider(): SizedBox.shrink(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
                     child: InkWell(
@@ -358,8 +483,8 @@ class EventDetailsScreen extends StatelessWidget {
                           child: customText(
                             text:
                                 "https://yestable-107c6.web.app/event/$eventId",
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600,
                             color: darkGreyColor,
                             overFlow: TextOverflow.ellipsis,
                           ),
@@ -396,7 +521,7 @@ class EventDetailsScreen extends StatelessWidget {
                             padding: EdgeInsets.all(1.w),
                             child: Icon(
                               Icons.copy_rounded,
-                              size: 2.h,
+                              size: 2.25.h,
                               color: darkGreyColor,
                             ),
                           ),
@@ -606,7 +731,7 @@ class EventDetailsScreen extends StatelessWidget {
                                     tabs: const [
                                       Tab(text: "Appetizers"),
                                       Tab(text: "Main Course"),
-                                      Tab(text: "Drinks"),
+                                      Tab(text: "Desserts & Others"),
                                     ],
                                   ),
                                   SizedBox(height: 1.h),
@@ -621,7 +746,7 @@ class EventDetailsScreen extends StatelessWidget {
                                               [
                                                 "Appetizers",
                                                 "Main Course",
-                                                "Drinks",
+                                                "Desserts & Others",
                                               ][tabController.index];
                                           final filteredMenus =
                                               data?.menus
@@ -758,6 +883,7 @@ class EventDetailsScreen extends StatelessWidget {
           ),
         );
       }),
+    ),
     );
   }
 }
@@ -993,6 +1119,46 @@ Widget foodPreferenceBox({
               color: Colors.black,
               overFlow: TextOverflow.ellipsis,
             ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget members({required String id, required String imagePath, required String username, required String status}){
+  return Padding(
+    padding: EdgeInsets.only(bottom: 1.25.h),
+    child: InkWell(
+      onTap: (){
+        Get.toNamed("guestprofilescreen", arguments: id);
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12.sp),
+            child: (imagePath == null || imagePath.isEmpty) ? Image.asset("assets/png/bottom_bar_icons/profile_icon.png", height: 3.75.h, width: 8.w,) : CommonImageView(
+              url: "${baseService.baseURL}${imagePath}",
+              height: 4.h,
+              width: 8.w,
+            ),
+          ),
+          SizedBox(width: 2.w),
+          customText(
+            text: username,
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w500,
+            color: blackColor,
+            overFlow: TextOverflow.ellipsis, // fix typo
+          ),
+          Spacer(),
+          customText(
+            text: status,
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w500,
+            color: blackColor,
+            overFlow: TextOverflow.ellipsis, // fix typo
           ),
         ],
       ),

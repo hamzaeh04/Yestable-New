@@ -7,6 +7,8 @@ import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 
+import 'package:yestable/widget/floating_home_button.dart';
+
 import '../../../constants/constants_widgets.dart';
 import '../../../controllers/profile_controller.dart';
 import '../../../widget/allergens_widget.dart';
@@ -29,7 +31,9 @@ class YourRootAndRules extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -420,6 +424,7 @@ class YourRootAndRules extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

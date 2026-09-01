@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/widget/animated_button.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -13,7 +14,9 @@ class ProfileCompleteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       body: Stack(
         children: [
           Padding(
@@ -85,7 +88,8 @@ class ProfileCompleteScreen extends StatelessWidget {
                           ),
               ))
         ],
-      )
+      ),
+    ),
     );
   }
 }

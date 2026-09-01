@@ -9,6 +9,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -46,7 +47,8 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
     final invitationMsg = args["invitationMsg"];
     final adminId = args["adminId"];
     final isGroupEnabled = args["isGroupEnable"];
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true, // Important for keyboard handling
       body: SafeArea(
@@ -740,6 +742,7 @@ SizedBox(height: 2.h,),
           ],
         ),
       ),
+    ),
     );
   }
 }

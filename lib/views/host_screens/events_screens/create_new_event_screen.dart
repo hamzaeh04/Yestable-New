@@ -12,6 +12,7 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../widget/allergens_widget.dart';
 import '../../guest_screens/profile_setup_screens/profile_edit_screen.dart';
@@ -35,13 +36,14 @@ class CreateNewEventScreen extends StatelessWidget {
         eventController.getEventById(eventId);
       });
     }
-    return Scaffold(
-      backgroundColor: greenColor,
-      body: Column(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w),
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        body: Column(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -363,7 +365,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                       customText(text: '*', color: redColor),
                                     ],
                                   ),
-                                  SizedBox(height: 2.2.h),
+                                  SizedBox(height: 2.15.h),
                                   Row(
                                     children: [
                                       customText(
@@ -374,7 +376,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                       customText(text: '*', color: redColor),
                                     ],
                                   ),
-                                  SizedBox(height: 2.8.h),
+                                  SizedBox(height: 2.30.h),
                                   Row(
                                     children: [
                                       customText(
@@ -385,7 +387,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                       customText(text: '*', color: redColor),
                                     ],
                                   ),
-                                  SizedBox(height: 2.5.h),
+                                  SizedBox(height: 1.85.h),
                                   customText(
                                     text: "Check Guest\nNeeds Automatically.",
                                     fontWeight: FontWeight.w500,
@@ -397,7 +399,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(height: 3.6.h),
+                                  SizedBox(height: 3.25.h),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -427,18 +429,18 @@ class CreateNewEventScreen extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15.sp,
                                   ),
-                                  SizedBox(height: 3.4.h),
-                                  customText(
-                                    text: "Reminder\nNotification",
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15.sp,
-                                  ),
-                                  SizedBox(height: 3.4.h),
-                                  customText(
-                                    text: "Estimated Guest",
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15.sp,
-                                  ),
+                                  // SizedBox(height: 3.5.h),
+                                  // customText(
+                                  //   text: "Reminder\nNotification",
+                                  //   fontWeight: FontWeight.w500,
+                                  //   fontSize: 15.sp,
+                                  // ),
+                                  // SizedBox(height: 3.4.h),
+                                  // customText(
+                                  //   text: "Estimated Guest",
+                                  //   fontWeight: FontWeight.w500,
+                                  //   fontSize: 15.sp,
+                                  // ),
                                 ],
                               ),
                             ),
@@ -710,7 +712,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                     ],
                                   ),
                                   const Divider(),
-                                  SizedBox(height: 6.h),
+                                  SizedBox(height: 5.85.h),
 
                                   customProfileField(
                                     hint: 'You\'re invited to a dinner party',
@@ -736,103 +738,103 @@ class CreateNewEventScreen extends StatelessWidget {
                                   ),
                                   SizedBox(height: 1.25.h),
                                   const Divider(),
-                                  SizedBox(height: 1.25.h),
-                                  // --- REMINDER DROPDOWN ---
-                                  DropdownButtonHideUnderline(
-                                    child: DropdownButton2<String>(
-                                      customButton: Obx(
-                                        () => Row(
-                                          children: [
-                                            customText(
-                                              text:
-                                                  eventController
-                                                      .selectedReminderTime
-                                                      .value ??
-                                                  "Select time",
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15.sp,
-                                              color:
-                                                  eventController
-                                                              .selectedReminderTime
-                                                              .value ==
-                                                          null
-                                                      ? Colors.grey
-                                                      : blackColor,
-                                            ),
-                                            SizedBox(width: 2.w),
-                                            Icon(
-                                              Icons.keyboard_arrow_down_rounded,
-                                              size: 18.sp,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      items:
-                                          [
-                                                "15 mins before",
-                                                "1 hour before",
-                                                "1 day before",
-                                              ]
-                                              .map(
-                                                (
-                                                  item,
-                                                ) => DropdownMenuItem<String>(
-                                                  value: item,
-                                                  child: customText(
-                                                    text: item,
-
-                                                    color:
-                                                        blackColor, // Customize item text color
-                                                    fontSize:
-                                                        14.sp, // Customize font size
-                                                    fontFamily:
-                                                        "WorkSans", // Customize font family
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          eventController
-                                              .selectedReminderTime
-                                              .value = value;
-                                          eventController.eventReminder.text =
-                                              value;
-                                        }
-                                      },
-                                      dropdownStyleData: DropdownStyleData(
-                                        width: 45.w,
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          color:
-                                              whiteColor, // Background color of the dropdown sheet
-                                        ),
-                                        elevation: 8,
-                                      ),
-                                      menuItemStyleData:
-                                          const MenuItemStyleData(
-                                            height: 45,
-                                            padding: EdgeInsets.only(
-                                              left: 16,
-                                              right: 16,
-                                            ),
-                                          ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 5.h),
-                                  customProfileField(
-                                    hint: 'No Of Guests',
-                                    size: 14.8.sp,
-                                    controller: eventController.guestCount,
-                                    keyboardType: TextInputType.number
-                                  ),
-                                  const Divider(),
+                                  // SizedBox(height: 1.25.h),
+                                  // // --- REMINDER DROPDOWN ---
+                                  // DropdownButtonHideUnderline(
+                                  //   child: DropdownButton2<String>(
+                                  //     customButton: Obx(
+                                  //       () => Row(
+                                  //         children: [
+                                  //           customText(
+                                  //             text:
+                                  //                 eventController
+                                  //                     .selectedReminderTime
+                                  //                     .value ??
+                                  //                 "Select time",
+                                  //             fontWeight: FontWeight.w400,
+                                  //             fontSize: 15.sp,
+                                  //             color:
+                                  //                 eventController
+                                  //                             .selectedReminderTime
+                                  //                             .value ==
+                                  //                         null
+                                  //                     ? Colors.grey
+                                  //                     : blackColor,
+                                  //           ),
+                                  //           SizedBox(width: 2.w),
+                                  //           Icon(
+                                  //             Icons.keyboard_arrow_down_rounded,
+                                  //             size: 18.sp,
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //     ),
+                                  //     items:
+                                  //         [
+                                  //               "15 mins before",
+                                  //               "1 hour before",
+                                  //               "1 day before",
+                                  //             ]
+                                  //             .map(
+                                  //               (
+                                  //                 item,
+                                  //               ) => DropdownMenuItem<String>(
+                                  //                 value: item,
+                                  //                 child: customText(
+                                  //                   text: item,
+                                  //
+                                  //                   color:
+                                  //                       blackColor, // Customize item text color
+                                  //                   fontSize:
+                                  //                       14.sp, // Customize font size
+                                  //                   fontFamily:
+                                  //                       "WorkSans", // Customize font family
+                                  //                   fontWeight: FontWeight.w400,
+                                  //                 ),
+                                  //               ),
+                                  //             )
+                                  //             .toList(),
+                                  //     onChanged: (value) {
+                                  //       if (value != null) {
+                                  //         eventController
+                                  //             .selectedReminderTime
+                                  //             .value = value;
+                                  //         eventController.eventReminder.text =
+                                  //             value;
+                                  //       }
+                                  //     },
+                                  //     dropdownStyleData: DropdownStyleData(
+                                  //       width: 45.w,
+                                  //       padding: EdgeInsets.symmetric(
+                                  //         vertical: 6,
+                                  //       ),
+                                  //       decoration: BoxDecoration(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //           12,
+                                  //         ),
+                                  //         color:
+                                  //             whiteColor, // Background color of the dropdown sheet
+                                  //       ),
+                                  //       elevation: 8,
+                                  //     ),
+                                  //     menuItemStyleData:
+                                  //         const MenuItemStyleData(
+                                  //           height: 45,
+                                  //           padding: EdgeInsets.only(
+                                  //             left: 16,
+                                  //             right: 16,
+                                  //           ),
+                                  //         ),
+                                  //   ),
+                                  // ),
+                                  // SizedBox(height: 5.h),
+                                  // customProfileField(
+                                  //   hint: 'No Of Guests',
+                                  //   size: 14.8.sp,
+                                  //   controller: eventController.guestCount,
+                                  //   keyboardType: TextInputType.number
+                                  // ),
+                                  // const Divider(),
                                 ],
                               ),
                             ),
@@ -845,7 +847,7 @@ class CreateNewEventScreen extends StatelessWidget {
                             "Continue",
                             whiteColor,
                             colors: greenColor,
-                            onTap: () {
+                                                 onTap: (){
                               eventId == null ?
                               eventController.createEvent(context,image: controller.profilePicture.value):
                               eventController.editEvent(eventId: eventId,image: controller.profilePicture.value, isEdit: true);
@@ -861,9 +863,9 @@ class CreateNewEventScreen extends StatelessWidget {
                 }),
               ),
             ),
-          ),
-        ],
-      ),
+        ),
+    ]
+      ))
     );
   }
 }

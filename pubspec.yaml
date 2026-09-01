@@ -67,6 +67,7 @@ dependencies:
   google_sign_in: ^7.2.0
   fl_chart: ^1.2.0
   custom_refresh_indicator: ^4.0.1
+  floating_draggable_widget: ^2.3.0
 
 
 dev_dependencies:

@@ -346,6 +346,54 @@ class NavigationController extends GetxController {
     }
   }
 
+
+  /// === FloatingHomeButton Controller ===
+  final left = 0.0.obs;
+  final top = 0.0.obs;
+  RxDouble spaceFromBottom = 10.0.obs;
+
+  bool initialized = false;
+
+  void initialize(BuildContext context) {
+    if (initialized) return;
+
+    final size = MediaQuery.of(context).size;
+
+    const fabSize = 56.0;
+
+    // Left margin
+    left.value = 16;
+
+    // Slightly above bottom navigation bar
+    top.value = size.height -
+        fabSize -
+        45;
+
+    initialized = true;
+  }
+
+  void updatePosition(
+      DragUpdateDetails details,
+      BuildContext context,
+      ) {
+    final size = MediaQuery.of(context).size;
+
+    const fabSize = 56.0;
+
+    final maxLeft = size.width - fabSize;
+    final maxTop =
+        size.height - fabSize - kBottomNavigationBarHeight - spaceFromBottom.value;
+
+    left.value =
+        (left.value + details.delta.dx).clamp(0.0, maxLeft);
+
+    top.value =
+        (top.value + details.delta.dy).clamp(0.0, maxTop);
+  }
+
+  /// === FloatingHomeButton Controller ===
+
+
   @override
   void onClose() {
     // Don't dispose the controller here — it's owned by the widget

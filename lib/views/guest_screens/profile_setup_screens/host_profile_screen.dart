@@ -7,6 +7,7 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
 import 'package:yestable/widget/showShareDialogBox_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -27,7 +28,9 @@ class HostProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: false,
+      screen: Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -611,6 +614,7 @@ class HostProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 

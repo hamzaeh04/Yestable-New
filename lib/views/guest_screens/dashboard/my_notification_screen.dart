@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/controllers/notification_controller.dart';
 import 'package:yestable/widget/button_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -21,13 +22,14 @@ class MyNotificationScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_){
       notificationController.GetAllNotifications();
     });
-    return Scaffold(
-      backgroundColor: greenColor,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: Column(
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
           children: [
             SizedBox(height: 2.h),
             Padding(
@@ -193,6 +195,7 @@ class MyNotificationScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

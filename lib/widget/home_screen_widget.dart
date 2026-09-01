@@ -338,26 +338,25 @@ Widget homeIconWidget({
   double? iconsize,
   Color? color,
 }) {
-  return Container(
-    height: 4.2.h,
-    width: 9.w,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(25),
-      color: color ?? whiteColor.withAlpha(40),
-    ),
-    child: Center(
-      child: GestureDetector(
-        onTap: onTap,
-        child:
-            icon != null
-                ? Icon(icon, color: whiteColor, size: iconsize ?? 20.sp)
-                : imagePath != null
-                ? Image.asset(
-                  imagePath,
-                  width: iconsize ?? 18.sp,
-                  color: whiteColor, // optional: color tint
-                )
-                : const SizedBox.shrink(), // fallback if both null
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      height: 4.2.h,
+      width: 9.w,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        color: color ?? whiteColor.withAlpha(40),
+      ),
+      child: Center(
+        child: icon != null
+            ? Icon(icon, color: whiteColor, size: iconsize ?? 20.sp)
+            : imagePath != null
+            ? Image.asset(
+              imagePath,
+              width: iconsize ?? 18.sp,
+              color: whiteColor, // optional: color tint
+            )
+            : const SizedBox.shrink(),
       ),
     ),
   );

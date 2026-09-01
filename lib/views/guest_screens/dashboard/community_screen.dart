@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:yestable/widget/new_post_bottomsheet.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -15,14 +16,15 @@ class CommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: greenColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-              child: Row(
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                child: Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,6 +188,7 @@ class CommunityScreen extends StatelessWidget {
         },
         child: Icon(Icons.add, size: 20.sp, color: whiteColor),
       ),
+    ),
     );
   }
 }

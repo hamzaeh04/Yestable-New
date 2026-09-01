@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -15,13 +16,14 @@ class NewGuestListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: greenColor,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: Column(
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
           children: [
             SizedBox(height: 2.h),
             Padding(
@@ -214,6 +216,7 @@ class NewGuestListScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 

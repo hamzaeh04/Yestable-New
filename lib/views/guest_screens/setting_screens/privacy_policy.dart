@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import 'package:yestable/widget/floating_home_button.dart';
+
 import '../../../constants/constants_widgets.dart';
 
 class PrivacyPolicy extends StatelessWidget {
@@ -8,7 +10,8 @@ class PrivacyPolicy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 7.h),
         child: Column(
@@ -147,6 +150,7 @@ class PrivacyPolicy extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

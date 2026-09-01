@@ -5,6 +5,7 @@ import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/constants/constants_widgets.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../widget/button_widget.dart';
 import '../../../widget/share_profile_widget.dart';
@@ -14,14 +15,15 @@ class AllowHostNotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,  // outer column alignment
-          children: [
-            SizedBox(height: 2.h),
-            // Progress bar
-            Padding(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 2.h),
+              Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: loadingStepIndicator("3/3", 10),
             ),
@@ -86,6 +88,7 @@ class AllowHostNotificationScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 class NewMessageScreen extends StatelessWidget {
   const NewMessageScreen({super.key});
@@ -39,13 +40,12 @@ class NewMessageScreen extends StatelessWidget {
                   children: [
                     customText(
                       text: username,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                      fontSize: 14.5.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                     customText(
                       text: address,
-                      fontSize: 14.sp,
+                      fontSize: 13.5.sp,
                       fontWeight: FontWeight.w400,
                       color: darkGreyColor,
                     ),
@@ -54,8 +54,9 @@ class NewMessageScreen extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 1.h),
-
+          Divider(
+            color: greyBorderColor,
+          )
         ],
       ),
     );
@@ -63,14 +64,15 @@ class NewMessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: greenColor,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: Column(
-          children: [
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            children: [
             // Top App Bar Area
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
@@ -207,6 +209,7 @@ class NewMessageScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

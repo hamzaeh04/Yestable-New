@@ -21,6 +21,8 @@ import 'package:yestable/widget/event_dialog.dart';
 import 'package:yestable/widget/menu_form_widget.dart';
 import 'package:yestable/widget/redirecting_dialog.dart';
 import 'package:yestable/widget/selected_menu_bottomsheet.dart';
+import 'package:yestable/widget/floating_home_button.dart';
+
 import '../../../widget/home_screen_widget.dart';
 
 class FoodMenuScreen extends StatelessWidget {
@@ -41,7 +43,8 @@ class FoodMenuScreen extends StatelessWidget {
     if (eventId is String && eventId.isNotEmpty) {
       eventController.mainEventId = eventId;
     }
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       backgroundColor: greenColor,
       body: SafeArea(
         bottom: false,
@@ -415,7 +418,7 @@ class FoodMenuScreen extends StatelessWidget {
                                                     tabs: const [
                                                       Tab(text: "Appetizers"),
                                                       Tab(text: "Main Course"),
-                                                      Tab(text: "Drinks"),
+                                                      Tab(text: "Desserts & Others"),
                                                     ],
                                                   ),
 
@@ -431,7 +434,7 @@ class FoodMenuScreen extends StatelessWidget {
                                                           type: "Main Course",
                                                         ),
                                                         _menusHorizontalList(
-                                                          type: "Drinks",
+                                                          type: "Desserts & Others",
                                                         ),
                                                       ],
                                                     ),
@@ -541,6 +544,7 @@ class FoodMenuScreen extends StatelessWidget {
           ),
         );
       }),
+    ),
     );
   }
 }

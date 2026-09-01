@@ -8,6 +8,7 @@ import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../widget/button_widget.dart';
 import '../../../widget/home_screen_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 import 'user_home_screen.dart';
 
 class ViewallInvitationScreen extends StatefulWidget {
@@ -31,7 +32,8 @@ class _ViewallInvitationScreenState extends State<ViewallInvitationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       backgroundColor: greenColor,
       body: Column(
         children: [
@@ -70,7 +72,7 @@ class _ViewallInvitationScreenState extends State<ViewallInvitationScreen> {
                   final invitations = eventController.pendingInvitationModel.value?.data ?? [];
 
                   if (eventController.isLoadingPendingInvitations.value && invitations.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator(color: greenColor));
                   }
 
                   if (invitations.isEmpty) {
@@ -121,6 +123,7 @@ class _ViewallInvitationScreenState extends State<ViewallInvitationScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 

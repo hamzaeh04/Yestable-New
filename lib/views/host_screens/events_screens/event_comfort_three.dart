@@ -8,6 +8,7 @@ import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -39,7 +40,8 @@ class EventComfortThree extends StatelessWidget {
       }
     });
 
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -136,6 +138,7 @@ class EventComfortThree extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

@@ -328,7 +328,7 @@ class MyProfileScreen extends StatelessWidget {
                                                             width: 27.w,
                                                             fontsize: 14.sp,
                                                             onTap: () {
-                                                              Get.toNamed("profileeditscreen",);
+                                                              Get.toNamed("profileeditscreen", arguments: false);
                                                               controller.controller.isEdit.value = true;
                                                               controller.hasCheckedProfile.value = false;
                                                               print("IsEdit: ${controller.controller.isEdit.value}");

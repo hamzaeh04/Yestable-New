@@ -14,6 +14,7 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/core/services/base_services.dart';
 import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/core/services/multipart_request.dart';
+import 'package:yestable/model/get_profile_by_id_model.dart';
 import 'package:yestable/outh_file/local_db_key.dart';
 
 import '../core/services/apiendpoints.dart';
@@ -25,6 +26,7 @@ import '../widget/update_sent_sucessfull_dialog.dart';
 
 class ProfileController extends GetxController {
   // --- Existing Variables (No changes here) ---
+  RxBool isLoading = false.obs;
   BaseService baseService = BaseService();
   final MessagingService messagingService = MessagingService();
 
@@ -32,6 +34,7 @@ class ProfileController extends GetxController {
   //     "https://yes-table-web.vercel.app/userId=$userId";
   final prefs = SharedPreferencesMethod.storage;
   Rxn<GetMyProfile> getMyProfileModel = Rxn<GetMyProfile>();
+  Rxn<GetProfileByIdModel> getProfileByIdModel = Rxn<GetProfileByIdModel>();
 // Change these in your ProfileController
   RxList<TextEditingController> memberNameControllers = <TextEditingController>[].obs;
   RxList<TextEditingController> memberReleationControllers = <TextEditingController>[].obs;
@@ -131,10 +134,10 @@ class ProfileController extends GetxController {
   RxInt pronounIsSelected = 0.obs;
   String pronounsValue(){
     if(pronounIsSelected.value == 0){
-      return "he/him";
+      return "she/her";
     }
     else if(pronounIsSelected.value == 1){
-      return "she/her";
+      return "he/him";
     }
     else if(pronounIsSelected.value == 2){
       return "They/them";
@@ -788,13 +791,15 @@ class ProfileController extends GetxController {
   final List<Map<String, dynamic>> allergens = [
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "🥜 Peanuts",
-      "desc": "Severe Allergy (Anaphylaxis)",
+      "desc": "No Allergy",
       "circleImg": "🥜",
       "isEmoji" : false,
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "Tree Nuts",
       "desc": "No Allergy",
       "circleImg": "🤗",
@@ -803,6 +808,7 @@ class ProfileController extends GetxController {
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "Sesame",
       "desc": "No Allergy",
       "circleImg": "🤗",
@@ -811,35 +817,40 @@ class ProfileController extends GetxController {
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "🌾 Gluten",
-      "desc": "Severe Allergy",
+      "desc": "No Allergy",
       "circleImg": "🌾",
       "isEmoji" : false
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "🥚 Eggs",
-      "desc": "Avoid for Beliefs or Culture",
+      "desc": "No Allergy",
       "circleImg": "🥚",
       "isEmoji" : false
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "🫘 Soy",
-      "desc": "Mild or Digestive Reaction",
+      "desc": "No Allergy",
       "circleImg": "🫘",
       "isEmoji" : false
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": " Fish",
-      "desc": "Severe Allergy (Anaphylaxis)",
+      "desc": "No Allergy",
       "circleImg": "📷",
       "isEmoji" : true,
       "path" : "assets/png/profile_food_images/gold_fish.png",
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "🦐 Shellfish",
       "desc": "No Allergy",
       "circleImg": "🦐",
@@ -847,12 +858,11 @@ class ProfileController extends GetxController {
     },
     {
       "progress": 0.0.obs,
+      "selectedOption": "No Allergy".obs,
       "title": "🥛 Dairy",
       "desc": "No Allergy",
       "circleImg": "🥛",
       "isEmoji" : false,
-
-
     },
   ];
   Map<String, String> get allergensMap {
@@ -896,16 +906,23 @@ class ProfileController extends GetxController {
       return "Severe Allergy (Anaphylaxis)";
     }
   }
-  void updateProgress(int index, double newProgress) {
+  void updateProgress(int index, double newProgress, {String? selectedVal}) {
     allergens[index]['progress'].value = newProgress;
-
-    allergens[index]['desc'] =
-        getAllergyType(newProgress);
+    String type = selectedVal ?? getAllergyType(newProgress);
+    allergens[index]['desc'] = type;
+    if (allergens[index]['selectedOption'] == null) {
+      allergens[index]['selectedOption'] = type.obs;
+    } else {
+      (allergens[index]['selectedOption'] as RxString).value = type;
+    }
   }
   void resetAllergens() {
     for (var allergen in allergens) {
       (allergen['progress'] as RxDouble).value = 0.0;
       allergen['desc'] = 'No Allergy';
+      if (allergen['selectedOption'] != null) {
+        (allergen['selectedOption'] as RxString).value = 'No Allergy';
+      }
     }
 
     update();
@@ -939,10 +956,10 @@ class ProfileController extends GetxController {
         double progress = 0.0;
         if (val == "No Allergy") progress = 0.0;
         else if (val == "Mild or Digestive Reaction") progress = 0.45;
-        else if (val == "Avoid for belief or Culture") progress = 0.7;
-        else if (val == "Severe Allergy (Anaphylaxis)") progress = 1.0;
+        else if (val == "Avoid for belief or Culture" || val == "Avoid for belief or culture") progress = 0.7;
+        else if (val == "Severe Allergy (Anaphylaxis)" || val == "Severe Allergy") progress = 1.0;
         
-        updateProgress(i, progress);
+        updateProgress(i, progress, selectedVal: val);
       }
     }
     
@@ -1215,6 +1232,7 @@ class ProfileController extends GetxController {
       bool isUser, {
         File? profilePic,
         bool? isEdit,
+        bool? newProfile = false,
       }) async {
     final fields = <String, String>{
       "name": nameController.text.trim(),
@@ -1232,7 +1250,8 @@ class ProfileController extends GetxController {
       ApiEndPoints.setupProfile,
       fields,
       profilePic,
-      isEdit
+      isEdit,
+      newProfile
     );
   }
 
@@ -1241,7 +1260,8 @@ class ProfileController extends GetxController {
       String endpoint,
       Map<String, String> fields,
       File? profilePic,
-      bool? edit
+      bool? edit,
+      bool? newProfile
       ) async {
     try {
       EasyLoading.show(
@@ -1302,7 +1322,7 @@ class ProfileController extends GetxController {
         // final userId = jsonResponse['data']['user']['id'];
         //Get.toNamed('allergiesdietryscreen')
         edit == true ? Get.back() :
-        isUser == true ? Get.toNamed("allergiesdietryscreen"): Get.toNamed('allownotificationscreen', arguments: 1);
+        isUser == true ? Get.toNamed("allergiesdietryscreen"): newProfile == true ? Get.toNamed('allownotificationscreen', arguments: 1): (Get.toNamed("allergiesdietryscreen"));
         getMyProfileModel.refresh();
         if (jsonResponse["data"] != null &&
             jsonResponse["data"]["name"] != null) {
@@ -1339,8 +1359,10 @@ class ProfileController extends GetxController {
     for (int i = 0; i < allergenKeys.length; i++) {
        if (i >= allergens.length) break;
        final title = allergenKeys[i];
-       final allergyType = getAllergyType(allergens[i]['progress'].value);
-       commanAllergens[title] = allergyType;
+       final selectedOpt = (allergens[i]['selectedOption'] != null && allergens[i]['selectedOption'] is RxString)
+           ? (allergens[i]['selectedOption'] as RxString).value 
+           : getAllergyType(allergens[i]['progress'].value);
+       commanAllergens[title] = selectedOpt;
     }
     
     final plateData = getSelectedPlateMap();
@@ -1466,7 +1488,7 @@ class ProfileController extends GetxController {
             if(isPreferences.value == true) { // check again
               fetchMyProfile(); // Refresh to update profileCompleted status
               clearPreferences();
-              Get.toNamed('profileeditscreen');
+              Get.offAllNamed('profileeditscreen');
               isPreferences.value = false;
             }
             print(isPreferences.value);
@@ -1624,6 +1646,20 @@ class ProfileController extends GetxController {
       Utils.showToast("Connection error", true);
     }
   }
+
+  Future<void> GetProfileById ({required String userId}) async{
+    isLoading.value = true;
+    try{
+      final response = await baseService.baseGetAPI(ApiEndPoints.getProfileById(userId));
+      getProfileByIdModel.value = GetProfileByIdModel.fromJson(response);
+      print("=== Get Profile By Id === ${response["message"]}");
+    } catch(e){
+      print("Something went wrong. $e");
+    } finally{
+      isLoading.value = false;
+    }
+  }
+
   void clearSetupProfileFields(){
     nameController.clear();
     userName.clear();

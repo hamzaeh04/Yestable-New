@@ -11,6 +11,7 @@ import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/core/services/firebase_messaging/messaging_service.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/custom_image_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart'; // customText
 import '../../../widget/home_screen_widget.dart'; // homeIconWidget
@@ -37,7 +38,8 @@ class ChatGroupSetting extends StatelessWidget {
       navigationController.isHost.value = (navigationController.returnUserId() == adminId);
       eventController.listenGroupStatus(groupId);
     });
-    return Scaffold(
+    return floatingHomeButton(
+      screen: Scaffold(
       backgroundColor: greenColor,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -346,6 +348,7 @@ class ChatGroupSetting extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 

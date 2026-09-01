@@ -7,6 +7,7 @@ import '../../../constants/constants_widgets.dart';
 import '../../../controllers/navigation_controller.dart';
 import '../../../widget/button_widget.dart';
 import '../../../widget/home_screen_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 class AddFreindScreen extends StatelessWidget {
   AddFreindScreen({super.key});
@@ -14,13 +15,14 @@ class AddFreindScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: greenColor,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: Column(
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
           children: [
             SizedBox(height: 2.h),
             Padding(
@@ -154,6 +156,7 @@ class AddFreindScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
   Widget addFriendWidget({

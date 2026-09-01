@@ -9,6 +9,7 @@ import 'package:yestable/widget/back_button_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
+import 'package:yestable/widget/floating_home_button.dart';
 import '../../../controllers/auth_controller.dart';
 import '../../../controllers/notification_controller.dart';
 import '../../../outh_file/local_db_key.dart';
@@ -33,7 +34,9 @@ class AllowNotificationScreen extends StatelessWidget {
     });
 
     final steps = Get.arguments;
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,6 +164,7 @@ class AllowNotificationScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/foodpreference_yesno_widget.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/preferences_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
@@ -42,13 +43,15 @@ class HostFoodPreferenceTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             ClipRRect(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(25.sp),
@@ -271,6 +274,7 @@ class HostFoodPreferenceTwo extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

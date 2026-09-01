@@ -7,6 +7,8 @@ import 'package:yestable/controllers/navigation_controller.dart';
 import 'package:yestable/widget/loading_step_indicator.dart';
 import 'package:yestable/widget/picture_upload_bottomsheet.dart';
 
+import 'package:yestable/widget/floating_home_button.dart';
+
 import '../../../widget/button_widget.dart';
 
 class AddProfilePicture extends StatelessWidget {
@@ -15,7 +17,9 @@ class AddProfilePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return floatingHomeButton(
+      isProfileSetup: true,
+      screen: Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,  // outer column alignment
@@ -135,7 +139,7 @@ class AddProfilePicture extends StatelessWidget {
                         navigationController.controller.clearSetupProfileFields();
                         navigationController.controller.profilePicture.value = pickedPicture;
                         navigationController.controller.isEdit.value = false;
-                        Get.toNamed("profileeditscreen");
+                        Get.toNamed("profileeditscreen", arguments: true);
                       },
                     ),
                   ),
@@ -145,6 +149,7 @@ class AddProfilePicture extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

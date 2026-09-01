@@ -5,20 +5,22 @@ import 'package:sizer/sizer.dart';
 import '../../../constants/color_constants.dart';
 import '../../../constants/constants_widgets.dart';
 import '../../../widget/home_screen_widget.dart';
+import 'package:yestable/widget/floating_home_button.dart';
 
 class ProfileChatMessage extends StatelessWidget {
   const ProfileChatMessage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: greenColor,
-      resizeToAvoidBottomInset: true, // Important for keyboard handling
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: Column(
-          children: [
+    return floatingHomeButton(
+      screen: Scaffold(
+        backgroundColor: greenColor,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w),
               child: Row(
@@ -173,6 +175,7 @@ class ProfileChatMessage extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

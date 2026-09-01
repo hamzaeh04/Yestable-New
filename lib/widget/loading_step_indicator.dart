@@ -5,38 +5,34 @@ import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 
 Widget loadingStepIndicator(String? step, double? loadingvalue){
-  return
-    Row(
-      children: [
-        Expanded(
+  return Row(
+    children: [
+      Expanded(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.sp),
           child: LinearProgressIndicator(
-            backgroundColor: whiteColor, // Track color
-            color: greenColor,            // Progress color
-            value: loadingvalue,
+            backgroundColor: greyBorderColor.withOpacity(0.4),
+            color: greenColor,
+            value: (loadingvalue ?? 0).clamp(0.0, 1.0),
             minHeight: 0.7.h,
-            borderRadius: BorderRadius.circular(10.sp),
           ),
         ),
-        SizedBox(width: 2.w),
-
-        // Wrap flower image in Stack to overlay text
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset(
-              "assets/png/flower.png",
-              height: 5.h, // was 10.h
-              width: 10.w,
-            ),
-            customText(
-              text: '$step',
-              color: Colors.white,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              fontFamily: "CormorantGaramond"
-            ),
-          ],
+      ),
+      SizedBox(width: 3.w),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+        decoration: BoxDecoration(
+          color: greenColor,
+          borderRadius: BorderRadius.circular(15.sp),
         ),
-      ],
-    );
+        child: customText(
+          text: '$step',
+          color: whiteColor,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
+          fontFamily: "WorkSans",
+        ),
+      ),
+    ],
+  );
 }
