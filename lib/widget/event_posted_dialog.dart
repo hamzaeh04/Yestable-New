@@ -11,18 +11,29 @@ import 'package:yestable/widget/showShareDialogBox_widget.dart';
 
 import '../constants/constants_widgets.dart';
 
-void eventPostedDialog(BuildContext context, {String? shareLink}) {
+void eventPostedDialog(BuildContext context, {String? shareLink, String? eventId}) {
   final NavigationController controller = Get.find<NavigationController>();
 
   void goToDashboard() {
-    Get.to(() => CustomBottomNavBar());
+    Get.offAllNamed("bottomnavigationbar");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.changePage(0);
     });
   }
+
+  Future<void> openEventDetailsFromRoot(String eventId) async {
+    await Get.offAllNamed("bottomnavigationbar");
+
+    Get.toNamed("eventdetailsscreen", arguments: eventId);
+
+  }
+
+  final targetContext = context.mounted ? context : Get.context;
+  if (targetContext == null) return;
+
   showDialog(
-    context: context,
-    builder: (context) {
+    context: targetContext,
+    builder: (dialogContext) {
       return Dialog(
         backgroundColor: const Color(0xFFFDF3F1),
         shape: RoundedRectangleBorder(
@@ -64,7 +75,7 @@ void eventPostedDialog(BuildContext context, {String? shareLink}) {
                       ),
                       SizedBox(height: 1.h),
                       customText(
-                        text: "Let the RSVpleases roll in!",
+                        text: "Let the RSVPs roll in!",
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: darkGreyColor,
@@ -92,20 +103,30 @@ void eventPostedDialog(BuildContext context, {String? shareLink}) {
                     Get.back();
 
                     if (shareLink != null && shareLink.isNotEmpty) {
-                      // 2. Share-link dialog dikhayein
-                      showShareProfileDialog(
-                        context,
-                        title: "Share Event Link",
-                        link: shareLink,
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: shareLink));
-                          Utils.showToast("Link copied!", false);
-                        },
-                        onCancel: () {
-                          Get.back();
-                          goToDashboard();
-                        },
-                      );
+                      final shareContext = context.mounted ? context : Get.context;
+                      if (shareContext != null) {
+                        // 2. Share-link dialog dikhayein
+                        showShareProfileDialog(
+                          shareContext,
+                          title: "Share Event Link",
+                          link: shareLink,
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: shareLink));
+                            Utils.showToast("Link copied!", false);
+                          },
+                          onCancel: () {
+                            Get.back();
+                            // goToDashboard();
+                            Get.offNamedUntil(
+                              "eventdetailsscreen",
+                                  (route) => route.settings.name == "bottomnavigationbar",
+                              arguments: eventId,
+                            );
+                          },
+                        );
+                      } else {
+                        goToDashboard();
+                      }
                     } else {
                       // 2. Dashboard pe jayein
                       goToDashboard();

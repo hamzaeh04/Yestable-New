@@ -126,7 +126,8 @@ class EventComfortThree extends StatelessWidget {
                     whiteColor,
                     colors: greenColor,
                     onTap: () async {
-                      eventController.updateGuestAwareMethod(eventId);
+
+                      eventController.updateGuestAwareMethod(eventId, context: context);
                       print(eventId);
                       // Get.toNamed("eventpublishscreen");
                     },
@@ -141,4 +142,74 @@ class EventComfortThree extends StatelessWidget {
     ),
     );
   }
+}
+Future<void> publishDialog(BuildContext context, String eventId) async {
+  final EventController eventController = Get.find<EventController>();
+
+  final targetContext = context.mounted ? context : Get.context;
+  if (targetContext == null) return;
+
+  await showDialog(
+    context: targetContext,
+    barrierDismissible: true,
+    builder: (dialogContext) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.w),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 5.w,
+            vertical: 3.h,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              customText(
+                text: "Publish Event",
+                fontSize: 19.sp,
+                fontWeight: FontWeight.w600,
+              ),
+
+              SizedBox(height: 1.h),
+
+              customText(
+                text: "Are you sure you want to publish this event?",
+                fontSize: 15.5.sp,
+                textAlign: TextAlign.center,
+                color: darkGreyColor,
+                height: 1
+              ),
+
+              SizedBox(height: 3.h),
+
+              buttonWidget(
+                "Publish Event",
+                whiteColor,
+                colors: greenColor,
+                onTap: () {
+                  Get.back();
+
+                  // Call publish API here
+                  final publishContext = context.mounted ? context : Get.context;
+                  eventController.publishEvent(eventId, publishContext);
+                },
+              ),
+
+              SizedBox(height: 0.75.h),
+
+              buttonWidget(
+                "Not Now",
+                greenColor,
+                borderColor: greenColor,
+                onTap: () {
+                  Get.back();
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

@@ -7,8 +7,11 @@ import 'package:yestable/widget/button_widget.dart';
 import '../constants/constants_widgets.dart';
 
 void showShareProfileDialog(BuildContext context,{VoidCallback? onTap,VoidCallback? onCancel,String? title,String? link}) {
+  final targetContext = context.mounted ? context : Get.context;
+  if (targetContext == null) return;
+
   showDialog(
-    context: context,
+    context: targetContext,
     barrierDismissible: false,
     builder: (_) => Dialog(
       backgroundColor: Colors.white,

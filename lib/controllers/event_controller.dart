@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yestable/controllers/profile_controller.dart';
 import 'package:yestable/model/get_ai_menu.dart';
@@ -30,7 +31,9 @@ import '../utils/shared_prefrences_methods.dart';
 import '../utils/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import '../views/host_screens/events_screens/event_comfort_three.dart';
 import '../widget/event_posted_dialog.dart';
+import '../widget/share_profile_widget.dart';
 import 'location_controller.dart';
 import 'navigation_controller.dart';
 
@@ -1186,7 +1189,7 @@ class EventController extends GetxController {
   }
 
   /// GUEST AWARE API
-  Future<void> updateGuestAwareMethod(String eventId) async {
+  Future<void> updateGuestAwareMethod(String eventId, {required BuildContext context}) async {
     final ProfileController profileController = Get.find<ProfileController>();
     final NavigationController navCtrl = Get.find<NavigationController>();
 
@@ -1289,8 +1292,11 @@ class EventController extends GetxController {
           response['message'] ?? "Guest aware details updated successfully",
           false,
         );
-        // Get.toNamed("eventcomfortthree", arguments: eventId);
-        Get.toNamed("eventpublishscreen", arguments: eventId);
+        // Get.toNamed("eventpublishscreen", arguments: eventId);
+        final validContext = context.mounted ? context : Get.context;
+        if (validContext != null) {
+          publishDialog(validContext, eventId);
+        }
       } else {
         Utils.showToast(
           response['message'] ?? "Failed to update guest aware details",
@@ -1335,7 +1341,7 @@ class EventController extends GetxController {
     }
   }
 
-  Future<void> publishEvent(String eventId, BuildContext context) async {
+  Future<void> publishEvent(String eventId, BuildContext? context) async {
     isMenusLoading.value = true;
 
     try {
@@ -1346,14 +1352,11 @@ class EventController extends GetxController {
 
       if (response != null && response['success'] == true) {
         // Success
-        // Utils.showToast(
-        //     response?['message'], false
-        // );
-        eventPostedDialog(context, shareLink: generateEventLink(eventId));
+        final targetContext = (context != null && context.mounted) ? context : Get.context;
+        if (targetContext != null) {
+          eventPostedDialog(targetContext, shareLink: generateEventLink(eventId), eventId: eventId);
+        }
         clearEventFields();
-        // Optional: navigate or refresh
-        // Get.back();
-        // eventReview(eventId);
       } else {
         // API returned failure
         Utils.showToast(response?['message'], true);
