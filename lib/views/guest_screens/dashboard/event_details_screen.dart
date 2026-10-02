@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/event_location_map.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/event_controller.dart';
 import 'package:yestable/controllers/navigation_controller.dart';
@@ -614,10 +615,9 @@ class EventDetailsScreen extends StatelessWidget {
                           color: darkGreyColor,
                         ),
                         SizedBox(height: 1.h),
-                        Container(
-                          child: Image.asset(
-                            "assets/png/event_detail_img/event_detial_map.png",
-                          ),
+                        EventLocationMap(
+                          coordinates: data?.location?.coordinates,
+                          label: data?.address,
                         ),
                         SizedBox(height: 1.h),
                         Row(

@@ -288,7 +288,7 @@
 //   //     LocationResult? result = await Navigator.of(context).push(
 //   //       MaterialPageRoute(
 //   //         builder: (context) => PlacePicker(
-//   //           'AIzaSyCtin-ww3QMlwxB_658TuAUV9r4XId0kEw',
+//   //           'REMOVED_API_KEY',
 //   //           displayLocation: latLng,
 //   //         ),
 //   //       ),

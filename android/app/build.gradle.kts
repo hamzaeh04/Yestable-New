@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
   id("com.android.application")
   id("com.google.gms.google-services")
@@ -34,6 +36,12 @@ android {
 
     versionCode = flutter.versionCode
     versionName = flutter.versionName
+
+    // Google Maps key lives in the gitignored android/local.properties.
+    val localProperties = Properties().apply {
+      rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+    }
+    manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY", "")
   }
 
   buildTypes {

@@ -14,7 +14,9 @@ import 'package:yestable/utils/shared_prefrences_methods.dart';
 import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/floating_home_button.dart';
 
+import '../../../widget/address_autocomplete_field.dart';
 import '../../../widget/allergens_widget.dart';
+import '../../../widget/location_picker_dialog.dart';
 import '../../guest_screens/profile_setup_screens/profile_edit_screen.dart';
 
 class CreateNewEventScreen extends StatelessWidget {
@@ -622,34 +624,39 @@ class CreateNewEventScreen extends StatelessWidget {
                                     return Row(
                                       children: [
                                         Expanded(
-                                          child: customProfileField(
-                                            ontap: () async {
-                                              // await eventController
-                                              //     .locationController
-                                              //     .getUserLocation();
-                                              // eventController
-                                              //     .locationController
-                                              //     .addressController
-                                              //     .text = eventController
-                                              //     .locationController
-                                              //     .address
-                                              //     .value;
+                                          child: AddressAutocompleteField(
+                                            controller: eventController
+                                                .locationController
+                                                .addressController,
+                                            onPlaceSelected: (address, lat, lng) {
+                                              final location = eventController.locationController;
+                                              location.latitude.value = lat;
+                                              location.longitude.value = lng;
+                                              location.address.value = address;
                                             },
-
-
-                                            // readonly: true,
-                                            hint:
-                                                "Address",
-                                            controller:
-                                                eventController
-                                                    .locationController
-                                                    .addressController,
+                                            onManualEdit: () {
+                                              final location = eventController.locationController;
+                                              location.latitude.value = 0;
+                                              location.longitude.value = 0;
+                                            },
                                           ),
                                         ),
 
                                         Padding(
                                           padding: EdgeInsets.only(right: 3.w),
                                           child: InkWell(
+                                            onTap: () async {
+                                              final result = await showDialog<Map<String, dynamic>>(
+                                                context: context,
+                                                builder: (_) => const LocationPickerDialog(),
+                                              );
+                                              if (result == null) return;
+                                              final location = eventController.locationController;
+                                              location.latitude.value = result['latitude'];
+                                              location.longitude.value = result['longitude'];
+                                              location.address.value = result['address'];
+                                              location.addressController.text = result['address'];
+                                            },
                                             // onTap: () async {
                                             //   await eventController
                                             //       .locationController
