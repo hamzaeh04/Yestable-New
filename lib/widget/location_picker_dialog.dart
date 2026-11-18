@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
@@ -6,11 +7,58 @@ import 'package:sizer/sizer.dart';
 import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 import '../controllers/location_controller.dart';
+import 'address_autocomplete_field.dart';
 
 const _dialogBg = Color(0xFFFDF3F1);
 
-// Times Square, New York — where the map opens when nothing was picked yet.
+// Times Square, New York — only a fallback when the current location can't be read.
 const _defaultLocation = LatLng(40.7580, -73.9855);
+
+/// Opens the location picker. If device location services are off, first asks
+/// the user to turn them on; the picker only opens once they are enabled.
+Future<Map<String, dynamic>?> showLocationPickerFlow(
+  BuildContext context,
+) async {
+  if (!await Geolocator.isLocationServiceEnabled()) {
+    final goToSettings = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: _dialogBg,
+        title: const Text('Turn on location'),
+        content: const Text(
+          'Location services are turned off. Please enable them to choose the event location.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel', style: TextStyle(color: greenColor)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Enable', style: TextStyle(color: greenColor)),
+          ),
+        ],
+      ),
+    );
+    if (goToSettings != true) return null;
+
+    await Geolocator.openLocationSettings();
+    // Wait for the user to switch location on and come back.
+    try {
+      await Geolocator.getServiceStatusStream()
+          .firstWhere((s) => s == ServiceStatus.enabled)
+          .timeout(const Duration(seconds: 90));
+    } catch (_) {
+      return null;
+    }
+    if (!context.mounted) return null;
+  }
+
+  return showDialog<Map<String, dynamic>>(
+    context: context,
+    builder: (_) => const LocationPickerDialog(),
+  );
+}
 
 /// Pops with `{'latitude', 'longitude', 'address'}` when the user confirms,
 /// or `null` when dismissed.
@@ -24,18 +72,37 @@ class LocationPickerDialog extends StatefulWidget {
 class _LocationPickerDialogState extends State<LocationPickerDialog> {
   final controller = Get.find<LocationController>();
   final isMapMoving = false.obs;
-  late final LatLng initialTarget;
+  final searchController = TextEditingController();
+  LatLng? initialTarget;
 
   @override
   void initState() {
     super.initState();
-    // Reopen on the previously picked spot, otherwise start in New York.
+    // Reopen on the previously picked spot, otherwise use the current
+    // location (asking for permission if needed), else fall back to New York.
     final hasPicked =
         controller.latitude.value != 0 || controller.longitude.value != 0;
-    initialTarget = hasPicked
-        ? LatLng(controller.latitude.value, controller.longitude.value)
-        : _defaultLocation;
-    controller.selectedLatLng.value = initialTarget;
+    if (hasPicked) {
+      _setInitial(
+        LatLng(controller.latitude.value, controller.longitude.value),
+      );
+    } else {
+      controller.getCurrentLatLng().then(
+        (p) => _setInitial(p ?? _defaultLocation),
+      );
+    }
+  }
+
+  void _setInitial(LatLng target) {
+    if (!mounted) return;
+    controller.selectedLatLng.value = target;
+    setState(() => initialTarget = target);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   void _zoom(bool zoomIn) {
@@ -51,13 +118,10 @@ class _LocationPickerDialogState extends State<LocationPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-
     return Dialog(
       backgroundColor: _dialogBg,
       insetPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 5.h),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.sp),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.sp)),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         height: 78.h,
@@ -65,61 +129,93 @@ class _LocationPickerDialogState extends State<LocationPickerDialog> {
           children: [
             _Header(onClose: () => Navigator.of(context).pop()),
 
-            // Map
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.sp),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Not wrapped in Obx: rebuilding GoogleMap on every
-                      // camera move is expensive and causes jank.
-                      GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: initialTarget,
-                          zoom: 16,
-                        ),
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: false,
-                        zoomControlsEnabled: false,
-                        mapToolbarEnabled: false,
-                        compassEnabled: false,
-                        onMapCreated: controller.setMapController,
-                        onCameraMoveStarted: () => isMapMoving.value = true,
-                        onCameraMove: controller.onCameraMove,
-                        onCameraIdle: _onCameraIdle,
+            Padding(
+              padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 1.5.h),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(14.sp),
+                  border: Border.all(color: friendTextfieldColor),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.search, size: 17.sp, color: greenColor),
+                    SizedBox(width: 2.w),
+                    Expanded(
+                      child: AddressAutocompleteField(
+                        controller: searchController,
+                        hint: 'Search address',
+                        onManualEdit: () {},
+                        onPlaceSelected:
+                            (address, lat, lng) =>
+                                controller.moveToLatLng(LatLng(lat, lng)),
                       ),
-                      IgnorePointer(
-                        child: Obx(
-                          () => _CenterPin(
-                            lifted: isMapMoving.value,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 3.w,
-                        top: 1.5.h,
-                        child: _ZoomControls(
-                          onZoomIn: () => _zoom(true),
-                          onZoomOut: () => _zoom(false),
-                        ),
-                      ),
-                      Positioned(
-                        right: 3.w,
-                        bottom: 1.5.h,
-                        child: Obx(
-                          () => _MapRoundButton(
-                            loading: controller.isLoadingLocation.value,
-                            onTap: controller.moveToCurrentLocation,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+            ),
+
+            // Map
+            Expanded(
+              child:
+                  initialTarget == null
+                      ? const Center(
+                        child: CircularProgressIndicator(color: greenColor),
+                      )
+                      : Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16.sp),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Not wrapped in Obx: rebuilding GoogleMap on every
+                              // camera move is expensive and causes jank.
+                              GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: initialTarget!,
+                                  zoom: 16,
+                                ),
+                                myLocationEnabled: true,
+                                myLocationButtonEnabled: false,
+                                zoomControlsEnabled: false,
+                                mapToolbarEnabled: false,
+                                compassEnabled: false,
+                                onMapCreated: controller.setMapController,
+                                onCameraMoveStarted:
+                                    () => isMapMoving.value = true,
+                                onCameraMove: controller.onCameraMove,
+                                onCameraIdle: _onCameraIdle,
+                              ),
+                              IgnorePointer(
+                                child: Obx(
+                                  () => _CenterPin(lifted: isMapMoving.value),
+                                ),
+                              ),
+                              Positioned(
+                                right: 3.w,
+                                top: 1.5.h,
+                                child: _ZoomControls(
+                                  onZoomIn: () => _zoom(true),
+                                  onZoomOut: () => _zoom(false),
+                                ),
+                              ),
+                              Positioned(
+                                right: 3.w,
+                                bottom: 1.5.h,
+                                child: Obx(
+                                  () => _MapRoundButton(
+                                    loading: controller.isLoadingLocation.value,
+                                    onTap: controller.moveToCurrentLocation,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
             ),
 
             _AddressPanel(controller: controller, isMapMoving: isMapMoving),
@@ -155,7 +251,7 @@ class _Header extends StatelessWidget {
                 ),
                 SizedBox(height: 0.3.h),
                 customText(
-                  text: 'Drag the map to place the pin',
+                  text: 'Drag the map or search an address',
                   fontSize: 13.sp,
                   color: greyTextColor,
                 ),
@@ -230,16 +326,17 @@ class _MapRoundButton extends StatelessWidget {
           width: 11.w,
           height: 11.w,
           child: Center(
-            child: loading
-                ? SizedBox(
-                    width: 4.5.w,
-                    height: 4.5.w,
-                    child: const CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: greenColor,
-                    ),
-                  )
-                : Icon(Icons.my_location, size: 17.sp, color: greenColor),
+            child:
+                loading
+                    ? SizedBox(
+                      width: 4.5.w,
+                      height: 4.5.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: greenColor,
+                      ),
+                    )
+                    : Icon(Icons.my_location, size: 17.sp, color: greenColor),
           ),
         ),
       ),
@@ -256,13 +353,13 @@ class _ZoomControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget button(IconData icon, VoidCallback onTap) => InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            width: 11.w,
-            height: 11.w,
-            child: Icon(icon, size: 18.sp, color: greenColor),
-          ),
-        );
+      onTap: onTap,
+      child: SizedBox(
+        width: 11.w,
+        height: 11.w,
+        child: Icon(icon, size: 18.sp, color: greenColor),
+      ),
+    );
 
     return Material(
       color: whiteColor,
@@ -340,19 +437,19 @@ class _AddressPanel extends StatelessWidget {
                         SizedBox(height: 0.3.h),
                         busy
                             ? customText(
-                                text: 'Finding address…',
-                                fontSize: 13.5.sp,
-                                color: greyTextColor,
-                                fontStyle: FontStyle.italic,
-                              )
+                              text: 'Finding address…',
+                              fontSize: 13.5.sp,
+                              color: greyTextColor,
+                              fontStyle: FontStyle.italic,
+                            )
                             : customText(
-                                text: controller.selectedAddress.value,
-                                fontSize: 13.5.sp,
-                                fontWeight: FontWeight.w500,
-                                color: lightBlackColor,
-                                maxLines: 2,
-                                overFlow: TextOverflow.ellipsis,
-                              ),
+                              text: controller.selectedAddress.value,
+                              fontSize: 13.5.sp,
+                              fontWeight: FontWeight.w500,
+                              color: lightBlackColor,
+                              maxLines: 2,
+                              overFlow: TextOverflow.ellipsis,
+                            ),
                       ],
                     ),
                   ),

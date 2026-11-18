@@ -108,14 +108,14 @@ class Utils{
 
   static String getFormatedDate(String date){
     print(date);
-    DateTime dateTime = DateFormat("dd-MM-yyyy").parse(date);
+    DateTime dateTime = DateFormat("MM-dd-yyyy").parse(date);
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     return formattedDate;
   }
 
   static String getFormatedDate3(String date){
     print(date);
-    DateTime dateTime = DateFormat("dd-MM-yyyy").parse(date);
+    DateTime dateTime = DateFormat("MM-dd-yyyy").parse(date);
     String formattedDate = DateFormat('MM dd, yyyy').format(dateTime);
     return formattedDate;
   }

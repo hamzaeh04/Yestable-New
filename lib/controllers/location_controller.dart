@@ -154,6 +154,32 @@ class LocationController extends GetxController{
     }
   }
 
+  /// Asks for location permission if needed and returns the device position,
+  /// or null if unavailable/denied.
+  Future<LatLng?> getCurrentLatLng() async {
+    try {
+      if (!await _checkLocationPermission()) return null;
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+      return LatLng(position.latitude, position.longitude);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> moveToLatLng(LatLng location) async {
+    selectedLatLng.value = location;
+    await mapController?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: location, zoom: 17),
+      ),
+    );
+  }
+
   Future<bool> _checkLocationPermission() async {
     bool serviceEnabled =
     await Geolocator.isLocationServiceEnabled();

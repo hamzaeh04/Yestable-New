@@ -401,7 +401,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(height: 3.25.h),
+                                  SizedBox(height: 5.7.h),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -419,13 +419,13 @@ class CreateNewEventScreen extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15.sp,
                                   ),
-                                  SizedBox(height: 4.4.h),
+                                  SizedBox(height: 4.7.h),
                                   customText(
                                     text: "Parking Details",
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15.sp,
                                   ),
-                                  SizedBox(height: 4.2.h),
+                                  SizedBox(height: 4.5.h),
                                   customText(
                                     text: "Add Note",
                                     fontWeight: FontWeight.w500,
@@ -646,10 +646,7 @@ class CreateNewEventScreen extends StatelessWidget {
                                           padding: EdgeInsets.only(right: 3.w),
                                           child: InkWell(
                                             onTap: () async {
-                                              final result = await showDialog<Map<String, dynamic>>(
-                                                context: context,
-                                                builder: (_) => const LocationPickerDialog(),
-                                              );
+                                              final result = await showLocationPickerFlow(context);
                                               if (result == null) return;
                                               final location = eventController.locationController;
                                               location.latitude.value = result['latitude'];

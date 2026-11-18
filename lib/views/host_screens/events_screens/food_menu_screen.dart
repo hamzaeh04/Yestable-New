@@ -38,513 +38,613 @@ class FoodMenuScreen extends StatelessWidget {
       eventController.getMenus();
     });
 
-
     final eventId = Get.arguments;
     if (eventId is String && eventId.isNotEmpty) {
       eventController.mainEventId = eventId;
     }
     return floatingHomeButton(
       screen: Scaffold(
-      backgroundColor: greenColor,
-      body: SafeArea(
-        bottom: false,
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-                  child: Row(
-                    children: [
-                      homeIconWidget(
-                        icon: Icons.arrow_back_ios_new,
-                        color: lightgreenColor,
-                        iconsize: 16.sp,
-                        onTap: () {
-                          Get.back();
-                        },
-                      ),
-                      SizedBox(width: 2.w),
-                      customText(
-                        text: "Select Your Food Menu",
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w500,
-                        color: whiteColor,
-                        fontFamily: "CormorantGaramond",
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                // Main Scrollable Body with Rounded Corners
-                SizedBox(
-                  height: 80.h,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30.sp),
-                        topRight: Radius.circular(30.sp),
-                      ),
+        backgroundColor: greenColor,
+        body: SafeArea(
+          bottom: false,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 1.h,
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30.sp),
-                        topRight: Radius.circular(30.sp),
+                    child: Row(
+                      children: [
+                        homeIconWidget(
+                          icon: Icons.arrow_back_ios_new,
+                          color: lightgreenColor,
+                          iconsize: 16.sp,
+                          onTap: () {
+                            Get.back();
+                          },
+                        ),
+                        SizedBox(width: 2.w),
+                        customText(
+                          text: "Select Your Food Menu",
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w500,
+                          color: whiteColor,
+                          fontFamily: "CormorantGaramond",
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+
+                  // Main Scrollable Body with Rounded Corners
+                  SizedBox(
+                    height: 80.h,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.sp),
+                          topRight: Radius.circular(30.sp),
+                        ),
                       ),
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 3.h),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    customText(
-                                      text: "Food preferences",
-                                      fontSize: 20.sp,
-                                      fontFamily: "CormorantGaramond",
-                                      fontWeight: FontWeight.w600,
-                                      color: blackColor,
-                                      height: 0.13.h,
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5.w),
-
-                                child: Obx(
-                                  () => Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.sp),
+                          topRight: Radius.circular(30.sp),
+                        ),
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3.h),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 6.w,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      buttonWidget(
-                                        "YesTable Menu (AI)",
-                                        image: Image.asset(
-                                          'assets/png/chat_images/yesGPT.png',
-                                          width: 5.w,
-                                        ),
-                                        controller.isYesTableSelected.value
-                                            ? whiteColor
-                                            : blackColor,
-                                        colors:
-                                            controller.isYesTableSelected.value
-                                                ? greenColor
-                                                : backgroundColor,
-                                        borderColor: greenColor.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                        width: 43.w,
-                                        height: 4.5.h,
-                                        fontsize: 14.sp,
-                                        onTap: controller.selectYesTable,
-                                      ),
-
-                                      buttonWidget(
-                                        "Manually Picked",
-                                        controller.isYesTableSelected.value
-                                            ? blackColor
-                                            : whiteColor,
-                                        colors:
-                                            controller.isYesTableSelected.value
-                                                ? backgroundColor
-                                                : greenColor,
-                                        borderColor: greenColor.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                        width: 43.w,
-                                        height: 4.5.h,
-                                        fontsize: 14.sp,
-                                        onTap: controller.selectManual,
+                                      customText(
+                                        text: "Food preferences",
+                                        fontSize: 20.sp,
+                                        fontFamily: "CormorantGaramond",
+                                        fontWeight: FontWeight.w600,
+                                        color: blackColor,
+                                        height: 0.13.h,
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 0.h),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                child: Column(
-                                  children: [
-                                    DefaultTabController(
-                                      length: 3,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(height: 1.h),
-                                          Obx(() {
-                                            if (controller
-                                                .isYesTableSelected
-                                                .value) {
-                                              /// ✅ YesTable Menu Selected (VERTICAL LIST)
-                                              return Column(
-                                                children: [
-                                                  Container(
-                                                    //margin: EdgeInsets.symmetric(horizontal: 5.w),
-                                                    height: 5.5.h,
-                                                    width: double.infinity,
-                                                    padding: EdgeInsets.only(
-                                                      right: 2.w,
-                                                      left: 4.w,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            25.sp,
-                                                          ),
-                                                      border: Border.all(
-                                                        color: lightgreenColor,
+                                SizedBox(height: 2.h),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.w,
+                                  ),
+
+                                  child: Obx(
+                                    () => Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        buttonWidget(
+                                          "YesTable Menu (AI)",
+                                          image: Image.asset(
+                                            'assets/png/chat_images/yesGPT.png',
+                                            width: 5.w,
+                                          ),
+                                          controller.isYesTableSelected.value
+                                              ? whiteColor
+                                              : blackColor,
+                                          colors:
+                                              controller
+                                                      .isYesTableSelected
+                                                      .value
+                                                  ? greenColor
+                                                  : backgroundColor,
+                                          borderColor: greenColor.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          width: 43.w,
+                                          height: 4.5.h,
+                                          fontsize: 14.sp,
+                                          onTap: controller.selectYesTable,
+                                        ),
+
+                                        buttonWidget(
+                                          "Manually Picked",
+                                          controller.isYesTableSelected.value
+                                              ? blackColor
+                                              : whiteColor,
+                                          colors:
+                                              controller
+                                                      .isYesTableSelected
+                                                      .value
+                                                  ? backgroundColor
+                                                  : greenColor,
+                                          borderColor: greenColor.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          width: 43.w,
+                                          height: 4.5.h,
+                                          fontsize: 14.sp,
+                                          onTap: controller.selectManual,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 0.h),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4.w,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      DefaultTabController(
+                                        length: 3,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: 1.h),
+                                            Obx(() {
+                                              if (controller
+                                                  .isYesTableSelected
+                                                  .value) {
+                                                /// ✅ YesTable Menu Selected (VERTICAL LIST)
+                                                return Column(
+                                                  children: [
+                                                    Container(
+                                                      //margin: EdgeInsets.symmetric(horizontal: 5.w),
+                                                      height: 5.5.h,
+                                                      width: double.infinity,
+                                                      padding: EdgeInsets.only(
+                                                        right: 2.w,
+                                                        left: 4.w,
                                                       ),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: TextField(
-                                                            controller:
-                                                                eventController
-                                                                    .aiController,
-                                                            style: TextStyle(
-                                                              fontSize: 14.sp,
-                                                              fontFamily:
-                                                                  "WorkSans",
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              25.sp,
                                                             ),
-                                                            decoration: InputDecoration(
-                                                              hintText:
-                                                                  '"Suggest a brunch for this group!"',
-                                                              hintStyle: TextStyle(
-                                                                fontSize:
-                                                                    14.5.sp,
-                                                                color: Colors
-                                                                    .black
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.6,
-                                                                    ),
-                                                              ),
-                                                              border:
-                                                                  InputBorder
-                                                                      .none,
-                                                              enabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              focusedBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              disabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              isDense: true,
-                                                              contentPadding:
-                                                                  EdgeInsets
-                                                                      .zero,
-                                                            ),
-                                                          ),
+                                                        border: Border.all(
+                                                          color:
+                                                              lightgreenColor,
                                                         ),
-                                                        InkWell(
-                                                          onTap: () {
-                                                            if (eventController
-                                                                .aiController
-                                                                .text
-                                                                .isEmpty) {
-                                                              Utils.showToast(
-                                                                "Write the Prompt",
-                                                                true,
-                                                              );
-                                                            } else {
-                                                              eventController.GetAiMenu(
-                                                                eventController
-                                                                    .mainEventId,
-                                                                eventController
-                                                                    .refreshMenu,
-                                                                eventController
-                                                                    .aiController
-                                                                    .text,
-                                                              );
-                                                            }
-                                                          },
-                                                          child: Container(
-                                                            height: 5.2.h,
-                                                            width: 9.w,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                  shape:
-                                                                      BoxShape
-                                                                          .circle,
-                                                                  color:
-                                                                      greenColor,
-                                                                ),
-                                                            child: Image.asset(
-                                                              'assets/png/chat_images/circle.png',
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 0.8.h),
-                                                  SizedBox(
-                                                    height: 4.h,
-                                                    child: SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      physics:
-                                                          const BouncingScrollPhysics(),
+                                                      ),
                                                       child: Row(
                                                         children: [
-                                                          list(
-                                                            'Suggest a brunch menu this group would like',
+                                                          Expanded(
+                                                            child: TextField(
+                                                              controller:
+                                                                  eventController
+                                                                      .aiController,
+                                                              style: TextStyle(
+                                                                fontSize: 14.sp,
+                                                                fontFamily:
+                                                                    "WorkSans",
+                                                              ),
+                                                              decoration: InputDecoration(
+                                                                hintText:
+                                                                    "Have YesTable suggest a menu item",
+                                                                hintStyle: TextStyle(
+                                                                  fontSize:
+                                                                      14.5.sp,
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.6,
+                                                                      ),
+                                                                ),
+                                                                border:
+                                                                    InputBorder
+                                                                        .none,
+                                                                enabledBorder:
+                                                                    InputBorder
+                                                                        .none,
+                                                                focusedBorder:
+                                                                    InputBorder
+                                                                        .none,
+                                                                disabledBorder:
+                                                                    InputBorder
+                                                                        .none,
+                                                                isDense: true,
+                                                                contentPadding:
+                                                                    EdgeInsets
+                                                                        .zero,
+                                                              ),
+                                                            ),
                                                           ),
-                                                          SizedBox(width: 2.w),
-                                                          list(
-                                                            'Suggest a brunch menu this group would like',
+                                                          InkWell(
+                                                            onTap: () {
+                                                              if (eventController
+                                                                  .aiController
+                                                                  .text
+                                                                  .isEmpty) {
+                                                                Utils.showToast(
+                                                                  "Write the Prompt",
+                                                                  true,
+                                                                );
+                                                              } else {
+                                                                eventController.GetAiMenu(
+                                                                  eventController
+                                                                      .mainEventId,
+                                                                  eventController
+                                                                      .refreshMenu,
+                                                                  eventController
+                                                                      .aiController
+                                                                      .text,
+                                                                );
+                                                              }
+                                                            },
+                                                            child: Container(
+                                                              height: 5.2.h,
+                                                              width: 9.w,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                    shape:
+                                                                        BoxShape
+                                                                            .circle,
+                                                                    color:
+                                                                        greenColor,
+                                                                  ),
+                                                              child: Image.asset(
+                                                                'assets/png/chat_images/circle.png',
+                                                              ),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ),
 
-                                                  SizedBox(height: 1.h),
-                                                  // SizedBox(
-                                                  //   height: 24.h,
-                                                  //   child: SingleChildScrollView(
-                                                  //     scrollDirection:
-                                                  //         Axis.horizontal,
-                                                  //     physics:
-                                                  //         const BouncingScrollPhysics(),
-                                                  //     child: Row(
-                                                  //       children: [
-                                                  //         FoodMenuCard(),
-                                                  //         SizedBox(width: 2.w),
-                                                  //         FoodMenuCard(),
-                                                  //       ],
-                                                  //     ),
-                                                  //   ),
-                                                  // ),
-                                                  SizedBox(
-                                                    height: 25.h,
-                                                    child: Obx(() {
-                                                      if (eventController.isAiMenuLoading.value) {
-                                                        return const Center(
-                                                          child: CircularProgressIndicator(color: greenColor),
-                                                        );
-                                                      }
-
-                                                      final suggestions = eventController.getAiMenuModel.value?.data?.suggestions ?? [];
-                                                      if (suggestions.isEmpty) {
-                                                        return Center(
-                                                          child: Padding(
-                                                            padding: EdgeInsets.symmetric(horizontal: 6.w),
-                                                            child: customText(
-                                                              text: eventController.aiMenuError.value.isNotEmpty
-                                                                  ? eventController.aiMenuError.value
-                                                                  : "No AI menu suggestions yet",
-                                                              fontSize: 14.sp,
-                                                              color: darkGreyColor,
-                                                              textAlign: TextAlign.center,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
-
-                                                      return ListView.builder(
-                                                        scrollDirection: Axis.horizontal,
-                                                        physics: const BouncingScrollPhysics(),
-                                                        itemCount: suggestions.length,
-                                                        itemBuilder: (context, index) {
-                                                          final suggestion = suggestions[index];
-                                                          final badges = suggestion.badges ?? [];
-                                                          final dietaryTags = suggestion.dietaryTags ?? [];
-                                                          final menuItem = MenuItem(
-                                                            id: suggestion.title ?? '',
-                                                            title: suggestion.title ?? '',
-                                                            description: suggestion.type ?? '',
-                                                            mealCategory: dietaryTags,
-                                                            menuImage: 'assets/png/profile_food_images/selected_menu_image.png',
-                                                            type: suggestion.type ?? '',
-                                                          );
-                                                          return Padding(
-                                                            padding: EdgeInsets.only(right: 4.w),
-                                                            child: FoodMenuCard(
-                                                              title: suggestion.title,
-                                                              subtitle: suggestion.type,
-                                                              desc: suggestion.description,
-                                                              category: dietaryTags.isNotEmpty ? dietaryTags.first : null,
-                                                              preference1: badges.isNotEmpty ? badges[0] : '',
-                                                              preference2: badges.length > 1 ? badges[1] : '',
-                                                              preference3: badges.length > 2 ? badges[2] : '',
-                                                              menuItem: menuItem,
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    }),
-                                                  ),
-                                                ],
-                                              );
-                                            } else {
-                                              /// ✅ Manual Menu Selected (HORIZONTAL LIST)
-                                              return Column(
-                                                children: [
-                                                  TabBar(
-                                                    labelColor: Colors.black,
-                                                    unselectedLabelColor:
-                                                        Colors.grey,
-                                                    indicatorColor:
-                                                        Colors.black,
-                                                    indicatorWeight: 2,
-
-                                                    labelStyle: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontFamily: "WorkSans",
-                                                    ),
-
-                                                    // unselectedLabelStyle: TextStyle(
-                                                    //   fontSize: 14.sp,
-                                                    //   fontWeight: FontWeight.w400,
-                                                    //   fontFamily: "WorkSans",
+                                                    // SizedBox(height: 0.8.h),
+                                                    // SizedBox(
+                                                    //   height: 4.h,
+                                                    //   child: SingleChildScrollView(
+                                                    //     scrollDirection:
+                                                    //         Axis.horizontal,
+                                                    //     physics:
+                                                    //         const BouncingScrollPhysics(),
+                                                    //     child: Row(
+                                                    //       children: [
+                                                    //         list(
+                                                    //           'Suggest a brunch menu this group would like',
+                                                    //         ),
+                                                    //         SizedBox(width: 2.w),
+                                                    //         list(
+                                                    //           'Suggest a brunch menu this group would like',
+                                                    //         ),
+                                                    //       ],
+                                                    //     ),
+                                                    //   ),
                                                     // ),
-                                                    tabs: const [
-                                                      Tab(text: "Appetizers"),
-                                                      Tab(text: "Main Course"),
-                                                      Tab(text: "Desserts & Others"),
-                                                    ],
-                                                  ),
+                                                    SizedBox(height: 1.h),
+                                                    // SizedBox(
+                                                    //   height: 24.h,
+                                                    //   child: SingleChildScrollView(
+                                                    //     scrollDirection:
+                                                    //         Axis.horizontal,
+                                                    //     physics:
+                                                    //         const BouncingScrollPhysics(),
+                                                    //     child: Row(
+                                                    //       children: [
+                                                    //         FoodMenuCard(),
+                                                    //         SizedBox(width: 2.w),
+                                                    //         FoodMenuCard(),
+                                                    //       ],
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
+                                                    SizedBox(
+                                                      height: 25.h,
+                                                      child: Obx(() {
+                                                        if (eventController
+                                                            .isAiMenuLoading
+                                                            .value) {
+                                                          return const Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                                  color:
+                                                                      greenColor,
+                                                                ),
+                                                          );
+                                                        }
 
-                                                  SizedBox(height: 0.7.h),
-                                                  SizedBox(
-                                                    height: 32.h,
-                                                    child: TabBarView(
-                                                      children: [
-                                                        _menusHorizontalList(
-                                                          type: "Appetizers",
+                                                        final suggestions =
+                                                            eventController
+                                                                .getAiMenuModel
+                                                                .value
+                                                                ?.data
+                                                                ?.suggestions ??
+                                                            [];
+                                                        if (suggestions
+                                                            .isEmpty) {
+                                                          return Center(
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        6.w,
+                                                                  ),
+                                                              child: customText(
+                                                                text:
+                                                                    eventController
+                                                                            .aiMenuError
+                                                                            .value
+                                                                            .isNotEmpty
+                                                                        ? eventController
+                                                                            .aiMenuError
+                                                                            .value
+                                                                        : "No AI menu suggestions yet",
+                                                                fontSize: 14.sp,
+                                                                color:
+                                                                    darkGreyColor,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+
+                                                        return ListView.builder(
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          physics:
+                                                              const BouncingScrollPhysics(),
+                                                          itemCount:
+                                                              suggestions
+                                                                  .length,
+                                                          itemBuilder: (
+                                                            context,
+                                                            index,
+                                                          ) {
+                                                            final suggestion =
+                                                                suggestions[index];
+                                                            final badges =
+                                                                suggestion
+                                                                    .badges ??
+                                                                [];
+                                                            final dietaryTags =
+                                                                suggestion
+                                                                    .dietaryTags ??
+                                                                [];
+                                                            final menuItem = MenuItem(
+                                                              id:
+                                                                  suggestion
+                                                                      .title ??
+                                                                  '',
+                                                              title:
+                                                                  suggestion
+                                                                      .title ??
+                                                                  '',
+                                                              description:
+                                                                  suggestion
+                                                                      .type ??
+                                                                  '',
+                                                              mealCategory:
+                                                                  dietaryTags,
+                                                              menuImage:
+                                                                  'assets/png/profile_food_images/selected_menu_image.png',
+                                                              type:
+                                                                  suggestion
+                                                                      .type ??
+                                                                  '',
+                                                            );
+                                                            return Padding(
+                                                              padding:
+                                                                  EdgeInsets.only(
+                                                                    right: 4.w,
+                                                                  ),
+                                                              child: FoodMenuCard(
+                                                                title:
+                                                                    suggestion
+                                                                        .title,
+                                                                subtitle:
+                                                                    suggestion
+                                                                        .type,
+                                                                desc:
+                                                                    suggestion
+                                                                        .description,
+                                                                category:
+                                                                    dietaryTags
+                                                                            .isNotEmpty
+                                                                        ? dietaryTags
+                                                                            .first
+                                                                        : null,
+                                                                preference1:
+                                                                    badges.isNotEmpty
+                                                                        ? badges[0]
+                                                                        : '',
+                                                                preference2:
+                                                                    badges.length >
+                                                                            1
+                                                                        ? badges[1]
+                                                                        : '',
+                                                                preference3:
+                                                                    badges.length >
+                                                                            2
+                                                                        ? badges[2]
+                                                                        : '',
+                                                                menuItem:
+                                                                    menuItem,
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      }),
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                /// ✅ Manual Menu Selected (HORIZONTAL LIST)
+                                                return Column(
+                                                  children: [
+                                                    TabBar(
+                                                      labelColor: Colors.black,
+                                                      unselectedLabelColor:
+                                                          Colors.grey,
+                                                      indicatorColor:
+                                                          Colors.black,
+                                                      indicatorWeight: 2,
+
+                                                      labelStyle: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "WorkSans",
+                                                      ),
+
+                                                      // unselectedLabelStyle: TextStyle(
+                                                      //   fontSize: 14.sp,
+                                                      //   fontWeight: FontWeight.w400,
+                                                      //   fontFamily: "WorkSans",
+                                                      // ),
+                                                      tabs: const [
+                                                        Tab(text: "Appetizers"),
+                                                        Tab(
+                                                          text: "Main Course",
                                                         ),
-                                                        _menusHorizontalList(
-                                                          type: "Main Course",
-                                                        ),
-                                                        _menusHorizontalList(
-                                                          type: "Desserts & Others",
+                                                        Tab(
+                                                          text:
+                                                              "Desserts & Others",
                                                         ),
                                                       ],
                                                     ),
-                                                  ),
-                                                ],
-                                              );
-                                            }
-                                          }),
-                                        ],
+
+                                                    SizedBox(height: 0.7.h),
+                                                    SizedBox(
+                                                      height: 32.h,
+                                                      child: TabBarView(
+                                                        children: [
+                                                          _menusHorizontalList(
+                                                            type: "Appetizers",
+                                                          ),
+                                                          _menusHorizontalList(
+                                                            type: "Main Course",
+                                                          ),
+                                                          _menusHorizontalList(
+                                                            type:
+                                                                "Desserts & Others",
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }
+                                            }),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 8.h),
-                              // Give space for bottom panel
-                            ],
+                                SizedBox(height: 8.h),
+                                // Give space for bottom panel
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            /// ⬇️ Bottom Confirm Panel
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.sp),
-                    topRight: Radius.circular(20.sp),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, -2),
+              /// ⬇️ Bottom Confirm Panel
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.sp),
+                      topRight: Radius.circular(20.sp),
                     ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        customText(
-                          text: "Your Selected Menu",
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "CormorantGaramond",
-                          color: blackColor,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            selectedMenuBottomSheet(context);
-                          },
-                          child: Icon(
-                            Icons.keyboard_arrow_up,
-                            size: 20.sp,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          customText(
+                            text: "Your Selected Menu",
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "CormorantGaramond",
                             color: blackColor,
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 2.h),
-                    buttonWidget(
-                      "Continue",
-                      whiteColor,
-                      colors: greenColor,
-                      width: double.infinity,
-                      height: 5.h,
-                      fontsize: 16.sp,
-                      onTap: () {
-                        // eventId == null ?
-                        // eventController.createEvent(context,image: controller.controller.profilePicture.value):
-                        eventController.editEvent(eventId: eventId);
-                      },
-                    ),
+                          InkWell(
+                            onTap: () {
+                              selectedMenuBottomSheet(context);
+                            },
+                            child: Icon(
+                              Icons.keyboard_arrow_up,
+                              size: 20.sp,
+                              color: blackColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 2.h),
+                      buttonWidget(
+                        "Continue",
+                        whiteColor,
+                        colors: greenColor,
+                        width: double.infinity,
+                        height: 5.h,
+                        fontsize: 16.sp,
+                        onTap: () {
+                          // eventId == null ?
+                          // eventController.createEvent(context,image: controller.controller.profilePicture.value):
+                          eventController.editEvent(eventId: eventId);
+                        },
+                      ),
 
-                    SizedBox(height: 1.h),
-                  ],
+                      SizedBox(height: 1.h),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Obx(() {
-        if (controller.isYesTableSelected.value) return const SizedBox.shrink();
-        return Padding(
-          padding: EdgeInsets.only(bottom: 14.h),
-          child: FloatingActionButton(
-            backgroundColor: greenColor,
-            shape: CircleBorder(),
-            onPressed: () {
-              menuFormDialog(context);
-            },
-            child: Icon(Icons.add, color: whiteColor),
+            ],
           ),
-        );
-      }),
-    ),
+        ),
+        floatingActionButton: Obx(() {
+          if (controller.isYesTableSelected.value)
+            return const SizedBox.shrink();
+          return Padding(
+            padding: EdgeInsets.only(bottom: 14.h),
+            child: FloatingActionButton(
+              backgroundColor: greenColor,
+              shape: CircleBorder(),
+              onPressed: () {
+                menuFormDialog(context);
+              },
+              child: Icon(Icons.add, color: whiteColor),
+            ),
+          );
+        }),
+      ),
     );
   }
 }

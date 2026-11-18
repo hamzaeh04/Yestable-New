@@ -7,7 +7,7 @@ import '../constants/color_constants.dart';
 import '../constants/constants_widgets.dart';
 
 /// Small, non-interactive map with a pin on the event location.
-/// Tapping it opens the location in Google Maps.
+/// Tapping it opens the event's address (or coordinates if no address) in Google Maps.
 ///
 /// [coordinates] is the GeoJSON pair stored on events: `[lng, lat]`.
 class EventLocationMap extends StatelessWidget {
@@ -27,7 +27,10 @@ class EventLocationMap extends StatelessWidget {
   Future<void> _openInMaps(LatLng position) async {
     final uri = Uri.https('www.google.com', '/maps/search/', {
       'api': '1',
-      'query': '${position.latitude},${position.longitude}',
+      // Prefer the full address; fall back to coordinates if there isn't one.
+      'query': (label?.trim().isNotEmpty ?? false)
+          ? label!.trim()
+          : '${position.latitude},${position.longitude}',
     });
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }

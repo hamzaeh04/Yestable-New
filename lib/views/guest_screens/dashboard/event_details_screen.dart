@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
+import 'package:yestable/widget/button_widget.dart';
 import 'package:yestable/widget/event_location_map.dart';
 import 'package:yestable/constants/color_constants.dart';
 import 'package:yestable/controllers/event_controller.dart';
@@ -475,6 +476,7 @@ class EventDetailsScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 4.5.w),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.link, size: 2.5.h),
 
@@ -484,9 +486,9 @@ class EventDetailsScreen extends StatelessWidget {
                           child: customText(
                             text:
                                 "https://yestable-107c6.web.app/event/$eventId",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: darkGreyColor,
+                            fontSize: 15.5.sp,
+                            fontWeight: FontWeight.w800,
+                            color: blackColor,
                             overFlow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -509,23 +511,17 @@ class EventDetailsScreen extends StatelessWidget {
                               duration: const Duration(seconds: 2),
                               backgroundColor: Colors.green,
                               colorText: Colors.white,
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.check_circle,
                                 color: Colors.white,
+                                size: 22.sp,
                               ),
                               margin: const EdgeInsets.all(12),
                               borderRadius: 10,
                             );
                           },
                           borderRadius: BorderRadius.circular(20),
-                          child: Padding(
-                            padding: EdgeInsets.all(1.w),
-                            child: Icon(
-                              Icons.copy_rounded,
-                              size: 2.25.h,
-                              color: darkGreyColor,
-                            ),
-                          ),
+                          child: buttonWidget("Copy Link", whiteColor, width: 20.w, height: 3.h, colors: greenColor, fontsize: 14.sp),
                         ),
                       ],
                     ),

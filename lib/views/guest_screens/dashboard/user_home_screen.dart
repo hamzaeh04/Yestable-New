@@ -62,7 +62,8 @@ class HomeScreen extends StatelessWidget {
                           Get.toNamed("viewallinvitation");
                         },
                         child: homeIconWidget(
-                          imagePath: "assets/png/icons/add-user.png",
+                          imagePath: "assets/png/icons/envelope.png",
+                          iconsize: 17.5.sp
                         ),
                       ),
                       SizedBox(width: 2.w,),

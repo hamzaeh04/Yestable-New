@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart' show CupertinoDatePicker, CupertinoDatePickerMode, CupertinoTheme, CupertinoThemeData, CupertinoTextThemeData;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -457,8 +458,8 @@ class EventController extends GetxController {
       if (dateStr.isNotEmpty && timeStr.isNotEmpty) {
         try {
           final dateParts = dateStr.split('-');
-          final day = int.parse(dateParts[0]);
-          final month = int.parse(dateParts[1]);
+          final month = int.parse(dateParts[0]);
+          final day = int.parse(dateParts[1]);
           final year = int.parse(dateParts[2]);
 
           final timeParts = timeStr.split(' ');
@@ -644,8 +645,8 @@ class EventController extends GetxController {
       if (dateStr.isNotEmpty && timeStr.isNotEmpty) {
         try {
           final dateParts = dateStr.split('-');
-          final day = int.parse(dateParts[0]);
-          final month = int.parse(dateParts[1]);
+          final month = int.parse(dateParts[0]);
+          final day = int.parse(dateParts[1]);
           final year = int.parse(dateParts[2]);
 
           final timeParts = timeStr.split(' ');
@@ -776,6 +777,7 @@ class EventController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.showToast(jsonResponse['message'] ?? "Event updated", false);
         eventReviewModel.refresh();
+        _refreshEventLists();
         isEdit == false
             ? Get.toNamed("eventcomfortone", arguments: eventId)
             : Get.toNamed("foodmenuscreen", arguments: eventId);
@@ -819,6 +821,11 @@ class EventController extends GetxController {
         totalPages = model.data?.totalPages ?? 1;
         page++;
       } while (page <= totalPages);
+      // Newest first; the backend returns oldest first.
+      final epoch = DateTime.fromMillisecondsSinceEpoch(0);
+      allMenus.sort(
+        (a, b) => (b.createdAt ?? epoch).compareTo(a.createdAt ?? epoch),
+      );
       menus.assignAll(allMenus);
     } catch (e) {
       menus.clear();
@@ -916,43 +923,89 @@ class EventController extends GetxController {
 
       if (pickedDate != null) {
         controller.text =
-            "${pickedDate.day.toString().padLeft(2, '0')}-"
             "${pickedDate.month.toString().padLeft(2, '0')}-"
+            "${pickedDate.day.toString().padLeft(2, '0')}-"
             "${pickedDate.year}";
       }
     }
 
     if (type == "time") {
-      TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-        initialEntryMode: TimePickerEntryMode.input, // 👈 Digital input mode
+      // Start blank (00:00) unless a time was already chosen.
+      var initial = DateTime(2000, 1, 1, 0, 0);
+      final m = RegExp(
+        r'^(\d{1,2}):(\d{2})\s*(AM|PM)$',
+        caseSensitive: false,
+      ).firstMatch(controller.text.trim());
+      if (m != null) {
+        var h = int.parse(m.group(1)!) % 12;
+        if (m.group(3)!.toUpperCase() == 'PM') h += 12;
+        initial = DateTime(2000, 1, 1, h, int.parse(m.group(2)!));
+      }
+      var selected = initial;
 
-        builder: (context, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-              timePickerTheme: TimePickerThemeData(
-                backgroundColor: whiteColor,
-                hourMinuteColor: primaryColor,
-                hourMinuteTextColor: whiteColor,
-                dayPeriodTextColor: accentColor, // 👈 AM/PM text color
-                dayPeriodColor: accentColor.withOpacity(
-                  0.2,
-                ), // 👈 AM/PM selected bg
-                dialHandColor: primaryColor,
-                dialBackgroundColor: accentColor.withOpacity(0.2),
-                entryModeIconColor: primaryColor,
-              ),
-              colorScheme: ColorScheme.light(
-                primary: primaryColor,
-                onPrimary: whiteColor,
-                onSurface: accentColor,
-              ),
+      final confirmed = await showModalBottomSheet<bool>(
+        context: context,
+        backgroundColor: whiteColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        builder: (ctx) {
+          return SizedBox(
+            height: 300,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: primaryColor),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text(
+                          "Done",
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: CupertinoTheme(
+                    data: CupertinoThemeData(
+                      textTheme: CupertinoTextThemeData(
+                        dateTimePickerTextStyle: TextStyle(
+                          color: primaryColor,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ),
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.time,
+                      use24hFormat: false,
+                      initialDateTime: initial,
+                      onDateTimeChanged: (d) => selected = d,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: child!,
           );
         },
       );
+
+      final pickedTime = confirmed == true
+          ? TimeOfDay(hour: selected.hour, minute: selected.minute)
+          : null;
 
       if (pickedTime != null) {
         final formattedTime =
@@ -1341,6 +1394,13 @@ class EventController extends GetxController {
     }
   }
 
+  /// Re-fetch the upcoming-events and RSVP lists so a newly published or
+  /// edited event shows up without restarting the app.
+  void _refreshEventLists() {
+    getAllEvents();
+    getMyEvents();
+  }
+
   Future<void> publishEvent(String eventId, BuildContext? context) async {
     isMenusLoading.value = true;
 
@@ -1357,6 +1417,7 @@ class EventController extends GetxController {
           eventPostedDialog(targetContext, shareLink: generateEventLink(eventId), eventId: eventId);
         }
         clearEventFields();
+        _refreshEventLists();
       } else {
         // API returned failure
         Utils.showToast(response?['message'], true);
@@ -1485,7 +1546,26 @@ class EventController extends GetxController {
 
       if (response != null && response['success'] == true) {
         final newData = GetMyEventModel.fromJson(response);
-        myEventsTotalPages.value = newData.data?.totalPages ?? 1;
+        final totalPages = newData.data?.totalPages ?? 1;
+        myEventsTotalPages.value = totalPages;
+
+        // The backend's order isn't by createdAt, so the newest event can be
+        // on any page. Fetch the remaining pages up front so the newest-first
+        // sort is global and the list is correct by default.
+        for (var page = 2; page <= totalPages; page++) {
+          final next = await baseService.baseGetAPI(
+            ApiEndPoints.myEvents(page),
+            loading: false,
+          );
+          if (next != null && next['success'] == true) {
+            final nextData = GetMyEventModel.fromJson(next);
+            newData.data?.data?.addAll(nextData.data?.data ?? []);
+            myEventsCurrentPage.value = page;
+          } else {
+            break; // keep what we have; Load More can fetch the rest
+          }
+        }
+
         newData.data?.data?.sort(
           (a, b) => b.createdAt.compareTo(a.createdAt),
         );
@@ -1574,7 +1654,7 @@ class EventController extends GetxController {
     final dateTime = DateTime.parse(isoString).toLocal();
 
     return {
-      "date": DateFormat('dd-MM-yyyy').format(dateTime),
+      "date": DateFormat('MM-dd-yyyy').format(dateTime),
       "time": DateFormat('hh:mm a').format(dateTime),
     };
   }
