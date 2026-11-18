@@ -21,6 +21,10 @@ class ApiEndPoints{
     return "/events/$id/menu-suggestions";
   }
 
+  static String acceptAiMenu(String id){
+    return "/events/$id/menu-suggestions/accept";
+  }
+
   static String getProfileById(String userId){
     return "/users/profile/$userId";
   }
@@ -71,6 +75,8 @@ class ApiEndPoints{
   static String getEventById(String eventId) {
     return '/events/${eventId}';
   }
+
+  static const String eventsDashboard = '/events/dashboard?limit=10';
 
   static String myEvents(int page) {
     return '/events/my-events?page=${page}&limit=10';

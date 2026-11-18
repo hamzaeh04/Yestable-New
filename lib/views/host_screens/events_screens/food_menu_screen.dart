@@ -433,7 +433,8 @@ class FoodMenuScreen extends StatelessWidget {
                                                               mealCategory:
                                                                   dietaryTags,
                                                               menuImage:
-                                                                  'assets/png/profile_food_images/selected_menu_image.png',
+                                                                  suggestion
+                                                                      .menuImage,
                                                               type:
                                                                   suggestion
                                                                       .type ??
@@ -790,6 +791,69 @@ Widget _menuApiCard({required MenuItem menu}) {
                               fit: BoxFit.cover,
                             ),
                       ),
+            ),
+            Positioned(
+              top: 0.5.h,
+              right: 0.5.h,
+              child: Builder(
+                builder:
+                    (ctx) => GestureDetector(
+                      onTapDown: (details) async {
+                        final selected = await showMenu<String>(
+                          context: ctx,
+                          color: Colors.white,
+                          position: RelativeRect.fromLTRB(
+                            details.globalPosition.dx,
+                            details.globalPosition.dy,
+                            details.globalPosition.dx,
+                            details.globalPosition.dy,
+                          ),
+                          items: [
+                            PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.red,
+                                    size: 18.sp,
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  customText(
+                                    text: "Delete",
+                                    fontSize: 14.sp,
+                                    color: Colors.red,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                        if (selected == 'delete') {
+                          eventController.deleteMenu(menu.id);
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(1.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.more_vert,
+                          size: 17.sp,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+              ),
             ),
             Positioned(
               bottom: 0.5.h,

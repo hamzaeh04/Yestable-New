@@ -67,6 +67,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       // currentPage/totalPages left over from before the edit.
       if (index == 0 && controller.isUser.value == false) {
         eventController.getMyEvents();
+        eventController.getDashboard();
       }
     });
 
@@ -75,6 +76,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       controller.controller.fetchMyProfile();
       eventController.getAllEvents();
       controller.isUser.value == false ? eventController.getMyEvents(): null;
+      if (controller.isUser.value == false) eventController.getDashboard();
       controller.checkDeepLinkAndShowDialog();
       // guestUpdateReceived(context);
 

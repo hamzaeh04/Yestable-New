@@ -67,6 +67,11 @@ class AdminHomeScreen extends StatelessWidget {
     },
   ];
   final prefs = SharedPreferencesMethod.storage;
+  final GlobalKey _rsvpKey = GlobalKey();
+  // How many RSVP (hosted) events are currently shown; starts at 5, +10 per "View More".
+  final RxInt _rsvpVisible = 5.obs;
+  // Past Events dropdown list: collapsed (4 items) or expanded (all).
+  final RxBool _pastExpanded = false.obs;
 
 
   @override
@@ -214,36 +219,36 @@ class AdminHomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Dinner Calendar Header
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 6.w),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    customText(
-                                      text: "Quick Report",
-                                      fontSize: 20.sp,
-                                      fontFamily: "CormorantGaramond",
-                                      fontWeight: FontWeight.w600,
-                                      color: blackColor,
-                                    ),
-                                    customText(
-                                      text:
-                                          "Good vibes, great company, and a fantastic host.",
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: darkGreyColor,
-                                    ),
-                                    SizedBox(height: 1.5.h),
-
-                                    // Inside your Column > children, replace the Container block with this:
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(horizontal: 6.w),
+                          //   child: Row(
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: [
+                          //       Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           customText(
+                          //             text: "Quick Report",
+                          //             fontSize: 20.sp,
+                          //             fontFamily: "CormorantGaramond",
+                          //             fontWeight: FontWeight.w600,
+                          //             color: blackColor,
+                          //           ),
+                          //           customText(
+                          //             text:
+                          //                 "Good vibes, great company, and a fantastic host.",
+                          //             fontSize: 14.sp,
+                          //             fontWeight: FontWeight.w400,
+                          //             color: darkGreyColor,
+                          //           ),
+                          //           SizedBox(height: 1.5.h),
+                          //
+                          //           // Inside your Column > children, replace the Container block with this:
+                          //         ],
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Obx(
                             () =>
                                 controller.showAllergicGuest.value == true
@@ -362,625 +367,199 @@ class AdminHomeScreen extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Obx(
-                                          () {
-                                            final eventData = eventController.myEventsModel.value?.data?.data ?? [];
-                                            final dropdownItems = eventData.map((e) => e.eventName ?? '').where((name) => name.isNotEmpty).toList();
-                                            final selectedValue = controller.selectedEvent.value;
-                                            final hasSelectedValue = dropdownItems.contains(selectedValue);
-
-                                            return Container(
-                                              width: 88.w,
-                                              height: 4.5.h,
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 1.w,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(30.sp),
-                                                border: Border.all(
-                                                  color: const Color(0xFF5A7C79),
+                                        Obx(() {
+                                          final selected = eventController.selectedDashboardCategory.value;
+                                          final categories = eventController.dashboardCategories;
+                                          return Container(
+                                            width: 88.w,
+                                            height: 4.5.h,
+                                            padding: EdgeInsets.symmetric(horizontal: 1.w),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(30.sp),
+                                              border: Border.all(color: const Color(0xFF5A7C79)),
+                                              color: const Color(0xFFF6EEEB),
+                                            ),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButton2<String>(
+                                                isExpanded: true,
+                                                value: selected,
+                                                iconStyleData: const IconStyleData(
+                                                  icon: Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                                                  iconSize: 24,
                                                 ),
-                                                color: const Color(0xFFF6EEEB),
-                                              ),
-                                              child: DropdownButtonHideUnderline(
-                                                child: DropdownButton2<String>(
-                                                  isExpanded: true,
-                                                  value: (selectedValue.isEmpty || !hasSelectedValue)
-                                                      ? null
-                                                      : selectedValue,
-
-                                                  iconStyleData:
-                                                      const IconStyleData(
-                                                        icon: Icon(
-                                                          Icons
-                                                              .keyboard_arrow_down,
-                                                          color: Colors.black,
-                                                        ),
-                                                        iconSize: 24,
-                                                      ),
-
-                                                  hint: customText(
-                                                    text: "Select The Event",
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.grey,
+                                                dropdownStyleData: DropdownStyleData(
+                                                  offset: const Offset(0, -7),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(15.sp),
+                                                    color: Colors.white,
                                                   ),
-
-                                                  dropdownStyleData:
-                                                      DropdownStyleData(
-                                                        offset: const Offset(
-                                                          0,
-                                                          -7,
-                                                        ),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                15.sp,
-                                                              ),
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-
-                                                  // ✅ Fix: Show selected value without tick
-                                                  selectedItemBuilder: (context) {
-                                                    return dropdownItems.map((
-                                                      value,
-                                                    ) {
-                                                      return Align(
-                                                        alignment:
-                                                            Alignment.centerLeft,
-                                                        child: customText(
-                                                          text: value,
-                                                          fontSize: 15.sp,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Colors.black,
-                                                        ),
-                                                      );
-                                                    }).toList();
-                                                  },
-
-                                                  onChanged: (String? newValue) {
-                                                    if (newValue != null) {
-                                                      controller.selectEvent(
-                                                        newValue,
-                                                      );
-
-                                                      // Find the selected event ID from eventData matching the selected eventName
-                                                      final selectedEventObj = eventData.firstWhereOrNull(
-                                                        (e) => e?.eventName == newValue,
-                                                      );
-
-                                                      if (selectedEventObj != null && selectedEventObj.id != null) {
-                                                        final String eventId = selectedEventObj.id!;
-                                                        debugPrint("Selected Event ID: $eventId");
-
-                                                         // TODO: Hit your API here using the eventId
-                                                         eventController.getAllAllergenList(eventId: eventId);
-                                                         eventController.getEventAllergens(eventId: eventId);
-                                                        // e.g., eventController.fetchEventDetails(eventId);
-                                                      }
-                                                    }
-                                                  },
-
-                                                  // ✅ Dropdown list with check and dividers
-                                                  items:
-                                                      dropdownItems.mapIndexed((
-                                                        index,
-                                                        value,
-                                                      ) {
-                                                        final isLast =
-                                                            index ==
-                                                            dropdownItems
-                                                                    .length -
-                                                                1;
-
-                                                        return DropdownMenuItem<
-                                                          String
-                                                        >(
-                                                          value: value,
-                                                          enabled: true,
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize.min,
+                                                ),
+                                                selectedItemBuilder: (context) => categories
+                                                    .map((value) => Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child: customText(
+                                                            text: value,
+                                                            fontSize: 15.sp,
+                                                            fontWeight: FontWeight.w400,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ))
+                                                    .toList(),
+                                                onChanged: (String? newValue) {
+                                                  if (newValue != null) {
+                                                    eventController.selectedDashboardCategory.value = newValue;
+                                                  }
+                                                },
+                                                items: categories.mapIndexed((index, value) {
+                                                  final isLast = index == categories.length - 1;
+                                                  return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Container(
+                                                          padding: EdgeInsets.symmetric(vertical: 1.h),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
-                                                              Container(
-                                                                padding:
-                                                                    EdgeInsets.symmetric(
-                                                                      vertical:
-                                                                          1.h,
-                                                                    ),
-                                                                // consistent spacing for all items
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  children: [
-                                                                    customText(
-                                                                      text: value,
-                                                                      fontSize:
-                                                                          15.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
-                                                                    ),
-                                                                    if (controller
-                                                                            .selectedEvent
-                                                                            .value ==
-                                                                        value)
-                                                                      Icon(
-                                                                        Icons
-                                                                            .check,
-                                                                        size:
-                                                                            18.sp,
-                                                                      ),
-                                                                  ],
-                                                                ),
+                                                              customText(
+                                                                text: value,
+                                                                fontSize: 15.sp,
+                                                                fontWeight: FontWeight.w400,
                                                               ),
-                                                              if (!isLast)
-                                                                Container(
-                                                                  height: 1,
-                                                                  color:
-                                                                      Colors
-                                                                          .grey[300],
-                                                                ),
+                                                              if (selected == value)
+                                                                Icon(Icons.check, size: 18.sp),
                                                             ],
                                                           ),
-                                                        );
-                                                      }).toList(),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        ),
-                                        SizedBox(height: 2.h),
-                                        // Calendar Image
-                                        Obx(
-                                          () {
-                                            final eventData = eventController.myEventsModel.value?.data?.data ?? [];
-                                            final dropdownItems = eventData.map((e) => e.eventName ?? '').where((name) => name.isNotEmpty).toList();
-                                            final isEventSelected = controller.selectedEvent.value.isNotEmpty && dropdownItems.contains(controller.selectedEvent.value);
-
-                                            return Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 5.w,
-                                              ),
-                                              child: isEventSelected
-                                                  ? Container(
-                                                      height: 30.h,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20.sp,
-                                                            ),
-                                                        color: whiteColor,
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsets.symmetric(
-                                                              horizontal: 3.w,
-                                                              vertical: 1.h,
-                                                            ),
-                                                        child: Column(
-                                                          children: [
-                                                            // Custom TabBar with underline effect
-                                                            Obx(() {
-                                                              return Stack(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .bottomCenter,
-                                                                children: [
-                                                                  // Full underline (grey background line)
-                                                                  Container(
-                                                                    height:
-                                                                        0.2.h,
-                                                                    color:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade300,
-                                                                    margin: EdgeInsets.only(
-                                                                      top: 4.h,
-                                                                    ), // adjust height from text
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceAround,
-                                                                    children: List.generate(
-                                                                      controller
-                                                                          .allergenList
-                                                                          .length,
-                                                                      (index) {
-                                                                        final bool
-                                                                        isSelected =
-                                                                            controller.allergenSelectedIndex.value ==
-                                                                            index;
-                                                                        return GestureDetector(
-                                                                          onTap: () {
-                                                                            controller.allergenSelectedIndex.value =
-                                                                                index;
-                                                                            controller.selectedIndex.value =
-                                                                                index;
-                                                                          },
-                                                                          child: Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              customText(
-                                                                                text:
-                                                                                    controller.allergenList[index],
-                                                                                fontSize:
-                                                                                    14.sp,
-                                                                                fontFamily:
-                                                                                    "CormorantGaramond",
-                                                                                fontWeight:
-                                                                                    FontWeight.w600,
-                                                                                color:
-                                                                                    Colors.black,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height:
-                                                                                    1.h,
-                                                                              ),
-                                                                              // Black highlight only for selected tab
-                                                                              Container(
-                                                                                height:
-                                                                                    0.2.h,
-                                                                                width:
-                                                                                    26.5.w,
-                                                                                color:
-                                                                                    isSelected
-                                                                                        ? Colors.black
-                                                                                        : Colors.transparent,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            }),
-                                                            SizedBox(
-                                                              height: 12,
-                                                            ),
-
-                                                            // Display content based on selected tab
-                                                            Obx(() {
-                                                              switch (controller
-                                                                  .selectedIndex
-                                                                  .value) {
-                                                                case 0:
-                                                                  final allergenData = eventController.getAllergenList.value?.data?.allergens ?? [];
-                                                                  
-                                                                  final Map<String, Color> allergenColors = {
-                                                                    "tree nuts": const Color(0xFF7E00F5),
-                                                                    "peanuts": const Color(0xFFFF5B00),
-                                                                    "sesame": const Color(0xFF8A959E),
-                                                                    "dairy": const Color(0xFFE1C500),
-                                                                    "gluten": const Color(0xFF39D300),
-                                                                    "shellfish": const Color(0xFFE19B00),
-                                                                    "eggs": const Color(0xFF00B58D),
-                                                                  };
-
-                                                                  final targetLabels = [
-                                                                    "Tree Nuts",
-                                                                    "Peanuts",
-                                                                    "Sesame",
-                                                                    "Dairy",
-                                                                    "Gluten",
-                                                                    "Shellfish",
-                                                                    "Eggs"
-                                                                  ];
-
-                                                                  final Map<String, int> apiCounts = {};
-                                                                  for (var e in allergenData) {
-                                                                    if (e.label != null) {
-                                                                      apiCounts[e.label!.toLowerCase().trim()] = e.count ?? 0;
-                                                                    }
-                                                                  }
-
-                                                                  int highestCount = 0;
-                                                                  for (final label in targetLabels) {
-                                                                    final count = apiCounts[label.toLowerCase()] ?? 0;
-                                                                    if (count > highestCount) {
-                                                                      highestCount = count;
-                                                                    }
-                                                                  }
-
-                                                                  final dynamicList = targetLabels.map((label) {
-                                                                    final count = apiCounts[label.toLowerCase()] ?? 0;
-                                                                    final color = allergenColors[label.toLowerCase()] ?? const Color(0xFF8A959E);
-                                                                    final double chartValue = count == 0 ? 1.2 : count.toDouble();
-                                                                    return {
-                                                                      "label": label,
-                                                                      "value": chartValue,
-                                                                      "color": color,
-                                                                      "valueText": count.toString().padLeft(2, '0'),
-                                                                      "showAlert": highestCount > 0 && count == highestCount,
-                                                                    };
-                                                                  }).toList();
-
-                                                                  if (eventController.isLoadingAllerganList.value) {
-                                                                    return SizedBox(
-                                                                      height: 15.h,
-                                                                      child: Center(
-                                                                        child: CircularProgressIndicator(color: greenColor),
-                                                                      ),
-                                                                    );
-                                                                  }
-
-                                                                  return Column(
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        height: 1.h,
-                                                                      ),
-                                                                      // SizedBox(
-                                                                      //   height: 1.h,
-                                                                      // ),
-                                                                      InkWell(
-                                                                        onTap: () {
-                                                                          controller.toggleShowAllergicGuest();
-                                                                        },
-                                                                        child: CommonAllergensChart(
-                                                                          allergensList: dynamicList,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                case 1:
-                                                                  final allergenData1 = eventController.getAllergenList.value?.data?.allergens ?? [];
-                                                                  final totalAllergens = eventController.getAllergenList.value?.data?.totalAllergens ?? 0;
-                                                                  
-                                                                  final Map<String, Color> allergenColors1 = {
-                                                                    "soya": const Color(0xFFADF802),
-                                                                    "soy": const Color(0xFFADF802),
-                                                                    "peanuts": const Color(0xFFFF5B00),
-                                                                    "dairy": const Color(0xFF8A959E),
-                                                                    "gluten": const Color(0xFF39D300),
-                                                                    "shellfish": const Color(0xFFE19B00),
-                                                                    "eggs": const Color(0xFF00B58D),
-                                                                  };
-
-                                                                  final targetLabels1 = [
-                                                                    "Soya",
-                                                                    "Peanuts",
-                                                                    "Dairy",
-                                                                    "Gluten",
-                                                                    "Shellfish",
-                                                                    "Eggs"
-                                                                  ];
-
-                                                                  final Map<String, int> apiCounts1 = {};
-                                                                  for (var e in allergenData1) {
-                                                                    if (e.label != null) {
-                                                                      apiCounts1[e.label!.toLowerCase().trim()] = e.count ?? 0;
-                                                                    }
-                                                                  }
-
-                                                                  int highestCount1 = 0;
-                                                                  for (final label in targetLabels1) {
-                                                                    final count = label.toLowerCase() == "soya"
-                                                                        ? (apiCounts1["soy"] ?? apiCounts1["soya"] ?? 0)
-                                                                        : (apiCounts1[label.toLowerCase()] ?? 0);
-                                                                    if (count > highestCount1) {
-                                                                      highestCount1 = count;
-                                                                    }
-                                                                  }
-
-                                                                  final dynamicList1 = targetLabels1.map((label) {
-                                                                    final count = label.toLowerCase() == "soya"
-                                                                        ? (apiCounts1["soy"] ?? apiCounts1["soya"] ?? 0)
-                                                                        : (apiCounts1[label.toLowerCase()] ?? 0);
-                                                                    final color = allergenColors1[label.toLowerCase()] ?? const Color(0xFF8A959E);
-                                                                    final double chartValue = count == 0 ? 1.2 : count.toDouble();
-                                                                    return {
-                                                                      "label": label,
-                                                                      "value": chartValue,
-                                                                      "color": color,
-                                                                      "valueText": count.toString().padLeft(2, '0'),
-                                                                      "showAlert": highestCount1 > 0 && count == highestCount1,
-                                                                    };
-                                                                  }).toList();
-
-                                                                  if (eventController.isLoadingAllerganList.value) {
-                                                                    return SizedBox(
-                                                                      height: 15.h,
-                                                                      child: Center(
-                                                                        child: CircularProgressIndicator(color: greenColor),
-                                                                      ),
-                                                                    );
-                                                                  }
-
-                                                                  return Column(
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        height: 1.h,
-                                                                      ),
-                                                                      InkWell(
-                                                                        onTap: () {
-                                                                          Get.toNamed(
-                                                                            "newguestlistscreen",
-                                                                          );
-                                                                        },
-                                                                        child: CommonAllergensChart(
-                                                                          allergensList: dynamicList1,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                case 2:
-                                                                  final allergenData2 = eventController.getEventAllergenData.value?.data?.allergens ?? [];
-                                                                  
-                                                                  final targetLabels2 = [
-                                                                    "Tree Nuts",
-                                                                    "Peanuts",
-                                                                    "Sesame",
-                                                                    "Dairy",
-                                                                    "Gluten",
-                                                                    "Shellfish",
-                                                                    "Eggs"
-                                                                  ];
-
-                                                                  final dynamicList2 = targetLabels2.map((label) {
-                                                                    final allergen = allergenData2.firstWhereOrNull(
-                                                                      (e) => e.label?.toLowerCase().trim() == label.toLowerCase().trim(),
-                                                                    );
-                                                                    
-                                                                    final int mild = allergen?.mild ?? 0;
-                                                                    final int avoid = allergen?.avoid ?? 0;
-                                                                    final int severe = allergen?.severe ?? 0;
-
-                                                                    final double mildVal = mild == 0 ? 1.2 : mild.toDouble();
-                                                                    final double avoidVal = avoid == 0 ? 1.2 : avoid.toDouble();
-                                                                    final double severeVal = severe == 0 ? 1.2 : severe.toDouble();
-
-                                                                    return {
-                                                                      "label": label,
-                                                                      "rods": [
-                                                                        {
-                                                                          "value": mildVal,
-                                                                          "color": const Color(0xFF39D300), // green
-                                                                          "valueText": mild.toString().padLeft(2, '0'),
-                                                                          "showAlert": false,
-                                                                        },
-                                                                        {
-                                                                          "value": severeVal,
-                                                                          "color": const Color(0xFFFFD600), // yellow
-                                                                          "valueText": severe.toString().padLeft(2, '0'),
-                                                                          "showAlert": false,
-                                                                        },
-                                                                        {
-                                                                          "value": avoidVal,
-                                                                          "color": const Color(0xFFDE5959), // red
-                                                                          "valueText": avoid.toString().padLeft(2, '0'),
-                                                                          "showAlert": false,
-                                                                        },
-                                                                      ],
-                                                                    };
-                                                                  }).toList();
-
-                                                                  if (eventController.isLoadingEventAllergens.value) {
-                                                                    return SizedBox(
-                                                                      height: 15.h,
-                                                                      child: Center(
-                                                                        child: CircularProgressIndicator(color: greenColor),
-                                                                      ),
-                                                                    );
-                                                                  }
-
-                                                                  return Column(
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        height: 1.h,
-                                                                      ),
-                                                                      InkWell(
-                                                                        onTap: () {
-                                                                          controller.toggleShowAllergicGuest();
-                                                                        },
-                                                                        child: CommonAllergensChart(
-                                                                          allergensList: dynamicList2,
-                                                                          isGrouped: true,
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(height: 2.h),
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              Container(
-                                                                                width: 2.5.w,
-                                                                                height: 2.5.w,
-                                                                                decoration: const BoxDecoration(
-                                                                                  color: Color(0xFFDE5959), // Red
-                                                                                  shape: BoxShape.circle,
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(width: 1.5.w),
-                                                                              customText(
-                                                                                text: "Avoid",
-                                                                                fontSize: 12.sp,
-                                                                                fontWeight: FontWeight.w500,
-                                                                                color: blackColor,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          SizedBox(width: 4.w),
-                                                                          Row(
-                                                                            children: [
-                                                                              Container(
-                                                                                width: 2.5.w,
-                                                                                height: 2.5.w,
-                                                                                decoration: const BoxDecoration(
-                                                                                  color: Color(0xFFFFD600), // Yellow
-                                                                                  shape: BoxShape.circle,
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(width: 1.5.w),
-                                                                              customText(
-                                                                                text: "Severe",
-                                                                                fontSize: 12.sp,
-                                                                                fontWeight: FontWeight.w500,
-                                                                                color: blackColor,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          SizedBox(width: 4.w),
-                                                                          Row(
-                                                                            children: [
-                                                                              Container(
-                                                                                width: 2.5.w,
-                                                                                height: 2.5.w,
-                                                                                decoration: const BoxDecoration(
-                                                                                  color: Color(0xFF39D300), // Green
-                                                                                  shape: BoxShape.circle,
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(width: 1.5.w),
-                                                                              customText(
-                                                                                text: "Mild",
-                                                                                fontSize: 12.sp,
-                                                                                fontWeight: FontWeight.w500,
-                                                                                color: blackColor,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                default:
-                                                                  return SizedBox.shrink();
-                                                              }
-                                                            }),
-                                                          ],
                                                         ),
-                                                      ),
-                                                    )
-                                                  : ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20.sp,
-                                                          ),
-                                                      child: Image.asset(
-                                                        "assets/png/select_event_banner.png",
-                                                        width: double.infinity,
-                                                        fit:
-                                                            BoxFit
-                                                                .fill, // or use BoxFit.cover if you prefer
-                                                      ),
+                                                        if (!isLast) Container(height: 1, color: Colors.grey[300]),
+                                                      ],
                                                     ),
-                                            );
-                                          }
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                        SizedBox(height: 2.h),
+                                        // Selected category list (RSVP-style cards)
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                          child: Obx(() {
+                                            final category = eventController.selectedDashboardCategory.value;
+                                            final isPast = category == EventController.dashHosted;
+                                            // Past Events: every event hosted by the user whose date has
+                                            // passed (full list from my-events, newest first).
+                                            final List<Map<String, dynamic>> items;
+                                            if (isPast) {
+                                              final now = DateTime.now();
+                                              final past = (eventController.myEventsModel.value?.data?.data ?? [])
+                                                  .where((e) => e.eventTime.isBefore(now))
+                                                  .toList()
+                                                ..sort((a, b) => b.eventTime.compareTo(a.eventTime));
+                                              items = past
+                                                  .map((e) => <String, dynamic>{
+                                                        '_id': e.id,
+                                                        'image': e.image,
+                                                        'eventName': e.eventName,
+                                                        'numGuests': e.numGuests,
+                                                        'estimatedGuests': e.estimatedGuests,
+                                                        'dietaryCompatibilityScore': e.dietaryCompatibilityScore,
+                                                      })
+                                                  .toList();
+                                            } else {
+                                              items = eventController.dashboardItems[category] ?? const <Map<String, dynamic>>[];
+                                            }
+                                            final expanded = _pastExpanded.value;
+
+                                            if (!isPast && eventController.isLoadingDashboard.value && items.isEmpty ||
+                                                isPast && eventController.isLoadingMyEvents.value && items.isEmpty) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 4.h),
+                                                child: Center(child: CircularProgressIndicator(color: greenColor)),
+                                              );
+                                            }
+                                            if (items.isEmpty) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 4.h),
+                                                child: Center(
+                                                  child: customText(text: 'No ${category.toLowerCase()} found!', fontSize: 14.5.sp),
+                                                ),
+                                              );
+                                            }
+                                            final shown = (isPast && expanded) || items.length <= 4 ? items.length : 4;
+                                            return Column(children: [
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              padding: EdgeInsets.zero,
+                                              itemCount: shown,
+                                              itemBuilder: (context, index) {
+                                                // Pending invitations may wrap the event under an "event" key.
+                                                final raw = items[index];
+                                                final e = raw['event'] is Map
+                                                    ? Map<String, dynamic>.from(raw['event'])
+                                                    : raw;
+                                                final guests = (e['numGuests'] as num?)?.toInt() ?? 0;
+                                                final estimated = (e['estimatedGuests'] as num?)?.toInt() ?? 0;
+                                                final score = (e['dietaryCompatibilityScore'] as num?)?.toDouble() ?? 0;
+                                                final eventId = (e['_id'] ?? e['id'] ?? '').toString();
+                                                return adminHomeWidget(
+                                                  imagePath: e['image']?.toString(),
+                                                  eventname: e['eventName']?.toString(),
+                                                  confirmedamount: "$guests Guest Confirmed",
+                                                  value: score / 100,
+                                                  estimatedGuest: estimated.toString(),
+                                                  joinedGuest: guests.toString(),
+                                                  ontap: eventId.isEmpty
+                                                      ? null
+                                                      : () => Get.toNamed("eventdetailsscreen", arguments: eventId),
+                                                );
+                                              },
+                                            ),
+                                            SizedBox(height: 1.h),
+                                            if (!isPast || items.length > 4)
+                                            InkWell(
+                                              onTap: () {
+                                                if (category == EventController.dashPending) {
+                                                  Get.toNamed("viewallinvitation");
+                                                } else if (isPast) {
+                                                  // Past -> expand/collapse in place
+                                                  _pastExpanded.value = !_pastExpanded.value;
+                                                } else {
+                                                  // Upcoming -> Events tab
+                                                  controller.changePage(1);
+                                                }
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  customText(
+                                                    text: isPast && expanded ? "View Less" : "View All",
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: blackColor,
+                                                  ),
+                                                  SizedBox(width: 1.w),
+                                                  Icon(
+                                                    isPast
+                                                        ? (expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down)
+                                                        : Icons.arrow_forward,
+                                                    color: blackColor,
+                                                    size: 16.sp,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            ]);
+                                          }),
                                         ),
 
                                         SizedBox(height: 3.h),
 
                                         // Invitations
                                         Padding(
+                                          key: _rsvpKey,
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 4.w,
                                           ),
@@ -995,28 +574,6 @@ class AdminHomeScreen extends StatelessWidget {
                                                 fontFamily: "CormorantGaramond",
                                                 color: blackColor,
                                               ),
-                                              InkWell(
-                                                onTap: () {
-                                                  controller.changePage(1);
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    customText(
-                                                      text: "View All",
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: blackColor,
-                                                    ),
-                                                    SizedBox(width: 1.w),
-                                                    Icon(
-                                                      Icons.arrow_forward,
-                                                      color: blackColor,
-                                                      size: 16.sp,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
                                             ],
                                           ),
                                         ),
@@ -1026,7 +583,11 @@ class AdminHomeScreen extends StatelessWidget {
                                             horizontal: 4.w,
                                           ),
                                           child: Obx(() {
-                                            final eventData = eventController.myEventsModel.value?.data?.data;
+                                            // Only upcoming events: drop anything whose date has passed.
+                                            final now = DateTime.now();
+                                            final eventData = eventController.myEventsModel.value?.data?.data
+                                                .where((e) => e.eventTime.isAfter(now))
+                                                .toList();
 
                                             // Show loader while fetching first page
                                             if (eventController.isLoadingMyEvents.value)
@@ -1051,10 +612,9 @@ class AdminHomeScreen extends StatelessWidget {
                                                   shrinkWrap: true,
                                                   physics: NeverScrollableScrollPhysics(),
                                                   padding: EdgeInsets.zero,
-                                                  itemCount: eventData.length,
+                                                  itemCount: _rsvpVisible.value < eventData.length ? _rsvpVisible.value : eventData.length,
                                                   itemBuilder: (context, index) {
                                                     final data = eventData[index];
-                                                    print(data.dietaryCompatibilityScore);
                                                     return adminHomeWidget(
                                                       imagePath: data?.image,
                                                       eventname: data?.eventName,
@@ -1071,12 +631,20 @@ class AdminHomeScreen extends StatelessWidget {
 
                                                 SizedBox(height: 2.h),
 
-                                                // Load More Button
-                                                if (eventController.myEventsCurrentPage.value < eventController.myEventsTotalPages.value)
+                                                // View More Button: reveals 10 more at a time
+                                                if (_rsvpVisible.value < eventData.length ||
+                                                    eventController.myEventsCurrentPage.value < eventController.myEventsTotalPages.value)
                                                   ElevatedButton(
                                                     onPressed: eventController.isLoadingMoreMyEvents.value
                                                         ? null
-                                                        : () => eventController.getMyEvents(loadMore: true),
+                                                        : () async {
+                                                            _rsvpVisible.value += 10;
+                                                            // Fetch another page only if we've run out of loaded events.
+                                                            if (_rsvpVisible.value > eventData.length &&
+                                                                eventController.myEventsCurrentPage.value < eventController.myEventsTotalPages.value) {
+                                                              await eventController.getMyEvents(loadMore: true);
+                                                            }
+                                                          },
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor: greenColor,
                                                       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.5.h),
@@ -1087,7 +655,7 @@ class AdminHomeScreen extends StatelessWidget {
                                                       width: 2.h,
                                                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                                     )
-                                                        : customText(text: "Load More", color: Colors.white, fontSize: 14.sp),
+                                                        : customText(text: "View More", color: Colors.white, fontSize: 14.sp),
                                                   ),
                                               ],
                                             );

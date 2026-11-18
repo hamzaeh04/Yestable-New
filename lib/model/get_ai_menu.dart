@@ -149,6 +149,7 @@ class Suggestion {
   final List<String>? dietaryTags;
   final List<String>? badges;
   final String? whySuitable;
+  final String? menuImage;
 
   Suggestion({
     this.title,
@@ -157,6 +158,7 @@ class Suggestion {
     this.dietaryTags,
     this.badges,
     this.whySuitable,
+    this.menuImage,
   });
 
   factory Suggestion.fromJson(Map<String, dynamic> json) {
@@ -171,6 +173,8 @@ class Suggestion {
           ? List<String>.from(json['badges'].map((x) => x.toString()))
           : null,
       whySuitable: json['whySuitable'],
+      menuImage: (json['menuImage'] ?? json['image'] ?? json['imageUrl'])
+          ?.toString(),
     );
   }
 
@@ -182,6 +186,7 @@ class Suggestion {
       'dietaryTags': dietaryTags,
       'badges': badges,
       'whySuitable': whySuitable,
+      'menuImage': menuImage,
     };
   }
 }

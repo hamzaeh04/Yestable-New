@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -54,12 +55,39 @@ class FoodMenuCard extends StatelessWidget {
           // 1. Image Section
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            child: Image.asset(
-              'assets/png/profile_food_images/selected_menu_image.png', // Replace with your asset
-              height: 10.h,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            child: Obx(() {
+              // Generated image appears once the suggestion has been added.
+              final url = eventController.aiMenuImageUrl(
+                menuItem.id ?? title,
+                fallback: menuItem.menuImage,
+              );
+              final placeholder = Image.asset(
+                'assets/png/profile_food_images/selected_menu_image.png',
+                height: 10.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              );
+              if (url == null) {
+                if (eventController.aiMenuImageLoading.contains(menuItem.id ?? title)) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      placeholder,
+                      const CircularProgressIndicator(color: Colors.white),
+                    ],
+                  );
+                }
+                return placeholder;
+              }
+              return CachedNetworkImage(
+                imageUrl: url,
+                height: 10.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (context, _) => placeholder,
+                errorWidget: (context, _, __) => placeholder,
+              );
+            }),
           ),
 
           Padding(
@@ -124,23 +152,17 @@ class FoodMenuCard extends StatelessWidget {
                             'Add To Menu', whiteColor, colors: greenColor, fontsize: 15.sp,
                             onTap: () async {
                               if (eventController.isAiMenuAdded(menuItem.id)) return;
-                              eventController.menuTitle.text = title.toString();
-                              eventController.selectedType.value =
-                                  eventController.normalizeMenuType(subtitle);
-                              eventController.menuDescription.text = desc.toString();
-                              eventController.selectedMealCategory.value = (menuItem.mealCategory ?? <String>[])
-                                  .map((tag) => {
-                                        "name": tag,
-                                        "imgPath": eventController.mealCategoryIcon(tag) ?? "",
-                                      })
-                                  .toList();
-                              final createdMenu = await eventController.uploadMenu(noNavigate: true);
+                              final createdMenu = await eventController.acceptAiSuggestion(
+                                eventId: eventController.mainEventId,
+                                key: menuItem.id ?? title ?? '',
+                                title: title,
+                                type: eventController.normalizeMenuType(subtitle),
+                                description: desc,
+                                dietaryTags: menuItem.mealCategory ?? <String>[],
+                                fallbackImage: menuItem.menuImage,
+                              );
                               if (createdMenu == null) return;
 
-                              eventController.addSelectedMenu(createdMenu);
-                              if (menuItem.id != null && menuItem.id!.isNotEmpty) {
-                                eventController.markAiMenuAdded(menuItem.id!);
-                              }
                               Get.snackbar(
                                 "Added",
                                 "Menu added to your selected list",

@@ -835,6 +835,21 @@ class EventController extends GetxController {
     }
   }
 
+  Future<void> deleteMenu(String? id) async {
+    if (id == null || id.isEmpty) return;
+    try {
+      final response = await baseService.baseDeleteAPI(
+        ApiEndPoints.deleteMenu(id),
+      );
+      if (response["success"] == true) {
+        menus.removeWhere((m) => m.id == id);
+        selectedMenus.removeWhere((m) => m.id == id);
+      }
+    } catch (e) {
+      Utils.showToast("Failed to delete menu", true);
+    }
+  }
+
   String? mealCategoryIcon(String? name) {
     if (name == null) return null;
     final match = mealCategory.firstWhereOrNull(
@@ -1615,6 +1630,53 @@ class EventController extends GetxController {
 
   final RxBool isLoadingPendingInvitations = false.obs;
 
+  // ---- Host home dashboard (/events/dashboard?limit=10) ----
+  static const String dashUpcoming = 'Upcoming Events';
+  static const String dashHosted = 'Past Events';
+  static const String dashPending = 'Pending Invitations';
+  final List<String> dashboardCategories = const [
+    dashUpcoming,
+    dashHosted,
+    dashPending,
+  ];
+  final RxString selectedDashboardCategory = dashUpcoming.obs;
+  final RxBool isLoadingDashboard = false.obs;
+  final RxMap<String, List<Map<String, dynamic>>> dashboardItems =
+      <String, List<Map<String, dynamic>>>{}.obs;
+
+  List<Map<String, dynamic>> _dashList(dynamic raw) {
+    // Accepts either a plain list or a paginated {data: [...]} object.
+    if (raw is Map) raw = raw['data'];
+    if (raw is! List) return [];
+    return raw
+        .whereType<Map>()
+        .map((e) => Map<String, dynamic>.from(e))
+        .toList();
+  }
+
+  Future<void> getDashboard() async {
+    if (isLoadingDashboard.value) return;
+    isLoadingDashboard.value = true;
+    try {
+      final response = await baseService.baseGetAPI(
+        ApiEndPoints.eventsDashboard,
+        loading: false,
+      );
+      if (response["success"] != true) return;
+      final data = response["data"];
+      if (data is! Map) return;
+      dashboardItems.assignAll({
+        dashUpcoming: _dashList(data["upcomingEvents"]),
+        dashHosted: _dashList(data["hostedEvents"]),
+        dashPending: _dashList(data["pendingInvitations"]),
+      });
+    } catch (e) {
+      print("Error in getDashboard(): $e");
+    } finally {
+      isLoadingDashboard.value = false;
+    }
+  }
+
   Future<void> getPendingInvitations() async {
     isLoadingPendingInvitations.value = true;
 
@@ -1876,10 +1938,114 @@ class EventController extends GetxController {
 
 
 
+  /// Generated image path (relative, from the accept call) per AI suggestion key.
+  final RxMap<String, String> aiMenuImages = <String, String>{}.obs;
+
+  /// Full URL for an accepted AI suggestion's generated image, or null.
+  String? aiMenuImageUrl(String? key, {String? fallback}) {
+    final img = ((key == null ? null : aiMenuImages[key]) ?? fallback ?? '').trim();
+    if (img.isEmpty) return null;
+    return img.startsWith('http') ? img : '${baseService.baseURL}$img';
+  }
+
+  /// Keys of suggestions whose image is still being generated.
+  final RxSet<String> aiMenuImageLoading = <String>{}.obs;
+
+  /// The suggestions API returns no images, and only POST /menus (without a
+  /// menuImage) generates/reuses one per dish name. So request one per
+  /// suggestion as soon as the list arrives; accept later reuses the same image.
+  void _generateAiMenuImages(List<Suggestion> suggestions) {
+    for (final s in suggestions) {
+      final key = s.title ?? '';
+      if (key.isEmpty) continue;
+      final existing = (s.menuImage ?? '').trim();
+      if (existing.isNotEmpty) {
+        aiMenuImages[key] = existing;
+        continue;
+      }
+      aiMenuImageLoading.add(key);
+      baseService
+          .basePostAPI(
+            ApiEndPoints.addMenu,
+            {
+              "type": normalizeMenuType(s.type),
+              "title": key,
+              "description": s.description ?? '',
+              "mealCategory": s.dietaryTags ?? <String>[],
+              "isAi": true,
+            },
+            loading: false,
+          )
+          .then((res) {
+            final img = res["data"]?["menuImage"]?.toString().trim() ?? '';
+            if (res["success"] == true && img.isNotEmpty) {
+              aiMenuImages[key] = img;
+            }
+          })
+          .catchError((_) {})
+          .whenComplete(() => aiMenuImageLoading.remove(key));
+    }
+  }
+
+  /// POST /events/:id/menu-suggestions/accept — creates the AI menu (with an
+  /// auto-generated image) and attaches it to the event. Can take several
+  /// seconds the first time a dish is seen.
+  Future<MenuItem?> acceptAiSuggestion({
+    required String eventId,
+    required String key,
+    required String? title,
+    required String type,
+    required String? description,
+    required List<String> dietaryTags,
+    String? fallbackImage,
+  }) async {
+    final responseMap = await baseService.basePostAPI(
+      ApiEndPoints.acceptAiMenu(eventId),
+      {
+        "type": type,
+        "title": title ?? '',
+        "description": description ?? '',
+        "dietaryTags": dietaryTags,
+      },
+      loading: true,
+    );
+    if (responseMap["success"] != true) return null;
+
+    final menuJson = responseMap["data"]?["menu"];
+    if (menuJson is! Map) return null;
+    var menu = MenuItem.fromJson(Map<String, dynamic>.from(menuJson));
+
+    var img = menu.menuImage;
+    if (img == null || img.trim().isEmpty) {
+      // Accept returned no image: keep the one the suggestion came with.
+      img = fallbackImage;
+      if (img != null && img.trim().isNotEmpty) {
+        menu = MenuItem(
+          id: menu.id,
+          type: menu.type,
+          mealCategory: menu.mealCategory,
+          menuImage: img,
+          title: menu.title,
+          description: menu.description,
+          isAi: menu.isAi,
+          userId: menu.userId,
+          createdAt: menu.createdAt,
+          updatedAt: menu.updatedAt,
+          v: menu.v,
+        );
+      }
+    }
+    if (img != null && img.trim().isNotEmpty) aiMenuImages[key] = img;
+    addSelectedMenu(menu);
+    markAiMenuAdded(key);
+    return menu;
+  }
+
   Future<void> GetAiMenu(String id, bool refresh, String prompt) async {
     isAiMenuLoading.value = true;
     aiMenuError.value = '';
     addedAiMenuKeys.clear();
+    aiMenuImages.clear();
     try {
       final body = {"prompt": prompt, "refresh": refresh};
 
@@ -1902,6 +2068,8 @@ class EventController extends GetxController {
 
       getAiMenuModel.value = AiMenu.fromJson(responseMap);
       aiController.clear();
+      // Don't await: cards show right away, images fill in as they arrive.
+      _generateAiMenuImages(getAiMenuModel.value?.data?.suggestions ?? []);
     } catch (e) {
       aiMenuError.value = "Failed to fetch AI menu suggestions";
       print("🍽️ Something went wrong in GetAiMenu: $e");
