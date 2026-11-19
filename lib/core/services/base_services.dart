@@ -4,11 +4,13 @@ import 'dart:convert';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart' as http;
+import 'package:yestable/core/services/authClient.dart';
 import '../../outh_file/local_db_key.dart';
 import '../../utils/shared_prefrences_methods.dart';
 import '../../utils/utility.dart';
 
 class BaseService {
+  final client = AuthClient();
   late String baseURL = "https://app.yourwebsitemockup.net/yestable-backend";
   late String endPoint;
   late String Url = '$baseURL$endPoint';
@@ -47,7 +49,7 @@ class BaseService {
     // }
 
     try {
-      final response = await http.post(
+      final response = await client.post(
         Uri.parse(isStripe == true ? baseURLStripe : "$baseURL$endPoint"),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -122,7 +124,7 @@ class BaseService {
     }
 
     try {
-      final response = await http
+      final response = await client
           .get(
         Uri.parse(isStripe == true ? baseURLStripe : "$baseURL$endPoint"),
         headers: {
@@ -193,7 +195,7 @@ class BaseService {
     }
 
     try {
-      final response = await http
+      final response = await client
           .put(
         Uri.parse(isStripe == true ? baseURLStripe : "$baseURL$endPoint"),
         headers: {
@@ -263,7 +265,7 @@ class BaseService {
     }
 
     try {
-      final response = await http
+      final response = await client
           .delete(
         Uri.parse(isStripe == true ? baseURLStripe : "$baseURL$endPoint"),
         headers: {
@@ -339,7 +341,7 @@ class BaseService {
     }
 
     try {
-      final response = await http
+      final response = await client
           .patch(
         Uri.parse(isStripe == true ? baseURLStripe : "$baseURL$endPoint"),
         headers: {

@@ -596,17 +596,24 @@ class EventController extends GetxController {
         final adminId = pref.getString(LocalDBKeys.USERID);
         print("sjkfghigshdsdsasdbv : ${adminId}");
         print("sjkfghigshdsdsasdbv : ${eventImage}");
-        messagingService.createGroup(
-          imagePath: eventImage,
-          name: eventName.text,
-          createdBy: adminName ?? '',
-          enableGroup: switchValue3.value,
-          eventId: eventId.toString(),
-          adminId: adminId!,
-          invitationMsg: inviteMsg.text,
-          adminProfilePic:
-              profileController.getMyProfileModel.value?.data?.profilePic ?? "",
-        );
+        // The event already exists on the backend, so a chat-group failure
+        // shouldn't block the flow; surface it instead of failing silently.
+        try {
+          await messagingService.createGroup(
+            imagePath: eventImage,
+            name: eventName.text,
+            createdBy: adminName ?? '',
+            enableGroup: switchValue3.value,
+            eventId: eventId.toString(),
+            adminId: adminId!,
+            invitationMsg: inviteMsg.text,
+            adminProfilePic:
+                profileController.getMyProfileModel.value?.data?.profilePic ?? "",
+          );
+        } catch (e) {
+          print("❌ createGroup failed: $e");
+          Utils.showToast("Event created, but its chat group couldn't be set up.", true);
+        }
         // clearEventFields();
         // Share-link dialog now shows on the "Publish Now" flow instead of here.
         Get.toNamed("foodmenuscreen", arguments: eventId);

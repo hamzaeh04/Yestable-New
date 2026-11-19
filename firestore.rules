@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// WARNING: These rules are fully open. The app signs users in through its own
+// backend, not Firebase Auth, so Firestore cannot tell users apart and any
+// `request.auth` check would reject every request. Replace with
+// request.auth.uid-based rules once the backend mints Firebase custom tokens.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /group/{groupId} {
+      allow read, write: if true;
+
+      // members, messages and any other subcollections
+      match /{sub=**} {
+        allow read, write: if true;
+      }
+    }
+
+    // Needed for collectionGroup('members') queries (guest chat list).
+    match /{path=**}/members/{memberId} {
+      allow read, write: if true;
+    }
+  }
+}

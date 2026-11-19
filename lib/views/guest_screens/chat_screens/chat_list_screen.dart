@@ -32,6 +32,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
     super.dispose();
   }
 
+  /// Shown when a Firestore stream fails (e.g. PERMISSION_DENIED), so the
+  /// failure isn't mistaken for an empty list.
+  Widget _streamError(Object? error) {
+    debugPrint("Chat list stream error: $error");
+    final denied = error is FirebaseException && error.code == 'permission-denied';
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: customText(
+          text: denied
+              ? "Couldn't load groups: access denied by the server."
+              : "Couldn't load groups. Please try again later.",
+        ),
+      ),
+    );
+  }
+
   bool _matchesGroupName(Map<String, dynamic> group) {
     final query = _searchQuery.trim().toLowerCase();
     if (query.isEmpty) return true;
@@ -163,6 +180,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               .collection('group')
                               .snapshots(),
                           builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return _streamError(snapshot.error);
+                            }
                             if (!snapshot.hasData) {
                               return const Center(
                                 child: CircularProgressIndicator(
@@ -193,6 +213,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                   .collectionGroup('members')
                                   .snapshots(),
                               builder: (context, joinedSnapshot) {
+                                if (joinedSnapshot.hasError) {
+                                  return _streamError(joinedSnapshot.error);
+                                }
                                 if (!joinedSnapshot.hasData) {
                                   return const Center(
                                     child: CircularProgressIndicator(
@@ -310,7 +333,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               .orderBy('lastMessageTime', descending: true)
                               .snapshots(),
                           builder: (context, snapshot) {
-                            print(controller.returnUserId());
+                            if (snapshot.hasError) {
+                              return _streamError(snapshot.error);
+                            }
 
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Center(

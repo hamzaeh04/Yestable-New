@@ -74,6 +74,7 @@ class AuthController extends GetxController {
     step = data["user"]["onboardingStep"];
     if (data == null) return; // Safety guard
     await prefs.setString(LocalDBKeys.TOKEN, data["access_token"]);
+    await prefs.setString(LocalDBKeys.REFRESHTOKEN, data["refresh_token"] ?? "");
     await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"] ?? "");
     await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, profileCompleted ?? false);
     await prefs.setString(LocalDBKeys.USERFULLNAME, data["user"]["name"] ?? "");
@@ -165,6 +166,7 @@ class AuthController extends GetxController {
       final user = data['user'];
       final token = data['access_token'];
       await prefs.setString(LocalDBKeys.TOKEN, token);
+      await prefs.setString(LocalDBKeys.REFRESHTOKEN, data['refresh_token'] ?? "");
       await prefs.setString(LocalDBKeys.USEREMAIL, data["user"]["email"]);
       await prefs.setBool(LocalDBKeys.PROFILECOMPLETED, data["user"]["profileCompleted"]);
       await prefs.setString(LocalDBKeys.USERFULLNAME, data["user"]["name"] ?? "");

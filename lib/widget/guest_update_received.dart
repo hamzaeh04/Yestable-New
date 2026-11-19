@@ -10,6 +10,7 @@ import '../constants/constants_widgets.dart';
 import '../controllers/event_controller.dart';
 import '../core/services/firebase_messaging/messaging_service.dart';
 import '../outh_file/local_db_key.dart';
+import '../utils/utility.dart';
 
 void guestUpdateReceived(BuildContext context, {required bool success, required String eventId, required ProfileController controller}) {
   final prefs = SharedPreferencesMethod.storage;
@@ -128,7 +129,14 @@ void guestUpdateReceived(BuildContext context, {required bool success, required 
 
                         final userName = prefs.getString(LocalDBKeys.USERFULLNAME);
                         final userId = prefs.getString(LocalDBKeys.USERID);
-                        await messagingService.joinGroup(groupId: eventId, userName: userName.toString(), userId: userId.toString(),memberProfile: controller.getMyProfileModel.value?.data?.profilePic ?? '');
+                        // Joining the event succeeded on the backend; a chat
+                        // failure shouldn't block the success dialog.
+                        try {
+                          await messagingService.joinGroup(groupId: eventId, userName: userName.toString(), userId: userId.toString(),memberProfile: controller.getMyProfileModel.value?.data?.profilePic ?? '');
+                        } catch (e) {
+                          print("❌ joinGroup failed: $e");
+                          Utils.showToast("Joined event, but couldn't join its chat group.", true);
+                        }
 
                         final String message = response["message"] ?? "Joined event successfully";
 

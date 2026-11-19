@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -120,12 +121,27 @@ class LocationController extends GetxController{
         return;
       }
 
-      final position =
-      await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
+      // Without a time limit this waits forever when no GPS fix arrives
+      // (indoors, emulator), leaving the button spinning.
+      Position? position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 10),
+          ),
+        );
+      } on TimeoutException {
+        position = await Geolocator.getLastKnownPosition();
+      }
+
+      if (position == null) {
+        Get.snackbar(
+          'Location Unavailable',
+          'Could not get a GPS fix. Move the map to pick a location.',
+        );
+        return;
+      }
 
       final location = LatLng(
         position.latitude,
